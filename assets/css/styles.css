@@ -378,6 +378,15 @@ h3 {
   flex-direction: column;
 }
 
+.mu-card-muted {
+  background: rgba(255, 255, 255, 0.58);
+  border-style: dashed;
+}
+
+.mu-card-muted .mu-card-kicker {
+  color: var(--mu-muted);
+}
+
 .mu-card-featured {
   min-height: 24rem;
 }

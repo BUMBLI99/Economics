@@ -1,15 +1,17 @@
 ---
 title: "Proyectos"
 subtitle: "Macroeconomía aplicada, política monetaria, finanzas y visualización de datos"
+description: "Selección de proyectos aplicados en macroeconomía chilena, política monetaria, nowcasting, escenarios macro y monitoreo financiero."
+image: "assets/img/og/portfolio-og.png"
 page-layout: full
 ---
 
 Esta sección reúne proyectos aplicados, notas técnicas y líneas de investigación en macroeconomía, política monetaria, econometría de series de tiempo y visualización de datos. La prioridad es mantener una presentación sobria: pregunta económica clara, datos trazables, metodología explícita y resultados visuales legibles.
 
-## Proyectos aplicados
+## Proyectos principales
 
 ::: {.mu-section-intro}
-Herramientas y análisis con estructura metodológica más desarrollada, orientados a seguimiento macroeconómico, proyecciones y simulación de escenarios.
+Herramientas y análisis con estructura metodológica más desarrollada, orientados a seguimiento macroeconómico, proyecciones, simulación de escenarios y discusión de política económica.
 :::
 
 ::: {.mu-grid .mu-grid-projects}
@@ -64,22 +66,6 @@ Análisis visual y econométrico del traspaso de movimientos de la Tasa de Polí
 
 ::: {.mu-card}
 ::: {.mu-card-kicker}
-Mercado de tasas
-:::
-### Curva de rendimiento chilena interactiva
-
-Visualización interactiva de la curva nominal y real, pendiente de la curva y episodios macrofinancieros relevantes para interpretar expectativas, condiciones financieras y primas por plazo.
-
-::: {.mu-meta}
-**Estado:** prototipo visual-financiero en desarrollo.  
-**Salida esperada:** slider temporal, comparación por fechas, pendiente 10y-2y y señales de condiciones financieras.
-:::
-
-[Abrir proyecto](proyectos/curva-rendimiento.qmd){.mu-card-link}
-:::
-
-::: {.mu-card}
-::: {.mu-card-kicker}
 Macrofinanzas
 :::
 ### Índice de estrés financiero de mercado para Chile
@@ -92,6 +78,32 @@ Monitor diario que resume desviaciones del USD/CLP y de la tasa soberana 10Y res
 :::
 
 [Abrir proyecto](proyectos/estres-externo.qmd){.mu-card-link}
+:::
+
+:::
+
+## Prototipos y líneas en desarrollo
+
+::: {.mu-section-intro}
+Ideas metodológicas o visuales que todavía requieren consolidación de datos, validación empírica o mayor documentación antes de ser presentadas como proyectos aplicados principales.
+:::
+
+::: {.mu-grid .mu-grid-projects}
+
+::: {.mu-card .mu-card-muted}
+::: {.mu-card-kicker}
+Mercado de tasas
+:::
+### Curva de rendimiento chilena interactiva
+
+Visualización interactiva de la curva nominal y real, pendiente de la curva y episodios macrofinancieros relevantes para interpretar expectativas, condiciones financieras y primas por plazo.
+
+::: {.mu-meta}
+**Estado:** prototipo visual en desarrollo.  
+**Próxima mejora:** reemplazar la demo por curvas oficiales/mercado, agregar pendiente 10y-2y y separar curva nominal, real y compensación inflacionaria.
+:::
+
+[Abrir prototipo](proyectos/curva-rendimiento.qmd){.mu-card-link}
 :::
 
 :::

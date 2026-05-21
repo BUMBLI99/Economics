@@ -2,6 +2,8 @@
 title: "Índice de estrés financiero de mercado para Chile"
 subtitle: "Desviaciones del tipo de cambio y la tasa soberana 10Y respecto de fundamentos externos"
 page-layout: full
+description: "Monitor de estrés financiero para Chile basado en desviaciones del tipo de cambio y tasa soberana respecto de fundamentos externos."
+image: "../assets/img/og/portfolio-og.png"
 ---
 
 ```{r}

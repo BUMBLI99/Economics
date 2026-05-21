@@ -1,6 +1,8 @@
 ---
 title: "Curva de rendimiento chilena interactiva"
-subtitle: "Visualizador de tasas nominales y reales por plazo"
+subtitle: "Prototipo visual de tasas nominales y reales por plazo"
+description: "Prototipo de visualización para curva de rendimiento chilena, pendiente de curva y señales macrofinancieras."
+image: "../assets/img/og/portfolio-og.png"
 ---
 
 ## Motivación
@@ -10,10 +12,10 @@ Este proyecto busca visualizar la evolución de la estructura temporal de tasas 
 La curva de rendimiento permite observar cambios en condiciones financieras, expectativas de tasas, pendiente de curva y episodios de aplanamiento o empinamiento.
 
 ::: {.mu-note}
-Esta página contiene una demo visual con datos simulados. La versión final debe usar tasas nominales y reales chilenas publicadas en fuentes oficiales o de mercado.
+**Estado:** prototipo visual. La figura actual usa datos simulados para validar interacción, diseño y estructura de navegación. Antes de presentarlo como evidencia aplicada, debe conectarse a tasas nominales y reales chilenas publicadas por fuentes oficiales o de mercado.
 :::
 
-## Demo visual: curva por fecha
+## Prototipo visual: curva por fecha
 
 ```{r}
 #| echo: false
@@ -42,10 +44,10 @@ plot_ly(
   frame = ~fecha_lab,
   type = "scatter",
   mode = "lines+markers",
-  hovertemplate = "Plazo: %{x} años<br>Tasa demo: %{y:.2f}%<extra></extra>"
+  hovertemplate = "Plazo: %{x} años<br>Tasa del prototipo: %{y:.2f}%<extra></extra>"
 ) |> 
   layout(
-    title = "Curva de rendimiento chilena: demo interactiva",
+    title = "Curva de rendimiento chilena: prototipo interactivo",
     xaxis = list(title = "Plazo, años"),
     yaxis = list(title = "Tasa, %")
   )

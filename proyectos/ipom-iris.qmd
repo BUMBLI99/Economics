@@ -9,6 +9,8 @@ format:
   html:
     toc: true
     page-layout: full
+description: "Ejercicio académico/aplicado de escenarios macroeconómicos con Matlab/IRIS, supuestos externos y visualización en Quarto."
+image: "../assets/img/og/portfolio-og.png"
 ---
 
 ```{r setup}
@@ -101,7 +103,7 @@ El objetivo es evaluar cómo cambian las trayectorias de inflación, tasa de pol
 
 En términos prácticos, el ejercicio responde:
 
-> ¿Qué pasa con inflación, TPM y actividad si el escenario externo cambia respecto de un baseline tipo IPoM, manteniendo el juicio doméstico del escenario base?
+> ¿Qué pasa con inflación, TPM y actividad si el escenario externo cambia respecto de un escenario de referencia tipo IPoM, manteniendo el juicio doméstico del escenario base?
 
 ## Arquitectura del proyecto
 
@@ -141,7 +143,7 @@ ipom_scenario_meta |>
 
 ## Resultado principal
 
-El gráfico compara el baseline identificado con escenarios alternativos. Para evitar sobrecargar la visualización, se muestran tres alternativas principales junto al baseline.
+El gráfico compara el escenario de referencia identificado con escenarios alternativos. Para evitar sobrecargar la visualización, se muestran tres alternativas principales junto al baseline.
 
 ### Inflación total
 
@@ -149,7 +151,7 @@ El gráfico compara el baseline identificado con escenarios alternativos. Para e
 ipom_plot_var(
   ipom_long,
   "D4L_CPI",
-  title = "Inflación total: baseline IPoM vs escenarios alternativos",
+  title = "Inflación total: escenario de referencia vs escenarios alternativos",
   subtitle = "Variación anual del IPC",
   start_period = plot_start,
   scenarios = main_scenarios

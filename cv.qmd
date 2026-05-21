@@ -2,6 +2,8 @@
 title: "CV"
 subtitle: "Formación, herramientas y áreas de interés"
 page-layout: full
+description: "Formación, herramientas y áreas de interés de Mauricio Andrés Ulloa Valdivia."
+image: "assets/img/og/portfolio-og.png"
 ---
 
 ::: {.mu-split}

@@ -1,6 +1,8 @@
 ---
-title: "Mauricio Ulloa"
-subtitle: "Economía aplicada · Macroeconomía · Política monetaria · Datos"
+title: "Macroeconomía aplicada, política monetaria y análisis de datos"
+subtitle: "Portafolio técnico de Mauricio Andrés Ulloa Valdivia"
+description: "Portafolio de análisis económico aplicado con proyectos de macroeconomía chilena, política monetaria, nowcasting, escenarios tipo IPoM y visualización reproducible de datos."
+image: "assets/img/og/portfolio-og.png"
 toc: false
 page-layout: full
 ---
@@ -14,7 +16,7 @@ Portafolio técnico
 
 # Macroeconomía aplicada, política monetaria y análisis de datos
 
-Soy economista formado en la Universidad de Chile, con interés en macroeconomía aplicada, proyecciones, política monetaria, econometría de series de tiempo y visualización de datos. Este sitio reúne proyectos reproducibles orientados a transformar datos económicos en diagnósticos, escenarios y herramientas de seguimiento.
+Soy economista formado en la Universidad de Chile, con foco en macroeconomía aplicada, política monetaria, proyecciones, econometría de series de tiempo y visualización de datos. Este sitio reúne proyectos reproducibles orientados a transformar datos económicos en diagnósticos, escenarios y herramientas de seguimiento.
 
 Trabajo principalmente con **R**, **Matlab/IRIS**, **Python**, **Stata**, **Quarto** y **GitHub**, combinando construcción de bases, estimación econométrica, simulación macroeconómica y comunicación visual de resultados.
 
@@ -36,7 +38,11 @@ Foco del portafolio
 :::
 
 ::: mu-mini-stack
-R Matlab/IRIS Python Quarto GitHub Pages
+<span>R</span>
+<span>Matlab/IRIS</span>
+<span>Python</span>
+<span>Quarto</span>
+<span>GitHub Pages</span>
 :::
 ::::::
 ::::::::::
@@ -58,7 +64,10 @@ Proyecto aplicado
 Modelo mensual en R para anticipar la evolución del IMACEC total y no minero a partir de indicadores sectoriales, rezagos macroeconómicos, variables calendario y evaluación fuera de muestra.
 
 ::: mu-tags
-RSeries de tiempoIMACECNowcasting
+<span>R</span>
+<span>Series de tiempo</span>
+<span>IMACEC</span>
+<span>Nowcasting</span>
 :::
 
 [Abrir proyecto](proyectos/imacec.qmd){.mu-card-link}
@@ -71,10 +80,13 @@ Simulación macro
 
 ### Escenarios macroeconómicos inspirados en IPoM
 
-Modelo semi-estructural para construir un baseline tipo IPoM, simular escenarios alternativos con supuestos externos y comparar inflación, TPM y brecha de actividad.
+Modelo semi-estructural para construir un escenario de referencia tipo IPoM, simular escenarios alternativos con supuestos externos y comparar inflación, TPM y brecha de actividad.
 
 ::: mu-tags
-MatlabIRISInflaciónEscenarios
+<span>Matlab</span>
+<span>IRIS</span>
+<span>Inflación</span>
+<span>Escenarios</span>
 :::
 
 [Abrir proyecto](proyectos/ipom-iris.qmd){.mu-card-link}
@@ -90,7 +102,10 @@ Research note
 Análisis del traspaso de la Tasa de Política Monetaria hacia tasas bancarias y financieras en Chile, con visualizaciones por horizonte, fase del ciclo monetario y tipo de tasa.
 
 ::: mu-tags
-RPolítica monetariaPass-throughChile
+<span>R</span>
+<span>Política monetaria</span>
+<span>Pass-through</span>
+<span>Chile</span>
 :::
 
 [Abrir proyecto](proyectos/transmision-tpm.qmd){.mu-card-link}
@@ -144,6 +159,13 @@ Pipelines reproducibles, dashboards estáticos/interactivos, gráficos para info
 ## Herramientas
 
 ::: mu-tool-strip
-R / tidyverse ggplot2 / plotly Quarto Matlab / IRIS Python Stata GitHub LaTeX
+<span>R / tidyverse</span>
+<span>ggplot2 / plotly</span>
+<span>Quarto</span>
+<span>Matlab / IRIS</span>
+<span>Python</span>
+<span>Stata</span>
+<span>GitHub</span>
+<span>LaTeX</span>
 :::
 ::::::::::::::::::::::::::::::

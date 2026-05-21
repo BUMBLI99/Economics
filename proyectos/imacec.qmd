@@ -9,6 +9,8 @@ format:
   html:
     toc: true
     page-layout: full
+description: "Modelo mensual de nowcasting del IMACEC total y no minero con indicadores sectoriales, variables calendario y evaluación de ajuste."
+image: "../assets/img/og/portfolio-og.png"
 ---
 
 ```{r setup}

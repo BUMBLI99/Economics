@@ -23,3 +23,7 @@ matlab/ipom/**/*.pdf
 matlab/ipom/**/*.log
 # Objetos pesados de modelos
 outputs/model_objects/transmision_tpm/*.rds
+
+_freeze/
+outputs/model_objects/
+.quarto/

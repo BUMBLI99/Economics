@@ -9,6 +9,8 @@ execute:
   echo: false
   message: false
   warning: false
+description: "Monitor econométrico del pass-through desde la TPM hacia tasas bancarias y financieras en Chile."
+image: "../assets/img/og/portfolio-og.png"
 ---
 
 ```{r setup}

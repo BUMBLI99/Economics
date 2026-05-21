@@ -1,75 +1,5 @@
 [
   {
-    "objectID": "README_TRANSMISION_TPM.html",
-    "href": "README_TRANSMISION_TPM.html",
-    "title": "Proyecto: Transmisión de la TPM a tasas de mercado",
-    "section": "",
-    "text": "Este parche integra al sitio Quarto Economics un proyecto de investigación en desarrollo sobre pass-through de política monetaria en Chile.\n\n\n\nPágina Quarto: proyectos/transmision-tpm.qmd.\nPipeline R: R/transmision_tpm/.\nScript de actualización: scripts/05_update_transmision_tpm.R.\nDatos procesados iniciales: data/processed/transmision_tpm/.\nTablas: outputs/tables/transmision_tpm/.\nFiguras de respaldo: assets/img/transmision_tpm/.\nMetadatos de descarga: data/metadata/transmision_tpm/.\n\n\n\n\nDesde la raíz del repositorio Economics:\n& \"C:\\Program Files\\R\\R-4.3.2\\bin\\x64\\Rscript.exe\" \"scripts\\05_update_transmision_tpm.R\"\nquarto render --execute\ngit add .\ngit commit -m \"Actualiza proyecto transmision TPM\"\ngit push\n\n\n\nEl script requiere la API BDE del BCCh. Debes tener en .Renviron:\nBCCH_USER=tu_usuario\nBCCH_PASS=tu_password\nNo subas .Renviron a GitHub.\n\n\n\nLa versión actual es un monitor de pass-through dinámico. No debe presentarse como identificación causal plena de shocks monetarios. Para ese salto metodológico se recomienda incorporar sorpresas de política monetaria, expectativas de TPM, microdatos bancarios o una estrategia externa de identificación."
-  },
-  {
-    "objectID": "README_TRANSMISION_TPM.html#qué-agrega",
-    "href": "README_TRANSMISION_TPM.html#qué-agrega",
-    "title": "Proyecto: Transmisión de la TPM a tasas de mercado",
-    "section": "",
-    "text": "Página Quarto: proyectos/transmision-tpm.qmd.\nPipeline R: R/transmision_tpm/.\nScript de actualización: scripts/05_update_transmision_tpm.R.\nDatos procesados iniciales: data/processed/transmision_tpm/.\nTablas: outputs/tables/transmision_tpm/.\nFiguras de respaldo: assets/img/transmision_tpm/.\nMetadatos de descarga: data/metadata/transmision_tpm/."
-  },
-  {
-    "objectID": "README_TRANSMISION_TPM.html#cómo-actualizar",
-    "href": "README_TRANSMISION_TPM.html#cómo-actualizar",
-    "title": "Proyecto: Transmisión de la TPM a tasas de mercado",
-    "section": "",
-    "text": "Desde la raíz del repositorio Economics:\n& \"C:\\Program Files\\R\\R-4.3.2\\bin\\x64\\Rscript.exe\" \"scripts\\05_update_transmision_tpm.R\"\nquarto render --execute\ngit add .\ngit commit -m \"Actualiza proyecto transmision TPM\"\ngit push"
-  },
-  {
-    "objectID": "README_TRANSMISION_TPM.html#credenciales",
-    "href": "README_TRANSMISION_TPM.html#credenciales",
-    "title": "Proyecto: Transmisión de la TPM a tasas de mercado",
-    "section": "",
-    "text": "El script requiere la API BDE del BCCh. Debes tener en .Renviron:\nBCCH_USER=tu_usuario\nBCCH_PASS=tu_password\nNo subas .Renviron a GitHub."
-  },
-  {
-    "objectID": "README_TRANSMISION_TPM.html#interpretación",
-    "href": "README_TRANSMISION_TPM.html#interpretación",
-    "title": "Proyecto: Transmisión de la TPM a tasas de mercado",
-    "section": "",
-    "text": "La versión actual es un monitor de pass-through dinámico. No debe presentarse como identificación causal plena de shocks monetarios. Para ese salto metodológico se recomienda incorporar sorpresas de política monetaria, expectativas de TPM, microdatos bancarios o una estrategia externa de identificación."
-  },
-  {
-    "objectID": "README_CAMBIOS.html",
-    "href": "README_CAMBIOS.html",
-    "title": "Paquete de rediseño para la página GitHub Pages",
-    "section": "",
-    "text": "Este paquete reemplaza la portada y mejora la presentación visual del sitio Quarto.\n\n\n\n_quarto.yml: configuración del sitio, navegación, footer, CSS y opciones de render.\nindex.qmd: nueva página principal profesional.\nproyectos.qmd: nueva página de proyectos con tarjetas sin títulos azules.\ncv.qmd: página CV más limpia.\ncontacto.qmd: página de contacto más limpia.\nassets/css/styles.css: tema visual completo del sitio.\n\n\n\n\n\nDescomprime este paquete.\nCopia los archivos en la raíz del repositorio Economics, respetando carpetas.\nAcepta reemplazar los archivos existentes.\nEn la terminal del proyecto ejecuta:\n\nquarto render\n\nRevisa localmente el sitio generado en docs/index.html.\nSi todo se ve bien:\n\ngit add _quarto.yml index.qmd proyectos.qmd cv.qmd contacto.qmd assets/css/styles.css docs/\ngit commit -m \"Rediseña portada y presentación del portafolio\"\ngit push\nGitHub Pages publicará el contenido desde docs/.\n\n\n\n\nCorrige el problema de archivos .qmd comprimidos en una sola línea.\nElimina el botón global de código de Quarto en la portada.\nSustituye títulos azules subrayados por tarjetas con llamadas a acción sobrias.\nUsa enlaces tipo chip con icono ↗.\nMejora jerarquía visual, espaciado, paleta, navbar, footer y responsividad móvil.\nMantiene compatibilidad con tus páginas de proyectos existentes.\n\n\n\n\nSe corrigió la estrechez de la portada. La clase .mu-home ahora expande la página principal a un ancho máximo de 1320px, centrado respecto del viewport, y el hero usa una columna izquierda más amplia. También se agregó overflow-x: hidden para evitar desplazamientos horizontales accidentales cuando el título es muy largo."
-  },
-  {
-    "objectID": "README_CAMBIOS.html#archivos-incluidos",
-    "href": "README_CAMBIOS.html#archivos-incluidos",
-    "title": "Paquete de rediseño para la página GitHub Pages",
-    "section": "",
-    "text": "_quarto.yml: configuración del sitio, navegación, footer, CSS y opciones de render.\nindex.qmd: nueva página principal profesional.\nproyectos.qmd: nueva página de proyectos con tarjetas sin títulos azules.\ncv.qmd: página CV más limpia.\ncontacto.qmd: página de contacto más limpia.\nassets/css/styles.css: tema visual completo del sitio."
-  },
-  {
-    "objectID": "README_CAMBIOS.html#cómo-instalar",
-    "href": "README_CAMBIOS.html#cómo-instalar",
-    "title": "Paquete de rediseño para la página GitHub Pages",
-    "section": "",
-    "text": "Descomprime este paquete.\nCopia los archivos en la raíz del repositorio Economics, respetando carpetas.\nAcepta reemplazar los archivos existentes.\nEn la terminal del proyecto ejecuta:\n\nquarto render\n\nRevisa localmente el sitio generado en docs/index.html.\nSi todo se ve bien:\n\ngit add _quarto.yml index.qmd proyectos.qmd cv.qmd contacto.qmd assets/css/styles.css docs/\ngit commit -m \"Rediseña portada y presentación del portafolio\"\ngit push\nGitHub Pages publicará el contenido desde docs/."
-  },
-  {
-    "objectID": "README_CAMBIOS.html#detalles-del-rediseño",
-    "href": "README_CAMBIOS.html#detalles-del-rediseño",
-    "title": "Paquete de rediseño para la página GitHub Pages",
-    "section": "",
-    "text": "Corrige el problema de archivos .qmd comprimidos en una sola línea.\nElimina el botón global de código de Quarto en la portada.\nSustituye títulos azules subrayados por tarjetas con llamadas a acción sobrias.\nUsa enlaces tipo chip con icono ↗.\nMejora jerarquía visual, espaciado, paleta, navbar, footer y responsividad móvil.\nMantiene compatibilidad con tus páginas de proyectos existentes."
-  },
-  {
-    "objectID": "README_CAMBIOS.html#ajuste-v2-portada-más-ancha",
-    "href": "README_CAMBIOS.html#ajuste-v2-portada-más-ancha",
-    "title": "Paquete de rediseño para la página GitHub Pages",
-    "section": "",
-    "text": "Se corrigió la estrechez de la portada. La clase .mu-home ahora expande la página principal a un ancho máximo de 1320px, centrado respecto del viewport, y el hero usa una columna izquierda más amplia. También se agregó overflow-x: hidden para evitar desplazamientos horizontales accidentales cuando el título es muy largo."
-  },
-  {
     "objectID": "proyectos/transmision-tpm.html",
     "href": "proyectos/transmision-tpm.html",
     "title": "Transmisión de la TPM a tasas de mercado",
@@ -235,21 +165,21 @@
     "href": "proyectos/curva-rendimiento.html",
     "title": "Curva de rendimiento chilena interactiva",
     "section": "",
-    "text": "Este proyecto busca visualizar la evolución de la estructura temporal de tasas en Chile y extraer señales macrofinancieras relevantes.\nLa curva de rendimiento permite observar cambios en condiciones financieras, expectativas de tasas, pendiente de curva y episodios de aplanamiento o empinamiento.\n\nEsta página contiene una demo visual con datos simulados. La versión final debe usar tasas nominales y reales chilenas publicadas en fuentes oficiales o de mercado."
+    "text": "Este proyecto busca visualizar la evolución de la estructura temporal de tasas en Chile y extraer señales macrofinancieras relevantes.\nLa curva de rendimiento permite observar cambios en condiciones financieras, expectativas de tasas, pendiente de curva y episodios de aplanamiento o empinamiento.\n\nEstado: prototipo visual. La figura actual usa datos simulados para validar interacción, diseño y estructura de navegación. Antes de presentarlo como evidencia aplicada, debe conectarse a tasas nominales y reales chilenas publicadas por fuentes oficiales o de mercado."
   },
   {
     "objectID": "proyectos/curva-rendimiento.html#motivación",
     "href": "proyectos/curva-rendimiento.html#motivación",
     "title": "Curva de rendimiento chilena interactiva",
     "section": "",
-    "text": "Este proyecto busca visualizar la evolución de la estructura temporal de tasas en Chile y extraer señales macrofinancieras relevantes.\nLa curva de rendimiento permite observar cambios en condiciones financieras, expectativas de tasas, pendiente de curva y episodios de aplanamiento o empinamiento.\n\nEsta página contiene una demo visual con datos simulados. La versión final debe usar tasas nominales y reales chilenas publicadas en fuentes oficiales o de mercado."
+    "text": "Este proyecto busca visualizar la evolución de la estructura temporal de tasas en Chile y extraer señales macrofinancieras relevantes.\nLa curva de rendimiento permite observar cambios en condiciones financieras, expectativas de tasas, pendiente de curva y episodios de aplanamiento o empinamiento.\n\nEstado: prototipo visual. La figura actual usa datos simulados para validar interacción, diseño y estructura de navegación. Antes de presentarlo como evidencia aplicada, debe conectarse a tasas nominales y reales chilenas publicadas por fuentes oficiales o de mercado."
   },
   {
-    "objectID": "proyectos/curva-rendimiento.html#demo-visual-curva-por-fecha",
-    "href": "proyectos/curva-rendimiento.html#demo-visual-curva-por-fecha",
+    "objectID": "proyectos/curva-rendimiento.html#prototipo-visual-curva-por-fecha",
+    "href": "proyectos/curva-rendimiento.html#prototipo-visual-curva-por-fecha",
     "title": "Curva de rendimiento chilena interactiva",
-    "section": "Demo visual: curva por fecha",
-    "text": "Demo visual: curva por fecha"
+    "section": "Prototipo visual: curva por fecha",
+    "text": "Prototipo visual: curva por fecha"
   },
   {
     "objectID": "proyectos/curva-rendimiento.html#próximas-mejoras",
@@ -257,258 +187,6 @@
     "title": "Curva de rendimiento chilena interactiva",
     "section": "Próximas mejoras",
     "text": "Próximas mejoras\n\nIncorporar curva nominal y curva real/UF.\nCalcular pendiente 10y-2y.\nMostrar breakeven inflation aproximado, con advertencia sobre primas de riesgo y liquidez.\nMarcar fechas de episodios macrofinancieros relevantes."
-  },
-  {
-    "objectID": "matlab/ipom/RUNBOOK.html",
-    "href": "matlab/ipom/RUNBOOK.html",
-    "title": "Runbook operativo IPoM / IRIS",
-    "section": "",
-    "text": "Este proyecto esta preparado para IRIS Toolbox Release 20191112. La activacion se hace dentro de setup_ipom_project.m usando:\naddpath C:\\IRIS-Toolbox-Release-20191112\nirisstartup\nDesde MATLAB, corre:\ncd('D:\\Users\\mullo\\Documents\\GitHub\\Economics\\matlab\\ipom\\src')\nrun_all_ipom\nEl flujo ejecuta:\nsetup_ipom_project.m\nidentificar_shocks_ipom.m\nfcast_alt_ipom.m\nLos CSV crudos se guardan directamente en:\nmatlab/ipom/outputs/raw_iris/\nYa no se depende de copiar archivos a runtime/. Esa carpeta queda solo como respaldo/legacy.\n\n\n\nDesde la raiz del repositorio:\nRscript scripts/03_build_ipom_outputs.R\nquarto render\nLa pagina resultante queda en:\ndocs/proyectos/ipom-iris.html\n\n\n\nSi solo quieres reconstruir los CSV limpios o la pagina con los ultimos fcast_*.csv ya existentes:\nRscript scripts/03_build_ipom_outputs.R\nquarto render\n\n\n\nEdita solamente este bloque en:\nmatlab/ipom/src/fcast_alt_ipom.m\nBusca la seccion:\n2.3 Ejemplo de escenario: editar aqui\nRegla de interpretacion:\n\nVariables en 100*log(nivel): usar multiplicadores. Ejemplo: 0.95 implica caida aproximada de 5%.\nVariables en nivel/tasas/brechas: usar aditivos. Ejemplo: +0.25 implica 25 puntos base si la variable esta en porcentaje.\nMultiplicador 1: no se impone la variable.\nAditivo 0: no se impone la variable.\n\n\n\n\nEdita:\nmatlab/ipom/src/config_ipom.m\nCampos importantes:\ncfg.irisPath          = 'C:\\IRIS-Toolbox-Release-20191112';\ncfg.runMakeData       = false;\ncfg.runBaseline       = true;\ncfg.runAlternative    = true;\ncfg.runIrisPdfReports = false;\nSi quieres reconstruir inputs/history.csv desde inputs/Data.csv, cambia:\ncfg.runMakeData = true;\nSi quieres que IRIS genere PDFs, cambia:\ncfg.runIrisPdfReports = true;\n\n\n\nQuarto usa:\ndata/processed/ipom/ipom_scenarios_long.csv\ndata/processed/ipom/ipom_scenario_differences_long.csv\ndata/processed/ipom/ipom_external_assumptions.csv\ndata/processed/ipom/ipom_scenario_metadata.csv\ndata/processed/ipom/ipom_variable_metadata.csv\nEsos archivos se construyen desde:\nmatlab/ipom/outputs/raw_iris/fcast_*.csv\n\n\n\nNo uses como fuente principal:\nlegacy_original/reports_pdf/\nlegacy_original/m_files/\nruntime/\nLa fuente ordenada esta en:\nsrc/\nmodel/\ninputs/\noutputs/raw_iris/"
-  },
-  {
-    "objectID": "matlab/ipom/RUNBOOK.html#correr-el-flujo-iris-desde-matlab",
-    "href": "matlab/ipom/RUNBOOK.html#correr-el-flujo-iris-desde-matlab",
-    "title": "Runbook operativo IPoM / IRIS",
-    "section": "",
-    "text": "Este proyecto esta preparado para IRIS Toolbox Release 20191112. La activacion se hace dentro de setup_ipom_project.m usando:\naddpath C:\\IRIS-Toolbox-Release-20191112\nirisstartup\nDesde MATLAB, corre:\ncd('D:\\Users\\mullo\\Documents\\GitHub\\Economics\\matlab\\ipom\\src')\nrun_all_ipom\nEl flujo ejecuta:\nsetup_ipom_project.m\nidentificar_shocks_ipom.m\nfcast_alt_ipom.m\nLos CSV crudos se guardan directamente en:\nmatlab/ipom/outputs/raw_iris/\nYa no se depende de copiar archivos a runtime/. Esa carpeta queda solo como respaldo/legacy."
-  },
-  {
-    "objectID": "matlab/ipom/RUNBOOK.html#actualizar-quarto-despues-de-correr-iris",
-    "href": "matlab/ipom/RUNBOOK.html#actualizar-quarto-despues-de-correr-iris",
-    "title": "Runbook operativo IPoM / IRIS",
-    "section": "",
-    "text": "Desde la raiz del repositorio:\nRscript scripts/03_build_ipom_outputs.R\nquarto render\nLa pagina resultante queda en:\ndocs/proyectos/ipom-iris.html"
-  },
-  {
-    "objectID": "matlab/ipom/RUNBOOK.html#actualizar-la-pagina-sin-recalcular-iris",
-    "href": "matlab/ipom/RUNBOOK.html#actualizar-la-pagina-sin-recalcular-iris",
-    "title": "Runbook operativo IPoM / IRIS",
-    "section": "",
-    "text": "Si solo quieres reconstruir los CSV limpios o la pagina con los ultimos fcast_*.csv ya existentes:\nRscript scripts/03_build_ipom_outputs.R\nquarto render"
-  },
-  {
-    "objectID": "matlab/ipom/RUNBOOK.html#cambiar-un-escenario",
-    "href": "matlab/ipom/RUNBOOK.html#cambiar-un-escenario",
-    "title": "Runbook operativo IPoM / IRIS",
-    "section": "",
-    "text": "Edita solamente este bloque en:\nmatlab/ipom/src/fcast_alt_ipom.m\nBusca la seccion:\n2.3 Ejemplo de escenario: editar aqui\nRegla de interpretacion:\n\nVariables en 100*log(nivel): usar multiplicadores. Ejemplo: 0.95 implica caida aproximada de 5%.\nVariables en nivel/tasas/brechas: usar aditivos. Ejemplo: +0.25 implica 25 puntos base si la variable esta en porcentaje.\nMultiplicador 1: no se impone la variable.\nAditivo 0: no se impone la variable."
-  },
-  {
-    "objectID": "matlab/ipom/RUNBOOK.html#cambiar-iris-horizonte-operativo-o-reportes-pdf",
-    "href": "matlab/ipom/RUNBOOK.html#cambiar-iris-horizonte-operativo-o-reportes-pdf",
-    "title": "Runbook operativo IPoM / IRIS",
-    "section": "",
-    "text": "Edita:\nmatlab/ipom/src/config_ipom.m\nCampos importantes:\ncfg.irisPath          = 'C:\\IRIS-Toolbox-Release-20191112';\ncfg.runMakeData       = false;\ncfg.runBaseline       = true;\ncfg.runAlternative    = true;\ncfg.runIrisPdfReports = false;\nSi quieres reconstruir inputs/history.csv desde inputs/Data.csv, cambia:\ncfg.runMakeData = true;\nSi quieres que IRIS genere PDFs, cambia:\ncfg.runIrisPdfReports = true;"
-  },
-  {
-    "objectID": "matlab/ipom/RUNBOOK.html#archivos-que-alimentan-quarto",
-    "href": "matlab/ipom/RUNBOOK.html#archivos-que-alimentan-quarto",
-    "title": "Runbook operativo IPoM / IRIS",
-    "section": "",
-    "text": "Quarto usa:\ndata/processed/ipom/ipom_scenarios_long.csv\ndata/processed/ipom/ipom_scenario_differences_long.csv\ndata/processed/ipom/ipom_external_assumptions.csv\ndata/processed/ipom/ipom_scenario_metadata.csv\ndata/processed/ipom/ipom_variable_metadata.csv\nEsos archivos se construyen desde:\nmatlab/ipom/outputs/raw_iris/fcast_*.csv"
-  },
-  {
-    "objectID": "matlab/ipom/RUNBOOK.html#que-no-usar-como-fuente-principal",
-    "href": "matlab/ipom/RUNBOOK.html#que-no-usar-como-fuente-principal",
-    "title": "Runbook operativo IPoM / IRIS",
-    "section": "",
-    "text": "No uses como fuente principal:\nlegacy_original/reports_pdf/\nlegacy_original/m_files/\nruntime/\nLa fuente ordenada esta en:\nsrc/\nmodel/\ninputs/\noutputs/raw_iris/"
-  },
-  {
-    "objectID": "LEEME_PIPELINE_DATOS_REALES.html",
-    "href": "LEEME_PIPELINE_DATOS_REALES.html",
-    "title": "Pipeline con datos reales: estrés financiero Chile",
-    "section": "",
-    "text": "Este parche reemplaza la versión congelada por una versión que intenta actualizar la base desde fuentes reales.\n\n\n\nBCCh / SieteRestWS:\n\nTasa soberana chilena 10Y: F022.BCLP.TIS.AN10.NO.Z.D\nTreasury 10Y usado por BCCh: F019.TBG.TAS.10.D\nCobre: F019.PPB.PRE.100.D\nNasdaq: F019.IBC.IND.51.D\nBolsa China: F019.IBC.IND.CHN.D\nIPC Chile: G073.IPC.IND.2023.M\n\nFRED:\n\nVIX: VIXCLS\nWTI: DCOILWTICO\nCPI EEUU: CPIAUCSL\nTreasury 10Y fallback: DGS10\n\nBIS:\n\nUSD/CLP: WS_XRU / D.CL.CLP.A\nCNY/USD: WS_XRU / D.CN.CNY.A\nDólar efectivo nominal EEUU: WS_EER / D.N.B.US\n\n\nNota: el proyecto original usaba BIS, no BID, para tipos de cambio y dólar efectivo. Por eso el pipeline queda BCCh + FRED + BIS.\n\n\n\n\nR/estres_financiero/00_setup.R\nR/estres_financiero/01_fetch_sources.R\nR/estres_financiero/01_data.R\nR/estres_financiero/02_models.R\nR/estres_financiero/03_plots.R\nR/estres_financiero/04_run_pipeline.R\nscripts/06_update_estres_financiero.R\nproyectos/estres-externo.qmd\n.Renviron.example\n\n\n\n\nCopia .Renviron.example a tu .Renviron real o agrega estas líneas a tu .Renviron actual:\nBCCH_USER=tu_usuario_bcch\nBCCH_PASS=tu_password_bcch\nFRED_API_KEY=tu_api_key_fred\nESTRES_USE_LIVE=TRUE\nESTRES_FALLBACK_LOCAL=TRUE\nESTRES_START_DATE=2010-01-01\nLuego reinicia RStudio.\n\n\n\nDesde la raíz del repo Economics:\nsource(\"scripts/06_update_estres_financiero.R\")\nLuego:\nquarto render\n\n\n\nPor defecto intenta:\nBCCh / FRED / BIS -&gt; data/raw/estres_financiero/market_data_live.csv -&gt; modelos -&gt; gráficos -&gt; página\nSi alguna API falla y ESTRES_FALLBACK_LOCAL=TRUE, usa:\ndata/raw/estres_financiero/merged_full_dataset.csv -&gt; modelos -&gt; gráficos -&gt; página\nLa página muestra la fuente efectiva en el bloque de lectura rápida."
-  },
-  {
-    "objectID": "LEEME_PIPELINE_DATOS_REALES.html#fuentes-usadas",
-    "href": "LEEME_PIPELINE_DATOS_REALES.html#fuentes-usadas",
-    "title": "Pipeline con datos reales: estrés financiero Chile",
-    "section": "",
-    "text": "BCCh / SieteRestWS:\n\nTasa soberana chilena 10Y: F022.BCLP.TIS.AN10.NO.Z.D\nTreasury 10Y usado por BCCh: F019.TBG.TAS.10.D\nCobre: F019.PPB.PRE.100.D\nNasdaq: F019.IBC.IND.51.D\nBolsa China: F019.IBC.IND.CHN.D\nIPC Chile: G073.IPC.IND.2023.M\n\nFRED:\n\nVIX: VIXCLS\nWTI: DCOILWTICO\nCPI EEUU: CPIAUCSL\nTreasury 10Y fallback: DGS10\n\nBIS:\n\nUSD/CLP: WS_XRU / D.CL.CLP.A\nCNY/USD: WS_XRU / D.CN.CNY.A\nDólar efectivo nominal EEUU: WS_EER / D.N.B.US\n\n\nNota: el proyecto original usaba BIS, no BID, para tipos de cambio y dólar efectivo. Por eso el pipeline queda BCCh + FRED + BIS."
-  },
-  {
-    "objectID": "LEEME_PIPELINE_DATOS_REALES.html#archivos-nuevos-o-reemplazados",
-    "href": "LEEME_PIPELINE_DATOS_REALES.html#archivos-nuevos-o-reemplazados",
-    "title": "Pipeline con datos reales: estrés financiero Chile",
-    "section": "",
-    "text": "R/estres_financiero/00_setup.R\nR/estres_financiero/01_fetch_sources.R\nR/estres_financiero/01_data.R\nR/estres_financiero/02_models.R\nR/estres_financiero/03_plots.R\nR/estres_financiero/04_run_pipeline.R\nscripts/06_update_estres_financiero.R\nproyectos/estres-externo.qmd\n.Renviron.example"
-  },
-  {
-    "objectID": "LEEME_PIPELINE_DATOS_REALES.html#configuración-necesaria",
-    "href": "LEEME_PIPELINE_DATOS_REALES.html#configuración-necesaria",
-    "title": "Pipeline con datos reales: estrés financiero Chile",
-    "section": "",
-    "text": "Copia .Renviron.example a tu .Renviron real o agrega estas líneas a tu .Renviron actual:\nBCCH_USER=tu_usuario_bcch\nBCCH_PASS=tu_password_bcch\nFRED_API_KEY=tu_api_key_fred\nESTRES_USE_LIVE=TRUE\nESTRES_FALLBACK_LOCAL=TRUE\nESTRES_START_DATE=2010-01-01\nLuego reinicia RStudio."
-  },
-  {
-    "objectID": "LEEME_PIPELINE_DATOS_REALES.html#ejecución",
-    "href": "LEEME_PIPELINE_DATOS_REALES.html#ejecución",
-    "title": "Pipeline con datos reales: estrés financiero Chile",
-    "section": "",
-    "text": "Desde la raíz del repo Economics:\nsource(\"scripts/06_update_estres_financiero.R\")\nLuego:\nquarto render"
-  },
-  {
-    "objectID": "LEEME_PIPELINE_DATOS_REALES.html#comportamiento-del-pipeline",
-    "href": "LEEME_PIPELINE_DATOS_REALES.html#comportamiento-del-pipeline",
-    "title": "Pipeline con datos reales: estrés financiero Chile",
-    "section": "",
-    "text": "Por defecto intenta:\nBCCh / FRED / BIS -&gt; data/raw/estres_financiero/market_data_live.csv -&gt; modelos -&gt; gráficos -&gt; página\nSi alguna API falla y ESTRES_FALLBACK_LOCAL=TRUE, usa:\ndata/raw/estres_financiero/merged_full_dataset.csv -&gt; modelos -&gt; gráficos -&gt; página\nLa página muestra la fuente efectiva en el bloque de lectura rápida."
-  },
-  {
-    "objectID": "LEEME_HOTFIX_DESCARGA_LIVE.html",
-    "href": "LEEME_HOTFIX_DESCARGA_LIVE.html",
-    "title": "Hotfix: descarga en vivo BCCh/FRED/BIS",
-    "section": "",
-    "text": "Este parche corrige el error:\nNo se pudo descargar en vivo: valor ausente donde TRUE/FALSE es necesario\n\n\nEl parser de fechas tenía una condición del tipo:\nif (any(bad))\npero bad podía contener NA cuando alguna respuesta de BCCh/BIS traía fechas vacías o valores no estándar. En R, if (NA) produce exactamente el error “valor ausente donde TRUE/FALSE es necesario”.\n\n\n\n\nR/estres_financiero/01_fetch_sources.R\nR/estres_financiero/01_data.R\n\nEl parser ahora es tolerante a:\n\nfechas vacías;\nNA, NaN, ., null;\nformatos YYYY-MM-DD, DD-MM-YYYY, DD/MM/YYYY, MM/DD/YYYY;\nfechas tipo YYYYMM y YYYYMMDD.\n\n\n\n\nDescomprime este ZIP en la raíz del repo Economics y acepta reemplazar archivos.\nLuego ejecuta:\nsource(\"scripts/06_update_estres_financiero.R\")\nSi todo está bien con credenciales y conexión, la fuente efectiva debería pasar de:\nlocal_exchange_reg_fallback\na:\nlive_bcch_fred_bis"
-  },
-  {
-    "objectID": "LEEME_HOTFIX_DESCARGA_LIVE.html#causa",
-    "href": "LEEME_HOTFIX_DESCARGA_LIVE.html#causa",
-    "title": "Hotfix: descarga en vivo BCCh/FRED/BIS",
-    "section": "",
-    "text": "El parser de fechas tenía una condición del tipo:\nif (any(bad))\npero bad podía contener NA cuando alguna respuesta de BCCh/BIS traía fechas vacías o valores no estándar. En R, if (NA) produce exactamente el error “valor ausente donde TRUE/FALSE es necesario”."
-  },
-  {
-    "objectID": "LEEME_HOTFIX_DESCARGA_LIVE.html#qué-corrige",
-    "href": "LEEME_HOTFIX_DESCARGA_LIVE.html#qué-corrige",
-    "title": "Hotfix: descarga en vivo BCCh/FRED/BIS",
-    "section": "",
-    "text": "R/estres_financiero/01_fetch_sources.R\nR/estres_financiero/01_data.R\n\nEl parser ahora es tolerante a:\n\nfechas vacías;\nNA, NaN, ., null;\nformatos YYYY-MM-DD, DD-MM-YYYY, DD/MM/YYYY, MM/DD/YYYY;\nfechas tipo YYYYMM y YYYYMMDD."
-  },
-  {
-    "objectID": "LEEME_HOTFIX_DESCARGA_LIVE.html#cómo-aplicar",
-    "href": "LEEME_HOTFIX_DESCARGA_LIVE.html#cómo-aplicar",
-    "title": "Hotfix: descarga en vivo BCCh/FRED/BIS",
-    "section": "",
-    "text": "Descomprime este ZIP en la raíz del repo Economics y acepta reemplazar archivos.\nLuego ejecuta:\nsource(\"scripts/06_update_estres_financiero.R\")\nSi todo está bien con credenciales y conexión, la fuente efectiva debería pasar de:\nlocal_exchange_reg_fallback\na:\nlive_bcch_fred_bis"
-  },
-  {
-    "objectID": "LEEME_FIX_LIVE_ORIGINAL.html",
-    "href": "LEEME_FIX_LIVE_ORIGINAL.html",
-    "title": "Hotfix serio: descarga live con lógica original de ExchangeReg",
-    "section": "",
-    "text": "Este parche reemplaza la capa de descarga que estaba cayendo al fallback local.\n\n\n\nR/estres_financiero/00_setup.R\nR/estres_financiero/01_fetch_sources.R\nR/estres_financiero/01_data.R\nscripts/06_update_estres_financiero.R\n\n\n\n\n\nLa descarga live se reescribió siguiendo la estructura original de ExchangeReg/Exchange.Rmd.\nUsa el calendario de días hábiles de BIS USD/CLP, igual que el proyecto original.\nDescarga:\n\nBCCh: tasa Chile 10Y, Treasury 10Y, cobre, Nasdaq, equity China, IPC Chile.\nFRED: VIX, WTI, CPI US, DGS10 como fallback del Treasury.\nBIS: USD/CLP, CNY/USD y dólar efectivo nominal EEUU.\n\nConstruye cpi_rel_chl_us diario por interpolación log-lineal mensual, igual que el enfoque original.\nSi falla la descarga, guarda el error real en:\n\ndata/raw/estres_financiero/live_download_error.txt\n\n\n\n\n\nEn la raíz de Economics:\nSys.setenv(ESTRES_USE_LIVE = \"TRUE\")\nSys.setenv(ESTRES_FALLBACK_LOCAL = \"FALSE\")\nsource(\"scripts/06_update_estres_financiero.R\")\nPara correr con respaldo local si una API externa está temporalmente caída:\nSys.setenv(ESTRES_USE_LIVE = \"TRUE\")\nSys.setenv(ESTRES_FALLBACK_LOCAL = \"TRUE\")\nsource(\"scripts/06_update_estres_financiero.R\")\nLo correcto, si la descarga funciona, es ver:\nFuente efectiva: live_bcch_fred_bis"
-  },
-  {
-    "objectID": "LEEME_FIX_LIVE_ORIGINAL.html#archivos",
-    "href": "LEEME_FIX_LIVE_ORIGINAL.html#archivos",
-    "title": "Hotfix serio: descarga live con lógica original de ExchangeReg",
-    "section": "",
-    "text": "R/estres_financiero/00_setup.R\nR/estres_financiero/01_fetch_sources.R\nR/estres_financiero/01_data.R\nscripts/06_update_estres_financiero.R"
-  },
-  {
-    "objectID": "LEEME_FIX_LIVE_ORIGINAL.html#qué-cambia",
-    "href": "LEEME_FIX_LIVE_ORIGINAL.html#qué-cambia",
-    "title": "Hotfix serio: descarga live con lógica original de ExchangeReg",
-    "section": "",
-    "text": "La descarga live se reescribió siguiendo la estructura original de ExchangeReg/Exchange.Rmd.\nUsa el calendario de días hábiles de BIS USD/CLP, igual que el proyecto original.\nDescarga:\n\nBCCh: tasa Chile 10Y, Treasury 10Y, cobre, Nasdaq, equity China, IPC Chile.\nFRED: VIX, WTI, CPI US, DGS10 como fallback del Treasury.\nBIS: USD/CLP, CNY/USD y dólar efectivo nominal EEUU.\n\nConstruye cpi_rel_chl_us diario por interpolación log-lineal mensual, igual que el enfoque original.\nSi falla la descarga, guarda el error real en:\n\ndata/raw/estres_financiero/live_download_error.txt"
-  },
-  {
-    "objectID": "LEEME_FIX_LIVE_ORIGINAL.html#cómo-probar",
-    "href": "LEEME_FIX_LIVE_ORIGINAL.html#cómo-probar",
-    "title": "Hotfix serio: descarga live con lógica original de ExchangeReg",
-    "section": "",
-    "text": "En la raíz de Economics:\nSys.setenv(ESTRES_USE_LIVE = \"TRUE\")\nSys.setenv(ESTRES_FALLBACK_LOCAL = \"FALSE\")\nsource(\"scripts/06_update_estres_financiero.R\")\nPara correr con respaldo local si una API externa está temporalmente caída:\nSys.setenv(ESTRES_USE_LIVE = \"TRUE\")\nSys.setenv(ESTRES_FALLBACK_LOCAL = \"TRUE\")\nsource(\"scripts/06_update_estres_financiero.R\")\nLo correcto, si la descarga funciona, es ver:\nFuente efectiva: live_bcch_fred_bis"
-  },
-  {
-    "objectID": "LEEME_FIX_BCCH_RJSON.html",
-    "href": "LEEME_FIX_BCCH_RJSON.html",
-    "title": "Fix BCCh: usar la llamada original de ExchangeReg",
-    "section": "",
-    "text": "Este parche corrige la capa de descarga BCCh del proyecto de estrés financiero.\n\n\nEl error:\nBCCh devolvió una respuesta no JSON ... valor ausente donde TRUE/FALSE es necesario\nvenía de la combinación httr::GET() + jsonlite::fromJSON() que agregué en el wrapper nuevo. El proyecto original ExchangeReg no usaba esa vía para BCCh: usaba directamente:\nrjson::fromJSON(file = url)\nEste parche vuelve a esa lógica original.\n\n\n\n\nR/estres_financiero/00_setup.R\nR/estres_financiero/01_fetch_sources.R\nscripts/06_update_estres_financiero.R\n\n\n\n\nSi no tienes rjson, instala:\ninstall.packages(\"rjson\")\nLuego fuerza descarga live para verificar:\nSys.setenv(ESTRES_USE_LIVE = \"TRUE\")\nSys.setenv(ESTRES_FALLBACK_LOCAL = \"FALSE\")\nsource(\"scripts/06_update_estres_financiero.R\")\nLo esperado es:\nFuente efectiva: live_bcch_fred_bis"
-  },
-  {
-    "objectID": "LEEME_FIX_BCCH_RJSON.html#problema-corregido",
-    "href": "LEEME_FIX_BCCH_RJSON.html#problema-corregido",
-    "title": "Fix BCCh: usar la llamada original de ExchangeReg",
-    "section": "",
-    "text": "El error:\nBCCh devolvió una respuesta no JSON ... valor ausente donde TRUE/FALSE es necesario\nvenía de la combinación httr::GET() + jsonlite::fromJSON() que agregué en el wrapper nuevo. El proyecto original ExchangeReg no usaba esa vía para BCCh: usaba directamente:\nrjson::fromJSON(file = url)\nEste parche vuelve a esa lógica original."
-  },
-  {
-    "objectID": "LEEME_FIX_BCCH_RJSON.html#archivos-reemplazados",
-    "href": "LEEME_FIX_BCCH_RJSON.html#archivos-reemplazados",
-    "title": "Fix BCCh: usar la llamada original de ExchangeReg",
-    "section": "",
-    "text": "R/estres_financiero/00_setup.R\nR/estres_financiero/01_fetch_sources.R\nscripts/06_update_estres_financiero.R"
-  },
-  {
-    "objectID": "LEEME_FIX_BCCH_RJSON.html#antes-de-correr",
-    "href": "LEEME_FIX_BCCH_RJSON.html#antes-de-correr",
-    "title": "Fix BCCh: usar la llamada original de ExchangeReg",
-    "section": "",
-    "text": "Si no tienes rjson, instala:\ninstall.packages(\"rjson\")\nLuego fuerza descarga live para verificar:\nSys.setenv(ESTRES_USE_LIVE = \"TRUE\")\nSys.setenv(ESTRES_FALLBACK_LOCAL = \"FALSE\")\nsource(\"scripts/06_update_estres_financiero.R\")\nLo esperado es:\nFuente efectiva: live_bcch_fred_bis"
-  },
-  {
-    "objectID": "LEEME_AJUSTE_GRAFICOS.html",
-    "href": "LEEME_AJUSTE_GRAFICOS.html",
-    "title": "Hotfix: ajuste de gráficos del proyecto de estrés financiero",
-    "section": "",
-    "text": "Este parche corrige el problema de gráficos “apretados” y textos/leyendas solapadas.\n\n\n\nproyectos/estres-externo.qmd\nR/estres_financiero/00_setup.R\nR/estres_financiero/03_plots.R\n\n\n\n\n\nMás espacio vertical en los gráficos interactivos (fig-height mayor).\nLeyendas movidas abajo para que no se superpongan con el título.\nMárgenes de Plotly más amplios.\nTema ggplot más holgado para mejorar títulos, subtítulos y leyendas.\nPNGs exportados más grandes cuando corras el pipeline.\n\n\n\n\nDescomprime este ZIP en la raíz del repo Economics y acepta reemplazar archivos.\nLuego, para regenerar datos y PNG:\nsource(\"scripts/06_update_estres_financiero.R\")\nY finalmente renderiza el sitio:\nquarto render"
-  },
-  {
-    "objectID": "LEEME_AJUSTE_GRAFICOS.html#archivos-a-reemplazar",
-    "href": "LEEME_AJUSTE_GRAFICOS.html#archivos-a-reemplazar",
-    "title": "Hotfix: ajuste de gráficos del proyecto de estrés financiero",
-    "section": "",
-    "text": "proyectos/estres-externo.qmd\nR/estres_financiero/00_setup.R\nR/estres_financiero/03_plots.R"
-  },
-  {
-    "objectID": "LEEME_AJUSTE_GRAFICOS.html#qué-cambia",
-    "href": "LEEME_AJUSTE_GRAFICOS.html#qué-cambia",
-    "title": "Hotfix: ajuste de gráficos del proyecto de estrés financiero",
-    "section": "",
-    "text": "Más espacio vertical en los gráficos interactivos (fig-height mayor).\nLeyendas movidas abajo para que no se superpongan con el título.\nMárgenes de Plotly más amplios.\nTema ggplot más holgado para mejorar títulos, subtítulos y leyendas.\nPNGs exportados más grandes cuando corras el pipeline."
-  },
-  {
-    "objectID": "LEEME_AJUSTE_GRAFICOS.html#cómo-aplicarlo",
-    "href": "LEEME_AJUSTE_GRAFICOS.html#cómo-aplicarlo",
-    "title": "Hotfix: ajuste de gráficos del proyecto de estrés financiero",
-    "section": "",
-    "text": "Descomprime este ZIP en la raíz del repo Economics y acepta reemplazar archivos.\nLuego, para regenerar datos y PNG:\nsource(\"scripts/06_update_estres_financiero.R\")\nY finalmente renderiza el sitio:\nquarto render"
-  },
-  {
-    "objectID": "INSTRUCCIONES.html",
-    "href": "INSTRUCCIONES.html",
-    "title": "Instrucciones para usar esta carpeta",
-    "section": "",
-    "text": "Esta carpeta está preparada como sitio Quarto para el repositorio:\n\nRepositorio: https://github.com/mulloav3007/Economics\nPágina: https://mulloav3007.github.io/Economics/\nCarpeta local esperada: D:\\Users\\mullo\\Documents\\GitHub\\Economics\n\n\n\nTienes dos opciones:\n\n\n\nDescomprime el ZIP.\nAbre la carpeta Economics del ZIP.\nCopia todo su contenido dentro de:\n\nD:\\Users\\mullo\\Documents\\GitHub\\Economics\nNo copies la carpeta completa dentro de otra carpeta Economics, porque podrías quedar con:\nD:\\Users\\mullo\\Documents\\GitHub\\Economics\\Economics\nEso no conviene.\n\n\n\nPuedes reemplazarla completa por la carpeta descomprimida.\n\n\n\n\nAbre PowerShell y ejecuta:\ncd \"D:\\Users\\mullo\\Documents\\GitHub\\Economics\"\nquarto render\nEso genera o actualiza la carpeta docs/.\n\n\n\nEn GitHub:\nSettings → Pages → Build and deployment\nUsa:\nSource: Deploy from a branch\nBranch: main\nFolder: /docs\n\n\n\nCon PowerShell:\ngit add .\ngit commit -m \"Configura sitio Quarto Economics\"\ngit push\nO con GitHub Desktop:\nCommit to main → Push origin\n\n\n\nLas páginas de proyectos traen gráficos demo con datos simulados. Sirven para comprobar que la arquitectura funciona. Antes de usar la página como portafolio definitivo, reemplaza esos bloques por datos reales."
-  },
-  {
-    "objectID": "INSTRUCCIONES.html#cómo-copiarla-en-windows",
-    "href": "INSTRUCCIONES.html#cómo-copiarla-en-windows",
-    "title": "Instrucciones para usar esta carpeta",
-    "section": "",
-    "text": "Tienes dos opciones:\n\n\n\nDescomprime el ZIP.\nAbre la carpeta Economics del ZIP.\nCopia todo su contenido dentro de:\n\nD:\\Users\\mullo\\Documents\\GitHub\\Economics\nNo copies la carpeta completa dentro de otra carpeta Economics, porque podrías quedar con:\nD:\\Users\\mullo\\Documents\\GitHub\\Economics\\Economics\nEso no conviene.\n\n\n\nPuedes reemplazarla completa por la carpeta descomprimida."
-  },
-  {
-    "objectID": "INSTRUCCIONES.html#renderizar-con-quarto",
-    "href": "INSTRUCCIONES.html#renderizar-con-quarto",
-    "title": "Instrucciones para usar esta carpeta",
-    "section": "",
-    "text": "Abre PowerShell y ejecuta:\ncd \"D:\\Users\\mullo\\Documents\\GitHub\\Economics\"\nquarto render\nEso genera o actualiza la carpeta docs/."
-  },
-  {
-    "objectID": "INSTRUCCIONES.html#configurar-github-pages",
-    "href": "INSTRUCCIONES.html#configurar-github-pages",
-    "title": "Instrucciones para usar esta carpeta",
-    "section": "",
-    "text": "En GitHub:\nSettings → Pages → Build and deployment\nUsa:\nSource: Deploy from a branch\nBranch: main\nFolder: /docs"
-  },
-  {
-    "objectID": "INSTRUCCIONES.html#subir-cambios",
-    "href": "INSTRUCCIONES.html#subir-cambios",
-    "title": "Instrucciones para usar esta carpeta",
-    "section": "",
-    "text": "Con PowerShell:\ngit add .\ngit commit -m \"Configura sitio Quarto Economics\"\ngit push\nO con GitHub Desktop:\nCommit to main → Push origin"
-  },
-  {
-    "objectID": "INSTRUCCIONES.html#importante",
-    "href": "INSTRUCCIONES.html#importante",
-    "title": "Instrucciones para usar esta carpeta",
-    "section": "",
-    "text": "Las páginas de proyectos traen gráficos demo con datos simulados. Sirven para comprobar que la arquitectura funciona. Antes de usar la página como portafolio definitivo, reemplaza esos bloques por datos reales."
   },
   {
     "objectID": "cv.html",
@@ -539,242 +217,74 @@
     "text": "Áreas de interés\n\n\nMacroeconomía aplicada\nActividad, inflación, brecha de producto, condiciones externas y escenarios de política.\n\n\nPolítica monetaria\nTPM, tasas de mercado, expectativas, pass-through y lectura macrofinanciera.\n\n\nEconometría y datos\nSeries de tiempo, nowcasting, construcción de bases y visualización reproducible."
   },
   {
-    "objectID": "contacto.html",
-    "href": "contacto.html",
-    "title": "Contacto",
-    "section": "",
-    "text": "Para comentarios, oportunidades de investigación o colaboración en proyectos de economía aplicada, puedes contactarme por los siguientes canales.\n\nEmail GitHub LinkedIn"
-  },
-  {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Mauricio Ulloa",
+    "title": "Macroeconomía aplicada, política monetaria y análisis de datos",
     "section": "",
-    "text": "Portafolio técnico\n\n\n\nSoy economista formado en la Universidad de Chile, con interés en macroeconomía aplicada, proyecciones, política monetaria, econometría de series de tiempo y visualización de datos. Este sitio reúne proyectos reproducibles orientados a transformar datos económicos en diagnósticos, escenarios y herramientas de seguimiento.\nTrabajo principalmente con R, Matlab/IRIS, Python, Stata, Quarto y GitHub, combinando construcción de bases, estimación econométrica, simulación macroeconómica y comunicación visual de resultados.\n\nVer proyectos Descargar CV Contacto\n\n\n\n\n\nFoco del portafolio\n\n\n\nSeguimiento macroeconómico y nowcasting.\nProyección de inflación, actividad y TPM.\nEscenarios tipo IPoM con supuestos externos.\nVisualización reproducible para análisis económico.\n\n\n\nR Matlab/IRIS Python Quarto GitHub Pages\n\n\n\n\n\n\nUna selección de proyectos aplicados con estructura metodológica, código reproducible y salida visual pensada para seguimiento macroeconómico y discusión de política.\n\n\n\n\nProyecto aplicado\n\n\n\nModelo mensual en R para anticipar la evolución del IMACEC total y no minero a partir de indicadores sectoriales, rezagos macroeconómicos, variables calendario y evaluación fuera de muestra.\n\nRSeries de tiempoIMACECNowcasting\n\nAbrir proyecto\n\n\n\n\nSimulación macro\n\n\n\nModelo semi-estructural para construir un baseline tipo IPoM, simular escenarios alternativos con supuestos externos y comparar inflación, TPM y brecha de actividad.\n\nMatlabIRISInflaciónEscenarios\n\nAbrir proyecto\n\n\n\n\nResearch note\n\n\n\nAnálisis del traspaso de la Tasa de Política Monetaria hacia tasas bancarias y financieras en Chile, con visualizaciones por horizonte, fase del ciclo monetario y tipo de tasa.\n\nRPolítica monetariaPass-throughChile\n\nAbrir proyecto\n\n\n\n\n\n\n\n\n\nEl portafolio está organizado como una colección de herramientas y notas técnicas. Cada proyecto parte desde una pregunta económica específica, documenta la construcción de datos, explicita la estrategia metodológica y termina en gráficos o tablas que facilitan la interpretación.\nLa prioridad no es solo mostrar resultados, sino dejar trazabilidad: fuentes, transformaciones, supuestos, estimación, visualización y límites de interpretación.\n\n\n\n\nBases reproducibles y scripts ejecutables.\nSeparación entre datos brutos, datos procesados y salidas.\nVisualizaciones sobrias, comparables y legibles.\nLectura económica prudente, sin sobrerreaccionar a correlaciones.\nDocumentación breve de supuestos, frecuencia y transformaciones.\n\n\n\n\n\n\n\n\n\nSeguimiento de actividad, inflación, brecha de producto, condiciones externas y escenarios de riesgo para economías pequeñas y abiertas.\n\n\n\nAnálisis de TPM, tasas de mercado, curva de rendimiento, expectativas, pass-through y condiciones financieras.\n\n\n\nPipelines reproducibles, dashboards estáticos/interactivos, gráficos para informes y documentación técnica orientada a decisiones.\n\n\n\n\n\n\nR / tidyverse ggplot2 / plotly Quarto Matlab / IRIS Python Stata GitHub LaTeX"
+    "text": "Portafolio técnico\n\n\n\nSoy economista formado en la Universidad de Chile, con foco en macroeconomía aplicada, política monetaria, proyecciones, econometría de series de tiempo y visualización de datos. Este sitio reúne proyectos reproducibles orientados a transformar datos económicos en diagnósticos, escenarios y herramientas de seguimiento.\nTrabajo principalmente con R, Matlab/IRIS, Python, Stata, Quarto y GitHub, combinando construcción de bases, estimación econométrica, simulación macroeconómica y comunicación visual de resultados.\n\nVer proyectos Descargar CV Contacto\n\n\n\n\n\nFoco del portafolio\n\n\n\nSeguimiento macroeconómico y nowcasting.\nProyección de inflación, actividad y TPM.\nEscenarios tipo IPoM con supuestos externos.\nVisualización reproducible para análisis económico.\n\n\n\nR Matlab/IRIS Python Quarto GitHub Pages\n\n\n\n\n\n\nUna selección de proyectos aplicados con estructura metodológica, código reproducible y salida visual pensada para seguimiento macroeconómico y discusión de política.\n\n\n\n\nProyecto aplicado\n\n\n\nModelo mensual en R para anticipar la evolución del IMACEC total y no minero a partir de indicadores sectoriales, rezagos macroeconómicos, variables calendario y evaluación fuera de muestra.\n\nR Series de tiempo IMACEC Nowcasting\n\nAbrir proyecto\n\n\n\n\nSimulación macro\n\n\n\nModelo semi-estructural para construir un escenario de referencia tipo IPoM, simular escenarios alternativos con supuestos externos y comparar inflación, TPM y brecha de actividad.\n\nMatlab IRIS Inflación Escenarios\n\nAbrir proyecto\n\n\n\n\nResearch note\n\n\n\nAnálisis del traspaso de la Tasa de Política Monetaria hacia tasas bancarias y financieras en Chile, con visualizaciones por horizonte, fase del ciclo monetario y tipo de tasa.\n\nR Política monetaria Pass-through Chile\n\nAbrir proyecto\n\n\n\n\n\n\n\n\n\nEl portafolio está organizado como una colección de herramientas y notas técnicas. Cada proyecto parte desde una pregunta económica específica, documenta la construcción de datos, explicita la estrategia metodológica y termina en gráficos o tablas que facilitan la interpretación.\nLa prioridad no es solo mostrar resultados, sino dejar trazabilidad: fuentes, transformaciones, supuestos, estimación, visualización y límites de interpretación.\n\n\n\n\nBases reproducibles y scripts ejecutables.\nSeparación entre datos brutos, datos procesados y salidas.\nVisualizaciones sobrias, comparables y legibles.\nLectura económica prudente, sin sobrerreaccionar a correlaciones.\nDocumentación breve de supuestos, frecuencia y transformaciones.\n\n\n\n\n\n\n\n\n\nSeguimiento de actividad, inflación, brecha de producto, condiciones externas y escenarios de riesgo para economías pequeñas y abiertas.\n\n\n\nAnálisis de TPM, tasas de mercado, curva de rendimiento, expectativas, pass-through y condiciones financieras.\n\n\n\nPipelines reproducibles, dashboards estáticos/interactivos, gráficos para informes y documentación técnica orientada a decisiones.\n\n\n\n\n\n\nR / tidyverse ggplot2 / plotly Quarto Matlab / IRIS Python Stata GitHub LaTeX"
   },
   {
     "objectID": "index.html#proyectos-destacados",
     "href": "index.html#proyectos-destacados",
-    "title": "Mauricio Ulloa",
+    "title": "Macroeconomía aplicada, política monetaria y análisis de datos",
     "section": "",
-    "text": "Una selección de proyectos aplicados con estructura metodológica, código reproducible y salida visual pensada para seguimiento macroeconómico y discusión de política.\n\n\n\n\nProyecto aplicado\n\n\n\nModelo mensual en R para anticipar la evolución del IMACEC total y no minero a partir de indicadores sectoriales, rezagos macroeconómicos, variables calendario y evaluación fuera de muestra.\n\nRSeries de tiempoIMACECNowcasting\n\nAbrir proyecto\n\n\n\n\nSimulación macro\n\n\n\nModelo semi-estructural para construir un baseline tipo IPoM, simular escenarios alternativos con supuestos externos y comparar inflación, TPM y brecha de actividad.\n\nMatlabIRISInflaciónEscenarios\n\nAbrir proyecto\n\n\n\n\nResearch note\n\n\n\nAnálisis del traspaso de la Tasa de Política Monetaria hacia tasas bancarias y financieras en Chile, con visualizaciones por horizonte, fase del ciclo monetario y tipo de tasa.\n\nRPolítica monetariaPass-throughChile\n\nAbrir proyecto"
+    "text": "Una selección de proyectos aplicados con estructura metodológica, código reproducible y salida visual pensada para seguimiento macroeconómico y discusión de política.\n\n\n\n\nProyecto aplicado\n\n\n\nModelo mensual en R para anticipar la evolución del IMACEC total y no minero a partir de indicadores sectoriales, rezagos macroeconómicos, variables calendario y evaluación fuera de muestra.\n\nR Series de tiempo IMACEC Nowcasting\n\nAbrir proyecto\n\n\n\n\nSimulación macro\n\n\n\nModelo semi-estructural para construir un escenario de referencia tipo IPoM, simular escenarios alternativos con supuestos externos y comparar inflación, TPM y brecha de actividad.\n\nMatlab IRIS Inflación Escenarios\n\nAbrir proyecto\n\n\n\n\nResearch note\n\n\n\nAnálisis del traspaso de la Tasa de Política Monetaria hacia tasas bancarias y financieras en Chile, con visualizaciones por horizonte, fase del ciclo monetario y tipo de tasa.\n\nR Política monetaria Pass-through Chile\n\nAbrir proyecto"
   },
   {
     "objectID": "index.html#líneas-de-trabajo",
     "href": "index.html#líneas-de-trabajo",
-    "title": "Mauricio Ulloa",
+    "title": "Macroeconomía aplicada, política monetaria y análisis de datos",
     "section": "",
     "text": "El portafolio está organizado como una colección de herramientas y notas técnicas. Cada proyecto parte desde una pregunta económica específica, documenta la construcción de datos, explicita la estrategia metodológica y termina en gráficos o tablas que facilitan la interpretación.\nLa prioridad no es solo mostrar resultados, sino dejar trazabilidad: fuentes, transformaciones, supuestos, estimación, visualización y límites de interpretación.\n\n\n\n\nBases reproducibles y scripts ejecutables.\nSeparación entre datos brutos, datos procesados y salidas.\nVisualizaciones sobrias, comparables y legibles.\nLectura económica prudente, sin sobrerreaccionar a correlaciones.\nDocumentación breve de supuestos, frecuencia y transformaciones."
   },
   {
     "objectID": "index.html#áreas-de-interés",
     "href": "index.html#áreas-de-interés",
-    "title": "Mauricio Ulloa",
+    "title": "Macroeconomía aplicada, política monetaria y análisis de datos",
     "section": "",
     "text": "Seguimiento de actividad, inflación, brecha de producto, condiciones externas y escenarios de riesgo para economías pequeñas y abiertas.\n\n\n\nAnálisis de TPM, tasas de mercado, curva de rendimiento, expectativas, pass-through y condiciones financieras.\n\n\n\nPipelines reproducibles, dashboards estáticos/interactivos, gráficos para informes y documentación técnica orientada a decisiones."
   },
   {
     "objectID": "index.html#herramientas",
     "href": "index.html#herramientas",
-    "title": "Mauricio Ulloa",
+    "title": "Macroeconomía aplicada, política monetaria y análisis de datos",
     "section": "",
     "text": "R / tidyverse ggplot2 / plotly Quarto Matlab / IRIS Python Stata GitHub LaTeX"
   },
   {
-    "objectID": "INSTRUCCIONES_INSTALACION.html",
-    "href": "INSTRUCCIONES_INSTALACION.html",
-    "title": "Instalación del parche: estrés financiero Chile",
+    "objectID": "proyectos.html",
+    "href": "proyectos.html",
+    "title": "Proyectos",
     "section": "",
-    "text": "Este ZIP contiene solo archivos nuevos o modificados. Para aplicarlo:\n\nDescomprime el ZIP dentro de la raíz de tu repositorio Economics.\nAcepta reemplazar proyectos.qmd y proyectos/estres-externo.qmd.\nEn RStudio, desde la raíz del repositorio, ejecuta:\n\nsource(\"scripts/06_update_estres_financiero.R\")\n\nRenderiza el sitio:\n\nquarto render\n\nSube los cambios a GitHub:\n\ngit add .\ngit commit -m \"Agrega índice de estrés financiero para Chile\"\ngit push\n\n\n\nLa página proyectos/estres-externo.qmd deja de usar datos simulados.\nEl proyecto pasa a llamarse Índice de estrés financiero de mercado para Chile.\nSe agregan scripts R completos y separados en R/estres_financiero/.\nSe agregan datos procesados y gráficos estáticos ya generados.\nNo se incluyen credenciales ni claves API.\n\n\n\n\nEl pipeline requiere:\ninstall.packages(c(\n  \"readr\", \"dplyr\", \"tidyr\", \"ggplot2\", \"zoo\", \"scales\",\n  \"broom\", \"purrr\", \"stringr\", \"tibble\", \"rlang\", \"plotly\", \"knitr\"\n))\nreadxl solo es necesario si quieres volver a importar manualmente el Excel original de ExchangeReg."
+    "text": "Esta sección reúne proyectos aplicados, notas técnicas y líneas de investigación en macroeconomía, política monetaria, econometría de series de tiempo y visualización de datos. La prioridad es mantener una presentación sobria: pregunta económica clara, datos trazables, metodología explícita y resultados visuales legibles."
   },
   {
-    "objectID": "INSTRUCCIONES_INSTALACION.html#qué-cambia",
-    "href": "INSTRUCCIONES_INSTALACION.html#qué-cambia",
-    "title": "Instalación del parche: estrés financiero Chile",
-    "section": "",
-    "text": "La página proyectos/estres-externo.qmd deja de usar datos simulados.\nEl proyecto pasa a llamarse Índice de estrés financiero de mercado para Chile.\nSe agregan scripts R completos y separados en R/estres_financiero/.\nSe agregan datos procesados y gráficos estáticos ya generados.\nNo se incluyen credenciales ni claves API."
+    "objectID": "proyectos.html#proyectos-principales",
+    "href": "proyectos.html#proyectos-principales",
+    "title": "Proyectos",
+    "section": "Proyectos principales",
+    "text": "Proyectos principales\n\nHerramientas y análisis con estructura metodológica más desarrollada, orientados a seguimiento macroeconómico, proyecciones, simulación de escenarios y discusión de política económica.\n\n\n\n\nActividad\n\n\nNowcasting de actividad económica en Chile\nModelo mensual en R para anticipar la evolución del IMACEC total y no minero usando indicadores sectoriales, variables calendario, rezagos macroeconómicos y evaluación de ajuste.\n\nEstado: proyecto aplicado en desarrollo continuo.\nHerramientas: R, tidyverse, ggplot2, plotly, series de tiempo.\n\nAbrir proyecto\n\n\n\n\nEscenarios\n\n\nEscenarios macroeconómicos inspirados en IPoM\nConstrucción de escenarios base y alternativos usando supuestos externos, inflación, brecha de actividad, tipo de cambio real y tasa de política monetaria. El objetivo es comparar trayectorias y descomponer canales de transmisión bajo supuestos alternativos.\n\nEstado: proyecto aplicado avanzado.\nHerramientas: Matlab, IRIS Toolbox, R, Quarto.\n\nVer proyecto ↗\n\n\n\n\nPolítica monetaria\n\n\nTransmisión de la TPM a tasas de mercado\nAnálisis visual y econométrico del traspaso de movimientos de la Tasa de Política Monetaria a distintas tasas de mercado en Chile, distinguiendo horizontes, episodios y tipos de tasa.\n\nEstado: research note en desarrollo.\nSalida esperada: pass-through por horizonte, modelos de rezagos distribuidos y lectura macroeconómica prudente.\n\nAbrir proyecto\n\n\n\n\nMacrofinanzas\n\n\nÍndice de estrés financiero de mercado para Chile\nMonitor diario que resume desviaciones del USD/CLP y de la tasa soberana 10Y respecto de fundamentos externos observables. El objetivo es distinguir movimientos explicados por condiciones globales de episodios de presión financiera local.\n\nEstado: proyecto aplicado con datos reales.\nHerramientas: R, Quarto, modelos lineales, residuos estandarizados, visualización interactiva.\n\nAbrir proyecto"
   },
   {
-    "objectID": "INSTRUCCIONES_INSTALACION.html#dependencias-r",
-    "href": "INSTRUCCIONES_INSTALACION.html#dependencias-r",
-    "title": "Instalación del parche: estrés financiero Chile",
-    "section": "",
-    "text": "El pipeline requiere:\ninstall.packages(c(\n  \"readr\", \"dplyr\", \"tidyr\", \"ggplot2\", \"zoo\", \"scales\",\n  \"broom\", \"purrr\", \"stringr\", \"tibble\", \"rlang\", \"plotly\", \"knitr\"\n))\nreadxl solo es necesario si quieres volver a importar manualmente el Excel original de ExchangeReg."
+    "objectID": "proyectos.html#prototipos-y-líneas-en-desarrollo",
+    "href": "proyectos.html#prototipos-y-líneas-en-desarrollo",
+    "title": "Proyectos",
+    "section": "Prototipos y líneas en desarrollo",
+    "text": "Prototipos y líneas en desarrollo\n\nIdeas metodológicas o visuales que todavía requieren consolidación de datos, validación empírica o mayor documentación antes de ser presentadas como proyectos aplicados principales.\n\n\n\n\nMercado de tasas\n\n\nCurva de rendimiento chilena interactiva\nVisualización interactiva de la curva nominal y real, pendiente de la curva y episodios macrofinancieros relevantes para interpretar expectativas, condiciones financieras y primas por plazo.\n\nEstado: prototipo visual en desarrollo.\nPróxima mejora: reemplazar la demo por curvas oficiales/mercado, agregar pendiente 10y-2y y separar curva nominal, real y compensación inflacionaria.\n\nAbrir prototipo"
   },
   {
-    "objectID": "LEEME_CORRECCION_PARSE_BCCH.html",
-    "href": "LEEME_CORRECCION_PARSE_BCCH.html",
-    "title": "Hotfix: error de parseo en 01_fetch_sources.R",
-    "section": "",
-    "text": "Este parche corrige el error:\nError in source(...01_fetch_sources.R): inesperado '='\n49: lastdate = last_date,\n50: function =\n\n\nfunction es una palabra reservada en R. En una lista de parámetros para httr::GET(), debe escribirse con backticks:\n`function` = \"GetSeries\"\n\n\n\n\nR/estres_financiero/01_fetch_sources.R\n\n\n\n\nDescomprime este ZIP en la raíz del repositorio Economics y acepta reemplazar el archivo.\nLuego corre:\nsource(\"scripts/06_update_estres_financiero.R\")"
+    "objectID": "proyectos.html#agenda-de-investigación",
+    "href": "proyectos.html#agenda-de-investigación",
+    "title": "Proyectos",
+    "section": "Agenda de investigación",
+    "text": "Agenda de investigación\n\n\nPolítica monetaria y heterogeneidad financiera\nAnálisis de la transmisión de la TPM hacia distintos segmentos del mercado financiero, evaluando si el pass-through cambia entre ciclos de alza, baja y normalización monetaria.\n\n\nProyección macroeconómica y escenarios\nConstrucción de escenarios alternativos con supuestos externos y juicio doméstico controlado, comparando impactos sobre inflación, TPM y brecha de actividad.\n\n\nVisualización para política pública\nDiseño de gráficos reproducibles que comuniquen resultados macroeconómicos sin sobrecargar la lectura ni esconder supuestos relevantes."
   },
   {
-    "objectID": "LEEME_CORRECCION_PARSE_BCCH.html#causa",
-    "href": "LEEME_CORRECCION_PARSE_BCCH.html#causa",
-    "title": "Hotfix: error de parseo en 01_fetch_sources.R",
+    "objectID": "contacto.html",
+    "href": "contacto.html",
+    "title": "Contacto",
     "section": "",
-    "text": "function es una palabra reservada en R. En una lista de parámetros para httr::GET(), debe escribirse con backticks:\n`function` = \"GetSeries\""
-  },
-  {
-    "objectID": "LEEME_CORRECCION_PARSE_BCCH.html#archivo-reemplazado",
-    "href": "LEEME_CORRECCION_PARSE_BCCH.html#archivo-reemplazado",
-    "title": "Hotfix: error de parseo en 01_fetch_sources.R",
-    "section": "",
-    "text": "R/estres_financiero/01_fetch_sources.R"
-  },
-  {
-    "objectID": "LEEME_CORRECCION_PARSE_BCCH.html#cómo-aplicar",
-    "href": "LEEME_CORRECCION_PARSE_BCCH.html#cómo-aplicar",
-    "title": "Hotfix: error de parseo en 01_fetch_sources.R",
-    "section": "",
-    "text": "Descomprime este ZIP en la raíz del repositorio Economics y acepta reemplazar el archivo.\nLuego corre:\nsource(\"scripts/06_update_estres_financiero.R\")"
-  },
-  {
-    "objectID": "LEEME_FIX_DESCARGA_BCCH_DEFINITIVO.html",
-    "href": "LEEME_FIX_DESCARGA_BCCH_DEFINITIVO.html",
-    "title": "Fix descarga BCCh/FRED/BIS para estrés financiero",
-    "section": "",
-    "text": "Este parche reemplaza la capa de descarga que estaba cayendo al fallback.\n\n\n\nLa descarga BCCh ya no usa rjson::fromJSON(file = url) directamente.\nBCCh se descarga con httr::GET(), se lee como bytes y se normaliza el encoding (UTF-8, latin1, CP1252) antes de parsear JSON.\nSi BCCh/BIS devuelven HTML, XML o texto de error en vez de JSON/CSV, se guarda diagnóstico en:\n\ndata/raw/estres_financiero/diagnostics/\n\nEl script principal ya no cae al respaldo local por defecto. Para usar fallback hay que pedirlo explícitamente:\n\nSys.setenv(ESTRES_FALLBACK_LOCAL = \"TRUE\")\n\n\n\nDesde la raíz del repo:\nsource(\"scripts/06_update_estres_financiero.R\")\nLo esperado es:\nFuente efectiva: live_bcch_fred_bis\nSi falla, revisar:\ndata/raw/estres_financiero/live_download_error.txt\ndata/raw/estres_financiero/diagnostics/\nNo subas .Renviron al repositorio."
-  },
-  {
-    "objectID": "LEEME_FIX_DESCARGA_BCCH_DEFINITIVO.html#cambios-principales",
-    "href": "LEEME_FIX_DESCARGA_BCCH_DEFINITIVO.html#cambios-principales",
-    "title": "Fix descarga BCCh/FRED/BIS para estrés financiero",
-    "section": "",
-    "text": "La descarga BCCh ya no usa rjson::fromJSON(file = url) directamente.\nBCCh se descarga con httr::GET(), se lee como bytes y se normaliza el encoding (UTF-8, latin1, CP1252) antes de parsear JSON.\nSi BCCh/BIS devuelven HTML, XML o texto de error en vez de JSON/CSV, se guarda diagnóstico en:\n\ndata/raw/estres_financiero/diagnostics/\n\nEl script principal ya no cae al respaldo local por defecto. Para usar fallback hay que pedirlo explícitamente:\n\nSys.setenv(ESTRES_FALLBACK_LOCAL = \"TRUE\")"
-  },
-  {
-    "objectID": "LEEME_FIX_DESCARGA_BCCH_DEFINITIVO.html#ejecución",
-    "href": "LEEME_FIX_DESCARGA_BCCH_DEFINITIVO.html#ejecución",
-    "title": "Fix descarga BCCh/FRED/BIS para estrés financiero",
-    "section": "",
-    "text": "Desde la raíz del repo:\nsource(\"scripts/06_update_estres_financiero.R\")\nLo esperado es:\nFuente efectiva: live_bcch_fred_bis\nSi falla, revisar:\ndata/raw/estres_financiero/live_download_error.txt\ndata/raw/estres_financiero/diagnostics/\nNo subas .Renviron al repositorio."
-  },
-  {
-    "objectID": "LEEME_FIX_Y10_LIVE.html",
-    "href": "LEEME_FIX_Y10_LIVE.html",
-    "title": "Fix y10_clp live para índice de estrés financiero Chile",
-    "section": "",
-    "text": "Este parche corrige el fallo:\nMuy pocas observaciones para estimar modelo de tasa soberana 10Y: 0\n\n\nLa descarga live sí llegaba hasta BCCh/FRED/BIS, pero la serie y10_clp podía quedar sin observaciones útiles por problemas de parsing de fecha/número en la respuesta de BCCh. Entonces el modelo de tasa 10Y recibía 0 filas completas.\n\n\n\n\nParser de fechas más robusto para BCCh/BIS/FRED:\n\ndd-mm-YYYY\nYYYY-mm-dd\nYYYY-mm-ddTHH:MM:SS\ndd.mm.YYYY\nformatos con meses abreviados español/inglés.\n\nParser numérico más robusto:\n\n5,67 -&gt; 5.67\n1.234,56 -&gt; 1234.56\n\nValidación explícita de cobertura de series live.\nArchivo de cobertura:\n\ndata/raw/estres_financiero/live_series_coverage.csv\n\nRespaldo interno para y10_clp solo si el BCP 10Y diario no queda usable: usa la serie mensual BCCh F022.BCP.TIN.AN10.NO.Z.M, interpolada al calendario diario. Se mantiene el concepto BCP 10Y; no se cambia a swap/cámara.\n\n\n\n\nDesde la raíz del repo:\nSys.setenv(ESTRES_USE_LIVE = \"TRUE\")\nSys.setenv(ESTRES_FALLBACK_LOCAL = \"FALSE\")\nsource(\"scripts/06_update_estres_financiero.R\")\nDebe terminar con fuente efectiva live."
-  },
-  {
-    "objectID": "LEEME_FIX_Y10_LIVE.html#causa",
-    "href": "LEEME_FIX_Y10_LIVE.html#causa",
-    "title": "Fix y10_clp live para índice de estrés financiero Chile",
-    "section": "",
-    "text": "La descarga live sí llegaba hasta BCCh/FRED/BIS, pero la serie y10_clp podía quedar sin observaciones útiles por problemas de parsing de fecha/número en la respuesta de BCCh. Entonces el modelo de tasa 10Y recibía 0 filas completas."
-  },
-  {
-    "objectID": "LEEME_FIX_Y10_LIVE.html#cambios",
-    "href": "LEEME_FIX_Y10_LIVE.html#cambios",
-    "title": "Fix y10_clp live para índice de estrés financiero Chile",
-    "section": "",
-    "text": "Parser de fechas más robusto para BCCh/BIS/FRED:\n\ndd-mm-YYYY\nYYYY-mm-dd\nYYYY-mm-ddTHH:MM:SS\ndd.mm.YYYY\nformatos con meses abreviados español/inglés.\n\nParser numérico más robusto:\n\n5,67 -&gt; 5.67\n1.234,56 -&gt; 1234.56\n\nValidación explícita de cobertura de series live.\nArchivo de cobertura:\n\ndata/raw/estres_financiero/live_series_coverage.csv\n\nRespaldo interno para y10_clp solo si el BCP 10Y diario no queda usable: usa la serie mensual BCCh F022.BCP.TIN.AN10.NO.Z.M, interpolada al calendario diario. Se mantiene el concepto BCP 10Y; no se cambia a swap/cámara."
-  },
-  {
-    "objectID": "LEEME_FIX_Y10_LIVE.html#cómo-correr",
-    "href": "LEEME_FIX_Y10_LIVE.html#cómo-correr",
-    "title": "Fix y10_clp live para índice de estrés financiero Chile",
-    "section": "",
-    "text": "Desde la raíz del repo:\nSys.setenv(ESTRES_USE_LIVE = \"TRUE\")\nSys.setenv(ESTRES_FALLBACK_LOCAL = \"FALSE\")\nsource(\"scripts/06_update_estres_financiero.R\")\nDebe terminar con fuente efectiva live."
-  },
-  {
-    "objectID": "LEEME_HOTFIX_MODELO_DATOS.html",
-    "href": "LEEME_HOTFIX_MODELO_DATOS.html",
-    "title": "Hotfix: modelos y datos del proyecto de estrés financiero",
-    "section": "",
-    "text": "Este parche corrige el error:\nCan't select columns that don't exist.\n✖ Column `clp` doesn't exist.\n\n\nEl modelo cambiario se estima sobre l_clp = log(clp). En el objeto interno de estimación quedaba l_clp, pero no quedaba la columna original clp. Luego el script intentaba seleccionar clp para graficar observado vs ajustado y fallaba.\nAdemás, el respaldo local podía venir con nombres originales de ExchangeReg (CLP, 10YCLP, 10YTSY, etc.) en vez de nombres ya normalizados (clp, y10_clp, y10_tsy).\n\n\n\n\nR/estres_financiero/00_setup.R\nR/estres_financiero/01_fetch_sources.R\nR/estres_financiero/01_data.R\nR/estres_financiero/02_models.R\n\n\n\n\n\nEl modelo FX ahora reincorpora clp desde market_data antes de construir los outputs.\nLa lectura de la base local ahora normaliza columnas originales de ExchangeReg.\nestres_safe_log() ya no genera warnings por valores negativos de WTI.\nSe hizo más robusta la validación de credenciales y el parsing de fechas.\nSi la descarga live falla, el fallback local debería funcionar aunque el CSV tenga nombres originales.\n\n\n\n\nDescomprime este ZIP en la raíz del repo Economics y acepta reemplazar archivos.\nLuego corre:\nsource(\"scripts/06_update_estres_financiero.R\")\nDespués renderiza:\nquarto render"
-  },
-  {
-    "objectID": "LEEME_HOTFIX_MODELO_DATOS.html#causa",
-    "href": "LEEME_HOTFIX_MODELO_DATOS.html#causa",
-    "title": "Hotfix: modelos y datos del proyecto de estrés financiero",
-    "section": "",
-    "text": "El modelo cambiario se estima sobre l_clp = log(clp). En el objeto interno de estimación quedaba l_clp, pero no quedaba la columna original clp. Luego el script intentaba seleccionar clp para graficar observado vs ajustado y fallaba.\nAdemás, el respaldo local podía venir con nombres originales de ExchangeReg (CLP, 10YCLP, 10YTSY, etc.) en vez de nombres ya normalizados (clp, y10_clp, y10_tsy)."
-  },
-  {
-    "objectID": "LEEME_HOTFIX_MODELO_DATOS.html#archivos-reemplazados",
-    "href": "LEEME_HOTFIX_MODELO_DATOS.html#archivos-reemplazados",
-    "title": "Hotfix: modelos y datos del proyecto de estrés financiero",
-    "section": "",
-    "text": "R/estres_financiero/00_setup.R\nR/estres_financiero/01_fetch_sources.R\nR/estres_financiero/01_data.R\nR/estres_financiero/02_models.R"
-  },
-  {
-    "objectID": "LEEME_HOTFIX_MODELO_DATOS.html#cambios-principales",
-    "href": "LEEME_HOTFIX_MODELO_DATOS.html#cambios-principales",
-    "title": "Hotfix: modelos y datos del proyecto de estrés financiero",
-    "section": "",
-    "text": "El modelo FX ahora reincorpora clp desde market_data antes de construir los outputs.\nLa lectura de la base local ahora normaliza columnas originales de ExchangeReg.\nestres_safe_log() ya no genera warnings por valores negativos de WTI.\nSe hizo más robusta la validación de credenciales y el parsing de fechas.\nSi la descarga live falla, el fallback local debería funcionar aunque el CSV tenga nombres originales."
-  },
-  {
-    "objectID": "LEEME_HOTFIX_MODELO_DATOS.html#cómo-aplicarlo",
-    "href": "LEEME_HOTFIX_MODELO_DATOS.html#cómo-aplicarlo",
-    "title": "Hotfix: modelos y datos del proyecto de estrés financiero",
-    "section": "",
-    "text": "Descomprime este ZIP en la raíz del repo Economics y acepta reemplazar archivos.\nLuego corre:\nsource(\"scripts/06_update_estres_financiero.R\")\nDespués renderiza:\nquarto render"
-  },
-  {
-    "objectID": "matlab/ipom/NOTAS_MATLAB_IRIS.html",
-    "href": "matlab/ipom/NOTAS_MATLAB_IRIS.html",
-    "title": "Notas de la reestructuracion Matlab/IRIS",
-    "section": "",
-    "text": "Notas de la reestructuracion Matlab/IRIS\nCambios aplicados:\n\nsetup_ipom_project.m ahora activa IRIS Release 20191112 con irisstartup.\nrun_all_ipom.m ahora es una funcion y ya no copia scripts a runtime/.\nidentificar_shocks_ipom.m lee history.csv e ipom_paths.csv desde matlab/ipom/inputs/.\nidentificar_shocks_ipom.m guarda fcast_ipom_exact.csv y fcast_ipom_with_shocks.csv en matlab/ipom/outputs/raw_iris/.\nfcast_alt_ipom.m lee el baseline desde outputs/raw_iris/fcast_ipom_exact.csv.\nfcast_alt_ipom.m guarda el escenario en outputs/raw_iris/fcast_alt_escenario.csv.\nreadmodel_alternativo.m carga el modelo desde matlab/ipom/model/minimep0.model, no desde el directorio actual.\nmakedata.m reconstruye inputs/history.csv desde inputs/Data.csv solo si activas cfg.runMakeData=true.\n\nComando recomendado en MATLAB:\ncd('D:\\Users\\mullo\\Documents\\GitHub\\Economics\\matlab\\ipom\\src')\nrun_all_ipom\nDespues, desde la raiz del repositorio:\nRscript scripts/03_build_ipom_outputs.R\nquarto render"
-  },
-  {
-    "objectID": "NOTAS_DESPUES_DE_DESCARGAR.html",
-    "href": "NOTAS_DESPUES_DE_DESCARGAR.html",
-    "title": "Notas después de descargar el ZIP",
-    "section": "",
-    "text": "Este ZIP deja adelantada la incorporación del proyecto Escenarios macroeconómicos inspirados en IPoM al sitio Quarto.\n\n\n\n\n\nproyectos/ipom-iris.qmd\n\nEs la página pública del proyecto. Lee archivos procesados desde data/processed/ipom/ y muestra:\n\narquitectura del proyecto;\nescenarios disponibles;\ngráficos interactivos de inflación total, inflación subyacente, TPM y brecha de actividad;\ntabla de supuestos externos;\ndiferencias frente al baseline IPoM;\ntabla resumen de impactos.\n\n\n\n\nSe actualizó:\n\nproyectos.qmd\n\nLa tarjeta del proyecto IPoM ahora enlaza a proyectos/ipom-iris.qmd.\n\n\n\n\nR/ipom_config.R\nR/ipom_utils.R\nR/ipom_plots.R\nscripts/03_build_ipom_outputs.R\n\nEstos scripts permiten tomar CSV exportados desde IRIS/Matlab y construir bases limpias para Quarto.\n\n\n\n\nmatlab/ipom/model/minimep0.model\nmatlab/ipom/src/readmodel_alternativo.m\nmatlab/ipom/src/readmodel_original.m\nmatlab/ipom/src/identificar_shocks_ipom_original.m\nmatlab/ipom/src/fcast_alt_ipom_original.m\nmatlab/ipom/src/makedata_original.m\nmatlab/ipom/src/run_ipom_pipeline.m\nmatlab/ipom/src/exportar_outputs_quarto.m\nmatlab/ipom/outputs/*.csv\n\nLa carpeta outputs/ contiene algunos CSV ya generados desde tu ZIP original para que la página pueda renderizar sin correr Matlab inmediatamente.\n\n\n\n\ndata/processed/ipom/ipom_scenarios_long.csv\ndata/processed/ipom/ipom_scenarios_wide.csv\ndata/processed/ipom/ipom_scenario_differences_long.csv\ndata/processed/ipom/ipom_scenario_differences_summary.csv\ndata/processed/ipom/ipom_external_assumptions.csv\ndata/processed/ipom/ipom_variable_metadata.csv\ndata/processed/ipom/ipom_scenario_metadata.csv\ndata/processed/ipom/ipom_metadata.yml\n\nEstas bases son las que consume la página Quarto.\n\n\n\n\nDesde la raíz del proyecto:\nquarto render\nLuego abre:\ndocs/proyectos/ipom-iris.html\nSi todo está bien, deberías ver la nueva página IPoM dentro del sitio.\n\n\n\nInstala estos paquetes:\ninstall.packages(c(\n  \"dplyr\", \"tidyr\", \"readr\", \"ggplot2\", \"plotly\", \"knitr\", \"tibble\"\n))\nDespués vuelve a ejecutar:\nquarto render\n\n\n\nEl flujo recomendado es:\n# 1. Correr o actualizar tus simulaciones Matlab/IRIS\n# Los CSV deben quedar en matlab/ipom/outputs/\n\n# 2. Regenerar bases limpias para Quarto\nRscript scripts/03_build_ipom_outputs.R\n\n# 3. Renderizar sitio\nquarto render\nSi quieres intentar el wrapper PowerShell:\n.\\scripts\\04_run_ipom_matlab.ps1\nRscript scripts/03_build_ipom_outputs.R\nquarto render\nPero ojo: run_ipom_pipeline.m todavía está como wrapper seguro. No ejecuta automáticamente tus scripts originales porque algunos pueden depender de rutas locales o decisiones manuales de escenario. Hay que editarlo y activar el flujo exacto cuando estés listo.\n\n\n\n\n\nAhora dejé nombres razonables:\n\nBaseline IPoM identificado\nFin anticipado conflicto Irán\nRisk-off global\nEscenario alternativo\nBaseline modelo sin juicio IPoM\n\nSi quieres nombres más formales para el portafolio, edita:\nR/ipom_config.R\n\n\n\nLas tablas de impactos usan por defecto 2025-2027. Puedes cambiarlo en:\nscripts/03_build_ipom_outputs.R\no directamente dentro de:\nR/ipom_utils.R\nargumentos:\nforecast_start_year = 2025\nforecast_end_year = 2027\n\n\n\nLa página todavía describe el flujo general. Falta agregar una tabla específica por escenario con:\n\nvariables exogenizadas;\nshocks endogenizados;\nhorizonte de imposición;\ninterpretación económica del shock.\n\nEse sería el siguiente paso metodológico más importante.\n\n\n\nPreservé tus scripts originales con sufijo _original.m. Conviene convertirlos después en funciones más limpias, por ejemplo:\nidentificar_baseline_ipom.m\nsimular_escenario_externo.m\nsimular_riskoff_global.m\nsimular_iran_fin_anticipado.m\nLa meta es que cada script reciba parámetros y exporte un CSV sin intervención manual.\n\n\n\nNo subas .Renviron, claves del Banco Central, FRED API keys, usuarios ni contraseñas.\nEl .gitignore ya excluye .Renviron, pero revisa antes de hacer commit:\ngit status\n\n\n\n\nDespués de revisar que renderiza:\ngit status\ngit add .\ngit commit -m \"Agrega proyecto IPoM IRIS al sitio Quarto\"\ngit push\n\n\n\nNo pude renderizar el sitio dentro del entorno donde se preparó el ZIP porque ahí no estaban instalados Rscript ni quarto. Por eso dejé los archivos listos, los CSV procesados ya creados y los scripts de reconstrucción, pero la validación final debe hacerla tu máquina con R y Quarto instalados."
-  },
-  {
-    "objectID": "NOTAS_DESPUES_DE_DESCARGAR.html#qué-quedó-agregado",
-    "href": "NOTAS_DESPUES_DE_DESCARGAR.html#qué-quedó-agregado",
-    "title": "Notas después de descargar el ZIP",
-    "section": "",
-    "text": "proyectos/ipom-iris.qmd\n\nEs la página pública del proyecto. Lee archivos procesados desde data/processed/ipom/ y muestra:\n\narquitectura del proyecto;\nescenarios disponibles;\ngráficos interactivos de inflación total, inflación subyacente, TPM y brecha de actividad;\ntabla de supuestos externos;\ndiferencias frente al baseline IPoM;\ntabla resumen de impactos.\n\n\n\n\nSe actualizó:\n\nproyectos.qmd\n\nLa tarjeta del proyecto IPoM ahora enlaza a proyectos/ipom-iris.qmd.\n\n\n\n\nR/ipom_config.R\nR/ipom_utils.R\nR/ipom_plots.R\nscripts/03_build_ipom_outputs.R\n\nEstos scripts permiten tomar CSV exportados desde IRIS/Matlab y construir bases limpias para Quarto.\n\n\n\n\nmatlab/ipom/model/minimep0.model\nmatlab/ipom/src/readmodel_alternativo.m\nmatlab/ipom/src/readmodel_original.m\nmatlab/ipom/src/identificar_shocks_ipom_original.m\nmatlab/ipom/src/fcast_alt_ipom_original.m\nmatlab/ipom/src/makedata_original.m\nmatlab/ipom/src/run_ipom_pipeline.m\nmatlab/ipom/src/exportar_outputs_quarto.m\nmatlab/ipom/outputs/*.csv\n\nLa carpeta outputs/ contiene algunos CSV ya generados desde tu ZIP original para que la página pueda renderizar sin correr Matlab inmediatamente.\n\n\n\n\ndata/processed/ipom/ipom_scenarios_long.csv\ndata/processed/ipom/ipom_scenarios_wide.csv\ndata/processed/ipom/ipom_scenario_differences_long.csv\ndata/processed/ipom/ipom_scenario_differences_summary.csv\ndata/processed/ipom/ipom_external_assumptions.csv\ndata/processed/ipom/ipom_variable_metadata.csv\ndata/processed/ipom/ipom_scenario_metadata.csv\ndata/processed/ipom/ipom_metadata.yml\n\nEstas bases son las que consume la página Quarto."
-  },
-  {
-    "objectID": "NOTAS_DESPUES_DE_DESCARGAR.html#qué-hacer-apenas-descargues",
-    "href": "NOTAS_DESPUES_DE_DESCARGAR.html#qué-hacer-apenas-descargues",
-    "title": "Notas después de descargar el ZIP",
-    "section": "",
-    "text": "Desde la raíz del proyecto:\nquarto render\nLuego abre:\ndocs/proyectos/ipom-iris.html\nSi todo está bien, deberías ver la nueva página IPoM dentro del sitio."
-  },
-  {
-    "objectID": "NOTAS_DESPUES_DE_DESCARGAR.html#si-quarto-dice-que-faltan-paquetes-de-r",
-    "href": "NOTAS_DESPUES_DE_DESCARGAR.html#si-quarto-dice-que-faltan-paquetes-de-r",
-    "title": "Notas después de descargar el ZIP",
-    "section": "",
-    "text": "Instala estos paquetes:\ninstall.packages(c(\n  \"dplyr\", \"tidyr\", \"readr\", \"ggplot2\", \"plotly\", \"knitr\", \"tibble\"\n))\nDespués vuelve a ejecutar:\nquarto render"
-  },
-  {
-    "objectID": "NOTAS_DESPUES_DE_DESCARGAR.html#cómo-actualizar-los-resultados-cuando-cambies-matlabiris",
-    "href": "NOTAS_DESPUES_DE_DESCARGAR.html#cómo-actualizar-los-resultados-cuando-cambies-matlabiris",
-    "title": "Notas después de descargar el ZIP",
-    "section": "",
-    "text": "El flujo recomendado es:\n# 1. Correr o actualizar tus simulaciones Matlab/IRIS\n# Los CSV deben quedar en matlab/ipom/outputs/\n\n# 2. Regenerar bases limpias para Quarto\nRscript scripts/03_build_ipom_outputs.R\n\n# 3. Renderizar sitio\nquarto render\nSi quieres intentar el wrapper PowerShell:\n.\\scripts\\04_run_ipom_matlab.ps1\nRscript scripts/03_build_ipom_outputs.R\nquarto render\nPero ojo: run_ipom_pipeline.m todavía está como wrapper seguro. No ejecuta automáticamente tus scripts originales porque algunos pueden depender de rutas locales o decisiones manuales de escenario. Hay que editarlo y activar el flujo exacto cuando estés listo."
-  },
-  {
-    "objectID": "NOTAS_DESPUES_DE_DESCARGAR.html#qué-hay-que-revisar-manualmente-después",
-    "href": "NOTAS_DESPUES_DE_DESCARGAR.html#qué-hay-que-revisar-manualmente-después",
-    "title": "Notas después de descargar el ZIP",
-    "section": "",
-    "text": "Ahora dejé nombres razonables:\n\nBaseline IPoM identificado\nFin anticipado conflicto Irán\nRisk-off global\nEscenario alternativo\nBaseline modelo sin juicio IPoM\n\nSi quieres nombres más formales para el portafolio, edita:\nR/ipom_config.R\n\n\n\nLas tablas de impactos usan por defecto 2025-2027. Puedes cambiarlo en:\nscripts/03_build_ipom_outputs.R\no directamente dentro de:\nR/ipom_utils.R\nargumentos:\nforecast_start_year = 2025\nforecast_end_year = 2027\n\n\n\nLa página todavía describe el flujo general. Falta agregar una tabla específica por escenario con:\n\nvariables exogenizadas;\nshocks endogenizados;\nhorizonte de imposición;\ninterpretación económica del shock.\n\nEse sería el siguiente paso metodológico más importante.\n\n\n\nPreservé tus scripts originales con sufijo _original.m. Conviene convertirlos después en funciones más limpias, por ejemplo:\nidentificar_baseline_ipom.m\nsimular_escenario_externo.m\nsimular_riskoff_global.m\nsimular_iran_fin_anticipado.m\nLa meta es que cada script reciba parámetros y exporte un CSV sin intervención manual.\n\n\n\nNo subas .Renviron, claves del Banco Central, FRED API keys, usuarios ni contraseñas.\nEl .gitignore ya excluye .Renviron, pero revisa antes de hacer commit:\ngit status"
-  },
-  {
-    "objectID": "NOTAS_DESPUES_DE_DESCARGAR.html#comandos-git-sugeridos",
-    "href": "NOTAS_DESPUES_DE_DESCARGAR.html#comandos-git-sugeridos",
-    "title": "Notas después de descargar el ZIP",
-    "section": "",
-    "text": "Después de revisar que renderiza:\ngit status\ngit add .\ngit commit -m \"Agrega proyecto IPoM IRIS al sitio Quarto\"\ngit push"
-  },
-  {
-    "objectID": "NOTAS_DESPUES_DE_DESCARGAR.html#limitación-de-este-zip",
-    "href": "NOTAS_DESPUES_DE_DESCARGAR.html#limitación-de-este-zip",
-    "title": "Notas después de descargar el ZIP",
-    "section": "",
-    "text": "No pude renderizar el sitio dentro del entorno donde se preparó el ZIP porque ahí no estaban instalados Rscript ni quarto. Por eso dejé los archivos listos, los CSV procesados ya creados y los scripts de reconstrucción, pero la validación final debe hacerla tu máquina con R y Quarto instalados."
+    "text": "Para comentarios, oportunidades de investigación o colaboración en proyectos de economía aplicada, puedes contactarme por los siguientes canales.\n\nEmail GitHub LinkedIn"
   },
   {
     "objectID": "proyectos/estres-externo.html",
@@ -879,7 +389,7 @@
     "href": "proyectos/ipom-iris.html#pregunta-económica",
     "title": "Escenarios macroeconómicos inspirados en IPoM",
     "section": "Pregunta económica",
-    "text": "Pregunta económica\nEl objetivo es evaluar cómo cambian las trayectorias de inflación, tasa de política monetaria y brecha de actividad cuando se reemplazan algunos supuestos externos del escenario base por trayectorias alternativas.\nEn términos prácticos, el ejercicio responde:\n\n¿Qué pasa con inflación, TPM y actividad si el escenario externo cambia respecto de un baseline tipo IPoM, manteniendo el juicio doméstico del escenario base?"
+    "text": "Pregunta económica\nEl objetivo es evaluar cómo cambian las trayectorias de inflación, tasa de política monetaria y brecha de actividad cuando se reemplazan algunos supuestos externos del escenario base por trayectorias alternativas.\nEn términos prácticos, el ejercicio responde:\n\n¿Qué pasa con inflación, TPM y actividad si el escenario externo cambia respecto de un escenario de referencia tipo IPoM, manteniendo el juicio doméstico del escenario base?"
   },
   {
     "objectID": "proyectos/ipom-iris.html#arquitectura-del-proyecto",
@@ -900,7 +410,7 @@
     "href": "proyectos/ipom-iris.html#resultado-principal",
     "title": "Escenarios macroeconómicos inspirados en IPoM",
     "section": "Resultado principal",
-    "text": "Resultado principal\nEl gráfico compara el baseline identificado con escenarios alternativos. Para evitar sobrecargar la visualización, se muestran tres alternativas principales junto al baseline.\n\nInflación total\n\n\n\n\n\n\n\n\nInflación subyacente\n\n\n\n\n\n\n\n\nTasa de Política Monetaria\n\n\n\n\n\n\n\n\nBrecha de actividad"
+    "text": "Resultado principal\nEl gráfico compara el escenario de referencia identificado con escenarios alternativos. Para evitar sobrecargar la visualización, se muestran tres alternativas principales junto al baseline.\n\nInflación total\n\n\n\n\n\n\n\n\nInflación subyacente\n\n\n\n\n\n\n\n\nTasa de Política Monetaria\n\n\n\n\n\n\n\n\nBrecha de actividad"
   },
   {
     "objectID": "proyectos/ipom-iris.html#bloque-internacional",
@@ -950,68 +460,5 @@
     "title": "Escenarios macroeconómicos inspirados en IPoM",
     "section": "Próximos pasos",
     "text": "Próximos pasos\n\nConsolidar una nomenclatura única para escenarios.\nDocumentar formalmente qué variables se exogenizan y qué shocks se endogenizan en cada escenario.\nAgregar descomposición de shocks y contribuciones por bloque.\nConstruir una tabla de supuestos externos editable desde CSV o YAML.\nAgregar una nota técnica descargable cuando la metodología esté cerrada."
-  },
-  {
-    "objectID": "proyectos.html",
-    "href": "proyectos.html",
-    "title": "Proyectos",
-    "section": "",
-    "text": "Esta sección reúne proyectos aplicados, notas técnicas y líneas de investigación en macroeconomía, política monetaria, econometría de series de tiempo y visualización de datos. La prioridad es mantener una presentación sobria: pregunta económica clara, datos trazables, metodología explícita y resultados visuales legibles."
-  },
-  {
-    "objectID": "proyectos.html#proyectos-aplicados",
-    "href": "proyectos.html#proyectos-aplicados",
-    "title": "Proyectos",
-    "section": "Proyectos aplicados",
-    "text": "Proyectos aplicados\n\nHerramientas y análisis con estructura metodológica más desarrollada, orientados a seguimiento macroeconómico, proyecciones y simulación de escenarios.\n\n\n\n\nActividad\n\n\nNowcasting de actividad económica en Chile\nModelo mensual en R para anticipar la evolución del IMACEC total y no minero usando indicadores sectoriales, variables calendario, rezagos macroeconómicos y evaluación de ajuste.\n\nEstado: proyecto aplicado en desarrollo continuo.\nHerramientas: R, tidyverse, ggplot2, plotly, series de tiempo.\n\nAbrir proyecto\n\n\n\n\nEscenarios\n\n\nEscenarios macroeconómicos inspirados en IPoM\nConstrucción de escenarios base y alternativos usando supuestos externos, inflación, brecha de actividad, tipo de cambio real y tasa de política monetaria. El objetivo es comparar trayectorias y descomponer canales de transmisión bajo supuestos alternativos.\n\nEstado: proyecto aplicado avanzado.\nHerramientas: Matlab, IRIS Toolbox, R, Quarto.\n\nVer proyecto ↗\n\n\n\n\nPolítica monetaria\n\n\nTransmisión de la TPM a tasas de mercado\nAnálisis visual y econométrico del traspaso de movimientos de la Tasa de Política Monetaria a distintas tasas de mercado en Chile, distinguiendo horizontes, episodios y tipos de tasa.\n\nEstado: research note en desarrollo.\nSalida esperada: pass-through por horizonte, modelos de rezagos distribuidos y lectura macroeconómica prudente.\n\nAbrir proyecto\n\n\n\n\nMercado de tasas\n\n\nCurva de rendimiento chilena interactiva\nVisualización interactiva de la curva nominal y real, pendiente de la curva y episodios macrofinancieros relevantes para interpretar expectativas, condiciones financieras y primas por plazo.\n\nEstado: prototipo visual-financiero en desarrollo.\nSalida esperada: slider temporal, comparación por fechas, pendiente 10y-2y y señales de condiciones financieras.\n\nAbrir proyecto\n\n\n\n\nMacrofinanzas\n\n\nÍndice de estrés financiero de mercado para Chile\nMonitor diario que resume desviaciones del USD/CLP y de la tasa soberana 10Y respecto de fundamentos externos observables. El objetivo es distinguir movimientos explicados por condiciones globales de episodios de presión financiera local.\n\nEstado: proyecto aplicado con datos reales.\nHerramientas: R, Quarto, modelos lineales, residuos estandarizados, visualización interactiva.\n\nAbrir proyecto"
-  },
-  {
-    "objectID": "proyectos.html#agenda-de-investigación",
-    "href": "proyectos.html#agenda-de-investigación",
-    "title": "Proyectos",
-    "section": "Agenda de investigación",
-    "text": "Agenda de investigación\n\n\nPolítica monetaria y heterogeneidad financiera\nAnálisis de la transmisión de la TPM hacia distintos segmentos del mercado financiero, evaluando si el pass-through cambia entre ciclos de alza, baja y normalización monetaria.\n\n\nProyección macroeconómica y escenarios\nConstrucción de escenarios alternativos con supuestos externos y juicio doméstico controlado, comparando impactos sobre inflación, TPM y brecha de actividad.\n\n\nVisualización para política pública\nDiseño de gráficos reproducibles que comuniquen resultados macroeconómicos sin sobrecargar la lectura ni esconder supuestos relevantes."
-  },
-  {
-    "objectID": "README_ESTRES_FINANCIERO.html",
-    "href": "README_ESTRES_FINANCIERO.html",
-    "title": "Índice de estrés financiero de mercado para Chile",
-    "section": "",
-    "text": "Este módulo adapta el proyecto original ExchangeReg a una página profesional dentro del repositorio Economics, enfocada exclusivamente en Chile.\nLa pregunta económica es:\n\n¿Cuándo el USD/CLP y la tasa soberana chilena a 10 años se alejan de lo que explican fundamentos externos observables?\n\n\n\nR/estres_financiero/\n  00_setup.R\n  01_data.R\n  02_models.R\n  03_plots.R\n  04_run_pipeline.R\n\nscripts/\n  06_update_estres_financiero.R\n\nproyectos/\n  estres-externo.qmd\n\ndata/raw/estres_financiero/\n  merged_full_dataset.csv\n\ndata/processed/estres_financiero/\n  market_data_chile.csv\n  stress_index_chile.csv\n  model_coefficients.csv\n  model_diagnostics.csv\n  latest_snapshot.csv\n\noutputs/tables/estres_financiero/\n  episodios_estres.csv\n\nassets/img/estres_financiero/\n  stress_index_chile.png\n  components_zscores_chile.png\n  fx_fit_chile.png\n  y10_fit_chile.png\n\n\n\nSe estiman dos modelos descriptivos de normalización por fundamentos externos.\n\n\nlog(USDCLP) ~ trend + log(cobre) + log(WTI) + log(VIX) + log(dólar global) +\n              log(CNY) + log(Nasdaq) + log(acciones China)\nEl residuo positivo se interpreta como presión cambiaria: el CLP está más depreciado que lo predicho por fundamentos observables.\n\n\n\n10Y_CLP ~ trend + 10Y_US + log(VIX) + log(dólar global) + log(CNY) + log(Nasdaq)\nEl residuo positivo se interpreta como presión en tasas largas: la tasa local está más alta que lo predicho por condiciones globales.\n\n\n\nLos residuos se estandarizan como z-scores y se promedian:\nstress_market = (z_fx + z_y10) / 2\nLa página usa también una media móvil de 30 días para facilitar la lectura visual.\n\n\n\n\nDesde la raíz del repositorio:\nsource(\"scripts/06_update_estres_financiero.R\")\nLuego renderiza el sitio:\nquarto render\n\n\n\nEsta versión no incluye credenciales ni claves API. La base raw incluida es una versión depurada del archivo merged_full_dataset.xlsx de ExchangeReg, convertida a CSV y con nombres de columnas normalizados. La cobertura efectiva del modelo llega hasta noviembre de 2025 porque esa es la cobertura disponible en el archivo original recibido.\n\n\n\n\nSeparar un módulo de liquidez bancaria con retrocompra/retroventa CMF.\nAgregar CDS soberano si se consigue una fuente reproducible.\nAgregar spreads corporativos o bancarios cuando exista una serie pública estable.\nProbar una versión robusta con ventana móvil o expansión recursiva para evitar estandarización full-sample.\nComparar el índice simple con PCA, pero solo si se agregan más componentes financieros."
-  },
-  {
-    "objectID": "README_ESTRES_FINANCIERO.html#qué-contiene",
-    "href": "README_ESTRES_FINANCIERO.html#qué-contiene",
-    "title": "Índice de estrés financiero de mercado para Chile",
-    "section": "",
-    "text": "R/estres_financiero/\n  00_setup.R\n  01_data.R\n  02_models.R\n  03_plots.R\n  04_run_pipeline.R\n\nscripts/\n  06_update_estres_financiero.R\n\nproyectos/\n  estres-externo.qmd\n\ndata/raw/estres_financiero/\n  merged_full_dataset.csv\n\ndata/processed/estres_financiero/\n  market_data_chile.csv\n  stress_index_chile.csv\n  model_coefficients.csv\n  model_diagnostics.csv\n  latest_snapshot.csv\n\noutputs/tables/estres_financiero/\n  episodios_estres.csv\n\nassets/img/estres_financiero/\n  stress_index_chile.png\n  components_zscores_chile.png\n  fx_fit_chile.png\n  y10_fit_chile.png"
-  },
-  {
-    "objectID": "README_ESTRES_FINANCIERO.html#metodología",
-    "href": "README_ESTRES_FINANCIERO.html#metodología",
-    "title": "Índice de estrés financiero de mercado para Chile",
-    "section": "",
-    "text": "Se estiman dos modelos descriptivos de normalización por fundamentos externos.\n\n\nlog(USDCLP) ~ trend + log(cobre) + log(WTI) + log(VIX) + log(dólar global) +\n              log(CNY) + log(Nasdaq) + log(acciones China)\nEl residuo positivo se interpreta como presión cambiaria: el CLP está más depreciado que lo predicho por fundamentos observables.\n\n\n\n10Y_CLP ~ trend + 10Y_US + log(VIX) + log(dólar global) + log(CNY) + log(Nasdaq)\nEl residuo positivo se interpreta como presión en tasas largas: la tasa local está más alta que lo predicho por condiciones globales.\n\n\n\nLos residuos se estandarizan como z-scores y se promedian:\nstress_market = (z_fx + z_y10) / 2\nLa página usa también una media móvil de 30 días para facilitar la lectura visual."
-  },
-  {
-    "objectID": "README_ESTRES_FINANCIERO.html#cómo-actualizar",
-    "href": "README_ESTRES_FINANCIERO.html#cómo-actualizar",
-    "title": "Índice de estrés financiero de mercado para Chile",
-    "section": "",
-    "text": "Desde la raíz del repositorio:\nsource(\"scripts/06_update_estres_financiero.R\")\nLuego renderiza el sitio:\nquarto render"
-  },
-  {
-    "objectID": "README_ESTRES_FINANCIERO.html#nota-importante",
-    "href": "README_ESTRES_FINANCIERO.html#nota-importante",
-    "title": "Índice de estrés financiero de mercado para Chile",
-    "section": "",
-    "text": "Esta versión no incluye credenciales ni claves API. La base raw incluida es una versión depurada del archivo merged_full_dataset.xlsx de ExchangeReg, convertida a CSV y con nombres de columnas normalizados. La cobertura efectiva del modelo llega hasta noviembre de 2025 porque esa es la cobertura disponible en el archivo original recibido."
-  },
-  {
-    "objectID": "README_ESTRES_FINANCIERO.html#extensiones-recomendadas",
-    "href": "README_ESTRES_FINANCIERO.html#extensiones-recomendadas",
-    "title": "Índice de estrés financiero de mercado para Chile",
-    "section": "",
-    "text": "Separar un módulo de liquidez bancaria con retrocompra/retroventa CMF.\nAgregar CDS soberano si se consigue una fuente reproducible.\nAgregar spreads corporativos o bancarios cuando exista una serie pública estable.\nProbar una versión robusta con ventana móvil o expansión recursiva para evitar estandarización full-sample.\nComparar el índice simple con PCA, pero solo si se agregan más componentes financieros."
   }
 ]

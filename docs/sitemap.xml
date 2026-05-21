@@ -1,107 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://mulloav3007.github.io/Economics/README_TRANSMISION_TPM.html</loc>
-    <lastmod>2026-05-07T05:17:39.146Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/README_CAMBIOS.html</loc>
-    <lastmod>2026-05-07T23:34:18.425Z</lastmod>
-  </url>
-  <url>
     <loc>https://mulloav3007.github.io/Economics/proyectos/transmision-tpm.html</loc>
-    <lastmod>2026-05-07T22:53:57.053Z</lastmod>
+    <lastmod>2026-05-21T18:36:53.855Z</lastmod>
   </url>
   <url>
     <loc>https://mulloav3007.github.io/Economics/proyectos/imacec.html</loc>
-    <lastmod>2026-05-05T20:50:01.571Z</lastmod>
+    <lastmod>2026-05-21T18:36:53.835Z</lastmod>
   </url>
   <url>
     <loc>https://mulloav3007.github.io/Economics/proyectos/curva-rendimiento.html</loc>
-    <lastmod>2026-05-05T20:50:01.544Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/matlab/ipom/RUNBOOK.html</loc>
-    <lastmod>2026-05-05T22:46:26.663Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/LEEME_PIPELINE_DATOS_REALES.html</loc>
-    <lastmod>2026-05-08T02:49:07.846Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/LEEME_HOTFIX_DESCARGA_LIVE.html</loc>
-    <lastmod>2026-05-08T03:12:25.724Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/LEEME_FIX_LIVE_ORIGINAL.html</loc>
-    <lastmod>2026-05-08T03:21:28.090Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/LEEME_FIX_BCCH_RJSON.html</loc>
-    <lastmod>2026-05-08T03:29:14.849Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/LEEME_AJUSTE_GRAFICOS.html</loc>
-    <lastmod>2026-05-08T02:38:54.926Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/INSTRUCCIONES.html</loc>
-    <lastmod>2026-05-05T20:50:01.483Z</lastmod>
+    <lastmod>2026-05-21T18:36:53.814Z</lastmod>
   </url>
   <url>
     <loc>https://mulloav3007.github.io/Economics/cv.html</loc>
-    <lastmod>2026-05-07T23:34:18.397Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/contacto.html</loc>
-    <lastmod>2026-05-07T23:34:18.416Z</lastmod>
+    <lastmod>2026-05-21T18:36:51.243Z</lastmod>
   </url>
   <url>
     <loc>https://mulloav3007.github.io/Economics/index.html</loc>
-    <lastmod>2026-05-08T00:59:38.087Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/INSTRUCCIONES_INSTALACION.html</loc>
-    <lastmod>2026-05-08T02:09:00.854Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/LEEME_CORRECCION_PARSE_BCCH.html</loc>
-    <lastmod>2026-05-08T02:59:03.302Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/LEEME_FIX_DESCARGA_BCCH_DEFINITIVO.html</loc>
-    <lastmod>2026-05-08T03:44:52.801Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/LEEME_FIX_Y10_LIVE.html</loc>
-    <lastmod>2026-05-08T04:09:08.933Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/LEEME_HOTFIX_MODELO_DATOS.html</loc>
-    <lastmod>2026-05-08T03:07:21.162Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/matlab/ipom/NOTAS_MATLAB_IRIS.html</loc>
-    <lastmod>2026-05-05T22:46:26.673Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/NOTAS_DESPUES_DE_DESCARGAR.html</loc>
-    <lastmod>2026-05-05T20:50:01.536Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/proyectos/estres-externo.html</loc>
-    <lastmod>2026-05-08T03:12:25.714Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mulloav3007.github.io/Economics/proyectos/ipom-iris.html</loc>
-    <lastmod>2026-05-06T02:40:59.430Z</lastmod>
+    <lastmod>2026-05-21T18:36:51.266Z</lastmod>
   </url>
   <url>
     <loc>https://mulloav3007.github.io/Economics/proyectos.html</loc>
-    <lastmod>2026-05-08T02:09:00.826Z</lastmod>
+    <lastmod>2026-05-21T18:36:51.278Z</lastmod>
   </url>
   <url>
-    <loc>https://mulloav3007.github.io/Economics/README_ESTRES_FINANCIERO.html</loc>
-    <lastmod>2026-05-08T02:09:00.843Z</lastmod>
+    <loc>https://mulloav3007.github.io/Economics/contacto.html</loc>
+    <lastmod>2026-05-21T18:36:51.233Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mulloav3007.github.io/Economics/proyectos/estres-externo.html</loc>
+    <lastmod>2026-05-21T18:36:53.826Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mulloav3007.github.io/Economics/proyectos/ipom-iris.html</loc>
+    <lastmod>2026-05-21T18:36:53.845Z</lastmod>
   </url>
 </urlset>

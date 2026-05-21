@@ -2,6 +2,8 @@
 title: "Contacto"
 subtitle: "Canales profesionales"
 page-layout: full
+description: "Canales profesionales de contacto de Mauricio Andrés Ulloa Valdivia."
+image: "assets/img/og/portfolio-og.png"
 ---
 
 ::: {.mu-contact-card}
