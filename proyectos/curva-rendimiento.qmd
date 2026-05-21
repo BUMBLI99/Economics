@@ -1,9 +1,15 @@
 ---
-title: "Curva de rendimiento chilena interactiva"
+title: "Curva de rendimiento chilena interactiva — en desarrollo"
 subtitle: "Prototipo visual de tasas nominales y reales por plazo"
 description: "Prototipo de visualización para curva de rendimiento chilena, pendiente de curva y señales macrofinancieras."
 image: "../assets/img/og/portfolio-og.png"
 ---
+
+::: {.callout-warning}
+## Línea en desarrollo
+
+Esta página se mantiene deliberadamente como prototipo. No debe presentarse como evidencia empírica hasta reemplazar la simulación por datos reales de curvas nominales, reales/UF y compensación inflacionaria.
+:::
 
 ## Motivación
 

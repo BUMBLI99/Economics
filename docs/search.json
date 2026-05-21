@@ -18,7 +18,7 @@
     "href": "proyectos/transmision-tpm.html#qué-muestra-la-nota",
     "title": "Transmisión de la TPM a tasas de mercado",
     "section": "Qué muestra la nota",
-    "text": "Qué muestra la nota\nLa lectura del monitor se organiza en cuatro bloques:\n\nCanales principales: TPM comparada con cuatro tasas bancarias representativas.\nPass-through acumulado: traspaso estimado a distintos horizontes bajo una especificación base del proyecto.\nAsimetría: contraste entre alzas y bajas de TPM para cada producto.\nLocal projections: trayectoria de la respuesta dinámica horizonte por horizonte."
+    "text": "Qué muestra la nota\nLa lectura del monitor se organiza en cinco bloques:\n\nLectura ejecutiva: tabla corta con productos clave y velocidad/intensidad del traspaso.\nCanales principales: TPM comparada con cuatro tasas bancarias representativas.\nPass-through acumulado: traspaso estimado a distintos horizontes bajo una especificación base del proyecto.\nAsimetría: contraste entre alzas y bajas de TPM para cada producto.\nLocal projections: trayectoria de la respuesta dinámica horizonte por horizonte."
   },
   {
     "objectID": "proyectos/transmision-tpm.html#datos-usados",
@@ -46,7 +46,7 @@
     "href": "proyectos/transmision-tpm.html#pass-through-acumulado",
     "title": "Transmisión de la TPM a tasas de mercado",
     "section": "Pass-through acumulado",
-    "text": "Pass-through acumulado\nEl pass-through acumulado a horizonte \\(h\\) se define como:\n\\[\nPT_{j,h}=\\sum_{k=0}^{h}\\beta_{j,k}\n\\]\nUn valor cercano a 1 indica que un aumento de 100 puntos base en la TPM se asocia con un aumento acumulado cercano a 100 puntos base en esa tasa al horizonte correspondiente.\n\nResumen por horizonte\n\n\n\nPass-through acumulado estimado por producto. Coeficientes en puntos porcentuales por punto porcentual de TPM.\n\n\nProducto\n1 mes\n3 meses\n6 meses\n\n\n\n\nComercial: sobregiro\n0.79\n1.05\n1.32\n\n\nConsumo total\n0.86\n1.32\n1.22\n\n\nComercial total\n0.89\n1.00\n1.10\n\n\nTarjeta: rotativo\n0.36\n1.15\n0.98\n\n\nComercial: cuotas\n0.75\n0.99\n0.95\n\n\nConsumo: cuotas\n1.17\n0.55\n0.57\n\n\nTarjeta: cuota\n0.01\n1.02\n0.56\n\n\nCaptación 30-89d\n0.08\n0.08\n0.08\n\n\nCaptación 90d-1a\n0.07\n0.06\n0.06\n\n\nVivienda UF &gt;3 años\n0.12\n0.05\n0.01\n\n\n\n\n\n\n\nComparación de especificaciones a 6 meses\n\n\n\nPass-through acumulado a 6 meses bajo tres especificaciones: base parsimoniosa, principal del proyecto y robustez con referencias de curva.\n\n\nProducto\nBase\nPrincipal\nRobustez curva\n\n\n\n\nComercial: sobregiro\n1.42\n1.32\n1.18\n\n\nConsumo total\n1.27\n1.22\n1.23\n\n\nComercial total\n1.19\n1.10\n1.24\n\n\nTarjeta: rotativo\n0.94\n0.98\n1.06\n\n\nComercial: cuotas\n1.02\n0.95\n0.88\n\n\nConsumo: cuotas\n0.79\n0.57\n0.61\n\n\nTarjeta: cuota\n0.63\n0.56\n1.04\n\n\nCaptación 30-89d\n0.08\n0.08\n0.08\n\n\nCaptación 90d-1a\n0.06\n0.06\n0.06\n\n\nVivienda UF &gt;3 años\n0.09\n0.01\n0.05\n\n\n\n\n\n\n\nHeatmap de pass-through"
+    "text": "Pass-through acumulado\nEl pass-through acumulado a horizonte \\(h\\) se define como:\n\\[\nPT_{j,h}=\\sum_{k=0}^{h}\\beta_{j,k}\n\\]\nUn valor cercano a 1 indica que un aumento de 100 puntos base en la TPM se asocia con un aumento acumulado cercano a 100 puntos base en esa tasa al horizonte correspondiente.\n\nResumen por horizonte\n\n\n\nPass-through acumulado estimado por producto. Coeficientes en puntos porcentuales por punto porcentual de TPM.\n\n\nProducto\n1 mes\n3 meses\n6 meses\n\n\n\n\nComercial: sobregiro\n0.79\n1.05\n1.32\n\n\nConsumo total\n0.86\n1.32\n1.22\n\n\nComercial total\n0.89\n1.00\n1.10\n\n\nTarjeta: rotativo\n0.36\n1.15\n0.98\n\n\nComercial: cuotas\n0.75\n0.99\n0.95\n\n\nConsumo: cuotas\n1.17\n0.55\n0.57\n\n\nTarjeta: cuota\n0.01\n1.02\n0.56\n\n\nCaptación 30-89d\n0.08\n0.08\n0.08\n\n\nCaptación 90d-1a\n0.07\n0.06\n0.06\n\n\nVivienda UF &gt;3 años\n0.12\n0.05\n0.01\n\n\n\n\n\n\n\nLectura ejecutiva de productos clave\nPara una lectura rápida, conviene concentrarse primero en fondeo bancario, tasas comerciales, consumo y vivienda. El criterio de clasificación combina el pass-through acumulado a seis meses y la velocidad inicial de ajuste.\n\n\n\nResumen ejecutivo del pass-through para tasas clave. Coeficientes en pp por pp de TPM.\n\n\nProducto\n1 mes\n3 meses\n6 meses\nLectura\n\n\n\n\nConsumo total\n0.86\n1.32\n1.22\nTraspaso alto y rápido\n\n\nComercial total\n0.89\n1.00\n1.10\nTraspaso alto y rápido\n\n\nCaptación 90d-1a\n0.07\n0.06\n0.06\nTraspaso bajo o lento\n\n\nVivienda UF &gt;3 años\n0.12\n0.05\n0.01\nTraspaso bajo o lento\n\n\n\n\n\n\n\n\n\n\n\nNotaInterpretación económica breve\n\n\n\nLa transmisión hacia captaciones debería ser relativamente rápida porque refleja el costo marginal de fondeo de la banca. Las tasas comerciales suelen responder con más intensidad que consumo cuando existe mayor indexación al costo financiero y menor rigidez comercial. Vivienda UF, en cambio, no debe leerse como un canal mecánico de TPM: incorpora expectativas de inflación, tasas reales largas, premios por plazo y condiciones de originación hipotecaria.\n\n\n\n\nComparación de especificaciones a 6 meses\n\n\n\nPass-through acumulado a 6 meses bajo tres especificaciones: base parsimoniosa, principal del proyecto y robustez con referencias de curva.\n\n\nProducto\nBase\nPrincipal\nRobustez curva\n\n\n\n\nComercial: sobregiro\n1.42\n1.32\n1.18\n\n\nConsumo total\n1.27\n1.22\n1.23\n\n\nComercial total\n1.19\n1.10\n1.24\n\n\nTarjeta: rotativo\n0.94\n0.98\n1.06\n\n\nComercial: cuotas\n1.02\n0.95\n0.88\n\n\nConsumo: cuotas\n0.79\n0.57\n0.61\n\n\nTarjeta: cuota\n0.63\n0.56\n1.04\n\n\nCaptación 30-89d\n0.08\n0.08\n0.08\n\n\nCaptación 90d-1a\n0.06\n0.06\n0.06\n\n\nVivienda UF &gt;3 años\n0.09\n0.01\n0.05\n\n\n\n\n\n\n\nHeatmap de pass-through"
   },
   {
     "objectID": "proyectos/transmision-tpm.html#asimetría-alzas-versus-bajas-de-tpm",
@@ -74,7 +74,7 @@
     "href": "proyectos/transmision-tpm.html#principales-cautelas-metodológicas",
     "title": "Transmisión de la TPM a tasas de mercado",
     "section": "Principales cautelas metodológicas",
-    "text": "Principales cautelas metodológicas\n\nLas tasas promedio bancarias agregadas mezclan precio puro con composición de operaciones.\nLa TPM es endógena al escenario macroeconómico; por eso los coeficientes deben leerse como pass-through condicional.\nLas tasas de vivienda y otras tasas largas incorporan expectativas, inflación esperada, premios por plazo y condiciones de fondeo.\nLas asimetrías entre alzas y bajas pueden reflejar fricciones bancarias, pero también diferencias de contexto macro entre ciclos.\nEl episodio 2021-2023 probablemente concentra una parte importante de la variación útil para identificación."
+    "text": "Principales cautelas metodológicas\n\nLas tasas promedio bancarias agregadas mezclan precio puro con composición de operaciones: cambia la tasa, pero también cambia quién pide crédito, en qué plazo y con qué riesgo.\nLa TPM es endógena al escenario macroeconómico; por eso los coeficientes deben leerse como pass-through condicional, no como efecto causal puro de una sorpresa monetaria.\nLas tasas de vivienda y otras tasas largas incorporan expectativas de inflación, tasas reales largas, premios por plazo y condiciones de fondeo; no deberían compararse mecánicamente con productos de corto plazo.\nLas asimetrías entre alzas y bajas pueden reflejar fricciones bancarias, pero también diferencias de contexto macro entre ciclos de contracción, normalización y relajamiento monetario.\nEl episodio 2021-2023 probablemente concentra una parte importante de la variación útil para identificación; por eso la robustez por muestra es central y no solo decorativa.\n\n\n\n\n\n\n\nImportantePróxima mejora metodológica\n\n\n\nLa extensión más relevante es reemplazar cambios observados de TPM por medidas de sorpresa de política monetaria o expectativas de TPM. Eso permitiría acercar la interpretación a shocks monetarios y reduciría la endogeneidad entre política, inflación esperada y actividad."
   },
   {
     "objectID": "proyectos/transmision-tpm.html#próximos-pasos",
@@ -137,7 +137,14 @@
     "href": "proyectos/imacec.html#métricas-de-ajuste",
     "title": "Nowcasting de actividad económica en Chile",
     "section": "Métricas de ajuste",
-    "text": "Métricas de ajuste\n\n\n\nMétricas de ajuste del modelo\n\n\n\n\n\n\n\n\n\nVariable\nN\nRMSE\nMAE\nNota\n\n\n\n\nIMACEC total\n87\n1.30\n1.00\nMétricas in-sample; no interpretar como evaluación fuera de muestra.\n\n\nIMACEC no minero\n87\n1.33\n0.98\nMétricas in-sample; no interpretar como evaluación fuera de muestra.\n\n\n\n\n\n\n\n\n\n\n\nImportanteLectura prudente\n\n\n\nLas métricas anteriores corresponden a ajuste interno del modelo. Para evaluar capacidad predictiva real, el siguiente paso es agregar una evaluación pseudo out-of-sample con ventanas móviles y comparación contra benchmarks autoregresivos."
+    "text": "Métricas de ajuste\n\n\n\nMétricas de ajuste del modelo\n\n\n\n\n\n\n\n\n\nVariable\nN\nRMSE\nMAE\nNota\n\n\n\n\nIMACEC total\n87\n1.30\n1.00\nMétricas in-sample; no interpretar como evaluación fuera de muestra.\n\n\nIMACEC no minero\n87\n1.33\n0.98\nMétricas in-sample; no interpretar como evaluación fuera de muestra.\n\n\n\n\n\n\n\n\n\n\n\nImportanteLectura prudente\n\n\n\nLas métricas anteriores corresponden a ajuste interno del modelo. Sirven para verificar si el ajuste reproduce razonablemente la muestra histórica, pero no deben interpretarse como desempeño predictivo real. Por eso se agrega una evaluación pseudo out-of-sample contra benchmarks simples."
+  },
+  {
+    "objectID": "proyectos/imacec.html#evaluación-pseudo-out-of-sample-y-benchmarks-simples",
+    "href": "proyectos/imacec.html#evaluación-pseudo-out-of-sample-y-benchmarks-simples",
+    "title": "Nowcasting de actividad económica en Chile",
+    "section": "Evaluación pseudo out-of-sample y benchmarks simples",
+    "text": "Evaluación pseudo out-of-sample y benchmarks simples\nLa evaluación fuera de muestra re-estima el modelo con una ventana expansiva: para cada fecha de evaluación, se usa solo información disponible hasta el mes anterior. La predicción se compara contra tres reglas simples:\n\nBenchmark AR(1): modelo autoregresivo de un rezago sobre la variación anual del IMACEC.\nPromedio móvil 3m: promedio de las últimas tres variaciones anuales observadas.\nNaive estacional t-12: se reutiliza la variación anual observada doce meses antes.\n\nEsta sección es importante porque transforma el proyecto desde un ajuste descriptivo hacia una herramienta evaluable de nowcasting. Un buen modelo aplicado debería mejorar, al menos de forma sistemática, benchmarks parsimoniosos.\n\n\n\nEvaluación pseudo out-of-sample contra benchmarks simples\n\n\n\n\n\n\n\n\n\n\n\n\nVariable\nModelo\nN\nRMSE\nMAE\nInicio\nFin\nNota\n\n\n\n\nIMACEC no minero\nModelo principal\n27\n1.09\n0.80\n2024-01\n2026-03\nDatos demo/proxy; regenerar con Rscript scripts/01_update_imacec.R para evaluación pseudo-OOS real.\n\n\nIMACEC no minero\nPromedio móvil 3m\n27\n1.93\n1.57\n2024-01\n2026-03\nDatos demo/proxy; regenerar con Rscript scripts/01_update_imacec.R para evaluación pseudo-OOS real.\n\n\nIMACEC no minero\nBenchmark AR(1)\n27\n2.73\n2.25\n2024-01\n2026-03\nDatos demo/proxy; regenerar con Rscript scripts/01_update_imacec.R para evaluación pseudo-OOS real.\n\n\nIMACEC no minero\nNaive estacional t-12\n27\n3.00\n2.41\n2024-01\n2026-03\nDatos demo/proxy; regenerar con Rscript scripts/01_update_imacec.R para evaluación pseudo-OOS real.\n\n\nIMACEC total\nModelo principal\n27\n1.16\n0.90\n2024-01\n2026-03\nDatos demo/proxy; regenerar con Rscript scripts/01_update_imacec.R para evaluación pseudo-OOS real.\n\n\nIMACEC total\nPromedio móvil 3m\n27\n2.10\n1.70\n2024-01\n2026-03\nDatos demo/proxy; regenerar con Rscript scripts/01_update_imacec.R para evaluación pseudo-OOS real.\n\n\nIMACEC total\nBenchmark AR(1)\n27\n2.59\n2.10\n2024-01\n2026-03\nDatos demo/proxy; regenerar con Rscript scripts/01_update_imacec.R para evaluación pseudo-OOS real.\n\n\nIMACEC total\nNaive estacional t-12\n27\n3.21\n2.58\n2024-01\n2026-03\nDatos demo/proxy; regenerar con Rscript scripts/01_update_imacec.R para evaluación pseudo-OOS real.\n\n\n\n\n\n\n\n\n\n\n\nNotaCómo leer esta tabla\n\n\n\nLa comparación relevante no es si el modelo tiene error bajo en términos absolutos, sino si reduce RMSE/MAE frente a reglas simples. Si el promedio móvil o el AR(1) dominan al modelo principal, eso es una señal útil: el modelo necesita simplificación, mejores predictores contemporáneos, mejor tratamiento de vintages o una ventana de estimación distinta."
   },
   {
     "objectID": "proyectos/imacec.html#cómo-actualizar-el-proyecto",
@@ -151,7 +158,7 @@
     "href": "proyectos/imacec.html#próximos-pasos",
     "title": "Nowcasting de actividad económica en Chile",
     "section": "Próximos pasos",
-    "text": "Próximos pasos\n\nAgregar evaluación fuera de muestra.\nComparar contra modelos benchmark AR y random walk con drift.\nIncorporar intervalos de predicción calibrados con errores históricos.\nSeparar una versión “coyuntural” y una versión “research note”.\nAutomatizar actualización mensual con GitHub Actions."
+    "text": "Próximos pasos\n\nProfundizar la evaluación fuera de muestra con vintages reales de publicación.\nComparar ventanas expansivas versus ventanas móviles.\nIncorporar intervalos de predicción calibrados con errores históricos fuera de muestra.\nSeparar una versión “coyuntural” y una versión “research note”.\nAutomatizar actualización mensual con GitHub Actions."
   },
   {
     "objectID": "proyectos/imacec.html#código",
@@ -163,28 +170,28 @@
   {
     "objectID": "proyectos/curva-rendimiento.html",
     "href": "proyectos/curva-rendimiento.html",
-    "title": "Curva de rendimiento chilena interactiva",
+    "title": "Curva de rendimiento chilena interactiva — en desarrollo",
     "section": "",
-    "text": "Este proyecto busca visualizar la evolución de la estructura temporal de tasas en Chile y extraer señales macrofinancieras relevantes.\nLa curva de rendimiento permite observar cambios en condiciones financieras, expectativas de tasas, pendiente de curva y episodios de aplanamiento o empinamiento.\n\nEstado: prototipo visual. La figura actual usa datos simulados para validar interacción, diseño y estructura de navegación. Antes de presentarlo como evidencia aplicada, debe conectarse a tasas nominales y reales chilenas publicadas por fuentes oficiales o de mercado."
+    "text": "AdvertenciaLínea en desarrollo\n\n\n\nEsta página se mantiene deliberadamente como prototipo. No debe presentarse como evidencia empírica hasta reemplazar la simulación por datos reales de curvas nominales, reales/UF y compensación inflacionaria."
   },
   {
     "objectID": "proyectos/curva-rendimiento.html#motivación",
     "href": "proyectos/curva-rendimiento.html#motivación",
-    "title": "Curva de rendimiento chilena interactiva",
-    "section": "",
-    "text": "Este proyecto busca visualizar la evolución de la estructura temporal de tasas en Chile y extraer señales macrofinancieras relevantes.\nLa curva de rendimiento permite observar cambios en condiciones financieras, expectativas de tasas, pendiente de curva y episodios de aplanamiento o empinamiento.\n\nEstado: prototipo visual. La figura actual usa datos simulados para validar interacción, diseño y estructura de navegación. Antes de presentarlo como evidencia aplicada, debe conectarse a tasas nominales y reales chilenas publicadas por fuentes oficiales o de mercado."
+    "title": "Curva de rendimiento chilena interactiva — en desarrollo",
+    "section": "Motivación",
+    "text": "Motivación\nEste proyecto busca visualizar la evolución de la estructura temporal de tasas en Chile y extraer señales macrofinancieras relevantes.\nLa curva de rendimiento permite observar cambios en condiciones financieras, expectativas de tasas, pendiente de curva y episodios de aplanamiento o empinamiento.\n\nEstado: prototipo visual. La figura actual usa datos simulados para validar interacción, diseño y estructura de navegación. Antes de presentarlo como evidencia aplicada, debe conectarse a tasas nominales y reales chilenas publicadas por fuentes oficiales o de mercado."
   },
   {
     "objectID": "proyectos/curva-rendimiento.html#prototipo-visual-curva-por-fecha",
     "href": "proyectos/curva-rendimiento.html#prototipo-visual-curva-por-fecha",
-    "title": "Curva de rendimiento chilena interactiva",
+    "title": "Curva de rendimiento chilena interactiva — en desarrollo",
     "section": "Prototipo visual: curva por fecha",
     "text": "Prototipo visual: curva por fecha"
   },
   {
     "objectID": "proyectos/curva-rendimiento.html#próximas-mejoras",
     "href": "proyectos/curva-rendimiento.html#próximas-mejoras",
-    "title": "Curva de rendimiento chilena interactiva",
+    "title": "Curva de rendimiento chilena interactiva — en desarrollo",
     "section": "Próximas mejoras",
     "text": "Próximas mejoras\n\nIncorporar curva nominal y curva real/UF.\nCalcular pendiente 10y-2y.\nMostrar breakeven inflation aproximado, con advertencia sobre primas de riesgo y liquidez.\nMarcar fechas de episodios macrofinancieros relevantes."
   },
@@ -322,6 +329,13 @@
     "text": "Metodología\nEl índice se construye en cuatro pasos.\nPrimero, se estima un modelo de normalización para el tipo de cambio:\n\\[\n\\log(USDCLP_t) = \\alpha + \\beta_1 t + \\beta_2 \\log(Cobre_t) + \\beta_3 \\log(WTI_t) + \\beta_4 \\log(VIX_t) + \\beta_5 \\log(Dólar_t) + \\beta_6 \\log(CNY_t) + \\beta_7 \\log(Nasdaq_t) + \\beta_8 \\log(ChinaEq_t) + \\varepsilon^{FX}_t\n\\]\nEl residuo estandarizado del modelo se interpreta como presión cambiaria local no explicada por esos fundamentos. Un residuo positivo indica que el peso está más depreciado que lo que predice el modelo.\nSegundo, se estima un modelo de normalización para la tasa soberana chilena a 10 años:\n\\[\n10Y^{CLP}_t = \\alpha + \\gamma_1 t + \\gamma_2 10Y^{US}_t + \\gamma_3 \\log(VIX_t) + \\gamma_4 \\log(Dólar_t) + \\gamma_5 \\log(CNY_t) + \\gamma_6 \\log(Nasdaq_t) + \\varepsilon^{10Y}_t\n\\]\nEl residuo estandarizado de este modelo se interpreta como presión en tasas largas locales no explicada por condiciones financieras globales. Un residuo positivo indica que la tasa local está más alta que la predicha por el modelo.\nTercero, ambos residuos se expresan como z-scores:\n\\[\nz^{j}_t = \\frac{\\varepsilon^{j}_t - \\bar{\\varepsilon}^{j}}{sd(\\varepsilon^{j})}, \\quad j \\in \\{FX, 10Y\\}\n\\]\nFinalmente, el índice agregado corresponde al promedio simple de ambos componentes:\n\\[\nStress_t = \\frac{z^{FX}_t + z^{10Y}_t}{2}\n\\]\nPara la lectura visual se usa también una media móvil de 30 días. Los umbrales son descriptivos: sobre 0,75 se clasifica como estrés moderado y sobre 1,5 como estrés alto."
   },
   {
+    "objectID": "proyectos/estres-externo.html#chequeo-pseudo-out-of-sample",
+    "href": "proyectos/estres-externo.html#chequeo-pseudo-out-of-sample",
+    "title": "Índice de estrés financiero de mercado para Chile",
+    "section": "Chequeo pseudo out-of-sample",
+    "text": "Chequeo pseudo out-of-sample\n\n\n\n\n\n\nAdvertenciaRiesgo de look-ahead bias\n\n\n\nLa versión principal del índice usa modelos estimados en muestra completa. Eso es útil para una lectura histórica limpia, pero tiene una limitación importante: los residuos de años anteriores se calculan con parámetros estimados usando información posterior. Por lo tanto, la serie completa no debe interpretarse como una señal estrictamente disponible en tiempo real.\n\n\nPara reducir ese problema, el pipeline ahora puede construir un chequeo pseudo out-of-sample con ventana expansiva: cada predicción se estima usando solo datos anteriores a la fecha evaluada. Esta versión es más exigente y menos suave, pero se acerca mejor a la pregunta operacional: qué habría señalado el monitor con la información disponible en ese momento.\n\n\nEjecuta `source(\"scripts/06_update_estres_financiero.R\")` para generar `stress_index_chile_oos.csv` y activar esta tabla."
+  },
+  {
     "objectID": "proyectos/estres-externo.html#índice-agregado",
     "href": "proyectos/estres-externo.html#índice-agregado",
     "title": "Índice de estrés financiero de mercado para Chile",
@@ -375,90 +389,90 @@
     "href": "proyectos/estres-externo.html#limitaciones-y-extensiones",
     "title": "Índice de estrés financiero de mercado para Chile",
     "section": "Limitaciones y extensiones",
-    "text": "Limitaciones y extensiones\n\nEste índice no debe interpretarse como evidencia causal ni como estimación estructural del premio por riesgo chileno. Es una herramienta de seguimiento descriptivo basada en residuos de modelos lineales estimados en muestra completa.\n\nLas principales extensiones naturales son: incorporar spreads corporativos, mercado monetario, IPSA/volatilidad local, CDS soberano, liquidez bancaria y variables de crédito. El bloque de retrocompra/retroventa de CMF del proyecto original puede agregarse como un segundo módulo de liquidez bancaria, pero conviene mantenerlo separado inicialmente porque la muestra es más corta y el concepto económico es distinto."
+    "text": "Limitaciones y extensiones\n\nEste índice no debe interpretarse como evidencia causal ni como estimación estructural del premio por riesgo chileno. Es una herramienta de seguimiento descriptivo basada en residuos de modelos lineales. La versión de muestra completa es útil para lectura histórica; la versión pseudo out-of-sample es la referencia más prudente para seguimiento operacional.\n\nLas principales extensiones naturales son: incorporar spreads corporativos, mercado monetario, IPSA/volatilidad local, CDS soberano, liquidez bancaria y variables de crédito. El bloque de retrocompra/retroventa de CMF del proyecto original puede agregarse como un segundo módulo de liquidez bancaria, pero conviene mantenerlo separado inicialmente porque la muestra es más corta y el concepto económico es distinto."
   },
   {
     "objectID": "proyectos/ipom-iris.html",
     "href": "proyectos/ipom-iris.html",
-    "title": "Escenarios macroeconómicos inspirados en IPoM",
+    "title": "Escenarios macroeconómicos de referencia",
     "section": "",
     "text": "NotaEstado del proyecto\n\n\n\nProyecto aplicado avanzado. Esta página está pensada como vitrina técnica del flujo de simulación: el modelo y los escenarios se ejecutan en Matlab/IRIS, mientras que Quarto presenta resultados procesados en formato limpio. La versión pública no pretende replicar el modelo oficial del Banco Central de Chile; es un ejercicio académico/aplicado de escenarios macroeconómicos."
   },
   {
     "objectID": "proyectos/ipom-iris.html#pregunta-económica",
     "href": "proyectos/ipom-iris.html#pregunta-económica",
-    "title": "Escenarios macroeconómicos inspirados en IPoM",
+    "title": "Escenarios macroeconómicos de referencia",
     "section": "Pregunta económica",
-    "text": "Pregunta económica\nEl objetivo es evaluar cómo cambian las trayectorias de inflación, tasa de política monetaria y brecha de actividad cuando se reemplazan algunos supuestos externos del escenario base por trayectorias alternativas.\nEn términos prácticos, el ejercicio responde:\n\n¿Qué pasa con inflación, TPM y actividad si el escenario externo cambia respecto de un escenario de referencia tipo IPoM, manteniendo el juicio doméstico del escenario base?"
+    "text": "Pregunta económica\nEl objetivo es evaluar cómo cambian las trayectorias de inflación, tasa de política monetaria y brecha de actividad cuando se reemplazan algunos supuestos externos de un escenario de referencia por trayectorias alternativas.\nEn términos prácticos, el ejercicio responde:\n\n¿Qué pasa con inflación, TPM y actividad si el escenario externo cambia respecto de un escenario de referencia identificado, manteniendo constante el resto de la estructura doméstica del ejercicio?"
   },
   {
     "objectID": "proyectos/ipom-iris.html#arquitectura-del-proyecto",
     "href": "proyectos/ipom-iris.html#arquitectura-del-proyecto",
-    "title": "Escenarios macroeconómicos inspirados en IPoM",
+    "title": "Escenarios macroeconómicos de referencia",
     "section": "Arquitectura del proyecto",
-    "text": "Arquitectura del proyecto\n\n\n1. Motor macroeconómico\nModelo semi-estructural en IRIS/Matlab con bloque de demanda, curva de Phillips, regla de política monetaria, bloque externo y shocks estructurales.\n\n\n2. Identificación del baseline\nSe identifica un conjunto de shocks que permite reproducir una trayectoria base tipo IPoM. Ese baseline funciona como punto de comparación.\n\n\n3. Publicación Quarto\nMatlab exporta bases fcast_*.csv; R las convierte a formato largo y Quarto genera gráficos, tablas y diagnóstico comparado."
+    "text": "Arquitectura del proyecto\n\n\n1. Motor macroeconómico\nModelo semi-estructural en IRIS/Matlab con bloque de demanda, curva de Phillips, regla de política monetaria, bloque externo y shocks estructurales.\n\n\n2. Identificación del escenario de referencia\nSe identifica un conjunto de shocks y supuestos que permite construir una trayectoria de referencia. Esa trayectoria funciona como punto de comparación para escenarios alternativos; no debe leerse como réplica oficial ni como proyección institucional.\n\n\n3. Publicación Quarto\nMatlab exporta bases fcast_*.csv; R las convierte a formato largo y Quarto genera gráficos, tablas y diagnóstico comparado."
   },
   {
     "objectID": "proyectos/ipom-iris.html#escenarios-incluidos",
     "href": "proyectos/ipom-iris.html#escenarios-incluidos",
-    "title": "Escenarios macroeconómicos inspirados en IPoM",
+    "title": "Escenarios macroeconómicos de referencia",
     "section": "Escenarios incluidos",
-    "text": "Escenarios incluidos\n\n\n\nEscenarios disponibles en la base procesada.\n\n\n\n\n\n\n\nEscenario\nID interno\nArchivo fuente\n\n\n\n\nBaseline IPoM identificado\nbaseline_ipom\nfcast_ipom_exact.csv\n\n\nFin anticipado conflicto Irán\niran_fin_anticipado\nfcast_alt_iran_fin_anticipado.csv\n\n\nRisk-off global\nriskoff_global\nfcast_alt_riskoff.csv\n\n\nEscenario alternativo\nescenario_alternativo\nfcast_alt_escenario.csv\n\n\nBaseline modelo sin juicio IPoM\nbaseline_modelo\nfcast_base_model.csv"
+    "text": "Escenarios incluidos\n\n\n\nEscenarios disponibles en la base procesada.\n\n\n\n\n\n\n\nEscenario\nID interno\nArchivo fuente\n\n\n\n\nEscenario de referencia identificado\nbaseline_ipom\nfcast_ipom_exact.csv\n\n\nFin anticipado conflicto Irán\niran_fin_anticipado\nfcast_alt_iran_fin_anticipado.csv\n\n\nRisk-off global\nriskoff_global\nfcast_alt_riskoff.csv\n\n\nEscenario alternativo\nescenario_alternativo\nfcast_alt_escenario.csv\n\n\nEscenario base del modelo sin juicio\nbaseline_modelo\nfcast_base_model.csv"
   },
   {
     "objectID": "proyectos/ipom-iris.html#resultado-principal",
     "href": "proyectos/ipom-iris.html#resultado-principal",
-    "title": "Escenarios macroeconómicos inspirados en IPoM",
+    "title": "Escenarios macroeconómicos de referencia",
     "section": "Resultado principal",
-    "text": "Resultado principal\nEl gráfico compara el escenario de referencia identificado con escenarios alternativos. Para evitar sobrecargar la visualización, se muestran tres alternativas principales junto al baseline.\n\nInflación total\n\n\n\n\n\n\n\n\nInflación subyacente\n\n\n\n\n\n\n\n\nTasa de Política Monetaria\n\n\n\n\n\n\n\n\nBrecha de actividad"
+    "text": "Resultado principal\nEl gráfico compara el escenario de referencia identificado con escenarios alternativos. Para evitar sobrecargar la visualización, se muestran tres alternativas principales junto a la referencia.\n\nInflación total\n\n\n\n\n\n\n\n\nInflación subyacente\n\n\n\n\n\n\n\n\nTasa de Política Monetaria\n\n\n\n\n\n\n\n\nBrecha de actividad"
   },
   {
     "objectID": "proyectos/ipom-iris.html#bloque-internacional",
     "href": "proyectos/ipom-iris.html#bloque-internacional",
-    "title": "Escenarios macroeconómicos inspirados en IPoM",
+    "title": "Escenarios macroeconómicos de referencia",
     "section": "Bloque internacional",
-    "text": "Bloque internacional\nAdemás de las variables macro domésticas, el ejercicio depende de los supuestos externos que alimentan el modelo. Esta sección muestra las trayectorias de petróleo, cobre, crecimiento internacional y volatilidad financiera usadas en el baseline y en los escenarios alternativos.\n\nPrecio del petróleo WTI nominal\n\n\n\n\n\n\n\n\nPrecio del cobre nominal\n\n\n\n\n\n\n\n\nCrecimiento internacional\n\n\n\n\n\n\n\n\nVIX\n\n\n\n\n\n\n\n\nDesvíos externos frente al baseline\n\n\n\nSupuestos externos principales: niveles promedio y desvíos frente al baseline.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio escenario\nDesvío promedio vs baseline\nDesvío máximo vs baseline\nDesvío mínimo vs baseline\n\n\n\n\nEscenario alternativo\nCobre nominal\nnivel aproximado\n5,02\n0,00\n0,00\n0\n\n\nEscenario alternativo\nCrecimiento socios comerciales\n% anual\n2,92\n0,00\n0,00\n0\n\n\nEscenario alternativo\nVIX\níndice\n19,38\n0,00\n0,00\n0\n\n\nEscenario alternativo\nWTI nominal\nnivel aproximado\n81,25\n5,55\n12,24\n0"
+    "text": "Bloque internacional\nAdemás de las variables macro domésticas, el ejercicio depende de los supuestos externos que alimentan el modelo. Esta sección muestra las trayectorias de petróleo, cobre, crecimiento internacional y volatilidad financiera usadas en el escenario de referencia y en los escenarios alternativos.\n\nPrecio del petróleo WTI nominal\n\n\n\n\n\n\n\n\nPrecio del cobre nominal\n\n\n\n\n\n\n\n\nCrecimiento internacional\n\n\n\n\n\n\n\n\nVIX\n\n\n\n\n\n\n\n\nDesvíos externos frente al escenario de referencia\n\n\n\nSupuestos externos principales: niveles promedio y desvíos frente al escenario de referencia.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio escenario\nDesvío promedio vs referencia\nDesvío máximo vs referencia\nDesvío mínimo vs referencia\n\n\n\n\nEscenario alternativo\nCobre nominal\nnivel aproximado\n5,02\n0,00\n0,00\n0\n\n\nEscenario alternativo\nCrecimiento socios comerciales\n% anual\n2,92\n0,00\n0,00\n0\n\n\nEscenario alternativo\nVIX\níndice\n19,38\n0,00\n0,00\n0\n\n\nEscenario alternativo\nWTI nominal\nnivel aproximado\n81,25\n5,55\n12,24\n0"
   },
   {
     "objectID": "proyectos/ipom-iris.html#supuestos-externos",
     "href": "proyectos/ipom-iris.html#supuestos-externos",
-    "title": "Escenarios macroeconómicos inspirados en IPoM",
+    "title": "Escenarios macroeconómicos de referencia",
     "section": "Supuestos externos",
-    "text": "Supuestos externos\nLa tabla resume los supuestos externos procesados para el período 2025-2027. Las diferencias se calculan contra el baseline IPoM identificado.\n\n\n\nSupuestos externos: promedio 2025-2027 y desvíos frente al baseline.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio escenario\nDiferencia promedio vs baseline\nDiferencia máxima vs baseline\nDiferencia mínima vs baseline\n\n\n\n\nEscenario alternativo\nCobre nominal\nnivel aproximado\n5,02\n0,00\n0,00\n0\n\n\nEscenario alternativo\nCrecimiento socios comerciales\n% anual\n2,92\n0,00\n0,00\n0\n\n\nEscenario alternativo\nFederal Funds Rate\n% anual\n3,74\n0,00\n0,00\n0\n\n\nEscenario alternativo\nTipo de cambio real índice\níndice\n103,22\n0,00\n0,00\n0\n\n\nEscenario alternativo\nTreasury 10 años\n% anual\n4,41\n0,00\n0,00\n0\n\n\nEscenario alternativo\nVIX\níndice\n19,38\n0,00\n0,00\n0\n\n\nEscenario alternativo\nWTI nominal\nnivel aproximado\n81,25\n5,55\n12,24\n0"
+    "text": "Supuestos externos\nLa tabla resume los supuestos externos procesados para el período 2025-2027. Las diferencias se calculan contra el escenario de referencia identificado.\n\n\n\nSupuestos externos: promedio 2025-2027 y desvíos frente al escenario de referencia.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio escenario\nDiferencia promedio vs referencia\nDiferencia máxima vs referencia\nDiferencia mínima vs referencia\n\n\n\n\nEscenario alternativo\nCobre nominal\nnivel aproximado\n5,02\n0,00\n0,00\n0\n\n\nEscenario alternativo\nCrecimiento socios comerciales\n% anual\n2,92\n0,00\n0,00\n0\n\n\nEscenario alternativo\nFederal Funds Rate\n% anual\n3,74\n0,00\n0,00\n0\n\n\nEscenario alternativo\nTipo de cambio real índice\níndice\n103,22\n0,00\n0,00\n0\n\n\nEscenario alternativo\nTreasury 10 años\n% anual\n4,41\n0,00\n0,00\n0\n\n\nEscenario alternativo\nVIX\níndice\n19,38\n0,00\n0,00\n0\n\n\nEscenario alternativo\nWTI nominal\nnivel aproximado\n81,25\n5,55\n12,24\n0"
   },
   {
-    "objectID": "proyectos/ipom-iris.html#desvíos-frente-al-baseline",
-    "href": "proyectos/ipom-iris.html#desvíos-frente-al-baseline",
-    "title": "Escenarios macroeconómicos inspirados en IPoM",
-    "section": "Desvíos frente al baseline",
-    "text": "Desvíos frente al baseline\n\nInflación total: diferencia respecto del baseline\n\n\n\n\n\n\n\n\nTPM: diferencia respecto del baseline\n\n\n\n\n\n\n\n\nBrecha de actividad: diferencia respecto del baseline"
+    "objectID": "proyectos/ipom-iris.html#desvíos-frente-al-escenario-de-referencia",
+    "href": "proyectos/ipom-iris.html#desvíos-frente-al-escenario-de-referencia",
+    "title": "Escenarios macroeconómicos de referencia",
+    "section": "Desvíos frente al escenario de referencia",
+    "text": "Desvíos frente al escenario de referencia\n\nInflación total: diferencia respecto del escenario de referencia\n\n\n\n\n\n\n\n\nTPM: diferencia respecto del escenario de referencia\n\n\n\n\n\n\n\n\nBrecha de actividad: diferencia respecto del escenario de referencia"
   },
   {
     "objectID": "proyectos/ipom-iris.html#tabla-resumen-de-impactos",
     "href": "proyectos/ipom-iris.html#tabla-resumen-de-impactos",
-    "title": "Escenarios macroeconómicos inspirados en IPoM",
+    "title": "Escenarios macroeconómicos de referencia",
     "section": "Tabla resumen de impactos",
-    "text": "Tabla resumen de impactos\n\n\n\nDesvíos frente al baseline IPoM en 2025-2027.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio\nMínimo\nMáximo\nÚltimo\n\n\n\n\nEscenario alternativo\nBrecha de actividad\n%\n-0,04\n-0,14\n0,00\n-0,01\n\n\nEscenario alternativo\nCrecimiento socios comerciales\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nEscenario alternativo\nFederal Funds Rate\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nEscenario alternativo\nInflación subyacente sin volátiles\n% anual\n-0,01\n-0,02\n0,00\n-0,01\n\n\nEscenario alternativo\nInflación total\n% anual\n0,04\n-0,15\n0,28\n-0,04\n\n\nEscenario alternativo\nTasa de Política Monetaria\n% anual\n-0,01\n-0,04\n0,00\n-0,01\n\n\nEscenario alternativo\nTreasury 10 años\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nEscenario alternativo\nVIX\níndice\n0,00\n0,00\n0,00\n0,00"
+    "text": "Tabla resumen de impactos\n\n\n\nDesvíos frente al escenario de referencia en 2025-2027.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio\nMínimo\nMáximo\nÚltimo\n\n\n\n\nEscenario alternativo\nBrecha de actividad\n%\n-0,04\n-0,14\n0,00\n-0,01\n\n\nEscenario alternativo\nCrecimiento socios comerciales\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nEscenario alternativo\nFederal Funds Rate\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nEscenario alternativo\nInflación subyacente sin volátiles\n% anual\n-0,01\n-0,02\n0,00\n-0,01\n\n\nEscenario alternativo\nInflación total\n% anual\n0,04\n-0,15\n0,28\n-0,04\n\n\nEscenario alternativo\nTasa de Política Monetaria\n% anual\n-0,01\n-0,04\n0,00\n-0,01\n\n\nEscenario alternativo\nTreasury 10 años\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nEscenario alternativo\nVIX\níndice\n0,00\n0,00\n0,00\n0,00"
   },
   {
     "objectID": "proyectos/ipom-iris.html#lectura-metodológica",
     "href": "proyectos/ipom-iris.html#lectura-metodológica",
-    "title": "Escenarios macroeconómicos inspirados en IPoM",
+    "title": "Escenarios macroeconómicos de referencia",
     "section": "Lectura metodológica",
-    "text": "Lectura metodológica\nEl flujo está separado en dos niveles:\n\nMatlab/IRIS resuelve el modelo, impone trayectorias exógenas y endogeniza los shocks necesarios para cumplir los supuestos del escenario.\nR/Quarto lee los outputs, estandariza nombres, calcula diferencias contra el baseline y genera la visualización web.\n\nEsta separación evita que el sitio dependa de una instalación de Matlab al momento de publicarse. Para actualizar el proyecto, se actualizan los CSV de matlab/ipom/outputs/raw_iris/ y luego se ejecuta:\nRscript scripts/03_build_ipom_outputs.R\nquarto render"
+    "text": "Lectura metodológica\nEl flujo está separado en dos niveles:\n\nMatlab/IRIS resuelve el modelo, impone trayectorias exógenas y endogeniza los shocks necesarios para cumplir los supuestos del escenario.\nR/Quarto lee los outputs, estandariza nombres, calcula diferencias contra el escenario de referencia y genera la visualización web.\n\nEsta separación evita que el sitio dependa de una instalación de Matlab al momento de publicarse. Para actualizar el proyecto, se actualizan los CSV de matlab/ipom/outputs/raw_iris/ y luego se ejecuta:\nRscript scripts/03_build_ipom_outputs.R\nquarto render"
   },
   {
     "objectID": "proyectos/ipom-iris.html#limitaciones",
     "href": "proyectos/ipom-iris.html#limitaciones",
-    "title": "Escenarios macroeconómicos inspirados en IPoM",
+    "title": "Escenarios macroeconómicos de referencia",
     "section": "Limitaciones",
     "text": "Limitaciones\n\n\n\n\n\n\nAdvertencia\n\n\n\nEste ejercicio no es una réplica del modelo oficial del Banco Central de Chile. La interpretación debe hacerse como simulación condicional de escenarios bajo una estructura semi-estructural propia, calibrada y adaptada para análisis aplicado."
   },
   {
     "objectID": "proyectos/ipom-iris.html#próximos-pasos",
     "href": "proyectos/ipom-iris.html#próximos-pasos",
-    "title": "Escenarios macroeconómicos inspirados en IPoM",
+    "title": "Escenarios macroeconómicos de referencia",
     "section": "Próximos pasos",
-    "text": "Próximos pasos\n\nConsolidar una nomenclatura única para escenarios.\nDocumentar formalmente qué variables se exogenizan y qué shocks se endogenizan en cada escenario.\nAgregar descomposición de shocks y contribuciones por bloque.\nConstruir una tabla de supuestos externos editable desde CSV o YAML.\nAgregar una nota técnica descargable cuando la metodología esté cerrada."
+    "text": "Próximos pasos\n\nConsolidar una nomenclatura única para escenarios y mantener separados los nombres públicos de los identificadores internos.\nDocumentar formalmente qué variables se exogenizan y qué shocks se endogenizan en cada escenario.\nAgregar descomposición de shocks y contribuciones por bloque.\nConstruir una tabla de supuestos externos editable desde CSV o YAML.\nAgregar una nota técnica descargable cuando la metodología esté cerrada."
   }
 ]

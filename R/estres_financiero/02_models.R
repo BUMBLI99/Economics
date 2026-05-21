@@ -129,6 +129,128 @@ estres_construct_index <- function(fx_fit, y10_fit) {
     )
 }
 
+
+
+estres_expanding_oos_component <- function(market_data,
+                                           dependent,
+                                           predictors,
+                                           model_name,
+                                           min_obs = 500,
+                                           step = 5) {
+  # Residuo pseudo out-of-sample con ventana expansiva.
+  # La predicción de cada fecha se obtiene estimando el modelo solo con
+  # información anterior a esa fecha. Se evalúa cada `step` observaciones
+  # para mantener el pipeline liviano en datos diarios.
+
+  predictors <- estres_available_predictors(market_data, predictors, min_non_na = min_obs)
+
+  if (length(predictors) == 0) {
+    return(tibble::tibble())
+  }
+
+  model_data <- market_data |>
+    dplyr::select(dplyr::all_of(c("date", dependent, predictors))) |>
+    tidyr::drop_na() |>
+    dplyr::arrange(.data$date)
+
+  if (nrow(model_data) < min_obs + 20) {
+    return(tibble::tibble())
+  }
+
+  formula <- stats::as.formula(paste(dependent, "~", paste(predictors, collapse = " + ")))
+  eval_idx <- seq(from = min_obs + 1L, to = nrow(model_data), by = step)
+  preds <- vector("list", length(eval_idx))
+
+  for (j in seq_along(eval_idx)) {
+    i <- eval_idx[[j]]
+    train <- model_data[seq_len(i - 1L), , drop = FALSE]
+    test  <- model_data[i, , drop = FALSE]
+
+    fit <- tryCatch(stats::lm(formula, data = train), error = function(e) NULL)
+    if (is.null(fit)) next
+
+    pred <- tryCatch(as.numeric(stats::predict(fit, newdata = test)), error = function(e) NA_real_)
+    actual <- as.numeric(test[[dependent]][[1]])
+    res <- actual - pred
+    res_sd <- stats::sd(stats::resid(fit), na.rm = TRUE)
+    z <- if (is.finite(res_sd) && res_sd > 0) res / res_sd else NA_real_
+
+    preds[[j]] <- tibble::tibble(
+      date = test$date[[1]],
+      model = model_name,
+      dependent_variable = dependent,
+      actual = actual,
+      fitted_oos = pred,
+      residual_oos = res,
+      z_oos = z,
+      n_train = stats::nobs(fit),
+      predictors_used = paste(predictors, collapse = ", ")
+    )
+  }
+
+  dplyr::bind_rows(preds)
+}
+
+estres_construct_oos_index <- function(market_data, min_obs = 500, step = 5) {
+  fx_candidates <- c(
+    "trend", "l_cpi_rel_chl_us", "l_pcu", "l_wti", "l_vix",
+    "l_dtw", "l_cny", "l_eq_nsq", "l_eq_cny"
+  )
+
+  y10_candidates <- c("trend", "y10_tsy", "l_vix", "l_dtw", "l_cny", "l_eq_nsq")
+
+  fx_oos <- estres_expanding_oos_component(
+    market_data = market_data,
+    dependent = "l_clp",
+    predictors = fx_candidates,
+    model_name = "Tipo de cambio USD/CLP",
+    min_obs = min_obs,
+    step = step
+  )
+
+  y10_oos <- estres_expanding_oos_component(
+    market_data = market_data,
+    dependent = "y10_clp",
+    predictors = y10_candidates,
+    model_name = "Tasa soberana 10Y CLP",
+    min_obs = min_obs,
+    step = step
+  )
+
+  if (nrow(fx_oos) == 0 || nrow(y10_oos) == 0) {
+    return(tibble::tibble())
+  }
+
+  fx_out <- fx_oos |>
+    dplyr::transmute(
+      date,
+      fitted_clp_oos = exp(.data$fitted_oos),
+      res_fx_oos = .data$residual_oos,
+      z_fx_oos = .data$z_oos,
+      n_train_fx = .data$n_train
+    ) |>
+    dplyr::left_join(market_data |> dplyr::select(date, clp), by = "date")
+
+  y10_out <- y10_oos |>
+    dplyr::transmute(
+      date,
+      y10_clp_oos = .data$actual,
+      fitted_y10_clp_oos = .data$fitted_oos,
+      res_y10_oos = .data$residual_oos,
+      z_y10_oos = .data$z_oos,
+      n_train_y10 = .data$n_train
+    )
+
+  fx_out |>
+    dplyr::inner_join(y10_out, by = "date") |>
+    dplyr::arrange(.data$date) |>
+    dplyr::mutate(
+      stress_market_oos = (.data$z_fx_oos + .data$z_y10_oos) / 2,
+      stress_market_oos_30d = estres_roll_mean(.data$stress_market_oos, width = 6, min_obs = 4),
+      regime_oos = estres_classify_regime(.data$stress_market_oos_30d)
+    )
+}
+
 estres_model_coefficients <- function(fx_fit, y10_fit) {
   dplyr::bind_rows(
     broom::tidy(fx_fit$model, conf.int = TRUE) |>
@@ -192,7 +314,7 @@ estres_detect_episodes <- function(index_data, n = 15, min_distance_days = 30) {
     dplyr::arrange(.data$date)
 }
 
-estres_write_outputs <- function(index_data, fx_fit, y10_fit, root = estres_project_root()) {
+estres_write_outputs <- function(index_data, fx_fit, y10_fit, root = estres_project_root(), oos_index = NULL) {
   estres_make_dirs(root)
 
   processed_dir <- file.path(root, "data/processed/estres_financiero")
@@ -214,6 +336,10 @@ estres_write_outputs <- function(index_data, fx_fit, y10_fit, root = estres_proj
 
   readr::write_csv(latest, file.path(processed_dir, "latest_snapshot.csv"))
   readr::write_csv(estres_detect_episodes(index_data), file.path(table_dir, "episodios_estres.csv"))
+
+  if (!is.null(oos_index) && nrow(oos_index) > 0) {
+    readr::write_csv(oos_index, file.path(processed_dir, "stress_index_chile_oos.csv"))
+  }
 
   invisible(index_data)
 }

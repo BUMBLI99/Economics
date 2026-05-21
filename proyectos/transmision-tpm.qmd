@@ -160,12 +160,13 @@ if (has_outputs) {
 
 ## Qué muestra la nota
 
-La lectura del monitor se organiza en cuatro bloques:
+La lectura del monitor se organiza en cinco bloques:
 
-1. **Canales principales:** TPM comparada con cuatro tasas bancarias representativas.
-2. **Pass-through acumulado:** traspaso estimado a distintos horizontes bajo una especificación base del proyecto.
-3. **Asimetría:** contraste entre alzas y bajas de TPM para cada producto.
-4. **Local projections:** trayectoria de la respuesta dinámica horizonte por horizonte.
+1. **Lectura ejecutiva:** tabla corta con productos clave y velocidad/intensidad del traspaso.
+2. **Canales principales:** TPM comparada con cuatro tasas bancarias representativas.
+3. **Pass-through acumulado:** traspaso estimado a distintos horizontes bajo una especificación base del proyecto.
+4. **Asimetría:** contraste entre alzas y bajas de TPM para cada producto.
+5. **Local projections:** trayectoria de la respuesta dinámica horizonte por horizonte.
 
 ## Datos usados
 
@@ -329,6 +330,42 @@ if (has_outputs) {
     )
 }
 ```
+
+### Lectura ejecutiva de productos clave
+
+Para una lectura rápida, conviene concentrarse primero en fondeo bancario, tasas comerciales, consumo y vivienda. El criterio de clasificación combina el pass-through acumulado a seis meses y la velocidad inicial de ajuste.
+
+```{r executive-pass-through-table}
+if (has_outputs) {
+  key_products <- c("cap_90_1y", "comercial_total", "consumo_total", "vivienda_uf")
+
+  pt_summary |>
+    filter(product %in% key_products) |>
+    mutate(
+      Producto = label_product(product),
+      Lectura = case_when(
+        h6 >= 0.85 & h1 >= 0.35 ~ "Traspaso alto y rápido",
+        h6 >= 0.85 ~ "Traspaso alto, más gradual",
+        h6 >= 0.50 ~ "Traspaso intermedio",
+        TRUE ~ "Traspaso bajo o lento"
+      ),
+      `1 mes` = round(h1, 2),
+      `3 meses` = round(h3, 2),
+      `6 meses` = round(h6, 2)
+    ) |>
+    select(Producto, `1 mes`, `3 meses`, `6 meses`, Lectura) |>
+    arrange(desc(`6 meses`)) |>
+    knitr::kable(
+      caption = "Resumen ejecutivo del pass-through para tasas clave. Coeficientes en pp por pp de TPM."
+    )
+}
+```
+
+::: {.callout-note}
+## Interpretación económica breve
+
+La transmisión hacia captaciones debería ser relativamente rápida porque refleja el costo marginal de fondeo de la banca. Las tasas comerciales suelen responder con más intensidad que consumo cuando existe mayor indexación al costo financiero y menor rigidez comercial. Vivienda UF, en cambio, no debe leerse como un canal mecánico de TPM: incorpora expectativas de inflación, tasas reales largas, premios por plazo y condiciones de originación hipotecaria.
+:::
 
 ### Comparación de especificaciones a 6 meses
 
@@ -603,11 +640,17 @@ if (has_outputs && !is.null(rob_tbl)) {
 
 ## Principales cautelas metodológicas
 
-- Las tasas promedio bancarias agregadas mezclan precio puro con composición de operaciones.
-- La TPM es endógena al escenario macroeconómico; por eso los coeficientes deben leerse como pass-through condicional.
-- Las tasas de vivienda y otras tasas largas incorporan expectativas, inflación esperada, premios por plazo y condiciones de fondeo.
-- Las asimetrías entre alzas y bajas pueden reflejar fricciones bancarias, pero también diferencias de contexto macro entre ciclos.
-- El episodio 2021-2023 probablemente concentra una parte importante de la variación útil para identificación.
+- Las tasas promedio bancarias agregadas mezclan precio puro con composición de operaciones: cambia la tasa, pero también cambia quién pide crédito, en qué plazo y con qué riesgo.
+- La TPM es endógena al escenario macroeconómico; por eso los coeficientes deben leerse como pass-through condicional, no como efecto causal puro de una sorpresa monetaria.
+- Las tasas de vivienda y otras tasas largas incorporan expectativas de inflación, tasas reales largas, premios por plazo y condiciones de fondeo; no deberían compararse mecánicamente con productos de corto plazo.
+- Las asimetrías entre alzas y bajas pueden reflejar fricciones bancarias, pero también diferencias de contexto macro entre ciclos de contracción, normalización y relajamiento monetario.
+- El episodio 2021-2023 probablemente concentra una parte importante de la variación útil para identificación; por eso la robustez por muestra es central y no solo decorativa.
+
+::: {.callout-important}
+## Próxima mejora metodológica
+
+La extensión más relevante es reemplazar cambios observados de TPM por medidas de **sorpresa de política monetaria** o expectativas de TPM. Eso permitiría acercar la interpretación a shocks monetarios y reduciría la endogeneidad entre política, inflación esperada y actividad.
+:::
 
 ## Próximos pasos
 

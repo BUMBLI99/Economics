@@ -131,6 +131,114 @@ plot_nowcast <- function(resultado, variable = c("total", "no_minero"), ultimos_
     )
 }
 
+
+
+compute_pseudo_oos_metrics <- function(resultado,
+                                        min_train = 60,
+                                        start_fraction = 0.65) {
+  # Evaluación pseudo out-of-sample con ventana expansiva.
+  # Para cada fecha de evaluación, el modelo se re-estima usando solo
+  # información disponible hasta t-1. Luego se compara contra benchmarks
+  # simples: AR(1), promedio móvil de tres meses y estacional naïve t-12.
+
+  eval_one <- function(data, model, target, lag1_var, variable_label) {
+    data <- data |>
+      dplyr::arrange(.data$Periodo) |>
+      dplyr::filter(!is.na(.data[[target]]))
+
+    n <- nrow(data)
+    if (n < min_train + 12) {
+      return(tibble::tibble(
+        variable = character(), modelo = character(), n = integer(),
+        rmse = numeric(), mae = numeric(), inicio = as.Date(character()),
+        fin = as.Date(character()), nota = character()
+      ))
+    }
+
+    start_i <- max(min_train + 1L, ceiling(n * start_fraction))
+    formula_main <- stats::formula(model)
+
+    preds <- vector("list", n - start_i + 1L)
+
+    for (i in seq(from = start_i, to = n)) {
+      train <- data[seq_len(i - 1L), , drop = FALSE]
+      test  <- data[i, , drop = FALSE]
+
+      pred_model <- tryCatch({
+        fit_i <- stats::lm(formula_main, data = train)
+        as.numeric(stats::predict(fit_i, newdata = test))
+      }, error = function(e) NA_real_)
+
+      pred_ar1 <- tryCatch({
+        if (!lag1_var %in% names(train)) {
+          NA_real_
+        } else {
+          fit_ar <- stats::lm(stats::as.formula(paste(target, "~", lag1_var)), data = train)
+          as.numeric(stats::predict(fit_ar, newdata = test))
+        }
+      }, error = function(e) NA_real_)
+
+      hist_y <- train[[target]]
+      pred_ma3 <- mean(utils::tail(hist_y[!is.na(hist_y)], 3), na.rm = TRUE)
+
+      pred_seasonal <- if (i > 12) data[[target]][i - 12L] else NA_real_
+
+      preds[[i - start_i + 1L]] <- tibble::tibble(
+        Periodo = test$Periodo[[1]],
+        observado = test[[target]][[1]],
+        `Modelo principal` = pred_model,
+        `Benchmark AR(1)` = pred_ar1,
+        `Promedio móvil 3m` = pred_ma3,
+        `Naive estacional t-12` = pred_seasonal
+      )
+    }
+
+    pred_tbl <- dplyr::bind_rows(preds) |>
+      tidyr::pivot_longer(
+        cols = -c(Periodo, observado),
+        names_to = "modelo",
+        values_to = "predicho"
+      ) |>
+      dplyr::filter(!is.na(.data$observado), !is.na(.data$predicho))
+
+    pred_tbl |>
+      dplyr::group_by(.data$modelo) |>
+      dplyr::summarise(
+        n = dplyr::n(),
+        rmse = sqrt(mean((.data$observado - .data$predicho)^2, na.rm = TRUE)),
+        mae = mean(abs(.data$observado - .data$predicho), na.rm = TRUE),
+        inicio = min(.data$Periodo, na.rm = TRUE),
+        fin = max(.data$Periodo, na.rm = TRUE),
+        .groups = "drop"
+      ) |>
+      dplyr::mutate(
+        variable = variable_label,
+        rmse = round(.data$rmse, 2),
+        mae = round(.data$mae, 2),
+        nota = "Pseudo out-of-sample con ventana expansiva; menor RMSE/MAE indica mejor desempeño predictivo."
+      ) |>
+      dplyr::select(variable, modelo, n, rmse, mae, inicio, fin, nota) |>
+      dplyr::arrange(.data$variable, .data$rmse)
+  }
+
+  dplyr::bind_rows(
+    eval_one(
+      resultado$Data,
+      resultado$modelo_imacec,
+      target = "imacec",
+      lag1_var = "imacec_lag1",
+      variable_label = "IMACEC total"
+    ),
+    eval_one(
+      resultado$Data,
+      resultado$modelo_imacec_nm,
+      target = "imacec_nm",
+      lag1_var = "imacec_nm_lag1",
+      variable_label = "IMACEC no minero"
+    )
+  )
+}
+
 export_imacec_outputs <- function(resultado,
                                   output_dir = "data/processed",
                                   fig_dir = "assets/img/imacec",
@@ -141,10 +249,12 @@ export_imacec_outputs <- function(resultado,
   history <- make_history_table(resultado)
   summary_tbl <- make_summary_table(resultado)
   metrics <- compute_fit_metrics(resultado)
+  oos_metrics <- compute_pseudo_oos_metrics(resultado)
 
   readr::write_csv(history, file.path(output_dir, "imacec_nowcast_history.csv"))
   readr::write_csv(summary_tbl, file.path(output_dir, "imacec_nowcast_summary.csv"))
   readr::write_csv(metrics, file.path(output_dir, "imacec_model_metrics.csv"))
+  readr::write_csv(oos_metrics, file.path(output_dir, "imacec_oos_metrics.csv"))
   readr::write_csv(resultado$proyeccion, file.path(output_dir, "imacec_projection.csv"))
 
   g_total <- plot_nowcast(resultado, "total", ultimos_meses)
@@ -157,6 +267,7 @@ export_imacec_outputs <- function(resultado,
     history = history,
     summary = summary_tbl,
     metrics = metrics,
+    oos_metrics = oos_metrics,
     g_total = g_total,
     g_nm = g_nm
   ))

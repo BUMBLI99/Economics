@@ -1,5 +1,5 @@
 # ============================================================
-# Configuración del proyecto IPoM / IRIS
+# Configuración del proyecto de escenarios macroeconómicos en IRIS
 # ============================================================
 # Este archivo centraliza nombres de variables, etiquetas y rutas
 # usadas por la página Quarto y por los scripts de actualización.
@@ -47,11 +47,11 @@ ipom_variables <- tibble::tribble(
 
 ipom_scenarios <- tibble::tribble(
   ~source_file,                         ~scenario_id,              ~scenario,                              ~scenario_order,
-  "fcast_ipom_exact.csv",               "baseline_ipom",           "Baseline IPoM identificado",            1,
+  "fcast_ipom_exact.csv",               "baseline_ipom",           "Escenario de referencia identificado",  1,
   "fcast_alt_iran_fin_anticipado.csv",  "iran_fin_anticipado",     "Fin anticipado conflicto Irán",         2,
   "fcast_alt_riskoff.csv",              "riskoff_global",          "Risk-off global",                       3,
   "fcast_alt_escenario.csv",            "escenario_alternativo",   "Escenario alternativo",                 4,
-  "fcast_base_model.csv",               "baseline_modelo",         "Baseline modelo sin juicio IPoM",       5
+  "fcast_base_model.csv",               "baseline_modelo",         "Escenario base del modelo sin juicio",  5
 )
 
 ipom_core_variables <- c(

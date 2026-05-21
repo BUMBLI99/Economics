@@ -26,7 +26,15 @@ run_estres_financiero_pipeline <- function(root = estres_project_root(),
   y10_fit <- estres_estimate_y10_model(market_data)
   index_data <- estres_construct_index(fx_fit, y10_fit)
 
-  estres_write_outputs(index_data, fx_fit, y10_fit, root = root)
+  oos_index <- tryCatch(
+    estres_construct_oos_index(market_data, min_obs = 500, step = 5),
+    error = function(e) {
+      warning("No se pudo construir el índice pseudo out-of-sample: ", conditionMessage(e))
+      tibble::tibble()
+    }
+  )
+
+  estres_write_outputs(index_data, fx_fit, y10_fit, root = root, oos_index = oos_index)
   estres_save_figures(index_data, root = root)
 
   latest <- index_data |>
@@ -51,6 +59,9 @@ run_estres_financiero_pipeline <- function(root = estres_project_root(),
   message("Fuente efectiva: ", source_label)
   message("Última observación completa: ", as.character(latest$date[[1]]))
   message("Índice 30d: ", round(latest$stress_market_30d[[1]], 3), " | Régimen: ", latest$regime[[1]])
+  if (exists("oos_index") && nrow(oos_index) > 0) {
+    message("Índice pseudo out-of-sample generado: data/processed/estres_financiero/stress_index_chile_oos.csv")
+  }
   message("Predictores FX usados: ", paste(fx_fit$predictors, collapse = ", "))
   message("Predictores 10Y usados: ", paste(y10_fit$predictors, collapse = ", "))
 
@@ -60,6 +71,7 @@ run_estres_financiero_pipeline <- function(root = estres_project_root(),
     fx_fit = fx_fit,
     y10_fit = y10_fit,
     index_data = index_data,
+    oos_index = oos_index,
     latest = latest
   ))
 }

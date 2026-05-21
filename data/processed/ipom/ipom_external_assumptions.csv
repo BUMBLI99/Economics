@@ -1,88 +1,88 @@
 period,date,scenario_id,scenario,scenario_order,variable,value,label,unit,block,baseline_value,difference_vs_baseline
-2025Q1,2025-01-01,baseline_ipom,Baseline IPoM identificado,1,CRECSC,3.4881,Crecimiento socios comerciales,% anual,Bloque externo,3.4881,0
-2025Q2,2025-04-01,baseline_ipom,Baseline IPoM identificado,1,CRECSC,3.274572,Crecimiento socios comerciales,% anual,Bloque externo,3.274572,0
-2025Q3,2025-07-01,baseline_ipom,Baseline IPoM identificado,1,CRECSC,2.980154,Crecimiento socios comerciales,% anual,Bloque externo,2.980154,0
-2025Q4,2025-10-01,baseline_ipom,Baseline IPoM identificado,1,CRECSC,2.86465,Crecimiento socios comerciales,% anual,Bloque externo,2.86465,0
-2026Q1,2026-01-01,baseline_ipom,Baseline IPoM identificado,1,CRECSC,2.7,Crecimiento socios comerciales,% anual,Bloque externo,2.7,0
-2026Q2,2026-04-01,baseline_ipom,Baseline IPoM identificado,1,CRECSC,2.7,Crecimiento socios comerciales,% anual,Bloque externo,2.7,0
-2026Q3,2026-07-01,baseline_ipom,Baseline IPoM identificado,1,CRECSC,2.7,Crecimiento socios comerciales,% anual,Bloque externo,2.7,0
-2026Q4,2026-10-01,baseline_ipom,Baseline IPoM identificado,1,CRECSC,2.7,Crecimiento socios comerciales,% anual,Bloque externo,2.7,0
-2027Q1,2027-01-01,baseline_ipom,Baseline IPoM identificado,1,CRECSC,2.9,Crecimiento socios comerciales,% anual,Bloque externo,2.9,0
-2027Q2,2027-04-01,baseline_ipom,Baseline IPoM identificado,1,CRECSC,2.9,Crecimiento socios comerciales,% anual,Bloque externo,2.9,0
-2027Q3,2027-07-01,baseline_ipom,Baseline IPoM identificado,1,CRECSC,2.9,Crecimiento socios comerciales,% anual,Bloque externo,2.9,0
-2027Q4,2027-10-01,baseline_ipom,Baseline IPoM identificado,1,CRECSC,2.9,Crecimiento socios comerciales,% anual,Bloque externo,2.9,0
-2025Q1,2025-01-01,baseline_ipom,Baseline IPoM identificado,1,FFR,4.33,Federal Funds Rate,% anual,Bloque externo,4.33,0
-2025Q2,2025-04-01,baseline_ipom,Baseline IPoM identificado,1,FFR,4.33,Federal Funds Rate,% anual,Bloque externo,4.33,0
-2025Q3,2025-07-01,baseline_ipom,Baseline IPoM identificado,1,FFR,4.29333333,Federal Funds Rate,% anual,Bloque externo,4.29333333,0
-2025Q4,2025-10-01,baseline_ipom,Baseline IPoM identificado,1,FFR,3.89666667,Federal Funds Rate,% anual,Bloque externo,3.89666667,0
-2026Q1,2026-01-01,baseline_ipom,Baseline IPoM identificado,1,FFR,3.6,Federal Funds Rate,% anual,Bloque externo,3.6,0
-2026Q2,2026-04-01,baseline_ipom,Baseline IPoM identificado,1,FFR,3.6,Federal Funds Rate,% anual,Bloque externo,3.6,0
-2026Q3,2026-07-01,baseline_ipom,Baseline IPoM identificado,1,FFR,3.6,Federal Funds Rate,% anual,Bloque externo,3.6,0
-2026Q4,2026-10-01,baseline_ipom,Baseline IPoM identificado,1,FFR,3.6,Federal Funds Rate,% anual,Bloque externo,3.6,0
-2027Q1,2027-01-01,baseline_ipom,Baseline IPoM identificado,1,FFR,3.4,Federal Funds Rate,% anual,Bloque externo,3.4,0
-2027Q2,2027-04-01,baseline_ipom,Baseline IPoM identificado,1,FFR,3.4,Federal Funds Rate,% anual,Bloque externo,3.4,0
-2027Q3,2027-07-01,baseline_ipom,Baseline IPoM identificado,1,FFR,3.4,Federal Funds Rate,% anual,Bloque externo,3.4,0
-2027Q4,2027-10-01,baseline_ipom,Baseline IPoM identificado,1,FFR,3.4,Federal Funds Rate,% anual,Bloque externo,3.4,0
-2025Q1,2025-01-01,baseline_ipom,Baseline IPoM identificado,1,L_PCU_NOM,4.2392627,Cobre nominal,nivel aproximado,Bloque externo,4.2392627,0
-2025Q2,2025-04-01,baseline_ipom,Baseline IPoM identificado,1,L_PCU_NOM,4.3175468,Cobre nominal,nivel aproximado,Bloque externo,4.3175468,0
-2025Q3,2025-07-01,baseline_ipom,Baseline IPoM identificado,1,L_PCU_NOM,4.44170272,Cobre nominal,nivel aproximado,Bloque externo,4.44170272,0
-2025Q4,2025-10-01,baseline_ipom,Baseline IPoM identificado,1,L_PCU_NOM,5.03497052,Cobre nominal,nivel aproximado,Bloque externo,5.03497052,0
-2026Q1,2026-01-01,baseline_ipom,Baseline IPoM identificado,1,L_PCU_NOM,5.25087494,Cobre nominal,nivel aproximado,Bloque externo,5.25087494,0
-2026Q2,2026-04-01,baseline_ipom,Baseline IPoM identificado,1,L_PCU_NOM,5.46559142,Cobre nominal,nivel aproximado,Bloque externo,5.46559142,0
-2026Q3,2026-07-01,baseline_ipom,Baseline IPoM identificado,1,L_PCU_NOM,5.54176763,Cobre nominal,nivel aproximado,Bloque externo,5.54176763,0
-2026Q4,2026-10-01,baseline_ipom,Baseline IPoM identificado,1,L_PCU_NOM,5.46428494,Cobre nominal,nivel aproximado,Bloque externo,5.46428494,0
-2027Q1,2027-01-01,baseline_ipom,Baseline IPoM identificado,1,L_PCU_NOM,5.21284319,Cobre nominal,nivel aproximado,Bloque externo,5.21284319,0
-2027Q2,2027-04-01,baseline_ipom,Baseline IPoM identificado,1,L_PCU_NOM,5.13777248,Cobre nominal,nivel aproximado,Bloque externo,5.13777248,0
-2027Q3,2027-07-01,baseline_ipom,Baseline IPoM identificado,1,L_PCU_NOM,5.08782581,Cobre nominal,nivel aproximado,Bloque externo,5.08782581,0
-2027Q4,2027-10-01,baseline_ipom,Baseline IPoM identificado,1,L_PCU_NOM,5.06280225,Cobre nominal,nivel aproximado,Bloque externo,5.06280225,0
-2025Q1,2025-01-01,baseline_ipom,Baseline IPoM identificado,1,L_WTI_NOM,71.8366665,WTI nominal,nivel aproximado,Bloque externo,71.8366665,0
-2025Q2,2025-04-01,baseline_ipom,Baseline IPoM identificado,1,L_WTI_NOM,64.6266665,WTI nominal,nivel aproximado,Bloque externo,64.6266665,0
-2025Q3,2025-07-01,baseline_ipom,Baseline IPoM identificado,1,L_WTI_NOM,65.7366665,WTI nominal,nivel aproximado,Bloque externo,65.7366665,0
-2025Q4,2025-10-01,baseline_ipom,Baseline IPoM identificado,1,L_WTI_NOM,59.6400001,WTI nominal,nivel aproximado,Bloque externo,59.6400001,0
-2026Q1,2026-01-01,baseline_ipom,Baseline IPoM identificado,1,L_WTI_NOM,83.1504435,WTI nominal,nivel aproximado,Bloque externo,83.1504435,0
-2026Q2,2026-04-01,baseline_ipom,Baseline IPoM identificado,1,L_WTI_NOM,89.0397159,WTI nominal,nivel aproximado,Bloque externo,89.0397159,0
-2026Q3,2026-07-01,baseline_ipom,Baseline IPoM identificado,1,L_WTI_NOM,87.934257,WTI nominal,nivel aproximado,Bloque externo,87.934257,0
-2026Q4,2026-10-01,baseline_ipom,Baseline IPoM identificado,1,L_WTI_NOM,86.0248268,WTI nominal,nivel aproximado,Bloque externo,86.0248268,0
-2027Q1,2027-01-01,baseline_ipom,Baseline IPoM identificado,1,L_WTI_NOM,78.3871087,WTI nominal,nivel aproximado,Bloque externo,78.3871087,0
-2027Q2,2027-04-01,baseline_ipom,Baseline IPoM identificado,1,L_WTI_NOM,75.5732123,WTI nominal,nivel aproximado,Bloque externo,75.5732123,0
-2027Q3,2027-07-01,baseline_ipom,Baseline IPoM identificado,1,L_WTI_NOM,73.6637832,WTI nominal,nivel aproximado,Bloque externo,73.6637832,0
-2027Q4,2027-10-01,baseline_ipom,Baseline IPoM identificado,1,L_WTI_NOM,72.7593162,WTI nominal,nivel aproximado,Bloque externo,72.7593162,0
-2025Q1,2025-01-01,baseline_ipom,Baseline IPoM identificado,1,L_Z_INDEX,104.620721,Tipo de cambio real índice,índice,Bloque externo,104.620721,0
-2025Q2,2025-04-01,baseline_ipom,Baseline IPoM identificado,1,L_Z_INDEX,103.958546,Tipo de cambio real índice,índice,Bloque externo,103.958546,0
-2025Q3,2025-07-01,baseline_ipom,Baseline IPoM identificado,1,L_Z_INDEX,105.766116,Tipo de cambio real índice,índice,Bloque externo,105.766116,0
-2025Q4,2025-10-01,baseline_ipom,Baseline IPoM identificado,1,L_Z_INDEX,103.330267,Tipo de cambio real índice,índice,Bloque externo,103.330267,0
-2026Q1,2026-01-01,baseline_ipom,Baseline IPoM identificado,1,L_Z_INDEX,104.499993,Tipo de cambio real índice,índice,Bloque externo,104.499993,0
-2026Q2,2026-04-01,baseline_ipom,Baseline IPoM identificado,1,L_Z_INDEX,103.50004,Tipo de cambio real índice,índice,Bloque externo,103.50004,0
-2026Q3,2026-07-01,baseline_ipom,Baseline IPoM identificado,1,L_Z_INDEX,103.000001,Tipo de cambio real índice,índice,Bloque externo,103.000001,0
-2026Q4,2026-10-01,baseline_ipom,Baseline IPoM identificado,1,L_Z_INDEX,102.6875,Tipo de cambio real índice,índice,Bloque externo,102.6875,0
-2027Q1,2027-01-01,baseline_ipom,Baseline IPoM identificado,1,L_Z_INDEX,102.249999,Tipo de cambio real índice,índice,Bloque externo,102.249999,0
-2027Q2,2027-04-01,baseline_ipom,Baseline IPoM identificado,1,L_Z_INDEX,102.000019,Tipo de cambio real índice,índice,Bloque externo,102.000019,0
-2027Q3,2027-07-01,baseline_ipom,Baseline IPoM identificado,1,L_Z_INDEX,101.494032,Tipo de cambio real índice,índice,Bloque externo,101.494032,0
-2027Q4,2027-10-01,baseline_ipom,Baseline IPoM identificado,1,L_Z_INDEX,101.494032,Tipo de cambio real índice,índice,Bloque externo,101.494032,0
-2025Q1,2025-01-01,baseline_ipom,Baseline IPoM identificado,1,UST10,4.45333333,Treasury 10 años,% anual,Bloque externo,4.45333333,0
-2025Q2,2025-04-01,baseline_ipom,Baseline IPoM identificado,1,UST10,4.36,Treasury 10 años,% anual,Bloque externo,4.36,0
-2025Q3,2025-07-01,baseline_ipom,Baseline IPoM identificado,1,UST10,4.25666667,Treasury 10 años,% anual,Bloque externo,4.25666667,0
-2025Q4,2025-10-01,baseline_ipom,Baseline IPoM identificado,1,UST10,4.09666667,Treasury 10 años,% anual,Bloque externo,4.09666667,0
-2026Q1,2026-01-01,baseline_ipom,Baseline IPoM identificado,1,UST10,4.25,Treasury 10 años,% anual,Bloque externo,4.25,0
-2026Q2,2026-04-01,baseline_ipom,Baseline IPoM identificado,1,UST10,4.5,Treasury 10 años,% anual,Bloque externo,4.5,0
-2026Q3,2026-07-01,baseline_ipom,Baseline IPoM identificado,1,UST10,4.55,Treasury 10 años,% anual,Bloque externo,4.55,0
-2026Q4,2026-10-01,baseline_ipom,Baseline IPoM identificado,1,UST10,4.65,Treasury 10 años,% anual,Bloque externo,4.65,0
-2027Q1,2027-01-01,baseline_ipom,Baseline IPoM identificado,1,UST10,4.63,Treasury 10 años,% anual,Bloque externo,4.63,0
-2027Q2,2027-04-01,baseline_ipom,Baseline IPoM identificado,1,UST10,4.55,Treasury 10 años,% anual,Bloque externo,4.55,0
-2027Q3,2027-07-01,baseline_ipom,Baseline IPoM identificado,1,UST10,4.37,Treasury 10 años,% anual,Bloque externo,4.37,0
-2027Q4,2027-10-01,baseline_ipom,Baseline IPoM identificado,1,UST10,4.2,Treasury 10 años,% anual,Bloque externo,4.2,0
-2025Q1,2025-01-01,baseline_ipom,Baseline IPoM identificado,1,VIX,18.5211111,VIX,índice,Bloque externo,18.5211111,0
-2025Q2,2025-04-01,baseline_ipom,Baseline IPoM identificado,1,VIX,23.5614063,VIX,índice,Bloque externo,23.5614063,0
-2025Q3,2025-07-01,baseline_ipom,Baseline IPoM identificado,1,VIX,15.9830303,VIX,índice,Bloque externo,15.9830303,0
-2025Q4,2025-10-01,baseline_ipom,Baseline IPoM identificado,1,VIX,17.7452308,VIX,índice,Bloque externo,17.7452308,0
-2026Q1,2026-01-01,baseline_ipom,Baseline IPoM identificado,1,VIX,24,VIX,índice,Bloque externo,24,0
-2026Q2,2026-04-01,baseline_ipom,Baseline IPoM identificado,1,VIX,22,VIX,índice,Bloque externo,22,0
-2026Q3,2026-07-01,baseline_ipom,Baseline IPoM identificado,1,VIX,21,VIX,índice,Bloque externo,21,0
-2026Q4,2026-10-01,baseline_ipom,Baseline IPoM identificado,1,VIX,19,VIX,índice,Bloque externo,19,0
-2027Q1,2027-01-01,baseline_ipom,Baseline IPoM identificado,1,VIX,18.5,VIX,índice,Bloque externo,18.5,0
-2027Q2,2027-04-01,baseline_ipom,Baseline IPoM identificado,1,VIX,18,VIX,índice,Bloque externo,18,0
-2027Q3,2027-07-01,baseline_ipom,Baseline IPoM identificado,1,VIX,17.25,VIX,índice,Bloque externo,17.25,0
-2027Q4,2027-10-01,baseline_ipom,Baseline IPoM identificado,1,VIX,17,VIX,índice,Bloque externo,17,0
+2025Q1,2025-01-01,baseline_ipom,Escenario de referencia identificado,1,CRECSC,3.4881,Crecimiento socios comerciales,% anual,Bloque externo,3.4881,0
+2025Q2,2025-04-01,baseline_ipom,Escenario de referencia identificado,1,CRECSC,3.274572,Crecimiento socios comerciales,% anual,Bloque externo,3.274572,0
+2025Q3,2025-07-01,baseline_ipom,Escenario de referencia identificado,1,CRECSC,2.980154,Crecimiento socios comerciales,% anual,Bloque externo,2.980154,0
+2025Q4,2025-10-01,baseline_ipom,Escenario de referencia identificado,1,CRECSC,2.86465,Crecimiento socios comerciales,% anual,Bloque externo,2.86465,0
+2026Q1,2026-01-01,baseline_ipom,Escenario de referencia identificado,1,CRECSC,2.7,Crecimiento socios comerciales,% anual,Bloque externo,2.7,0
+2026Q2,2026-04-01,baseline_ipom,Escenario de referencia identificado,1,CRECSC,2.7,Crecimiento socios comerciales,% anual,Bloque externo,2.7,0
+2026Q3,2026-07-01,baseline_ipom,Escenario de referencia identificado,1,CRECSC,2.7,Crecimiento socios comerciales,% anual,Bloque externo,2.7,0
+2026Q4,2026-10-01,baseline_ipom,Escenario de referencia identificado,1,CRECSC,2.7,Crecimiento socios comerciales,% anual,Bloque externo,2.7,0
+2027Q1,2027-01-01,baseline_ipom,Escenario de referencia identificado,1,CRECSC,2.9,Crecimiento socios comerciales,% anual,Bloque externo,2.9,0
+2027Q2,2027-04-01,baseline_ipom,Escenario de referencia identificado,1,CRECSC,2.9,Crecimiento socios comerciales,% anual,Bloque externo,2.9,0
+2027Q3,2027-07-01,baseline_ipom,Escenario de referencia identificado,1,CRECSC,2.9,Crecimiento socios comerciales,% anual,Bloque externo,2.9,0
+2027Q4,2027-10-01,baseline_ipom,Escenario de referencia identificado,1,CRECSC,2.9,Crecimiento socios comerciales,% anual,Bloque externo,2.9,0
+2025Q1,2025-01-01,baseline_ipom,Escenario de referencia identificado,1,FFR,4.33,Federal Funds Rate,% anual,Bloque externo,4.33,0
+2025Q2,2025-04-01,baseline_ipom,Escenario de referencia identificado,1,FFR,4.33,Federal Funds Rate,% anual,Bloque externo,4.33,0
+2025Q3,2025-07-01,baseline_ipom,Escenario de referencia identificado,1,FFR,4.29333333,Federal Funds Rate,% anual,Bloque externo,4.29333333,0
+2025Q4,2025-10-01,baseline_ipom,Escenario de referencia identificado,1,FFR,3.89666667,Federal Funds Rate,% anual,Bloque externo,3.89666667,0
+2026Q1,2026-01-01,baseline_ipom,Escenario de referencia identificado,1,FFR,3.6,Federal Funds Rate,% anual,Bloque externo,3.6,0
+2026Q2,2026-04-01,baseline_ipom,Escenario de referencia identificado,1,FFR,3.6,Federal Funds Rate,% anual,Bloque externo,3.6,0
+2026Q3,2026-07-01,baseline_ipom,Escenario de referencia identificado,1,FFR,3.6,Federal Funds Rate,% anual,Bloque externo,3.6,0
+2026Q4,2026-10-01,baseline_ipom,Escenario de referencia identificado,1,FFR,3.6,Federal Funds Rate,% anual,Bloque externo,3.6,0
+2027Q1,2027-01-01,baseline_ipom,Escenario de referencia identificado,1,FFR,3.4,Federal Funds Rate,% anual,Bloque externo,3.4,0
+2027Q2,2027-04-01,baseline_ipom,Escenario de referencia identificado,1,FFR,3.4,Federal Funds Rate,% anual,Bloque externo,3.4,0
+2027Q3,2027-07-01,baseline_ipom,Escenario de referencia identificado,1,FFR,3.4,Federal Funds Rate,% anual,Bloque externo,3.4,0
+2027Q4,2027-10-01,baseline_ipom,Escenario de referencia identificado,1,FFR,3.4,Federal Funds Rate,% anual,Bloque externo,3.4,0
+2025Q1,2025-01-01,baseline_ipom,Escenario de referencia identificado,1,L_PCU_NOM,4.2392627,Cobre nominal,nivel aproximado,Bloque externo,4.2392627,0
+2025Q2,2025-04-01,baseline_ipom,Escenario de referencia identificado,1,L_PCU_NOM,4.3175468,Cobre nominal,nivel aproximado,Bloque externo,4.3175468,0
+2025Q3,2025-07-01,baseline_ipom,Escenario de referencia identificado,1,L_PCU_NOM,4.44170272,Cobre nominal,nivel aproximado,Bloque externo,4.44170272,0
+2025Q4,2025-10-01,baseline_ipom,Escenario de referencia identificado,1,L_PCU_NOM,5.03497052,Cobre nominal,nivel aproximado,Bloque externo,5.03497052,0
+2026Q1,2026-01-01,baseline_ipom,Escenario de referencia identificado,1,L_PCU_NOM,5.25087494,Cobre nominal,nivel aproximado,Bloque externo,5.25087494,0
+2026Q2,2026-04-01,baseline_ipom,Escenario de referencia identificado,1,L_PCU_NOM,5.46559142,Cobre nominal,nivel aproximado,Bloque externo,5.46559142,0
+2026Q3,2026-07-01,baseline_ipom,Escenario de referencia identificado,1,L_PCU_NOM,5.54176763,Cobre nominal,nivel aproximado,Bloque externo,5.54176763,0
+2026Q4,2026-10-01,baseline_ipom,Escenario de referencia identificado,1,L_PCU_NOM,5.46428494,Cobre nominal,nivel aproximado,Bloque externo,5.46428494,0
+2027Q1,2027-01-01,baseline_ipom,Escenario de referencia identificado,1,L_PCU_NOM,5.21284319,Cobre nominal,nivel aproximado,Bloque externo,5.21284319,0
+2027Q2,2027-04-01,baseline_ipom,Escenario de referencia identificado,1,L_PCU_NOM,5.13777248,Cobre nominal,nivel aproximado,Bloque externo,5.13777248,0
+2027Q3,2027-07-01,baseline_ipom,Escenario de referencia identificado,1,L_PCU_NOM,5.08782581,Cobre nominal,nivel aproximado,Bloque externo,5.08782581,0
+2027Q4,2027-10-01,baseline_ipom,Escenario de referencia identificado,1,L_PCU_NOM,5.06280225,Cobre nominal,nivel aproximado,Bloque externo,5.06280225,0
+2025Q1,2025-01-01,baseline_ipom,Escenario de referencia identificado,1,L_WTI_NOM,71.8366665,WTI nominal,nivel aproximado,Bloque externo,71.8366665,0
+2025Q2,2025-04-01,baseline_ipom,Escenario de referencia identificado,1,L_WTI_NOM,64.6266665,WTI nominal,nivel aproximado,Bloque externo,64.6266665,0
+2025Q3,2025-07-01,baseline_ipom,Escenario de referencia identificado,1,L_WTI_NOM,65.7366665,WTI nominal,nivel aproximado,Bloque externo,65.7366665,0
+2025Q4,2025-10-01,baseline_ipom,Escenario de referencia identificado,1,L_WTI_NOM,59.6400001,WTI nominal,nivel aproximado,Bloque externo,59.6400001,0
+2026Q1,2026-01-01,baseline_ipom,Escenario de referencia identificado,1,L_WTI_NOM,83.1504435,WTI nominal,nivel aproximado,Bloque externo,83.1504435,0
+2026Q2,2026-04-01,baseline_ipom,Escenario de referencia identificado,1,L_WTI_NOM,89.0397159,WTI nominal,nivel aproximado,Bloque externo,89.0397159,0
+2026Q3,2026-07-01,baseline_ipom,Escenario de referencia identificado,1,L_WTI_NOM,87.934257,WTI nominal,nivel aproximado,Bloque externo,87.934257,0
+2026Q4,2026-10-01,baseline_ipom,Escenario de referencia identificado,1,L_WTI_NOM,86.0248268,WTI nominal,nivel aproximado,Bloque externo,86.0248268,0
+2027Q1,2027-01-01,baseline_ipom,Escenario de referencia identificado,1,L_WTI_NOM,78.3871087,WTI nominal,nivel aproximado,Bloque externo,78.3871087,0
+2027Q2,2027-04-01,baseline_ipom,Escenario de referencia identificado,1,L_WTI_NOM,75.5732123,WTI nominal,nivel aproximado,Bloque externo,75.5732123,0
+2027Q3,2027-07-01,baseline_ipom,Escenario de referencia identificado,1,L_WTI_NOM,73.6637832,WTI nominal,nivel aproximado,Bloque externo,73.6637832,0
+2027Q4,2027-10-01,baseline_ipom,Escenario de referencia identificado,1,L_WTI_NOM,72.7593162,WTI nominal,nivel aproximado,Bloque externo,72.7593162,0
+2025Q1,2025-01-01,baseline_ipom,Escenario de referencia identificado,1,L_Z_INDEX,104.620721,Tipo de cambio real índice,índice,Bloque externo,104.620721,0
+2025Q2,2025-04-01,baseline_ipom,Escenario de referencia identificado,1,L_Z_INDEX,103.958546,Tipo de cambio real índice,índice,Bloque externo,103.958546,0
+2025Q3,2025-07-01,baseline_ipom,Escenario de referencia identificado,1,L_Z_INDEX,105.766116,Tipo de cambio real índice,índice,Bloque externo,105.766116,0
+2025Q4,2025-10-01,baseline_ipom,Escenario de referencia identificado,1,L_Z_INDEX,103.330267,Tipo de cambio real índice,índice,Bloque externo,103.330267,0
+2026Q1,2026-01-01,baseline_ipom,Escenario de referencia identificado,1,L_Z_INDEX,104.499993,Tipo de cambio real índice,índice,Bloque externo,104.499993,0
+2026Q2,2026-04-01,baseline_ipom,Escenario de referencia identificado,1,L_Z_INDEX,103.50004,Tipo de cambio real índice,índice,Bloque externo,103.50004,0
+2026Q3,2026-07-01,baseline_ipom,Escenario de referencia identificado,1,L_Z_INDEX,103.000001,Tipo de cambio real índice,índice,Bloque externo,103.000001,0
+2026Q4,2026-10-01,baseline_ipom,Escenario de referencia identificado,1,L_Z_INDEX,102.6875,Tipo de cambio real índice,índice,Bloque externo,102.6875,0
+2027Q1,2027-01-01,baseline_ipom,Escenario de referencia identificado,1,L_Z_INDEX,102.249999,Tipo de cambio real índice,índice,Bloque externo,102.249999,0
+2027Q2,2027-04-01,baseline_ipom,Escenario de referencia identificado,1,L_Z_INDEX,102.000019,Tipo de cambio real índice,índice,Bloque externo,102.000019,0
+2027Q3,2027-07-01,baseline_ipom,Escenario de referencia identificado,1,L_Z_INDEX,101.494032,Tipo de cambio real índice,índice,Bloque externo,101.494032,0
+2027Q4,2027-10-01,baseline_ipom,Escenario de referencia identificado,1,L_Z_INDEX,101.494032,Tipo de cambio real índice,índice,Bloque externo,101.494032,0
+2025Q1,2025-01-01,baseline_ipom,Escenario de referencia identificado,1,UST10,4.45333333,Treasury 10 años,% anual,Bloque externo,4.45333333,0
+2025Q2,2025-04-01,baseline_ipom,Escenario de referencia identificado,1,UST10,4.36,Treasury 10 años,% anual,Bloque externo,4.36,0
+2025Q3,2025-07-01,baseline_ipom,Escenario de referencia identificado,1,UST10,4.25666667,Treasury 10 años,% anual,Bloque externo,4.25666667,0
+2025Q4,2025-10-01,baseline_ipom,Escenario de referencia identificado,1,UST10,4.09666667,Treasury 10 años,% anual,Bloque externo,4.09666667,0
+2026Q1,2026-01-01,baseline_ipom,Escenario de referencia identificado,1,UST10,4.25,Treasury 10 años,% anual,Bloque externo,4.25,0
+2026Q2,2026-04-01,baseline_ipom,Escenario de referencia identificado,1,UST10,4.5,Treasury 10 años,% anual,Bloque externo,4.5,0
+2026Q3,2026-07-01,baseline_ipom,Escenario de referencia identificado,1,UST10,4.55,Treasury 10 años,% anual,Bloque externo,4.55,0
+2026Q4,2026-10-01,baseline_ipom,Escenario de referencia identificado,1,UST10,4.65,Treasury 10 años,% anual,Bloque externo,4.65,0
+2027Q1,2027-01-01,baseline_ipom,Escenario de referencia identificado,1,UST10,4.63,Treasury 10 años,% anual,Bloque externo,4.63,0
+2027Q2,2027-04-01,baseline_ipom,Escenario de referencia identificado,1,UST10,4.55,Treasury 10 años,% anual,Bloque externo,4.55,0
+2027Q3,2027-07-01,baseline_ipom,Escenario de referencia identificado,1,UST10,4.37,Treasury 10 años,% anual,Bloque externo,4.37,0
+2027Q4,2027-10-01,baseline_ipom,Escenario de referencia identificado,1,UST10,4.2,Treasury 10 años,% anual,Bloque externo,4.2,0
+2025Q1,2025-01-01,baseline_ipom,Escenario de referencia identificado,1,VIX,18.5211111,VIX,índice,Bloque externo,18.5211111,0
+2025Q2,2025-04-01,baseline_ipom,Escenario de referencia identificado,1,VIX,23.5614063,VIX,índice,Bloque externo,23.5614063,0
+2025Q3,2025-07-01,baseline_ipom,Escenario de referencia identificado,1,VIX,15.9830303,VIX,índice,Bloque externo,15.9830303,0
+2025Q4,2025-10-01,baseline_ipom,Escenario de referencia identificado,1,VIX,17.7452308,VIX,índice,Bloque externo,17.7452308,0
+2026Q1,2026-01-01,baseline_ipom,Escenario de referencia identificado,1,VIX,24,VIX,índice,Bloque externo,24,0
+2026Q2,2026-04-01,baseline_ipom,Escenario de referencia identificado,1,VIX,22,VIX,índice,Bloque externo,22,0
+2026Q3,2026-07-01,baseline_ipom,Escenario de referencia identificado,1,VIX,21,VIX,índice,Bloque externo,21,0
+2026Q4,2026-10-01,baseline_ipom,Escenario de referencia identificado,1,VIX,19,VIX,índice,Bloque externo,19,0
+2027Q1,2027-01-01,baseline_ipom,Escenario de referencia identificado,1,VIX,18.5,VIX,índice,Bloque externo,18.5,0
+2027Q2,2027-04-01,baseline_ipom,Escenario de referencia identificado,1,VIX,18,VIX,índice,Bloque externo,18,0
+2027Q3,2027-07-01,baseline_ipom,Escenario de referencia identificado,1,VIX,17.25,VIX,índice,Bloque externo,17.25,0
+2027Q4,2027-10-01,baseline_ipom,Escenario de referencia identificado,1,VIX,17,VIX,índice,Bloque externo,17,0
 2025Q1,2025-01-01,escenario_alternativo,Escenario alternativo,4,CRECSC,3.4881,Crecimiento socios comerciales,% anual,Bloque externo,3.4881,0
 2025Q2,2025-04-01,escenario_alternativo,Escenario alternativo,4,CRECSC,3.274572,Crecimiento socios comerciales,% anual,Bloque externo,3.274572,0
 2025Q3,2025-07-01,escenario_alternativo,Escenario alternativo,4,CRECSC,2.980154,Crecimiento socios comerciales,% anual,Bloque externo,2.980154,0

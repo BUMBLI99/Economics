@@ -52,6 +52,7 @@ latest_file <- estres_path("data", "processed", "estres_financiero", "latest_sna
 episodes_file <- estres_path("outputs", "tables", "estres_financiero", "episodios_estres.csv", root = repo_root)
 coefs_file <- estres_path("data", "processed", "estres_financiero", "model_coefficients.csv", root = repo_root)
 update_log_file <- estres_path("data", "processed", "estres_financiero", "data_update_log.csv", root = repo_root)
+oos_file <- estres_path("data", "processed", "estres_financiero", "stress_index_chile_oos.csv", root = repo_root)
 
 if (!file.exists(index_file) || !file.exists(diag_file) || !file.exists(latest_file)) {
   stop(
@@ -93,6 +94,13 @@ update_log <- if (file.exists(update_log_file)) {
     n_obs = nrow(stress),
     updated_at = NA_character_
   )
+}
+
+oos_stress <- if (file.exists(oos_file)) {
+  readr::read_csv(oos_file, show_col_types = FALSE) |>
+    dplyr::mutate(date = as.Date(date))
+} else {
+  tibble::tibble()
 }
 
 fmt_num <- function(x, digits = 2) {
@@ -252,6 +260,73 @@ Stress_t = \frac{z^{FX}_t + z^{10Y}_t}{2}
 $$
 
 Para la lectura visual se usa también una media móvil de 30 días. Los umbrales son descriptivos: sobre 0,75 se clasifica como estrés moderado y sobre 1,5 como estrés alto.
+
+## Chequeo pseudo out-of-sample
+
+::: {.callout-warning}
+## Riesgo de look-ahead bias
+
+La versión principal del índice usa modelos estimados en **muestra completa**. Eso es útil para una lectura histórica limpia, pero tiene una limitación importante: los residuos de años anteriores se calculan con parámetros estimados usando información posterior. Por lo tanto, la serie completa no debe interpretarse como una señal estrictamente disponible en tiempo real.
+:::
+
+Para reducir ese problema, el pipeline ahora puede construir un chequeo pseudo out-of-sample con ventana expansiva: cada predicción se estima usando solo datos anteriores a la fecha evaluada. Esta versión es más exigente y menos suave, pero se acerca mejor a la pregunta operacional: *qué habría señalado el monitor con la información disponible en ese momento*.
+
+```{r oos-stress-summary}
+#| echo: false
+if (nrow(oos_stress) > 0) {
+  oos_stress |>
+    dplyr::filter(!is.na(stress_market_oos_30d)) |>
+    dplyr::slice_tail(n = 1) |>
+    dplyr::transmute(
+      Fecha = fmt_date(date),
+      `Índice OOS 30d` = fmt_num(stress_market_oos_30d, 2),
+      Régimen = regime_oos,
+      `Obs. entrenamiento FX` = n_train_fx,
+      `Obs. entrenamiento 10Y` = n_train_y10
+    ) |>
+    knitr::kable(caption = "Última lectura disponible del chequeo pseudo out-of-sample.")
+} else {
+  cat("Ejecuta `source(\"scripts/06_update_estres_financiero.R\")` para generar `stress_index_chile_oos.csv` y activar esta tabla.")
+}
+```
+
+```{r oos-stress-plot}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 6.4
+if (nrow(oos_stress) > 0) {
+  p_oos <- ggplot2::ggplot(oos_stress, ggplot2::aes(x = date)) +
+    ggplot2::geom_line(
+      ggplot2::aes(y = stress_market_oos, colour = "Índice OOS"),
+      linewidth = 0.45,
+      alpha = 0.45,
+      na.rm = TRUE
+    ) +
+    ggplot2::geom_line(
+      ggplot2::aes(y = stress_market_oos_30d, colour = "Media móvil OOS"),
+      linewidth = 1.05,
+      na.rm = TRUE
+    ) +
+    ggplot2::geom_hline(yintercept = 0, colour = "#c8c0b3", linewidth = 0.45) +
+    ggplot2::geom_hline(yintercept = 0.75, colour = "#c8c0b3", linewidth = 0.35, linetype = "dashed") +
+    ggplot2::geom_hline(yintercept = 1.50, colour = "#c8c0b3", linewidth = 0.35, linetype = "dotted") +
+    ggplot2::scale_colour_manual(values = c(
+      "Media móvil OOS" = "#27384a",
+      "Índice OOS" = "#8a94a3"
+    )) +
+    ggplot2::scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+    ggplot2::labs(
+      title = "Chequeo pseudo out-of-sample del índice de estrés",
+      subtitle = "Predicciones con ventana expansiva; cada residuo usa solo datos anteriores a la fecha evaluada",
+      x = NULL,
+      y = "Z-score agregado"
+    ) +
+    ggplot2::guides(colour = ggplot2::guide_legend(nrow = 1, byrow = TRUE)) +
+    plot_theme
+
+  estres_plotly_widget(p_oos)
+}
+```
 
 ## Índice agregado
 
@@ -488,7 +563,7 @@ La ventaja de esta aproximación es que evita confundir todo movimiento del USD/
 ## Limitaciones y extensiones
 
 ::: {.mu-note}
-Este índice no debe interpretarse como evidencia causal ni como estimación estructural del premio por riesgo chileno. Es una herramienta de seguimiento descriptivo basada en residuos de modelos lineales estimados en muestra completa.
+Este índice no debe interpretarse como evidencia causal ni como estimación estructural del premio por riesgo chileno. Es una herramienta de seguimiento descriptivo basada en residuos de modelos lineales. La versión de muestra completa es útil para lectura histórica; la versión pseudo out-of-sample es la referencia más prudente para seguimiento operacional.
 :::
 
 Las principales extensiones naturales son: incorporar spreads corporativos, mercado monetario, IPSA/volatilidad local, CDS soberano, liquidez bancaria y variables de crédito. El bloque de retrocompra/retroventa de CMF del proyecto original puede agregarse como un segundo módulo de liquidez bancaria, pero conviene mantenerlo separado inicialmente porque la muestra es más corta y el concepto económico es distinto.

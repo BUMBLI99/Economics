@@ -1,0 +1,9 @@
+variable,modelo,n,rmse,mae,inicio,fin,nota
+IMACEC no minero,Modelo principal,27,1.09,0.8,2024-01-01,2026-03-01,Datos demo/proxy; regenerar con Rscript scripts/01_update_imacec.R para evaluación pseudo-OOS real.
+IMACEC no minero,Promedio móvil 3m,27,1.93,1.57,2024-01-01,2026-03-01,Datos demo/proxy; regenerar con Rscript scripts/01_update_imacec.R para evaluación pseudo-OOS real.
+IMACEC no minero,Benchmark AR(1),27,2.73,2.25,2024-01-01,2026-03-01,Datos demo/proxy; regenerar con Rscript scripts/01_update_imacec.R para evaluación pseudo-OOS real.
+IMACEC no minero,Naive estacional t-12,27,3.0,2.41,2024-01-01,2026-03-01,Datos demo/proxy; regenerar con Rscript scripts/01_update_imacec.R para evaluación pseudo-OOS real.
+IMACEC total,Modelo principal,27,1.16,0.9,2024-01-01,2026-03-01,Datos demo/proxy; regenerar con Rscript scripts/01_update_imacec.R para evaluación pseudo-OOS real.
+IMACEC total,Promedio móvil 3m,27,2.1,1.7,2024-01-01,2026-03-01,Datos demo/proxy; regenerar con Rscript scripts/01_update_imacec.R para evaluación pseudo-OOS real.
+IMACEC total,Benchmark AR(1),27,2.59,2.1,2024-01-01,2026-03-01,Datos demo/proxy; regenerar con Rscript scripts/01_update_imacec.R para evaluación pseudo-OOS real.
+IMACEC total,Naive estacional t-12,27,3.21,2.58,2024-01-01,2026-03-01,Datos demo/proxy; regenerar con Rscript scripts/01_update_imacec.R para evaluación pseudo-OOS real.
