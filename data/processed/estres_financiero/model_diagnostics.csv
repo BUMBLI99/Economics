@@ -1,3 +1,3 @@
 model,dependent_variable,predictors_used,n_obs,r_squared,adj_r_squared,sample_start,sample_end,residual_sd
-Tipo de cambio USD/CLP,log(USDCLP),"trend, l_cpi_rel_chl_us, l_pcu, l_wti, l_vix, l_dtw, l_cny, l_eq_nsq, l_eq_cny",3374,0.9587264615566908,0.9586160388914144,2012-10-05,2026-04-30,0.04038108563289466
-Tasa soberana 10Y CLP,10YCLP,"trend, y10_tsy, l_vix, l_dtw, l_cny, l_eq_nsq",3377,0.6610280386384033,0.6604245277279672,2012-10-05,2026-05-05,0.594778420353024
+Tipo de cambio USD/CLP,log(USDCLP),"trend, l_cpi_rel_chl_us, l_pcu, l_wti, l_vix, l_dtw, l_cny, l_eq_nsq, l_eq_cny",3385,0.9586155799832169,0.9585052215298389,2012-10-05,2026-05-18,0.0404502657463756
+Tasa soberana 10Y CLP,10YCLP,"trend, y10_tsy, l_vix, l_dtw, l_cny, l_eq_nsq",3386,0.6600026172277883,0.65939889296125,2012-10-05,2026-05-18,0.5953371114615085
