@@ -223,6 +223,26 @@ donde:
 
 Como contraste, la nota también reporta una especificación más parsimoniosa y otra que incorpora referencias de curva soberana/real como robustez adicional.
 
+### Lectura conceptual del canal monetario
+
+La TPM no se transmite mecánicamente ni de forma idéntica a todos los productos. La tasa de política afecta con mayor fuerza el costo de fondeo de corto plazo, pero el traspaso observado hacia tasas bancarias depende de expectativas de TPM, inflación esperada, tasas soberanas, riesgo de crédito, liquidez bancaria, competencia, plazo y composición de nuevas operaciones.
+
+En ese sentido, los coeficientes de esta página deben leerse como **pass-through condicional**: describen comovimientos dinámicos entre TPM y tasas de mercado después de controlar por un conjunto limitado de variables macro, pero no equivalen a una identificación causal pura de sorpresas monetarias.
+
+### Extensión natural: convergencia parcial
+
+Una forma más cercana a la literatura de tasas bancarias es modelar la tasa de cada producto como una convergencia gradual hacia una tasa de referencia o equilibrio:
+
+$$
+\Delta r^j_t =
+\lambda_j (r^j_{t-1}-r^{j,*}_{t-1})
++ \sum_{h=0}^{H}\beta_{j,h}\Delta i_{t-h}
++ \Gamma_j X_t
++ \varepsilon^j_t
+$$
+
+Donde $r^j_t$ es la tasa bancaria del producto $j$, $i_t$ es la TPM, $X_t$ resume controles macrofinancieros y $r^{j,*}_t$ representa una tasa de referencia compatible con condiciones de fondeo, riesgo y plazo. Esta extensión permitiría separar mejor velocidad de ajuste, nivel de equilibrio y eventuales asimetrías entre ciclos de alza y baja.
+
 ## Canales principales: TPM y tasas clave
 
 En vez de superponer todas las tasas en un solo eje, el gráfico siguiente muestra cuatro segmentos centrales del mecanismo de transmisión. Cada panel usa su propia escala vertical, de modo que la comparación relevante es la **dinámica temporal** dentro de cada segmento.
@@ -641,8 +661,10 @@ if (has_outputs && !is.null(rob_tbl)) {
 ## Principales cautelas metodológicas
 
 - Las tasas promedio bancarias agregadas mezclan precio puro con composición de operaciones: cambia la tasa, pero también cambia quién pide crédito, en qué plazo y con qué riesgo.
-- La TPM es endógena al escenario macroeconómico; por eso los coeficientes deben leerse como pass-through condicional, no como efecto causal puro de una sorpresa monetaria.
-- Las tasas de vivienda y otras tasas largas incorporan expectativas de inflación, tasas reales largas, premios por plazo y condiciones de fondeo; no deberían compararse mecánicamente con productos de corto plazo.
+- La TPM observada es endógena al escenario macroeconómico; por eso los coeficientes deben leerse como pass-through condicional, no como efecto causal puro de una sorpresa monetaria.
+- Para tasas largas, especialmente vivienda UF, importa la trayectoria esperada de TPM y no solo su cambio contemporáneo. Por eso una mejora natural es incorporar swaps cámara, curva soberana, expectativas de inflación o sorpresas de política.
+- Riesgo de crédito, liquidez bancaria, spreads soberanos/corporativos, actividad e inflación esperada pueden desplazar las tasas bancarias independientemente de la TPM.
+- Las tasas de vivienda y otras tasas largas incorporan expectativas de inflación, tasas reales largas, premios por plazo y condiciones de originación; no deberían compararse mecánicamente con productos de corto plazo.
 - Las asimetrías entre alzas y bajas pueden reflejar fricciones bancarias, pero también diferencias de contexto macro entre ciclos de contracción, normalización y relajamiento monetario.
 - El episodio 2021-2023 probablemente concentra una parte importante de la variación útil para identificación; por eso la robustez por muestra es central y no solo decorativa.
 

@@ -92,12 +92,6 @@ plot_start <- "2018Q1"
 Proyecto aplicado avanzado. Esta página está pensada como vitrina técnica del flujo de simulación: el modelo y los escenarios se ejecutan en **Matlab/IRIS**, mientras que **Quarto** presenta resultados procesados en formato limpio. La versión pública no pretende replicar el modelo oficial del Banco Central de Chile; es un ejercicio académico/aplicado de escenarios macroeconómicos.
 :::
 
-::: {.callout-important}
-## Convención de lectura pública
-
-En esta página uso **escenario base** como nombre público. Algunos archivos internos conservan identificadores como `baseline_ipom` porque forman parte del pipeline histórico de Matlab/IRIS, pero esos nombres no implican acceso, reproducción ni validación del modelo oficial del Banco Central de Chile.
-:::
-
 ## Pregunta económica
 
 El objetivo es evaluar cómo cambian las trayectorias de inflación, tasa de política monetaria y brecha de actividad cuando se reemplazan algunos supuestos externos del escenario base por una trayectoria alternativa.
@@ -130,18 +124,92 @@ Matlab exporta bases `fcast_*.csv`; R las convierte a formato largo y Quarto gen
 
 :::
 
+## Estructura conceptual del modelo
+
+El ejercicio se organiza como un modelo macroeconómico semi-estructural: una ecuación de demanda agregada para la brecha de actividad, una curva de Phillips para inflación subyacente, un bloque de inflación residual/total y una regla de política monetaria. La notación siguiente resume la lógica económica del sistema; los nombres internos y coeficientes específicos se mantienen en los archivos IRIS/Matlab del proyecto.
+
+::: {.mu-equation-panel}
+### Brecha de actividad
+
+$$
+\tilde y_t =
+\rho_y \tilde y_{t-1}
+- \phi_r (i_{t-1} - i^n_t)
++ \phi_x x_t
++ \phi_z \tilde z_t
++ \phi_c c_t
++ \varepsilon^y_t
+$$
+
+La brecha de actividad depende de su propia persistencia, de la posición de la tasa de política frente a una referencia neutral, de condiciones externas, del tipo de cambio real y de condiciones financieras domésticas.
+:::
+
+::: {.mu-equation-panel}
+### Inflación subyacente
+
+$$
+\pi^{core}_t =
+\alpha_1 \pi^{core}_{t-1}
++ \alpha_4 \pi^{core}_{t-4}
++ (1-\alpha_1-\alpha_4)E_t\pi^{core}_{t+h}
++ \kappa_y \tilde y_t
++ \kappa_z \tilde z_t
++ \kappa_f \Delta p^{food}_t
++ s_t
++ \varepsilon^\pi_t
+$$
+
+La inflación subyacente combina inercia, expectativas, holguras de actividad, traspaso cambiario real, presiones de alimentos y estacionalidad.
+:::
+
+::: {.mu-equation-panel}
+### Inflación total e identidades
+
+$$
+\pi_t = \pi^{core}_t + \pi^{res}_t + \varepsilon^{\pi}_t
+$$
+
+$$
+\tilde y_t = y_t - y^*_t, \qquad
+\pi_t = 4(p_t-p_{t-1}), \qquad
+\pi^{12m}_t = p_t-p_{t-4}
+$$
+
+La inflación total se obtiene agregando el componente subyacente y residual; las tasas trimestrales/anuales se expresan de forma consistente con los niveles logarítmicos usados por el modelo.
+:::
+
+::: {.mu-equation-panel}
+### Regla de política monetaria
+
+$$
+i_t =
+\rho_i i_{t-1}
++ (1-\rho_i)
+\left[
+  i^n_t
+  + \phi_\pi (E_t\pi^{core}_{t+h}-\pi^*)
+  + \phi_y \tilde y_t
+\right]
++ \varepsilon^i_t
+$$
+
+La TPM responde gradualmente a la desviación esperada de inflación respecto de la meta y a la brecha de actividad, con suavizamiento de tasas.
+:::
+
 ## Escenarios incluidos
 
 La versión pública mantiene solo dos trayectorias para evitar confusión: un escenario base y un escenario alternativo. Otros experimentos pueden agregarse al pipeline más adelante, pero no se declaran en la página si no existe su archivo IRIS correspondiente.
 
 ```{r escenarios}
 ipom_scenario_meta |>
-  select(
+  transmute(
     Escenario = scenario,
-    `ID interno` = scenario_id,
-    `Archivo fuente` = source_file
+    Lectura = dplyr::case_when(
+      scenario_order == 1 ~ "Trayectoria de referencia para comparación",
+      TRUE ~ "Trayectoria alternativa bajo supuestos externos distintos"
+    )
   ) |>
-  ipom_kable(caption = "Escenarios disponibles en la base procesada.")
+  ipom_kable(caption = "Escenarios presentados en la versión pública del proyecto.")
 ```
 
 ## Resultado principal
@@ -382,7 +450,7 @@ Este ejercicio no es una réplica del modelo oficial del Banco Central de Chile.
 
 ## Próximos pasos
 
-- Consolidar una nomenclatura única para escenarios y mantener separados los nombres públicos de los identificadores internos.
+- Consolidar documentación técnica de la estructura del modelo y del flujo de exogenización/endogenización en IRIS.
 - Documentar formalmente qué variables se exogenizan y qué shocks se endogenizan en cada escenario.
 - Agregar descomposición de shocks y contribuciones por bloque.
 - Construir una tabla de supuestos externos editable desde CSV o YAML.

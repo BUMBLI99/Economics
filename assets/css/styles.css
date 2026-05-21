@@ -743,3 +743,133 @@ th {
     aspect-ratio: 16 / 10;
   }
 }
+
+
+/* ==========================================================
+   Responsive refinements — cards, equations, tables and TOC
+   ========================================================== */
+
+.mu-grid-featured,
+.mu-grid-projects,
+.mu-grid-areas {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+}
+
+.mu-kpi-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+}
+
+.mu-card,
+.mu-area,
+.mu-list-card,
+.mu-contact-card,
+.mu-kpi-card,
+.callout,
+.mu-equation-panel {
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+}
+
+.mu-card p,
+.mu-area p,
+.mu-list-card p,
+.mu-kpi-card p,
+.callout p {
+  overflow-wrap: break-word;
+}
+
+.mu-equation-panel {
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid var(--mu-border);
+  border-radius: var(--mu-radius);
+  box-shadow: var(--mu-shadow-soft);
+  padding: 1.05rem 1.25rem;
+  margin: 1rem 0;
+}
+
+.mu-equation-panel h3 {
+  margin-top: 0;
+  margin-bottom: 0.55rem;
+  font-size: 1.08rem;
+}
+
+.mu-equation-panel .math.display,
+.mu-equation-panel mjx-container[display="true"] {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding: 0.25rem 0;
+}
+
+.cell-output-display,
+.quarto-figure,
+.table-responsive {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.cell-output-display table,
+.quarto-listing table,
+table.gt_table,
+table.table,
+table {
+  width: 100%;
+  max-width: 100%;
+}
+
+.cell-output-display:has(table) {
+  overflow-x: auto;
+}
+
+.html-widget,
+.plotly,
+.js-plotly-plot,
+.plot-container,
+.svg-container {
+  max-width: 100% !important;
+}
+
+@media (max-width: 1100px) {
+  #quarto-margin-sidebar {
+    display: none;
+  }
+
+  .page-columns .content {
+    grid-column: screen-start / screen-end;
+    padding-left: clamp(1rem, 3vw, 2rem);
+    padding-right: clamp(1rem, 3vw, 2rem);
+  }
+
+  main.content {
+    max-width: min(100%, 980px);
+  }
+}
+
+@media (max-width: 900px) {
+  .cell-output-display table,
+  .quarto-listing table,
+  table.gt_table,
+  table.table,
+  table {
+    min-width: 640px;
+    font-size: 0.88rem;
+  }
+
+  .quarto-title h1.title {
+    font-size: clamp(2rem, 7vw, 3.1rem);
+  }
+}
+
+@media (max-width: 720px) {
+  .mu-grid-featured,
+  .mu-grid-projects,
+  .mu-grid-areas,
+  .mu-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mu-equation-panel {
+    padding: 0.95rem 1rem;
+  }
+}

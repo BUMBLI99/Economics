@@ -184,6 +184,30 @@ El pipeline intenta usar datos en vivo; si una API no responde, puede usar la ba
 
 :::
 
+## Cómo leer el signo y la magnitud del índice
+
+El índice está construido como el promedio de dos residuos estandarizados: un residuo cambiario y un residuo de tasa soberana a 10 años.
+
+$$
+Stress_t = \frac{z^{FX}_t + z^{10Y}_t}{2}
+$$
+
+$$
+z^{FX}_t = \frac{\log(USDCLP_t)-\widehat{\log(USDCLP_t)}}{\sigma_{FX}},
+\qquad
+z^{10Y}_t = \frac{y^{10Y}_t-\widehat{y^{10Y}_t}}{\sigma_{10Y}}
+$$
+
+La lectura económica es directa:
+
+- **Valor positivo:** el peso está más depreciado y/o la tasa soberana 10Y está más alta de lo que predicen los fundamentos externos incluidos en el modelo. Se interpreta como mayor presión financiera de mercado.
+- **Valor cercano a cero:** las condiciones locales son similares a las predichas por fundamentos externos observables.
+- **Valor negativo:** el peso está más apreciado y/o la tasa 10Y está más baja de lo predicho. Se interpreta como condiciones relativamente benignas, no como “estrés negativo” en sentido literal.
+- **Valor absoluto mayor a 1:** el desvío agregado es relevante en términos históricos, aproximadamente sobre una desviación estándar del comportamiento residual normalizado.
+- **Valor sobre 1,5 o 2:** episodio de tensión elevada, sujeto a la persistencia del movimiento y a si ambos componentes empujan en la misma dirección.
+
+La versión de 30 días suaviza ruido diario y es la referencia más estable para clasificar regímenes. La versión diaria sirve para detección temprana, pero puede sobrerreaccionar a movimientos transitorios.
+
 ## Datos
 
 La base se actualiza mediante un pipeline reproducible que descarga series desde **BCCh**, **FRED** y **BIS**. Si alguna API falla y está habilitado el respaldo, el script usa la base local depurada del proyecto original `ExchangeReg`. La cobertura efectiva del modelo comienza en octubre de 2012, porque desde esa fecha se dispone simultáneamente de cobre, USD/CLP, tasa 10Y chilena y variables financieras externas.
