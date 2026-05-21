@@ -631,3 +631,115 @@ table caption {
     justify-content: center;
   }
 }
+
+/* ---------------- Visual refinements: project cards and outputs ---------------- */
+
+.mu-card {
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.mu-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--mu-shadow);
+  border-color: rgba(123, 94, 66, 0.34);
+}
+
+.mu-card-thumb {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(200, 192, 179, 0.84);
+  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(251,250,247,0.9));
+  margin-bottom: 1rem;
+  box-shadow: 0 10px 22px rgba(31, 42, 53, 0.06);
+}
+
+.mu-card-thumb p {
+  margin: 0;
+  height: 100%;
+}
+
+.mu-card-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 220ms ease, filter 220ms ease;
+}
+
+.mu-card:hover .mu-card-thumb img {
+  transform: scale(1.018);
+  filter: contrast(1.03) saturate(1.03);
+}
+
+.mu-card-muted:hover {
+  transform: none;
+  box-shadow: var(--mu-shadow-soft);
+}
+
+.cell-output-display:has(.plotly),
+.cell-output-display:has(.js-plotly-plot) {
+  background: rgba(255, 255, 255, 0.70);
+  border: 1px solid rgba(221, 216, 207, 0.78);
+  border-radius: var(--mu-radius);
+  padding: 0.45rem;
+  box-shadow: var(--mu-shadow-soft);
+  overflow: hidden;
+  margin: 1rem 0 1.35rem;
+}
+
+.js-plotly-plot,
+.plotly.html-widget {
+  border-radius: calc(var(--mu-radius) - 6px);
+}
+
+.cell-output-display table,
+.quarto-listing table,
+table.gt_table {
+  background: rgba(255,255,255,0.86) !important;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(31, 42, 53, 0.045);
+}
+
+thead,
+.table thead {
+  background: rgba(39, 56, 74, 0.07);
+}
+
+th {
+  color: var(--mu-accent);
+  font-weight: 800;
+}
+
+.callout {
+  border-radius: 18px;
+  box-shadow: 0 8px 22px rgba(31, 42, 53, 0.04);
+}
+
+.mu-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 0.8rem 0 1.3rem;
+}
+
+.mu-status-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(200, 192, 179, 0.95);
+  background: rgba(255, 255, 255, 0.68);
+  color: var(--mu-accent);
+  padding: 0.34rem 0.72rem;
+  font-weight: 760;
+  font-size: 0.86rem;
+}
+
+@media (max-width: 720px) {
+  .mu-card-thumb {
+    aspect-ratio: 16 / 10;
+  }
+}

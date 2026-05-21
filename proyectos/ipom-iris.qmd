@@ -80,12 +80,7 @@ ipom_external <- read_csv(external_file, show_col_types = FALSE) |>
   mutate(date = as.Date(date))
 ipom_scenario_meta <- read_csv(scenario_meta_file, show_col_types = FALSE)
 
-main_scenarios <- c(
-  "baseline_ipom",
-  "iran_fin_anticipado",
-  "riskoff_global",
-  "escenario_alternativo"
-)
+main_scenarios <- ipom_scenario_meta$scenario_id
 
 forecast_start <- "2025Q1"
 plot_start <- "2018Q1"
@@ -100,16 +95,16 @@ Proyecto aplicado avanzado. Esta página está pensada como vitrina técnica del
 ::: {.callout-important}
 ## Convención de lectura pública
 
-En esta página uso **escenario de referencia** como nombre público. Algunos archivos internos conservan identificadores como `baseline_ipom` porque forman parte del pipeline histórico de Matlab/IRIS, pero esos nombres no implican acceso, reproducción ni validación del modelo oficial del Banco Central de Chile.
+En esta página uso **escenario base** como nombre público. Algunos archivos internos conservan identificadores como `baseline_ipom` porque forman parte del pipeline histórico de Matlab/IRIS, pero esos nombres no implican acceso, reproducción ni validación del modelo oficial del Banco Central de Chile.
 :::
 
 ## Pregunta económica
 
-El objetivo es evaluar cómo cambian las trayectorias de inflación, tasa de política monetaria y brecha de actividad cuando se reemplazan algunos supuestos externos de un escenario de referencia por trayectorias alternativas.
+El objetivo es evaluar cómo cambian las trayectorias de inflación, tasa de política monetaria y brecha de actividad cuando se reemplazan algunos supuestos externos del escenario base por una trayectoria alternativa.
 
 En términos prácticos, el ejercicio responde:
 
-> ¿Qué pasa con inflación, TPM y actividad si el escenario externo cambia respecto de un escenario de referencia identificado, manteniendo constante el resto de la estructura doméstica del ejercicio?
+> ¿Qué pasa con inflación, TPM y actividad si el escenario externo cambia respecto de un escenario base basado en IPoM, manteniendo constante el resto de la estructura doméstica del ejercicio?
 
 ## Arquitectura del proyecto
 
@@ -122,9 +117,9 @@ Modelo semi-estructural en IRIS/Matlab con bloque de demanda, curva de Phillips,
 :::
 
 ::: {.mu-card}
-### 2. Identificación del escenario de referencia
+### 2. Escenario base y alternativa
 
-Se identifica un conjunto de shocks y supuestos que permite construir una trayectoria de referencia. Esa trayectoria funciona como punto de comparación para escenarios alternativos; no debe leerse como réplica oficial ni como proyección institucional.
+Se trabaja con un escenario base basado en IPoM y un escenario alternativo construido sobre supuestos externos distintos. La comparación debe leerse como ejercicio aplicado de simulación, no como réplica oficial ni como proyección institucional.
 :::
 
 ::: {.mu-card}
@@ -136,6 +131,8 @@ Matlab exporta bases `fcast_*.csv`; R las convierte a formato largo y Quarto gen
 :::
 
 ## Escenarios incluidos
+
+La versión pública mantiene solo dos trayectorias para evitar confusión: un escenario base y un escenario alternativo. Otros experimentos pueden agregarse al pipeline más adelante, pero no se declaran en la página si no existe su archivo IRIS correspondiente.
 
 ```{r escenarios}
 ipom_scenario_meta |>
@@ -149,7 +146,7 @@ ipom_scenario_meta |>
 
 ## Resultado principal
 
-El gráfico compara el escenario de referencia identificado con escenarios alternativos. Para evitar sobrecargar la visualización, se muestran tres alternativas principales junto a la referencia.
+El gráfico compara el **escenario base basado en IPoM** con el **escenario alternativo** disponible en el pipeline actual. La página queda preparada para incorporar más escenarios en el futuro, pero la versión pública se concentra deliberadamente en esta comparación binaria para mantener una lectura limpia.
 
 ### Inflación total
 
@@ -157,7 +154,7 @@ El gráfico compara el escenario de referencia identificado con escenarios alter
 ipom_plot_var(
   ipom_long,
   "D4L_CPI",
-  title = "Inflación total: escenario de referencia vs escenarios alternativos",
+  title = "Inflación total: escenario base vs alternativo",
   subtitle = "Variación anual del IPC",
   start_period = plot_start,
   scenarios = main_scenarios
@@ -205,7 +202,7 @@ ipom_plot_var(
 
 ## Bloque internacional
 
-Además de las variables macro domésticas, el ejercicio depende de los supuestos externos que alimentan el modelo. Esta sección muestra las trayectorias de petróleo, cobre, crecimiento internacional y volatilidad financiera usadas en el escenario de referencia y en los escenarios alternativos.
+Además de las variables macro domésticas, el ejercicio depende de los supuestos externos que alimentan el modelo. Esta sección muestra las trayectorias de petróleo, cobre, crecimiento internacional y volatilidad financiera usadas en el escenario base y en los escenarios alternativos.
 
 ### Precio del petróleo WTI nominal
 
@@ -259,7 +256,7 @@ ipom_plot_var(
 )
 ```
 
-### Desvíos externos frente al escenario de referencia
+### Desvíos externos frente al escenario base
 
 ```{r external-diff-table}
 ipom_external |>
@@ -270,19 +267,19 @@ ipom_external |>
   group_by(scenario, label, unit) |>
   summarise(
     `Promedio escenario` = mean(value, na.rm = TRUE),
-    `Desvío promedio vs referencia` = mean(difference_vs_baseline, na.rm = TRUE),
-    `Desvío máximo vs referencia` = max(difference_vs_baseline, na.rm = TRUE),
-    `Desvío mínimo vs referencia` = min(difference_vs_baseline, na.rm = TRUE),
+    `Desvío promedio vs base` = mean(difference_vs_baseline, na.rm = TRUE),
+    `Desvío máximo vs base` = max(difference_vs_baseline, na.rm = TRUE),
+    `Desvío mínimo vs base` = min(difference_vs_baseline, na.rm = TRUE),
     .groups = "drop"
   ) |>
   arrange(scenario, label) |>
   rename(Escenario = scenario, Variable = label, Unidad = unit) |>
-  ipom_kable(caption = "Supuestos externos principales: niveles promedio y desvíos frente al escenario de referencia.")
+  ipom_kable(caption = "Supuestos externos principales: niveles promedio y desvíos frente al escenario base.")
 ```
 
 ## Supuestos externos
 
-La tabla resume los supuestos externos procesados para el período 2025-2027. Las diferencias se calculan contra el escenario de referencia identificado.
+La tabla resume los supuestos externos procesados para el período 2025-2027. Las diferencias se calculan contra el escenario base.
 
 ```{r external-table}
 ipom_external |>
@@ -294,49 +291,49 @@ ipom_external |>
   group_by(scenario, label, unit) |>
   summarise(
     `Promedio escenario` = mean(value, na.rm = TRUE),
-    `Diferencia promedio vs referencia` = mean(difference_vs_baseline, na.rm = TRUE),
-    `Diferencia máxima vs referencia` = max(difference_vs_baseline, na.rm = TRUE),
-    `Diferencia mínima vs referencia` = min(difference_vs_baseline, na.rm = TRUE),
+    `Diferencia promedio vs base` = mean(difference_vs_baseline, na.rm = TRUE),
+    `Diferencia máxima vs base` = max(difference_vs_baseline, na.rm = TRUE),
+    `Diferencia mínima vs base` = min(difference_vs_baseline, na.rm = TRUE),
     .groups = "drop"
   ) |>
   arrange(scenario, label) |>
   rename(Escenario = scenario, Variable = label, Unidad = unit) |>
-  ipom_kable(caption = "Supuestos externos: promedio 2025-2027 y desvíos frente al escenario de referencia.")
+  ipom_kable(caption = "Supuestos externos: promedio 2025-2027 y desvíos frente al escenario base.")
 ```
 
-## Desvíos frente al escenario de referencia
+## Desvíos frente al escenario base
 
-### Inflación total: diferencia respecto del escenario de referencia
+### Inflación total: diferencia respecto del escenario base
 
 ```{r diff-inflacion-total}
 ipom_plot_diff(
   ipom_diff,
   "D4L_CPI",
-  title = "Inflación total: diferencia respecto del escenario de referencia",
+  title = "Inflación total: diferencia respecto del escenario base",
   start_period = forecast_start,
   scenarios = setdiff(main_scenarios, "baseline_ipom")
 )
 ```
 
-### TPM: diferencia respecto del escenario de referencia
+### TPM: diferencia respecto del escenario base
 
 ```{r diff-tpm}
 ipom_plot_diff(
   ipom_diff,
   "TPM",
-  title = "TPM: diferencia respecto del escenario de referencia",
+  title = "TPM: diferencia respecto del escenario base",
   start_period = forecast_start,
   scenarios = setdiff(main_scenarios, "baseline_ipom")
 )
 ```
 
-### Brecha de actividad: diferencia respecto del escenario de referencia
+### Brecha de actividad: diferencia respecto del escenario base
 
 ```{r diff-gap}
 ipom_plot_diff(
   ipom_diff,
   "L_GDP_GAP",
-  title = "Brecha de actividad: diferencia respecto del escenario de referencia",
+  title = "Brecha de actividad: diferencia respecto del escenario base",
   start_period = forecast_start,
   scenarios = setdiff(main_scenarios, "baseline_ipom")
 )
@@ -360,7 +357,7 @@ ipom_diff_summary |>
     Último = ultimo
   ) |>
   arrange(Escenario, Variable) |>
-  ipom_kable(caption = "Desvíos frente al escenario de referencia en 2025-2027.")
+  ipom_kable(caption = "Desvíos frente al escenario base en 2025-2027.")
 ```
 
 ## Lectura metodológica
@@ -368,7 +365,7 @@ ipom_diff_summary |>
 El flujo está separado en dos niveles:
 
 1. **Matlab/IRIS** resuelve el modelo, impone trayectorias exógenas y endogeniza los shocks necesarios para cumplir los supuestos del escenario.
-2. **R/Quarto** lee los outputs, estandariza nombres, calcula diferencias contra el escenario de referencia y genera la visualización web.
+2. **R/Quarto** lee los outputs, estandariza nombres, calcula diferencias contra el escenario base y genera la visualización web.
 
 Esta separación evita que el sitio dependa de una instalación de Matlab al momento de publicarse. Para actualizar el proyecto, se actualizan los CSV de `matlab/ipom/outputs/raw_iris/` y luego se ejecuta:
 

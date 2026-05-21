@@ -18,8 +18,8 @@ bcch_url <- function(series_code, firstdate, lastdate, user = USER_BCCH, pass = 
   base <- "https://si3.bcentral.cl/SieteRestWS/SieteRestWS.ashx"
   paste0(
     base,
-    "?user=", URLencode(user, reserved = TRUE),
-    "&pass=", URLencode(pass, reserved = TRUE),
+    "?user=", utils::URLencode(user, reserved = TRUE),
+    "&pass=", utils::URLencode(pass, reserved = TRUE),
     "&firstdate=", firstdate,
     "&lastdate=", lastdate,
     "&timeseries=", series_code,
@@ -27,17 +27,94 @@ bcch_url <- function(series_code, firstdate, lastdate, user = USER_BCCH, pass = 
   )
 }
 
+bcch_redact_url <- function(url) {
+  url <- sub("([?&]user=)[^&]+", "\\1***", url)
+  url <- sub("([?&]pass=)[^&]+", "\\1***", url)
+  url
+}
+
+bcch_decode_json_text <- function(raw_response) {
+  # La API del BCCh ocasionalmente retorna bytes que hacen fallar a
+  # rjson::fromJSON(file = url) con "input string is invalid UTF-8".
+  # Por eso se descarga como raw, se normaliza encoding y recién ahí se parsea.
+  txt0 <- rawToChar(raw_response)
+  encodings <- c("UTF-8", "latin1", "WINDOWS-1252", "unknown")
+
+  for (enc in encodings) {
+    txt <- tryCatch(
+      if (identical(enc, "unknown")) {
+        iconv(txt0, to = "UTF-8", sub = "")
+      } else {
+        iconv(txt0, from = enc, to = "UTF-8", sub = "")
+      },
+      error = function(e) NA_character_
+    )
+
+    if (is.na(txt) || !nzchar(txt)) next
+
+    txt <- sub("^\\ufeff", "", txt, perl = TRUE)
+    txt <- sub("^\\xEF\\xBB\\xBF", "", txt, perl = TRUE)
+    txt <- trimws(txt)
+
+    if (jsonlite::validate(txt)) return(txt)
+  }
+
+  stop("No se pudo normalizar la respuesta JSON del BCCh a UTF-8.", call. = FALSE)
+}
+
+bcch_from_json_safe <- function(url, tries = 3L, pause_base = 1.25) {
+  last_error <- NULL
+
+  for (i in seq_len(tries)) {
+    out <- tryCatch({
+      resp <- httr::RETRY(
+        verb = "GET",
+        url = url,
+        times = 2,
+        pause_base = pause_base,
+        httr::timeout(60),
+        httr::user_agent("Economics-portfolio/1.0 (+https://mulloav3007.github.io/Economics/)")
+      )
+
+      httr::stop_for_status(resp)
+      raw_response <- httr::content(resp, as = "raw")
+      txt <- bcch_decode_json_text(raw_response)
+      jsonlite::fromJSON(txt, simplifyVector = FALSE)
+    }, error = function(e) {
+      last_error <<- e
+      NULL
+    })
+
+    if (!is.null(out)) return(out)
+    Sys.sleep(pause_base * i)
+  }
+
+  stop(
+    "No se pudo leer la respuesta del BCCh después de ", tries, " intentos. ",
+    "URL redacted: ", bcch_redact_url(url), ". ",
+    "Último error: ", conditionMessage(last_error),
+    call. = FALSE
+  )
+}
+
 fetch_series <- function(code, firstdate = first_date, lastdate = last_date) {
   if (is.null(code) || identical(code, "")) stop("Código de serie vacío o NULL.")
 
-  j <- rjson::fromJSON(file = bcch_url(code, firstdate, lastdate))
+  url <- bcch_url(code, firstdate, lastdate)
+  j <- bcch_from_json_safe(url)
+
+  # Si la API retorna una estructura de error, fallar con mensaje legible.
+  if (!is.null(j$Error) || !is.null(j$error) || !is.null(j$Codigo)) {
+    msg <- paste(c(j$Error, j$error, j$Descripcion, j$description, j$Codigo), collapse = " ")
+    stop("BCCh reportó un error para la serie ", code, ": ", msg, call. = FALSE)
+  }
 
   pull_obs <- function(node) {
     if (is.null(node) || is.null(node$Obs) || length(node$Obs) == 0) return(NULL)
 
     tibble::tibble(
       date  = lubridate::dmy(vapply(node$Obs, function(x) x[["indexDateString"]], character(1))),
-      value = suppressWarnings(as.numeric(vapply(node$Obs, function(x) x[["value"]], character(1))))
+      value = suppressWarnings(as.numeric(gsub(",", ".", vapply(node$Obs, function(x) x[["value"]], character(1)), fixed = TRUE)))
     )
   }
 

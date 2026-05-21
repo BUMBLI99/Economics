@@ -6,7 +6,7 @@
 required_packages <- c(
   "rjson", "dplyr", "tidyr", "lubridate", "readxl", "ggplot2",
   "knitr", "tibble", "readr", "purrr", "stringr", "scales",
-  "gt", "plotly"
+  "gt", "plotly", "httr", "jsonlite"
 )
 
 missing_packages <- required_packages[!vapply(required_packages, requireNamespace, logical(1), quietly = TRUE)]
@@ -34,4 +34,6 @@ suppressPackageStartupMessages({
   library(scales)
   library(gt)
   library(plotly)
+  library(httr)
+  library(jsonlite)
 })

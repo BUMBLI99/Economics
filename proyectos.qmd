@@ -17,6 +17,9 @@ Herramientas y análisis con estructura metodológica más desarrollada, orienta
 ::: {.mu-grid .mu-grid-projects}
 
 ::: {.mu-card}
+::: {.mu-card-thumb}
+![Nowcasting IMACEC](assets/img/imacec/imacec_total_nowcast.png)
+:::
 ::: {.mu-card-kicker}
 Actividad
 :::
@@ -33,12 +36,15 @@ Modelo mensual en R para anticipar la evolución del IMACEC total y no minero us
 :::
 
 ::: {.mu-card}
+::: {.mu-card-thumb}
+![Escenarios macroeconómicos](assets/img/ipom/ipom_scenarios_thumb.png)
+:::
 ::: {.mu-card-kicker}
 Escenarios
 :::
 ### Escenarios macroeconómicos inspirados en IPoM {#escenarios-ipom}
 
-Construcción de escenarios base y alternativos usando supuestos externos, inflación, brecha de actividad, tipo de cambio real y tasa de política monetaria. El objetivo es comparar trayectorias y descomponer canales de transmisión bajo supuestos alternativos.
+Comparación entre un escenario base basado en IPoM y un escenario alternativo usando supuestos externos, inflación, brecha de actividad, tipo de cambio real y tasa de política monetaria. El foco público está en una comparación limpia y prudente, no en una réplica institucional.
 
 ::: {.mu-meta}
 **Estado:** proyecto aplicado avanzado.  
@@ -49,6 +55,9 @@ Construcción de escenarios base y alternativos usando supuestos externos, infla
 :::
 
 ::: {.mu-card}
+::: {.mu-card-thumb}
+![Pass-through acumulado de TPM](assets/img/transmision_tpm/fig_pass_through_cumulative.png)
+:::
 ::: {.mu-card-kicker}
 Política monetaria
 :::
@@ -65,6 +74,9 @@ Análisis visual y econométrico del traspaso de movimientos de la Tasa de Polí
 :::
 
 ::: {.mu-card}
+::: {.mu-card-thumb}
+![Índice de estrés financiero](assets/img/estres_financiero/stress_index_chile.png)
+:::
 ::: {.mu-card-kicker}
 Macrofinanzas
 :::

@@ -158,7 +158,7 @@ ipom_plot_diff <- function(
     differences,
     variable_code,
     title = NULL,
-    ylab = "Diferencia respecto del escenario de referencia",
+    ylab = "Diferencia respecto del escenario base",
     start_period = "2025Q1",
     end_period = NULL,
     scenarios = NULL,
@@ -187,7 +187,7 @@ ipom_plot_diff <- function(
   }
   
   var_label <- plot_data$label[which(!is.na(plot_data$label))[1]]
-  if (is.null(title)) title <- paste0(var_label, ": desvío frente al escenario de referencia")
+  if (is.null(title)) title <- paste0(var_label, ": desvío frente al escenario base")
   
   color_values <- rep(scenario_color, length(unique(plot_data$scenario)))
   names(color_values) <- unique(plot_data$scenario)
