@@ -163,29 +163,33 @@ La inflación subyacente combina inercia, expectativas, holguras de actividad, t
 :::
 
 ::: {.mu-equation-panel}
-### Inflación residual
+### Inflación total y componente residual
 
-En el modelo, la inflación residual (correspondiente a `DLA_CPIRES`) recoge variaciones vinculadas al tipo de cambio real, crecimiento externo, alimentos, petróleo y estacionalidad trimestral:
+La inflación total se obtiene sumando el bloque subyacente y un componente residual que recoge presiones cambiarias, externas, de alimentos, petróleo y estacionalidad:
+
+$$
+\pi_t = \pi^{core}_t + \pi^{res}_t
+$$
 
 $$
 \pi^{res}_t =
-0.2415
-- 0.1130 \, \pi^{res}_{t-4}
-- 0.2905 \, \pi^{res}_{t-1}
-+ 0.2465 \, \tilde z_t
-+ 0.1516 \, (g^{ext}_t - \bar g^{ext})
-- 0.0216 \, (p^{food}_t - p^{food}_{t-4})
-+ 0.0725 \, (p^{oil}_{t-1} - p^{oil}_{t-2})
-- 0.0090 \, (p^{oil}_{t-3} - \bar p^{oil})
+\alpha_0
++ \alpha_1 \, \pi^{res}_{t-4}
++ \alpha_2 \, \pi^{res}_{t-1}
++ \alpha_3 \, \tilde z_t
++ \alpha_4 \, (g^{ext}_t - \bar g^{ext})
++ \alpha_5 \, (p^{food}_t - p^{food}_{t-4})
++ \alpha_6 \, (p^{oil}_{t-1} - p^{oil}_{t-2})
++ \alpha_7 \, (p^{oil}_{t-3} - \bar p^{oil})
 + s_t
 + \varepsilon^{res}_t
 $$
 
 $$
-s_t = -0.7494 \, Q_{1,t} - 1.0626 \, Q_{2,t} + 0.4258 \, Q_{3,t} + 1.3863 \, Q_{4,t}
+s_t = \delta_1 Q_{1,t} + \delta_2 Q_{2,t} + \delta_3 Q_{3,t} + \delta_4 Q_{4,t}
 $$
 
-La inflación total se obtiene agregando el bloque subyacente y este componente residual. En esta representación, $\tilde z_t$ corresponde a la brecha del tipo de cambio real, $g^{ext}_t$ al crecimiento externo y $p^{food}_t$, $p^{oil}_t$ a los componentes relevantes de alimentos y petróleo en logaritmos.
+En esta representación, $\tilde z_t$ corresponde a la brecha del tipo de cambio real, $g^{ext}_t$ al crecimiento externo y $p^{food}_t$, $p^{oil}_t$ a los componentes relevantes de alimentos y petróleo en logaritmos. La idea es mostrar la lógica económica del bloque residual sin sobrecargar la página con la parametrización numérica completa del modelo.
 :::
 
 ::: {.mu-equation-panel}
