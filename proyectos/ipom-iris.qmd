@@ -163,19 +163,29 @@ La inflación subyacente combina inercia, expectativas, holguras de actividad, t
 :::
 
 ::: {.mu-equation-panel}
-### Inflación total e identidades
+### Inflación residual
+
+En el modelo, la inflación residual (correspondiente a `DLA_CPIRES`) recoge variaciones vinculadas al tipo de cambio real, crecimiento externo, alimentos, petróleo y estacionalidad trimestral:
 
 $$
-\pi_t = \pi^{core}_t + \pi^{res}_t + \varepsilon^{\pi}_t
+\pi^{res}_t =
+0.2415
+- 0.1130 \, \pi^{res}_{t-4}
+- 0.2905 \, \pi^{res}_{t-1}
++ 0.2465 \, \tilde z_t
++ 0.1516 \, (g^{ext}_t - \bar g^{ext})
+- 0.0216 \, (p^{food}_t - p^{food}_{t-4})
++ 0.0725 \, (p^{oil}_{t-1} - p^{oil}_{t-2})
+- 0.0090 \, (p^{oil}_{t-3} - \bar p^{oil})
++ s_t
++ \varepsilon^{res}_t
 $$
 
 $$
-\tilde y_t = y_t - y^*_t, \qquad
-\pi_t = 4(p_t-p_{t-1}), \qquad
-\pi^{12m}_t = p_t-p_{t-4}
+s_t = -0.7494 \, Q_{1,t} - 1.0626 \, Q_{2,t} + 0.4258 \, Q_{3,t} + 1.3863 \, Q_{4,t}
 $$
 
-La inflación total se obtiene agregando el componente subyacente y residual; las tasas trimestrales/anuales se expresan de forma consistente con los niveles logarítmicos usados por el modelo.
+La inflación total se obtiene agregando el bloque subyacente y este componente residual. En esta representación, $\tilde z_t$ corresponde a la brecha del tipo de cambio real, $g^{ext}_t$ al crecimiento externo y $p^{food}_t$, $p^{oil}_t$ a los componentes relevantes de alimentos y petróleo en logaritmos.
 :::
 
 ::: {.mu-equation-panel}
