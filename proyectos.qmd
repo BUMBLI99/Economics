@@ -48,7 +48,7 @@ Comparación entre un escenario base basado en IPoM y un escenario alternativo u
 
 ::: {.mu-meta}
 **Estado:** proyecto aplicado avanzado.  
-**Herramientas:** Matlab, IRIS Toolbox, R, Quarto.
+**Herramientas:** Matlab, IRIS Toolbox y R.
 :::
 
 [Ver proyecto ↗](proyectos/ipom-iris.qmd){.mu-card-link}
@@ -86,7 +86,7 @@ Monitor diario que resume desviaciones del USD/CLP y de la tasa soberana 10Y res
 
 ::: {.mu-meta}
 **Estado:** proyecto aplicado con datos reales.  
-**Herramientas:** R, Quarto, modelos lineales, residuos estandarizados, visualización interactiva.
+**Herramientas:** R, modelos lineales, residuos estandarizados y visualización interactiva.
 :::
 
 [Abrir proyecto](proyectos/estres-externo.qmd){.mu-card-link}

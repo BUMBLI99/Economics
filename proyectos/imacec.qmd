@@ -336,14 +336,13 @@ La ventana de evaluación todavía es corta; por lo tanto, estos resultados debe
 
 ## Cómo actualizar el proyecto
 
-Desde la raíz del repositorio `Economics`:
+Desde la raíz del repositorio `Economics`, se actualizan los datos con el script del proyecto y luego se regenera el sitio público antes de subir los cambios a GitHub.
 
 ```bash
 Rscript scripts/01_update_imacec.R
-quarto render
 ```
 
-Luego se suben los cambios a GitHub:
+Luego se publican los cambios:
 
 ```bash
 git add .

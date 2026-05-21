@@ -9,7 +9,7 @@ format:
   html:
     toc: true
     page-layout: full
-description: "Ejercicio académico/aplicado de escenarios macroeconómicos con Matlab/IRIS, supuestos externos y visualización en Quarto."
+description: "Ejercicio académico/aplicado de escenarios macroeconómicos con Matlab/IRIS, supuestos externos y visualización de resultados."
 image: "../assets/img/og/portfolio-og.png"
 ---
 
@@ -89,7 +89,7 @@ plot_start <- "2018Q1"
 ::: {.callout-note}
 ## Estado del proyecto
 
-Proyecto aplicado avanzado. Esta página está pensada como vitrina técnica del flujo de simulación: el modelo y los escenarios se ejecutan en **Matlab/IRIS**, mientras que **Quarto** presenta resultados procesados en formato limpio. La versión pública no pretende replicar el modelo oficial del Banco Central de Chile; es un ejercicio académico/aplicado de escenarios macroeconómicos.
+Proyecto aplicado avanzado. Esta página funciona como vitrina técnica del flujo de simulación: el modelo y los escenarios se ejecutan en **Matlab/IRIS**, y los resultados procesados se presentan en formato limpio. La versión pública no pretende replicar el modelo oficial del Banco Central de Chile; es un ejercicio académico/aplicado de escenarios macroeconómicos.
 :::
 
 ## Pregunta económica
@@ -117,9 +117,9 @@ Se trabaja con un escenario base basado en IPoM y un escenario alternativo const
 :::
 
 ::: {.mu-card}
-### 3. Publicación Quarto
+### 3. Presentación de resultados
 
-Matlab exporta bases `fcast_*.csv`; R las convierte a formato largo y Quarto genera gráficos, tablas y diagnóstico comparado.
+Matlab exporta bases `fcast_*.csv`; R las convierte a formato largo y genera gráficos, tablas y diagnóstico comparado.
 :::
 
 :::
@@ -447,14 +447,11 @@ ipom_diff_summary |>
 El flujo está separado en dos niveles:
 
 1. **Matlab/IRIS** resuelve el modelo, impone trayectorias exógenas y endogeniza los shocks necesarios para cumplir los supuestos del escenario.
-2. **R/Quarto** lee los outputs, estandariza nombres, calcula diferencias contra el escenario base y genera la visualización web.
+2. **R** lee los outputs, estandariza nombres, calcula diferencias contra el escenario base y prepara la visualización web.
 
-Esta separación evita que el sitio dependa de una instalación de Matlab al momento de publicarse. Para actualizar el proyecto, se actualizan los CSV de `matlab/ipom/outputs/raw_iris/` y luego se ejecuta:
+Esta separación evita que la publicación dependa de una instalación de Matlab al momento de actualizarse. Para refrescar el proyecto, se actualizan los CSV de `matlab/ipom/outputs/raw_iris/` y luego se regenera la página pública.
 
-```bash
-Rscript scripts/03_build_ipom_outputs.R
-quarto render
-```
+
 
 ## Limitaciones
 

@@ -18,7 +18,7 @@ Portafolio técnico
 
 Soy economista formado en la Universidad de Chile, con foco en macroeconomía aplicada, política monetaria, proyecciones, econometría de series de tiempo y visualización de datos. Este sitio reúne proyectos reproducibles orientados a transformar datos económicos en diagnósticos, escenarios y herramientas de seguimiento.
 
-Trabajo principalmente con **R**, **Matlab/IRIS**, **Python**, **Stata**, **Quarto** y **GitHub**, combinando construcción de bases, estimación econométrica, simulación macroeconómica y comunicación visual de resultados.
+Trabajo principalmente con **R**, **Matlab/IRIS**, **Python**, **Stata** y **GitHub**, combinando construcción de bases, estimación econométrica, simulación macroeconómica y comunicación visual de resultados.
 
 ::: mu-actions
 [Ver proyectos](proyectos.qmd){.mu-button .mu-button-primary} [Descargar CV](cv_mauricio_ulloa.pdf){.mu-button .mu-button-secondary} [Contacto](contacto.qmd){.mu-button .mu-button-ghost}
@@ -41,7 +41,6 @@ Foco del portafolio
 <span>R</span>
 <span>Matlab/IRIS</span>
 <span>Python</span>
-<span>Quarto</span>
 <span>GitHub Pages</span>
 :::
 ::::::
@@ -161,7 +160,6 @@ Pipelines reproducibles, dashboards estáticos/interactivos, gráficos para info
 ::: mu-tool-strip
 <span>R / tidyverse</span>
 <span>ggplot2 / plotly</span>
-<span>Quarto</span>
 <span>Matlab / IRIS</span>
 <span>Python</span>
 <span>Stata</span>
