@@ -1,8 +1,8 @@
 ---
-title: "Índice de estrés financiero de mercado para Chile"
-subtitle: "Desviaciones del tipo de cambio y la tasa soberana 10Y respecto de fundamentos externos"
+title: "Monitor de estrés financiero de mercado para Chile"
+subtitle: "Residuos cambiarios y de tasa soberana 10Y respecto de fundamentos externos"
 page-layout: full
-description: "Monitor de estrés financiero para Chile basado en desviaciones del tipo de cambio y tasa soberana respecto de fundamentos externos."
+description: "Monitor de estrés financiero para Chile basado en residuos del tipo de cambio y tasa soberana respecto de fundamentos externos."
 image: "../assets/img/og/portfolio-og.png"
 ---
 
@@ -135,16 +135,17 @@ estres_plotly_widget <- function(p, tooltip = c("x", "y", "colour")) {
 }
 ```
 
+
 ## Motivación
 
 Chile es una economía pequeña y abierta. El tipo de cambio, las tasas largas y las condiciones financieras locales reaccionan a movimientos del dólar global, tasas externas, apetito por riesgo, precios de commodities y mercados accionarios internacionales. Sin embargo, no todos los movimientos locales se explican completamente por esos fundamentos externos.
 
-Este proyecto construye un **índice de estrés financiero de mercado para Chile** a partir de dos precios clave:
+Este proyecto construye un **monitor de estrés financiero de mercado para Chile** a partir de dos componentes:
 
-- **USD/CLP**, como precio financiero central para una economía abierta y exportadora de commodities.
-- **Tasa soberana chilena a 10 años**, como medida sintética de condiciones financieras de largo plazo, premio por riesgo y costo de financiamiento soberano.
+- **Residuo cambiario estandarizado**: diferencia entre el USD/CLP observado y el valor ajustado por fundamentos externos.
+- **Residuo de tasa soberana 10Y estandarizado**: diferencia entre la tasa chilena a 10 años observada y la tasa ajustada por condiciones financieras globales.
 
-La idea no es estimar un modelo causal estructural. El objetivo es más acotado y operativo: construir un monitor que mida cuándo estos precios se alejan de lo que predicen fundamentos financieros externos observables.
+La lectura principal está en esos dos residuos. El índice agregado se usa después como una síntesis operativa, útil para seguimiento, pero no reemplaza el diagnóstico por componentes.
 
 ::: {.mu-note}
 El indicador debe leerse como un índice de **estrés financiero de mercado**, no como una medida completa de estrés sistémico. No incluye directamente crédito bancario, liquidez del mercado monetario, spreads corporativos, morosidad ni balances financieros. Es una primera capa de seguimiento macrofinanciero.
@@ -158,59 +159,49 @@ El indicador debe leerse como un índice de **estrés financiero de mercado**, n
 ### Última observación completa
 `r fmt_date(latest$date)`
 
-El indicador utiliza la última fecha en que existen ambos componentes: residuo cambiario y residuo de tasa 10Y.
+Fecha más reciente con ambos componentes disponibles: residuo cambiario y residuo de tasa soberana 10Y.
+:::
+
+::: {.mu-area}
+### Residuo FX
+`r fmt_num(latest$z_fx, 2)`
+
+Un valor positivo indica un peso más depreciado que lo predicho por fundamentos externos.
+:::
+
+::: {.mu-area}
+### Residuo 10Y
+`r fmt_num(latest$z_y10, 2)`
+
+Un valor positivo indica una tasa larga local más alta que la predicha por condiciones financieras globales.
 :::
 
 ::: {.mu-area}
 ### Índice 30 días
 `r fmt_num(latest$stress_market_30d, 2)`
 
-Valores positivos indican mayor presión de mercado que la explicada por fundamentos externos; valores negativos indican condiciones relativamente benignas.
+Promedio simple de ambos componentes, suavizado con media móvil de 30 días.
 :::
 
 ::: {.mu-area}
 ### Régimen actual
 `r latest$regime`
 
-La clasificación se basa en umbrales descriptivos sobre la media móvil de 30 días del índice agregado.
+Clasificación descriptiva basada en la media móvil de 30 días del índice sintético.
 :::
 
 ::: {.mu-area}
 ### Fuente efectiva
 `r update_log$source[[1]]`
 
-El flujo de datos intenta usar información en vivo; si una API no responde, puede recurrir a una base local de respaldo.
+La actualización usa datos en vivo cuando están disponibles y una base local de respaldo si alguna fuente falla.
 :::
 
 :::
-
-## Cómo leer el signo y la magnitud del índice
-
-El índice está construido como el promedio de dos residuos estandarizados: un residuo cambiario y un residuo de tasa soberana a 10 años.
-
-$$
-Stress_t = \frac{z^{FX}_t + z^{10Y}_t}{2}
-$$
-
-$$
-z^{FX}_t = \frac{\log(USDCLP_t)-\widehat{\log(USDCLP_t)}}{\sigma_{FX}},
-\qquad
-z^{10Y}_t = \frac{y^{10Y}_t-\widehat{y^{10Y}_t}}{\sigma_{10Y}}
-$$
-
-La lectura económica es directa:
-
-- **Valor positivo:** el peso está más depreciado y/o la tasa soberana 10Y está más alta de lo que predicen los fundamentos externos incluidos en el modelo. Se interpreta como mayor presión financiera de mercado.
-- **Valor cercano a cero:** las condiciones locales son similares a las predichas por fundamentos externos observables.
-- **Valor negativo:** el peso está más apreciado y/o la tasa 10Y está más baja de lo predicho. Se interpreta como condiciones relativamente benignas, no como “estrés negativo” en sentido literal.
-- **Valor absoluto mayor a 1:** el desvío agregado es relevante en términos históricos, aproximadamente sobre una desviación estándar del comportamiento residual normalizado.
-- **Valor sobre 1,5 o 2:** episodio de tensión elevada, sujeto a la persistencia del movimiento y a si ambos componentes empujan en la misma dirección.
-
-La versión de 30 días suaviza ruido diario y es la referencia más estable para clasificar regímenes. La versión diaria sirve para detección temprana, pero puede sobrerreaccionar a movimientos transitorios.
 
 ## Datos
 
-La base combina series de **BCCh**, **FRED** y **BIS**. Si alguna API falla y está habilitado el respaldo, el procedimiento usa una base local depurada del proyecto original `ExchangeReg`. La cobertura efectiva del modelo comienza en octubre de 2012, porque desde esa fecha se dispone simultáneamente de cobre, USD/CLP, tasa 10Y chilena y variables financieras externas.
+La base combina series de **BCCh**, **FRED** y **BIS**. Si alguna API falla y está habilitado el respaldo, el procedimiento usa una base local depurada del proyecto original `ExchangeReg`. La cobertura efectiva del modelo comienza cuando existe información simultánea para tipo de cambio, tasa chilena a 10 años, Treasury 10Y y los principales fundamentos externos.
 
 ::: {.mu-split}
 
@@ -235,17 +226,17 @@ La base combina series de **BCCh**, **FRED** y **BIS**. Si alguna API falla y es
 ::: {.mu-list-card}
 ### Resultados generados
 
-- Índice agregado de estrés financiero.
-- Diagnóstico de modelos de tipo de cambio y tasa soberana.
-- Tabla de episodios de mayor estrés.
-- Gráficos principales del monitor.
+- Residuos estandarizados de USD/CLP y tasa 10Y.
+- Índice sintético de presión financiera de mercado.
+- Media móvil de 30 días y régimen descriptivo.
+- Diagnóstico de modelos y episodios históricos.
 :::
 
 :::
 
 ## Metodología
 
-El índice se construye en cuatro pasos.
+El monitor se construye en cuatro pasos.
 
 Primero, se estima un modelo de normalización para el tipo de cambio:
 
@@ -276,82 +267,67 @@ $$
 z^{j}_t = \frac{\varepsilon^{j}_t - \bar{\varepsilon}^{j}}{sd(\varepsilon^{j})}, \quad j \in \{FX, 10Y\}
 $$
 
-Finalmente, el índice agregado corresponde al promedio simple de ambos componentes:
+Finalmente, se construye una síntesis de mercado como promedio simple de ambos componentes:
 
 $$
 Stress_t = \frac{z^{FX}_t + z^{10Y}_t}{2}
 $$
 
-Para la lectura visual se usa también una media móvil de 30 días. Los umbrales son descriptivos: sobre 0,75 se clasifica como estrés moderado y sobre 1,5 como estrés alto.
+Para la lectura de régimen se usa una media móvil de 30 días. Los umbrales son descriptivos: sobre 0,75 se clasifica como estrés moderado y sobre 1,5 como estrés alto.
 
-## Chequeo pseudo out-of-sample
+## Componentes principales: residuos FX y tasa 10Y
 
-::: {.callout-warning}
-## Riesgo de look-ahead bias
+La primera lectura del modelo debe hacerse sobre los dos residuos estandarizados por separado. Cuando ambos son positivos, la evidencia de presión financiera local es más clara. Cuando uno es positivo y el otro negativo, el índice agregado puede esconder diferencias relevantes entre mercado cambiario y tasas largas.
 
-La versión principal del índice usa modelos estimados en **muestra completa**. Eso es útil para una lectura histórica limpia, pero tiene una limitación importante: los residuos de años anteriores se calculan con parámetros estimados usando información posterior. Por lo tanto, la serie completa no debe interpretarse como una señal estrictamente disponible en tiempo real.
-:::
-
-Para reducir ese problema, el proyecto incorpora un chequeo pseudo out-of-sample con ventana expansiva: cada predicción se estima usando solo datos anteriores a la fecha evaluada. Esta versión es más exigente y menos suave, pero se acerca mejor a la pregunta operacional: *qué habría señalado el monitor con la información disponible en ese momento*.
-
-```{r oos-stress-summary}
-#| echo: false
-if (nrow(oos_stress) > 0) {
-  oos_stress |>
-    dplyr::filter(!is.na(stress_market_oos_30d)) |>
-    dplyr::slice_tail(n = 1) |>
-    dplyr::transmute(
-      Fecha = fmt_date(date),
-      `Índice OOS 30d` = fmt_num(stress_market_oos_30d, 2),
-      Régimen = regime_oos,
-      `Obs. entrenamiento FX` = n_train_fx,
-      `Obs. entrenamiento 10Y` = n_train_y10
-    ) |>
-    knitr::kable(caption = "Última lectura disponible del chequeo pseudo out-of-sample.")
-} else {
-  cat("La tabla estará disponible cuando se genere el archivo de evaluación pseudo out-of-sample (`stress_index_chile_oos.csv`).")
-}
-```
-
-```{r oos-stress-plot}
+```{r}
+#| label: fig-residual-components
 #| echo: false
 #| fig-width: 11
 #| fig-height: 6.4
-if (nrow(oos_stress) > 0) {
-  p_oos <- ggplot2::ggplot(oos_stress, ggplot2::aes(x = date)) +
-    ggplot2::geom_line(
-      ggplot2::aes(y = stress_market_oos, colour = "Índice OOS"),
-      linewidth = 0.45,
-      alpha = 0.45,
-      na.rm = TRUE
-    ) +
-    ggplot2::geom_line(
-      ggplot2::aes(y = stress_market_oos_30d, colour = "Media móvil OOS"),
-      linewidth = 1.05,
-      na.rm = TRUE
-    ) +
-    ggplot2::geom_hline(yintercept = 0, colour = "#c8c0b3", linewidth = 0.45) +
-    ggplot2::geom_hline(yintercept = 0.75, colour = "#c8c0b3", linewidth = 0.35, linetype = "dashed") +
-    ggplot2::geom_hline(yintercept = 1.50, colour = "#c8c0b3", linewidth = 0.35, linetype = "dotted") +
-    ggplot2::scale_colour_manual(values = c(
-      "Media móvil OOS" = "#27384a",
-      "Índice OOS" = "#8a94a3"
-    )) +
-    ggplot2::scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
-    ggplot2::labs(
-      title = "Chequeo pseudo out-of-sample del índice de estrés",
-      subtitle = "Predicciones con ventana expansiva; cada residuo usa solo datos anteriores a la fecha evaluada",
-      x = NULL,
-      y = "Z-score agregado"
-    ) +
-    ggplot2::guides(colour = ggplot2::guide_legend(nrow = 1, byrow = TRUE)) +
-    plot_theme
 
-  estres_plotly_widget(p_oos)
-}
+residual_components <- stress |>
+  dplyr::select(date, z_fx, z_y10) |>
+  tidyr::pivot_longer(
+    cols = c(z_fx, z_y10),
+    names_to = "component",
+    values_to = "z_score"
+  ) |>
+  dplyr::mutate(
+    component = dplyr::recode(
+      component,
+      z_fx = "Residuo cambiario",
+      z_y10 = "Residuo tasa 10Y"
+    )
+  )
+
+p_residual_components <- ggplot2::ggplot(
+  residual_components,
+  ggplot2::aes(x = date, y = z_score, colour = component)
+) +
+  ggplot2::geom_line(linewidth = 0.55, alpha = 0.85, na.rm = TRUE) +
+  ggplot2::geom_hline(yintercept = 0, colour = "#c8c0b3", linewidth = 0.45) +
+  ggplot2::geom_hline(yintercept = 1.5, colour = "#c8c0b3", linewidth = 0.35, linetype = "dotted") +
+  ggplot2::geom_hline(yintercept = -1.5, colour = "#c8c0b3", linewidth = 0.35, linetype = "dotted") +
+  ggplot2::scale_colour_manual(values = c(
+    "Residuo cambiario" = "#7b5e42",
+    "Residuo tasa 10Y" = "#4d6277"
+  )) +
+  ggplot2::scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+  ggplot2::labs(
+    title = "Residuos estandarizados del modelo para Chile",
+    subtitle = "Lectura separada de presión cambiaria y presión en tasas soberanas largas",
+    x = NULL,
+    y = "Z-score"
+  ) +
+  ggplot2::guides(colour = ggplot2::guide_legend(nrow = 1, byrow = TRUE)) +
+  plot_theme
+
+estres_plotly_widget(p_residual_components)
 ```
 
-## Índice agregado
+## Índice sintético
+
+El índice sintético resume ambos componentes en una sola serie. Tiene sentido como herramienta de monitoreo porque los dos residuos están normalizados y tienen la misma dirección económica: valores positivos indican presión local mayor a la explicada por fundamentos externos. Aun así, la lectura económica principal debe volver siempre a los componentes.
 
 ```{r}
 #| label: fig-stress-index
@@ -364,6 +340,41 @@ p_index <- ggplot2::ggplot(stress, ggplot2::aes(x = date)) +
     ggplot2::aes(y = stress_market, colour = "Índice diario"),
     linewidth = 0.45,
     alpha = 0.45,
+    na.rm = TRUE
+  ) +
+  ggplot2::geom_hline(yintercept = 0, colour = "#c8c0b3", linewidth = 0.45) +
+  ggplot2::geom_hline(yintercept = 0.75, colour = "#c8c0b3", linewidth = 0.35, linetype = "dashed") +
+  ggplot2::geom_hline(yintercept = 1.50, colour = "#c8c0b3", linewidth = 0.35, linetype = "dotted") +
+  ggplot2::geom_hline(yintercept = -0.75, colour = "#c8c0b3", linewidth = 0.35, linetype = "dashed") +
+  ggplot2::scale_colour_manual(values = c("Índice diario" = "#8a94a3")) +
+  ggplot2::scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+  ggplot2::labs(
+    title = "Índice sintético de presión financiera de mercado",
+    subtitle = "Promedio simple de los residuos estandarizados de USD/CLP y tasa soberana 10Y",
+    x = NULL,
+    y = "Z-score agregado"
+  ) +
+  ggplot2::guides(colour = ggplot2::guide_legend(nrow = 1, byrow = TRUE)) +
+  plot_theme
+
+estres_plotly_widget(p_index)
+```
+
+## Media móvil de 30 días y régimen
+
+La media móvil reduce ruido diario y es la referencia más estable para clasificar regímenes. La serie diaria sirve para detección temprana, pero puede sobrerreaccionar a movimientos transitorios.
+
+```{r}
+#| label: fig-stress-30d
+#| echo: false
+#| fig-width: 11
+#| fig-height: 6.4
+
+p_index_30d <- ggplot2::ggplot(stress, ggplot2::aes(x = date)) +
+  ggplot2::geom_line(
+    ggplot2::aes(y = stress_market, colour = "Índice diario"),
+    linewidth = 0.35,
+    alpha = 0.30,
     na.rm = TRUE
   ) +
   ggplot2::geom_line(
@@ -381,26 +392,26 @@ p_index <- ggplot2::ggplot(stress, ggplot2::aes(x = date)) +
   )) +
   ggplot2::scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
   ggplot2::labs(
-    title = "Índice de estrés financiero de mercado para Chile",
-    subtitle = "Promedio de residuos estandarizados de USD/CLP y tasa soberana 10Y",
+    title = "Media móvil de 30 días del índice sintético",
+    subtitle = "Referencia operacional para clasificar condiciones benignas, normales o de estrés",
     x = NULL,
     y = "Z-score agregado"
   ) +
   ggplot2::guides(colour = ggplot2::guide_legend(nrow = 1, byrow = TRUE)) +
   plot_theme
 
-estres_plotly_widget(p_index)
+estres_plotly_widget(p_index_30d)
 ```
 
-## Componentes
+## Componentes suavizados
 
 ```{r}
-#| label: fig-components
+#| label: fig-smoothed-components
 #| echo: false
 #| fig-width: 11
 #| fig-height: 6.4
 
-components <- stress |>
+components_30d <- stress |>
   dplyr::select(date, stress_fx_30d, stress_y10_30d) |>
   tidyr::pivot_longer(
     cols = c(stress_fx_30d, stress_y10_30d),
@@ -410,30 +421,31 @@ components <- stress |>
   dplyr::mutate(
     component = dplyr::recode(
       component,
-      stress_fx_30d = "Estrés cambiario",
-      stress_y10_30d = "Estrés tasa 10Y"
+      stress_fx_30d = "Residuo cambiario, media móvil 30d",
+      stress_y10_30d = "Residuo tasa 10Y, media móvil 30d"
     )
   )
 
-p_components <- ggplot2::ggplot(components, ggplot2::aes(x = date, y = z_score, colour = component)) +
+p_components_30d <- ggplot2::ggplot(components_30d, ggplot2::aes(x = date, y = z_score, colour = component)) +
   ggplot2::geom_line(linewidth = 0.95, na.rm = TRUE) +
   ggplot2::geom_hline(yintercept = 0, colour = "#c8c0b3", linewidth = 0.45) +
   ggplot2::geom_hline(yintercept = 1.5, colour = "#c8c0b3", linewidth = 0.35, linetype = "dotted") +
+  ggplot2::geom_hline(yintercept = -1.5, colour = "#c8c0b3", linewidth = 0.35, linetype = "dotted") +
   ggplot2::scale_colour_manual(values = c(
-    "Estrés cambiario" = "#7b5e42",
-    "Estrés tasa 10Y" = "#4d6277"
+    "Residuo cambiario, media móvil 30d" = "#7b5e42",
+    "Residuo tasa 10Y, media móvil 30d" = "#4d6277"
   )) +
   ggplot2::scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
   ggplot2::labs(
-    title = "Componentes del estrés financiero",
-    subtitle = "Cada componente corresponde a un residuo de modelo expresado como z-score",
+    title = "Componentes suavizados del estrés financiero",
+    subtitle = "Media móvil de 30 días para distinguir episodios persistentes de ruido diario",
     x = NULL,
     y = "Z-score, media móvil 30 días"
   ) +
   ggplot2::guides(colour = ggplot2::guide_legend(nrow = 1, byrow = TRUE)) +
   plot_theme
 
-estres_plotly_widget(p_components)
+estres_plotly_widget(p_components_30d)
 ```
 
 ## Tipo de cambio: observado versus ajustado
@@ -524,7 +536,7 @@ estres_plotly_widget(p_y10)
 
 ## Episodios de mayor estrés
 
-La tabla muestra fechas locales del indicador suavizado. Para evitar seleccionar varios días del mismo episodio, se impone una distancia mínima de 30 días entre observaciones seleccionadas.
+La tabla muestra fechas locales del indicador suavizado. Para evitar seleccionar varios días del mismo episodio, se impone una distancia mínima de 30 días entre observaciones seleccionadas. La lectura debe mirar tanto el índice agregado como los dos componentes: un episodio puede estar dominado por presión cambiaria, por tasas largas o por ambos canales.
 
 ```{r}
 #| label: tbl-episodes
@@ -575,6 +587,73 @@ diagnostics |>
     `Desv. est. residuo` = residual_sd
   ) |>
   knitr::kable(align = "lllrrrrrr")
+```
+
+## Chequeo pseudo out-of-sample
+
+::: {.callout-warning}
+## Riesgo de look-ahead bias
+
+La versión principal usa modelos estimados en **muestra completa**. Eso es útil para una lectura histórica limpia, pero tiene una limitación importante: los residuos de años anteriores se calculan con parámetros estimados usando información posterior. Por lo tanto, esa serie no debe interpretarse como una señal estrictamente disponible en tiempo real.
+:::
+
+Para reducir ese problema, el proyecto incorpora un chequeo pseudo out-of-sample con ventana expansiva: cada predicción se estima usando solo datos anteriores a la fecha evaluada. Esta versión es más exigente y menos suave, pero se acerca mejor a la pregunta operacional: *qué habría señalado el monitor con la información disponible en ese momento*.
+
+```{r oos-stress-summary}
+#| echo: false
+if (nrow(oos_stress) > 0) {
+  oos_stress |>
+    dplyr::filter(!is.na(stress_market_oos_30d)) |>
+    dplyr::slice_tail(n = 1) |>
+    dplyr::transmute(
+      Fecha = fmt_date(date),
+      `Índice OOS 30d` = fmt_num(stress_market_oos_30d, 2),
+      Régimen = regime_oos,
+      `Obs. entrenamiento FX` = n_train_fx,
+      `Obs. entrenamiento 10Y` = n_train_y10
+    ) |>
+    knitr::kable(caption = "Última lectura disponible del chequeo pseudo out-of-sample.")
+} else {
+  cat("La tabla estará disponible cuando se genere el archivo de evaluación pseudo out-of-sample (`stress_index_chile_oos.csv`).")
+}
+```
+
+```{r oos-stress-plot}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 6.4
+if (nrow(oos_stress) > 0) {
+  p_oos <- ggplot2::ggplot(oos_stress, ggplot2::aes(x = date)) +
+    ggplot2::geom_line(
+      ggplot2::aes(y = stress_market_oos, colour = "Índice OOS"),
+      linewidth = 0.45,
+      alpha = 0.45,
+      na.rm = TRUE
+    ) +
+    ggplot2::geom_line(
+      ggplot2::aes(y = stress_market_oos_30d, colour = "Media móvil OOS"),
+      linewidth = 1.05,
+      na.rm = TRUE
+    ) +
+    ggplot2::geom_hline(yintercept = 0, colour = "#c8c0b3", linewidth = 0.45) +
+    ggplot2::geom_hline(yintercept = 0.75, colour = "#c8c0b3", linewidth = 0.35, linetype = "dashed") +
+    ggplot2::geom_hline(yintercept = 1.50, colour = "#c8c0b3", linewidth = 0.35, linetype = "dotted") +
+    ggplot2::scale_colour_manual(values = c(
+      "Media móvil OOS" = "#27384a",
+      "Índice OOS" = "#8a94a3"
+    )) +
+    ggplot2::scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+    ggplot2::labs(
+      title = "Chequeo pseudo out-of-sample del índice sintético",
+      subtitle = "Predicciones con ventana expansiva; cada residuo usa solo datos anteriores a la fecha evaluada",
+      x = NULL,
+      y = "Z-score agregado"
+    ) +
+    ggplot2::guides(colour = ggplot2::guide_legend(nrow = 1, byrow = TRUE)) +
+    plot_theme
+
+  estres_plotly_widget(p_oos)
+}
 ```
 
 ## Interpretación económica

@@ -282,105 +282,112 @@
   {
     "objectID": "proyectos/estres-externo.html",
     "href": "proyectos/estres-externo.html",
-    "title": "Índice de estrés financiero de mercado para Chile",
+    "title": "Monitor de estrés financiero de mercado para Chile",
     "section": "",
-    "text": "Chile es una economía pequeña y abierta. El tipo de cambio, las tasas largas y las condiciones financieras locales reaccionan a movimientos del dólar global, tasas externas, apetito por riesgo, precios de commodities y mercados accionarios internacionales. Sin embargo, no todos los movimientos locales se explican completamente por esos fundamentos externos.\nEste proyecto construye un índice de estrés financiero de mercado para Chile a partir de dos precios clave:\n\nUSD/CLP, como precio financiero central para una economía abierta y exportadora de commodities.\nTasa soberana chilena a 10 años, como medida sintética de condiciones financieras de largo plazo, premio por riesgo y costo de financiamiento soberano.\n\nLa idea no es estimar un modelo causal estructural. El objetivo es más acotado y operativo: construir un monitor que mida cuándo estos precios se alejan de lo que predicen fundamentos financieros externos observables.\n\nEl indicador debe leerse como un índice de estrés financiero de mercado, no como una medida completa de estrés sistémico. No incluye directamente crédito bancario, liquidez del mercado monetario, spreads corporativos, morosidad ni balances financieros. Es una primera capa de seguimiento macrofinanciero."
+    "text": "Chile es una economía pequeña y abierta. El tipo de cambio, las tasas largas y las condiciones financieras locales reaccionan a movimientos del dólar global, tasas externas, apetito por riesgo, precios de commodities y mercados accionarios internacionales. Sin embargo, no todos los movimientos locales se explican completamente por esos fundamentos externos.\nEste proyecto construye un monitor de estrés financiero de mercado para Chile a partir de dos componentes:\n\nResiduo cambiario estandarizado: diferencia entre el USD/CLP observado y el valor ajustado por fundamentos externos.\nResiduo de tasa soberana 10Y estandarizado: diferencia entre la tasa chilena a 10 años observada y la tasa ajustada por condiciones financieras globales.\n\nLa lectura principal está en esos dos residuos. El índice agregado se usa después como una síntesis operativa, útil para seguimiento, pero no reemplaza el diagnóstico por componentes.\n\nEl indicador debe leerse como un índice de estrés financiero de mercado, no como una medida completa de estrés sistémico. No incluye directamente crédito bancario, liquidez del mercado monetario, spreads corporativos, morosidad ni balances financieros. Es una primera capa de seguimiento macrofinanciero."
   },
   {
     "objectID": "proyectos/estres-externo.html#motivación",
     "href": "proyectos/estres-externo.html#motivación",
-    "title": "Índice de estrés financiero de mercado para Chile",
+    "title": "Monitor de estrés financiero de mercado para Chile",
     "section": "",
-    "text": "Chile es una economía pequeña y abierta. El tipo de cambio, las tasas largas y las condiciones financieras locales reaccionan a movimientos del dólar global, tasas externas, apetito por riesgo, precios de commodities y mercados accionarios internacionales. Sin embargo, no todos los movimientos locales se explican completamente por esos fundamentos externos.\nEste proyecto construye un índice de estrés financiero de mercado para Chile a partir de dos precios clave:\n\nUSD/CLP, como precio financiero central para una economía abierta y exportadora de commodities.\nTasa soberana chilena a 10 años, como medida sintética de condiciones financieras de largo plazo, premio por riesgo y costo de financiamiento soberano.\n\nLa idea no es estimar un modelo causal estructural. El objetivo es más acotado y operativo: construir un monitor que mida cuándo estos precios se alejan de lo que predicen fundamentos financieros externos observables.\n\nEl indicador debe leerse como un índice de estrés financiero de mercado, no como una medida completa de estrés sistémico. No incluye directamente crédito bancario, liquidez del mercado monetario, spreads corporativos, morosidad ni balances financieros. Es una primera capa de seguimiento macrofinanciero."
+    "text": "Chile es una economía pequeña y abierta. El tipo de cambio, las tasas largas y las condiciones financieras locales reaccionan a movimientos del dólar global, tasas externas, apetito por riesgo, precios de commodities y mercados accionarios internacionales. Sin embargo, no todos los movimientos locales se explican completamente por esos fundamentos externos.\nEste proyecto construye un monitor de estrés financiero de mercado para Chile a partir de dos componentes:\n\nResiduo cambiario estandarizado: diferencia entre el USD/CLP observado y el valor ajustado por fundamentos externos.\nResiduo de tasa soberana 10Y estandarizado: diferencia entre la tasa chilena a 10 años observada y la tasa ajustada por condiciones financieras globales.\n\nLa lectura principal está en esos dos residuos. El índice agregado se usa después como una síntesis operativa, útil para seguimiento, pero no reemplaza el diagnóstico por componentes.\n\nEl indicador debe leerse como un índice de estrés financiero de mercado, no como una medida completa de estrés sistémico. No incluye directamente crédito bancario, liquidez del mercado monetario, spreads corporativos, morosidad ni balances financieros. Es una primera capa de seguimiento macrofinanciero."
   },
   {
     "objectID": "proyectos/estres-externo.html#lectura-rápida",
     "href": "proyectos/estres-externo.html#lectura-rápida",
-    "title": "Índice de estrés financiero de mercado para Chile",
+    "title": "Monitor de estrés financiero de mercado para Chile",
     "section": "Lectura rápida",
-    "text": "Lectura rápida\n\n\nÚltima observación completa\n18-05-2026\nEl indicador utiliza la última fecha en que existen ambos componentes: residuo cambiario y residuo de tasa 10Y.\n\n\nÍndice 30 días\n-1,15\nValores positivos indican mayor presión de mercado que la explicada por fundamentos externos; valores negativos indican condiciones relativamente benignas.\n\n\nRégimen actual\nCondiciones benignas\nLa clasificación se basa en umbrales descriptivos sobre la media móvil de 30 días del índice agregado.\n\n\nFuente efectiva\nlive_bcch_fred_bis\nEl flujo de datos intenta usar información en vivo; si una API no responde, puede recurrir a una base local de respaldo."
-  },
-  {
-    "objectID": "proyectos/estres-externo.html#cómo-leer-el-signo-y-la-magnitud-del-índice",
-    "href": "proyectos/estres-externo.html#cómo-leer-el-signo-y-la-magnitud-del-índice",
-    "title": "Índice de estrés financiero de mercado para Chile",
-    "section": "Cómo leer el signo y la magnitud del índice",
-    "text": "Cómo leer el signo y la magnitud del índice\nEl índice está construido como el promedio de dos residuos estandarizados: un residuo cambiario y un residuo de tasa soberana a 10 años.\n\\[\nStress_t = \\frac{z^{FX}_t + z^{10Y}_t}{2}\n\\]\n\\[\nz^{FX}_t = \\frac{\\log(USDCLP_t)-\\widehat{\\log(USDCLP_t)}}{\\sigma_{FX}},\n\\qquad\nz^{10Y}_t = \\frac{y^{10Y}_t-\\widehat{y^{10Y}_t}}{\\sigma_{10Y}}\n\\]\nLa lectura económica es directa:\n\nValor positivo: el peso está más depreciado y/o la tasa soberana 10Y está más alta de lo que predicen los fundamentos externos incluidos en el modelo. Se interpreta como mayor presión financiera de mercado.\nValor cercano a cero: las condiciones locales son similares a las predichas por fundamentos externos observables.\nValor negativo: el peso está más apreciado y/o la tasa 10Y está más baja de lo predicho. Se interpreta como condiciones relativamente benignas, no como “estrés negativo” en sentido literal.\nValor absoluto mayor a 1: el desvío agregado es relevante en términos históricos, aproximadamente sobre una desviación estándar del comportamiento residual normalizado.\nValor sobre 1,5 o 2: episodio de tensión elevada, sujeto a la persistencia del movimiento y a si ambos componentes empujan en la misma dirección.\n\nLa versión de 30 días suaviza ruido diario y es la referencia más estable para clasificar regímenes. La versión diaria sirve para detección temprana, pero puede sobrerreaccionar a movimientos transitorios."
+    "text": "Lectura rápida\n\n\nÚltima observación completa\n18-05-2026\nFecha más reciente con ambos componentes disponibles: residuo cambiario y residuo de tasa soberana 10Y.\n\n\nResiduo FX\n-0,84\nUn valor positivo indica un peso más depreciado que lo predicho por fundamentos externos.\n\n\nResiduo 10Y\n-1,48\nUn valor positivo indica una tasa larga local más alta que la predicha por condiciones financieras globales.\n\n\nÍndice 30 días\n-1,15\nPromedio simple de ambos componentes, suavizado con media móvil de 30 días.\n\n\nRégimen actual\nCondiciones benignas\nClasificación descriptiva basada en la media móvil de 30 días del índice sintético.\n\n\nFuente efectiva\nlive_bcch_fred_bis\nLa actualización usa datos en vivo cuando están disponibles y una base local de respaldo si alguna fuente falla."
   },
   {
     "objectID": "proyectos/estres-externo.html#datos",
     "href": "proyectos/estres-externo.html#datos",
-    "title": "Índice de estrés financiero de mercado para Chile",
+    "title": "Monitor de estrés financiero de mercado para Chile",
     "section": "Datos",
-    "text": "Datos\nLa base combina series de BCCh, FRED y BIS. Si alguna API falla y está habilitado el respaldo, el procedimiento usa una base local depurada del proyecto original ExchangeReg. La cobertura efectiva del modelo comienza en octubre de 2012, porque desde esa fecha se dispone simultáneamente de cobre, USD/CLP, tasa 10Y chilena y variables financieras externas.\n\n\n\nVariables locales\n\nUSD/CLP.\nTasa soberana chilena a 10 años.\n\n\n\nVariables externas\n\nTasa Treasury 10Y de Estados Unidos.\nVIX.\nDólar global multilateral.\nPrecio del cobre.\nWTI.\nYuan por dólar.\nNasdaq.\nÍndice accionario de China.\n\n\n\n\nResultados generados\n\nÍndice agregado de estrés financiero.\nDiagnóstico de modelos de tipo de cambio y tasa soberana.\nTabla de episodios de mayor estrés.\nGráficos principales del monitor."
+    "text": "Datos\nLa base combina series de BCCh, FRED y BIS. Si alguna API falla y está habilitado el respaldo, el procedimiento usa una base local depurada del proyecto original ExchangeReg. La cobertura efectiva del modelo comienza cuando existe información simultánea para tipo de cambio, tasa chilena a 10 años, Treasury 10Y y los principales fundamentos externos.\n\n\n\nVariables locales\n\nUSD/CLP.\nTasa soberana chilena a 10 años.\n\n\n\nVariables externas\n\nTasa Treasury 10Y de Estados Unidos.\nVIX.\nDólar global multilateral.\nPrecio del cobre.\nWTI.\nYuan por dólar.\nNasdaq.\nÍndice accionario de China.\n\n\n\n\nResultados generados\n\nResiduos estandarizados de USD/CLP y tasa 10Y.\nÍndice sintético de presión financiera de mercado.\nMedia móvil de 30 días y régimen descriptivo.\nDiagnóstico de modelos y episodios históricos."
   },
   {
     "objectID": "proyectos/estres-externo.html#metodología",
     "href": "proyectos/estres-externo.html#metodología",
-    "title": "Índice de estrés financiero de mercado para Chile",
+    "title": "Monitor de estrés financiero de mercado para Chile",
     "section": "Metodología",
-    "text": "Metodología\nEl índice se construye en cuatro pasos.\nPrimero, se estima un modelo de normalización para el tipo de cambio:\n\\[\n\\begin{aligned}\n\\log(USDCLP_t) =\\; & \\alpha + \\beta_1 t + \\beta_2 \\log(Cobre_t) + \\beta_3 \\log(WTI_t) \\\\\n& + \\beta_4 \\log(VIX_t) + \\beta_5 \\log(Dólar_t) + \\beta_6 \\log(CNY_t) \\\\\n& + \\beta_7 \\log(Nasdaq_t) + \\beta_8 \\log(ChinaEq_t) + \\varepsilon^{FX}_t\n\\end{aligned}\n\\]\nEl residuo estandarizado del modelo se interpreta como presión cambiaria local no explicada por esos fundamentos. Un residuo positivo indica que el peso está más depreciado que lo que predice el modelo.\nSegundo, se estima un modelo de normalización para la tasa soberana chilena a 10 años:\n\\[\n\\begin{aligned}\n10Y^{CLP}_t =\\; & \\alpha + \\gamma_1 t + \\gamma_2 10Y^{US}_t + \\gamma_3 \\log(VIX_t) \\\\\n& + \\gamma_4 \\log(Dólar_t) + \\gamma_5 \\log(CNY_t) + \\gamma_6 \\log(Nasdaq_t) + \\varepsilon^{10Y}_t\n\\end{aligned}\n\\]\nEl residuo estandarizado de este modelo se interpreta como presión en tasas largas locales no explicada por condiciones financieras globales. Un residuo positivo indica que la tasa local está más alta que la predicha por el modelo.\nTercero, ambos residuos se expresan como z-scores:\n\\[\nz^{j}_t = \\frac{\\varepsilon^{j}_t - \\bar{\\varepsilon}^{j}}{sd(\\varepsilon^{j})}, \\quad j \\in \\{FX, 10Y\\}\n\\]\nFinalmente, el índice agregado corresponde al promedio simple de ambos componentes:\n\\[\nStress_t = \\frac{z^{FX}_t + z^{10Y}_t}{2}\n\\]\nPara la lectura visual se usa también una media móvil de 30 días. Los umbrales son descriptivos: sobre 0,75 se clasifica como estrés moderado y sobre 1,5 como estrés alto."
+    "text": "Metodología\nEl monitor se construye en cuatro pasos.\nPrimero, se estima un modelo de normalización para el tipo de cambio:\n\\[\n\\begin{aligned}\n\\log(USDCLP_t) =\\; & \\alpha + \\beta_1 t + \\beta_2 \\log(Cobre_t) + \\beta_3 \\log(WTI_t) \\\\\n& + \\beta_4 \\log(VIX_t) + \\beta_5 \\log(Dólar_t) + \\beta_6 \\log(CNY_t) \\\\\n& + \\beta_7 \\log(Nasdaq_t) + \\beta_8 \\log(ChinaEq_t) + \\varepsilon^{FX}_t\n\\end{aligned}\n\\]\nEl residuo estandarizado del modelo se interpreta como presión cambiaria local no explicada por esos fundamentos. Un residuo positivo indica que el peso está más depreciado que lo que predice el modelo.\nSegundo, se estima un modelo de normalización para la tasa soberana chilena a 10 años:\n\\[\n\\begin{aligned}\n10Y^{CLP}_t =\\; & \\alpha + \\gamma_1 t + \\gamma_2 10Y^{US}_t + \\gamma_3 \\log(VIX_t) \\\\\n& + \\gamma_4 \\log(Dólar_t) + \\gamma_5 \\log(CNY_t) + \\gamma_6 \\log(Nasdaq_t) + \\varepsilon^{10Y}_t\n\\end{aligned}\n\\]\nEl residuo estandarizado de este modelo se interpreta como presión en tasas largas locales no explicada por condiciones financieras globales. Un residuo positivo indica que la tasa local está más alta que la predicha por el modelo.\nTercero, ambos residuos se expresan como z-scores:\n\\[\nz^{j}_t = \\frac{\\varepsilon^{j}_t - \\bar{\\varepsilon}^{j}}{sd(\\varepsilon^{j})}, \\quad j \\in \\{FX, 10Y\\}\n\\]\nFinalmente, se construye una síntesis de mercado como promedio simple de ambos componentes:\n\\[\nStress_t = \\frac{z^{FX}_t + z^{10Y}_t}{2}\n\\]\nPara la lectura de régimen se usa una media móvil de 30 días. Los umbrales son descriptivos: sobre 0,75 se clasifica como estrés moderado y sobre 1,5 como estrés alto."
   },
   {
-    "objectID": "proyectos/estres-externo.html#chequeo-pseudo-out-of-sample",
-    "href": "proyectos/estres-externo.html#chequeo-pseudo-out-of-sample",
-    "title": "Índice de estrés financiero de mercado para Chile",
-    "section": "Chequeo pseudo out-of-sample",
-    "text": "Chequeo pseudo out-of-sample\n\n\n\n\n\n\nAdvertenciaRiesgo de look-ahead bias\n\n\n\nLa versión principal del índice usa modelos estimados en muestra completa. Eso es útil para una lectura histórica limpia, pero tiene una limitación importante: los residuos de años anteriores se calculan con parámetros estimados usando información posterior. Por lo tanto, la serie completa no debe interpretarse como una señal estrictamente disponible en tiempo real.\n\n\nPara reducir ese problema, el proyecto incorpora un chequeo pseudo out-of-sample con ventana expansiva: cada predicción se estima usando solo datos anteriores a la fecha evaluada. Esta versión es más exigente y menos suave, pero se acerca mejor a la pregunta operacional: qué habría señalado el monitor con la información disponible en ese momento.\n\n\n\nÚltima lectura disponible del chequeo pseudo out-of-sample.\n\n\n\n\n\n\n\n\n\nFecha\nÍndice OOS 30d\nRégimen\nObs. entrenamiento FX\nObs. entrenamiento 10Y\n\n\n\n\n15-04-2020\n1,02\nEstrés moderado\n1870\n1870"
+    "objectID": "proyectos/estres-externo.html#componentes-principales-residuos-fx-y-tasa-10y",
+    "href": "proyectos/estres-externo.html#componentes-principales-residuos-fx-y-tasa-10y",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Componentes principales: residuos FX y tasa 10Y",
+    "text": "Componentes principales: residuos FX y tasa 10Y\nLa primera lectura del modelo debe hacerse sobre los dos residuos estandarizados por separado. Cuando ambos son positivos, la evidencia de presión financiera local es más clara. Cuando uno es positivo y el otro negativo, el índice agregado puede esconder diferencias relevantes entre mercado cambiario y tasas largas.\n\n\n\n\n\n\n\n\nFigura 1"
   },
   {
-    "objectID": "proyectos/estres-externo.html#índice-agregado",
-    "href": "proyectos/estres-externo.html#índice-agregado",
-    "title": "Índice de estrés financiero de mercado para Chile",
-    "section": "Índice agregado",
-    "text": "Índice agregado\n\n\n\n\n\n\n\n\nFigura 1"
+    "objectID": "proyectos/estres-externo.html#índice-sintético",
+    "href": "proyectos/estres-externo.html#índice-sintético",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Índice sintético",
+    "text": "Índice sintético\nEl índice sintético resume ambos componentes en una sola serie. Tiene sentido como herramienta de monitoreo porque los dos residuos están normalizados y tienen la misma dirección económica: valores positivos indican presión local mayor a la explicada por fundamentos externos. Aun así, la lectura económica principal debe volver siempre a los componentes.\n\n\n\n\n\n\n\n\nFigura 2"
   },
   {
-    "objectID": "proyectos/estres-externo.html#componentes",
-    "href": "proyectos/estres-externo.html#componentes",
-    "title": "Índice de estrés financiero de mercado para Chile",
-    "section": "Componentes",
-    "text": "Componentes\n\n\n\n\n\n\n\n\nFigura 2"
+    "objectID": "proyectos/estres-externo.html#media-móvil-de-30-días-y-régimen",
+    "href": "proyectos/estres-externo.html#media-móvil-de-30-días-y-régimen",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Media móvil de 30 días y régimen",
+    "text": "Media móvil de 30 días y régimen\nLa media móvil reduce ruido diario y es la referencia más estable para clasificar regímenes. La serie diaria sirve para detección temprana, pero puede sobrerreaccionar a movimientos transitorios.\n\n\n\n\n\n\n\n\nFigura 3"
+  },
+  {
+    "objectID": "proyectos/estres-externo.html#componentes-suavizados",
+    "href": "proyectos/estres-externo.html#componentes-suavizados",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Componentes suavizados",
+    "text": "Componentes suavizados\n\n\n\n\n\n\n\n\nFigura 4"
   },
   {
     "objectID": "proyectos/estres-externo.html#tipo-de-cambio-observado-versus-ajustado",
     "href": "proyectos/estres-externo.html#tipo-de-cambio-observado-versus-ajustado",
-    "title": "Índice de estrés financiero de mercado para Chile",
+    "title": "Monitor de estrés financiero de mercado para Chile",
     "section": "Tipo de cambio: observado versus ajustado",
-    "text": "Tipo de cambio: observado versus ajustado\n\n\n\n\n\n\n\n\nFigura 3"
+    "text": "Tipo de cambio: observado versus ajustado\n\n\n\n\n\n\n\n\nFigura 5"
   },
   {
     "objectID": "proyectos/estres-externo.html#tasa-10y-observada-versus-ajustada",
     "href": "proyectos/estres-externo.html#tasa-10y-observada-versus-ajustada",
-    "title": "Índice de estrés financiero de mercado para Chile",
+    "title": "Monitor de estrés financiero de mercado para Chile",
     "section": "Tasa 10Y: observada versus ajustada",
-    "text": "Tasa 10Y: observada versus ajustada\n\n\n\n\n\n\n\n\nFigura 4"
+    "text": "Tasa 10Y: observada versus ajustada\n\n\n\n\n\n\n\n\nFigura 6"
   },
   {
     "objectID": "proyectos/estres-externo.html#episodios-de-mayor-estrés",
     "href": "proyectos/estres-externo.html#episodios-de-mayor-estrés",
-    "title": "Índice de estrés financiero de mercado para Chile",
+    "title": "Monitor de estrés financiero de mercado para Chile",
     "section": "Episodios de mayor estrés",
-    "text": "Episodios de mayor estrés\nLa tabla muestra fechas locales del indicador suavizado. Para evitar seleccionar varios días del mismo episodio, se impone una distancia mínima de 30 días entre observaciones seleccionadas.\n\n\n\n\nTabla 1\n\n\n\n\n\n\nFecha\nÍndice 30d\nÍndice diario\nZ FX\nZ 10Y\nRégimen\n\n\n\n\n19-11-2012\n1,09\n1,22\n0,65\n1,79\nEstrés moderado\n\n\n19-12-2012\n1,18\n1,11\n0,43\n1,78\nEstrés moderado\n\n\n18-01-2013\n1,27\n1,53\n1,07\n1,99\nEstrés moderado\n\n\n19-02-2013\n1,44\n1,37\n0,81\n1,92\nEstrés moderado\n\n\n16-09-2021\n1,16\n1,13\n0,23\n2,02\nEstrés moderado\n\n\n20-10-2021\n1,72\n2,70\n2,01\n3,39\nEstrés alto\n\n\n19-11-2021\n2,18\n2,13\n1,12\n3,14\nEstrés alto\n\n\n20-12-2021\n1,62\n2,01\n1,35\n2,66\nEstrés alto\n\n\n19-01-2022\n1,89\n1,53\n0,92\n2,15\nEstrés alto\n\n\n18-02-2022\n1,11\n0,74\n0,24\n1,25\nEstrés moderado\n\n\n08-07-2022\n1,13\n1,78\n2,54\n1,02\nEstrés moderado\n\n\n08-08-2022\n1,81\n1,57\n0,81\n2,33\nEstrés alto\n\n\n07-09-2022\n1,36\n0,85\n-0,16\n1,86\nEstrés moderado\n\n\n04-11-2022\n1,46\n1,21\n1,62\n0,80\nEstrés moderado\n\n\n08-04-2024\n1,17\n0,97\n1,22\n0,73\nEstrés moderado"
+    "text": "Episodios de mayor estrés\nLa tabla muestra fechas locales del indicador suavizado. Para evitar seleccionar varios días del mismo episodio, se impone una distancia mínima de 30 días entre observaciones seleccionadas. La lectura debe mirar tanto el índice agregado como los dos componentes: un episodio puede estar dominado por presión cambiaria, por tasas largas o por ambos canales.\n\n\n\n\nTabla 1\n\n\n\n\n\n\nFecha\nÍndice 30d\nÍndice diario\nZ FX\nZ 10Y\nRégimen\n\n\n\n\n19-11-2012\n1,09\n1,22\n0,65\n1,79\nEstrés moderado\n\n\n19-12-2012\n1,18\n1,11\n0,43\n1,78\nEstrés moderado\n\n\n18-01-2013\n1,27\n1,53\n1,07\n1,99\nEstrés moderado\n\n\n19-02-2013\n1,44\n1,37\n0,81\n1,92\nEstrés moderado\n\n\n16-09-2021\n1,16\n1,13\n0,23\n2,02\nEstrés moderado\n\n\n20-10-2021\n1,72\n2,70\n2,01\n3,39\nEstrés alto\n\n\n19-11-2021\n2,18\n2,13\n1,12\n3,14\nEstrés alto\n\n\n20-12-2021\n1,62\n2,01\n1,35\n2,66\nEstrés alto\n\n\n19-01-2022\n1,89\n1,53\n0,92\n2,15\nEstrés alto\n\n\n18-02-2022\n1,11\n0,74\n0,24\n1,25\nEstrés moderado\n\n\n08-07-2022\n1,13\n1,78\n2,54\n1,02\nEstrés moderado\n\n\n08-08-2022\n1,81\n1,57\n0,81\n2,33\nEstrés alto\n\n\n07-09-2022\n1,36\n0,85\n-0,16\n1,86\nEstrés moderado\n\n\n04-11-2022\n1,46\n1,21\n1,62\n0,80\nEstrés moderado\n\n\n08-04-2024\n1,17\n0,97\n1,22\n0,73\nEstrés moderado"
   },
   {
     "objectID": "proyectos/estres-externo.html#diagnóstico-de-modelos",
     "href": "proyectos/estres-externo.html#diagnóstico-de-modelos",
-    "title": "Índice de estrés financiero de mercado para Chile",
+    "title": "Monitor de estrés financiero de mercado para Chile",
     "section": "Diagnóstico de modelos",
     "text": "Diagnóstico de modelos\n\n\n\n\nTabla 2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nModelo\nVariable dependiente\nPredictores\nObservaciones\nR²\nR² ajustado\nInicio muestra\nFin muestra\nDesv. est. residuo\n\n\n\n\nTipo de cambio USD/CLP\nlog(USDCLP)\ntrend, l_cpi_rel_chl_us, l_pcu, l_wti, l_vix, l_dtw, l_cny, l_eq_nsq, l_eq_cny\n3385\n0,959\n0,959\n05-10-2012\n18-05-2026\n0,040\n\n\nTasa soberana 10Y CLP\n10YCLP\ntrend, y10_tsy, l_vix, l_dtw, l_cny, l_eq_nsq\n3386\n0,660\n0,659\n05-10-2012\n18-05-2026\n0,595"
   },
   {
+    "objectID": "proyectos/estres-externo.html#chequeo-pseudo-out-of-sample",
+    "href": "proyectos/estres-externo.html#chequeo-pseudo-out-of-sample",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Chequeo pseudo out-of-sample",
+    "text": "Chequeo pseudo out-of-sample\n\n\n\n\n\n\nAdvertenciaRiesgo de look-ahead bias\n\n\n\nLa versión principal usa modelos estimados en muestra completa. Eso es útil para una lectura histórica limpia, pero tiene una limitación importante: los residuos de años anteriores se calculan con parámetros estimados usando información posterior. Por lo tanto, esa serie no debe interpretarse como una señal estrictamente disponible en tiempo real.\n\n\nPara reducir ese problema, el proyecto incorpora un chequeo pseudo out-of-sample con ventana expansiva: cada predicción se estima usando solo datos anteriores a la fecha evaluada. Esta versión es más exigente y menos suave, pero se acerca mejor a la pregunta operacional: qué habría señalado el monitor con la información disponible en ese momento.\n\n\n\nÚltima lectura disponible del chequeo pseudo out-of-sample.\n\n\n\n\n\n\n\n\n\nFecha\nÍndice OOS 30d\nRégimen\nObs. entrenamiento FX\nObs. entrenamiento 10Y\n\n\n\n\n15-04-2020\n1,02\nEstrés moderado\n1870\n1870"
+  },
+  {
     "objectID": "proyectos/estres-externo.html#interpretación-económica",
     "href": "proyectos/estres-externo.html#interpretación-económica",
-    "title": "Índice de estrés financiero de mercado para Chile",
+    "title": "Monitor de estrés financiero de mercado para Chile",
     "section": "Interpretación económica",
     "text": "Interpretación económica\nUna lectura alta del índice puede venir por dos canales. El primero es cambiario: el peso se deprecia más que lo explicado por cobre, petróleo, dólar global, VIX, yuan y bolsas externas. El segundo es soberano: la tasa 10Y chilena sube más que lo que predicen el Treasury 10Y y otras variables financieras globales. Cuando ambos residuos se mueven en la misma dirección, el indicador agregado aumenta con más fuerza.\nLa ventaja de esta aproximación es que evita confundir todo movimiento del USD/CLP o de la tasa 10Y con estrés local. Si el dólar global sube, el cobre cae o el VIX aumenta, parte del movimiento chileno es esperable. El residuo intenta aislar la porción que queda fuera de esos fundamentos observables."
   },
   {
     "objectID": "proyectos/estres-externo.html#limitaciones-y-extensiones",
     "href": "proyectos/estres-externo.html#limitaciones-y-extensiones",
-    "title": "Índice de estrés financiero de mercado para Chile",
+    "title": "Monitor de estrés financiero de mercado para Chile",
     "section": "Limitaciones y extensiones",
     "text": "Limitaciones y extensiones\n\nEste índice no debe interpretarse como evidencia causal ni como estimación estructural del premio por riesgo chileno. Es una herramienta de seguimiento descriptivo basada en residuos de modelos lineales. La versión de muestra completa es útil para lectura histórica; la versión pseudo out-of-sample es la referencia más prudente para seguimiento operacional.\n\nLas principales extensiones naturales son: incorporar spreads corporativos, mercado monetario, IPSA/volatilidad local, CDS soberano, liquidez bancaria y variables de crédito. El bloque de retrocompra/retroventa de CMF del proyecto original puede agregarse como un segundo módulo de liquidez bancaria, pero conviene mantenerlo separado inicialmente porque la muestra es más corta y el concepto económico es distinto."
   },
