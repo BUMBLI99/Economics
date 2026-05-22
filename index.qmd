@@ -1,7 +1,7 @@
 ---
 title: "Macroeconomía aplicada, política monetaria y análisis de datos"
 subtitle: "Portafolio técnico de Mauricio Andrés Ulloa Valdivia"
-description: "Portafolio de análisis económico aplicado con proyectos de macroeconomía chilena, política monetaria, nowcasting, escenarios tipo IPoM y visualización reproducible de datos."
+description: "Portafolio de análisis económico aplicado con proyectos de macroeconomía chilena, política monetaria, nowcasting, escenarios tipo IPoM y visualización de datos económicos."
 image: "assets/img/og/portfolio-og.png"
 toc: false
 page-layout: full
@@ -16,7 +16,7 @@ Portafolio técnico
 
 # Macroeconomía aplicada, política monetaria y análisis de datos
 
-Soy economista formado en la Universidad de Chile, con foco en macroeconomía aplicada, política monetaria, proyecciones, econometría de series de tiempo y visualización de datos. Este sitio reúne proyectos reproducibles orientados a transformar datos económicos en diagnósticos, escenarios y herramientas de seguimiento.
+Soy economista formado en la Universidad de Chile, con foco en macroeconomía aplicada, política monetaria, proyecciones, econometría de series de tiempo y visualización de datos. Este sitio reúne proyectos aplicados orientados al seguimiento de indicadores, análisis de escenarios y discusión económica con base empírica.
 
 Trabajo principalmente con **R**, **Matlab/IRIS**, **Python**, **Stata** y **GitHub**, combinando construcción de bases, estimación econométrica, simulación macroeconómica y comunicación visual de resultados.
 
@@ -34,7 +34,7 @@ Foco del portafolio
 - Seguimiento macroeconómico y nowcasting.
 - Proyección de inflación, actividad y TPM.
 - Escenarios tipo IPoM con supuestos externos.
-- Visualización reproducible para análisis económico.
+- Visualización de datos para análisis económico.
 :::
 
 ::: mu-mini-stack
@@ -49,7 +49,7 @@ Foco del portafolio
 ## Proyectos destacados
 
 ::: mu-section-intro
-Una selección de proyectos aplicados con estructura metodológica, código reproducible y salida visual pensada para seguimiento macroeconómico y discusión de política.
+Una selección de proyectos aplicados con metodología explícita, datos trazables y visualización orientada al seguimiento macroeconómico y la discusión de política económica.
 :::
 
 :::::::::::: {.mu-grid .mu-grid-featured}
@@ -93,7 +93,7 @@ Modelo semi-estructural para construir un escenario de referencia tipo IPoM, sim
 
 ::::: {.mu-card .mu-card-featured}
 ::: mu-card-kicker
-Research note
+Nota técnica
 :::
 
 ### Transmisión de la TPM a tasas de mercado
@@ -125,7 +125,7 @@ La prioridad no es solo mostrar resultados, sino dejar trazabilidad: fuentes, tr
 ::: mu-list-card
 ### Enfoque metodológico
 
-- Bases reproducibles y scripts ejecutables.
+- Bases documentadas y scripts ejecutables.
 - Separación entre datos brutos, datos procesados y salidas.
 - Visualizaciones sobrias, comparables y legibles.
 - Lectura económica prudente, sin sobrerreaccionar a correlaciones.
@@ -151,7 +151,7 @@ Análisis de TPM, tasas de mercado, curva de rendimiento, expectativas, pass-thr
 ::: mu-area
 ### Datos y comunicación económica
 
-Pipelines reproducibles, dashboards estáticos/interactivos, gráficos para informes y documentación técnica orientada a decisiones.
+Procesos de datos, tableros estáticos/interactivos, gráficos para informes y documentación técnica orientada a decisiones.
 :::
 ::::::
 

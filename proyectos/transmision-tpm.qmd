@@ -129,7 +129,7 @@ preferred_order <- function(x) {
 ```
 
 ::: {.mu-note}
-**Objetivo.** Esta nota construye un monitor reproducible del **traspaso dinámico** desde la Tasa de Política Monetaria (TPM) hacia tasas bancarias y financieras en Chile. La lectura es deliberadamente prudente: se trata de un ejercicio de **pass-through condicional** con datos agregados, no de una identificación causal definitiva de shocks monetarios.
+**Objetivo.** Esta nota construye un monitor del **traspaso dinámico** desde la Tasa de Política Monetaria (TPM) hacia tasas bancarias y financieras en Chile. La lectura es deliberadamente prudente: se trata de un ejercicio de **pass-through condicional** con datos agregados, no de una identificación causal definitiva de shocks monetarios.
 :::
 
 ## Pregunta de investigación
@@ -138,12 +138,12 @@ La pregunta central es:
 
 > ¿Qué tan rápido, qué tan intensamente y con qué heterogeneidad por producto se transmite la TPM hacia el costo de fondeo bancario y hacia distintas tasas de colocación?
 
-La estructura del proyecto está pensada como una pieza de portafolio que, con extensiones posteriores, podría transformarse en una nota técnica o paper aplicado.
+La estructura del proyecto está pensada como una nota técnica aplicada, con espacio para futuras extensiones econométricas.
 
 ```{r data-status, results='asis'}
 if (!has_outputs) {
   cat("\n::: {.mu-note}\n")
-  cat("No se encontraron los archivos procesados del proyecto. Ejecuta el script de actualización y vuelve a generar el sitio público.\n")
+  cat("No se encontraron los archivos procesados del proyecto para esta versión de la página.\n")
   cat(":::\n")
 }
 ```

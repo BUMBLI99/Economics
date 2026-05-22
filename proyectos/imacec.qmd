@@ -133,16 +133,16 @@ proyeccion <- readr::read_csv(projection_file$path, show_col_types = FALSE) |>
 ::: {.callout-note}
 ## Estado del proyecto
 
-**Proyecto aplicado en desarrollo continuo.** La metodología base está implementada para actualizarse mensualmente con nueva información. La página está pensada como una vitrina técnica: muestra la motivación, la estructura del modelo, los resultados principales y el pipeline reproducible.
+**Proyecto aplicado en desarrollo continuo.** La metodología base está implementada para actualizarse mensualmente con nueva información. La página presenta la pregunta económica, la estructura del modelo, los resultados principales y una evaluación preliminar de desempeño.
 :::
 
 ```{r data-status, results='asis'}
 if (identical(data_status, "demo")) {
   cat(
     "::: {.callout-warning}\n",
-    "## Página usando datos demo\n\n",
+    "## Resultados de ejemplo\n\n",
     "Todavía no se han generado los archivos reales `data/processed/imacec_nowcast_*.csv`. ",
-    "Ejecuta `Rscript scripts/01_update_imacec.R` desde la raíz del repositorio para reemplazar esta visualización por resultados actualizados.\n",
+    "Por ahora esta página muestra resultados de ejemplo hasta que se actualice la base procesada del proyecto.\n",
     ":::"
   )
 }
@@ -257,7 +257,7 @@ plotly::ggplotly(g_nm) |>
 
 ## Datos utilizados
 
-El pipeline integra información mensual de actividad, comercio, crédito, precios, mercado laboral e indicadores sectoriales. La versión actual considera:
+El proyecto integra información mensual de actividad, comercio, crédito, precios, mercado laboral e indicadores sectoriales. La versión actual considera:
 
 - IMACEC total e IMACEC no minero.
 - Ventas minoristas.
@@ -334,38 +334,10 @@ La comparación relevante no es si el modelo tiene error bajo en términos absol
 La ventana de evaluación todavía es corta; por lo tanto, estos resultados deben leerse como diagnóstico preliminar de desempeño predictivo, no como validación definitiva del modelo.
 :::
 
-## Cómo actualizar el proyecto
-
-Desde la raíz del repositorio `Economics`, se actualizan los datos con el script del proyecto y luego se regenera el sitio público antes de subir los cambios a GitHub.
-
-```bash
-Rscript scripts/01_update_imacec.R
-```
-
-Luego se publican los cambios:
-
-```bash
-git add .
-git commit -m "Actualiza proyecto IMACEC"
-git push
-```
-
 ## Próximos pasos
 
 - Profundizar la evaluación fuera de muestra con vintages reales de publicación.
 - Comparar ventanas expansivas versus ventanas móviles.
 - Incorporar intervalos de predicción calibrados con errores históricos fuera de muestra.
-- Separar una versión “coyuntural” y una versión “research note”.
-- Automatizar actualización mensual con GitHub Actions.
-
-## Código
-
-El código fuente del proyecto queda organizado en módulos dentro del repositorio:
-
-- `R/imacec_config.R`
-- `R/imacec_utils.R`
-- `R/imacec_calendar.R`
-- `R/imacec_data.R`
-- `R/imacec_models.R`
-- `R/imacec_outputs.R`
-- `scripts/01_update_imacec.R`
+- Separar una versión de seguimiento coyuntural y una nota técnica más formal.
+- Fortalecer la trazabilidad de vintages y fechas de publicación.

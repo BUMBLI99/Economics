@@ -65,7 +65,7 @@ scenario_meta_file <- path_project("data", "processed", "ipom", "ipom_scenario_m
 if (!file.exists(long_file)) {
   stop(
     "No existe data/processed/ipom/ipom_scenarios_long.csv. ",
-    "Ejecuta: Rscript scripts/03_build_ipom_outputs.R"
+    "Los resultados estarán disponibles cuando existan los archivos procesados del escenario."
   )
 }
 
@@ -89,7 +89,7 @@ plot_start <- "2018Q1"
 ::: {.callout-note}
 ## Estado del proyecto
 
-Proyecto aplicado avanzado. Esta página funciona como vitrina técnica del flujo de simulación: el modelo y los escenarios se ejecutan en **Matlab/IRIS**, y los resultados procesados se presentan en formato limpio. La versión pública no pretende replicar el modelo oficial del Banco Central de Chile; es un ejercicio académico/aplicado de escenarios macroeconómicos.
+Proyecto aplicado avanzado. El modelo y los escenarios se ejecutan en **Matlab/IRIS**, y los resultados se presentan como una nota de simulación macroeconómica. La versión pública no pretende replicar el modelo oficial del Banco Central de Chile; es un ejercicio académico/aplicado de escenarios.
 :::
 
 ## Pregunta económica
@@ -212,7 +212,7 @@ La TPM responde gradualmente a la desviación esperada de inflación respecto de
 
 ## Escenarios incluidos
 
-La versión pública mantiene solo dos trayectorias para evitar confusión: un escenario base y un escenario alternativo. Otros experimentos pueden agregarse al pipeline más adelante, pero no se declaran en la página si no existe su archivo IRIS correspondiente.
+La versión pública mantiene solo dos trayectorias para evitar confusión: un escenario base y un escenario alternativo. Otros experimentos pueden agregarse más adelante, pero no se declaran en la página si no existe su archivo de resultados correspondiente.
 
 ```{r escenarios}
 ipom_scenario_meta |>
@@ -228,7 +228,7 @@ ipom_scenario_meta |>
 
 ## Resultado principal
 
-El gráfico compara el **escenario base basado en IPoM** con el **escenario alternativo** disponible en el pipeline actual. La página queda preparada para incorporar más escenarios en el futuro, pero la versión pública se concentra deliberadamente en esta comparación binaria para mantener una lectura limpia.
+El gráfico compara el **escenario base basado en IPoM** con el **escenario alternativo** disponible en la versión actual. La página queda preparada para incorporar más escenarios en el futuro, pero la versión pública se concentra deliberadamente en esta comparación binaria para mantener una lectura limpia.
 
 ### Inflación total
 
@@ -447,9 +447,9 @@ ipom_diff_summary |>
 El flujo está separado en dos niveles:
 
 1. **Matlab/IRIS** resuelve el modelo, impone trayectorias exógenas y endogeniza los shocks necesarios para cumplir los supuestos del escenario.
-2. **R** lee los outputs, estandariza nombres, calcula diferencias contra el escenario base y prepara la visualización web.
+2. **R** lee los resultados, estandariza nombres, calcula diferencias contra el escenario base y prepara las tablas y gráficos.
 
-Esta separación evita que la publicación dependa de una instalación de Matlab al momento de actualizarse. Para refrescar el proyecto, se actualizan los CSV de `matlab/ipom/outputs/raw_iris/` y luego se regenera la página pública.
+Esta separación ordena el trabajo en dos etapas: simulación del escenario y lectura económica de los resultados.
 
 
 

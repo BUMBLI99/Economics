@@ -56,7 +56,7 @@ oos_file <- estres_path("data", "processed", "estres_financiero", "stress_index_
 
 if (!file.exists(index_file) || !file.exists(diag_file) || !file.exists(latest_file)) {
   stop(
-    "No están los archivos procesados del proyecto. Ejecuta: source('scripts/06_update_estres_financiero.R')",
+    "No se encontraron los resultados procesados del proyecto para esta versión de la página.",
     call. = FALSE
   )
 }
@@ -179,7 +179,7 @@ La clasificación se basa en umbrales descriptivos sobre la media móvil de 30 d
 ### Fuente efectiva
 `r update_log$source[[1]]`
 
-El pipeline intenta usar datos en vivo; si una API no responde, puede usar la base local de respaldo.
+El flujo de datos intenta usar información en vivo; si una API no responde, puede recurrir a una base local de respaldo.
 :::
 
 :::
@@ -210,7 +210,7 @@ La versión de 30 días suaviza ruido diario y es la referencia más estable par
 
 ## Datos
 
-La base se actualiza mediante un pipeline reproducible que descarga series desde **BCCh**, **FRED** y **BIS**. Si alguna API falla y está habilitado el respaldo, el script usa la base local depurada del proyecto original `ExchangeReg`. La cobertura efectiva del modelo comienza en octubre de 2012, porque desde esa fecha se dispone simultáneamente de cobre, USD/CLP, tasa 10Y chilena y variables financieras externas.
+La base combina series de **BCCh**, **FRED** y **BIS**. Si alguna API falla y está habilitado el respaldo, el procedimiento usa una base local depurada del proyecto original `ExchangeReg`. La cobertura efectiva del modelo comienza en octubre de 2012, porque desde esa fecha se dispone simultáneamente de cobre, USD/CLP, tasa 10Y chilena y variables financieras externas.
 
 ::: {.mu-split}
 
@@ -233,20 +233,12 @@ La base se actualiza mediante un pipeline reproducible que descarga series desde
 :::
 
 ::: {.mu-list-card}
-### Salidas reproducibles
+### Resultados generados
 
-- `data/processed/estres_financiero/stress_index_chile.csv`.
-- `data/processed/estres_financiero/model_diagnostics.csv`.
-- `outputs/tables/estres_financiero/episodios_estres.csv`.
-- `assets/img/estres_financiero/*.png`.
-
-Para regenerar todo y descargar datos reales:
-
-```r
-source("scripts/06_update_estres_financiero.R")
-```
-
-Credenciales esperadas en `.Renviron`: `BCCH_USER`, `BCCH_PASS` y `FRED_API_KEY`.
+- Índice agregado de estrés financiero.
+- Diagnóstico de modelos de tipo de cambio y tasa soberana.
+- Tabla de episodios de mayor estrés.
+- Gráficos principales del monitor.
 :::
 
 :::
@@ -293,7 +285,7 @@ Para la lectura visual se usa también una media móvil de 30 días. Los umbrale
 La versión principal del índice usa modelos estimados en **muestra completa**. Eso es útil para una lectura histórica limpia, pero tiene una limitación importante: los residuos de años anteriores se calculan con parámetros estimados usando información posterior. Por lo tanto, la serie completa no debe interpretarse como una señal estrictamente disponible en tiempo real.
 :::
 
-Para reducir ese problema, el pipeline ahora puede construir un chequeo pseudo out-of-sample con ventana expansiva: cada predicción se estima usando solo datos anteriores a la fecha evaluada. Esta versión es más exigente y menos suave, pero se acerca mejor a la pregunta operacional: *qué habría señalado el monitor con la información disponible en ese momento*.
+Para reducir ese problema, el proyecto incorpora un chequeo pseudo out-of-sample con ventana expansiva: cada predicción se estima usando solo datos anteriores a la fecha evaluada. Esta versión es más exigente y menos suave, pero se acerca mejor a la pregunta operacional: *qué habría señalado el monitor con la información disponible en ese momento*.
 
 ```{r oos-stress-summary}
 #| echo: false
@@ -310,7 +302,7 @@ if (nrow(oos_stress) > 0) {
     ) |>
     knitr::kable(caption = "Última lectura disponible del chequeo pseudo out-of-sample.")
 } else {
-  cat("Ejecuta `source(\"scripts/06_update_estres_financiero.R\")` para generar `stress_index_chile_oos.csv` y activar esta tabla.")
+  cat("La tabla estará disponible cuando se genere el archivo de evaluación pseudo out-of-sample (`stress_index_chile_oos.csv`).")
 }
 ```
 
