@@ -8,7 +8,7 @@ execute:
 format:
   html:
     toc: true
-    page-layout: full
+    page-layout: article
 description: "Ejercicio académico/aplicado de escenarios macroeconómicos con Matlab/IRIS, supuestos externos y visualización de resultados."
 image: "../assets/img/og/portfolio-og.png"
 ---

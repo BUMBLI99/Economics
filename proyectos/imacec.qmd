@@ -9,6 +9,7 @@ format:
   html:
     toc: false
     page-layout: full
+    body-class: mu-imacec-page
 description: "Modelo mensual de nowcasting del IMACEC total y no minero con EEE, indicadores experimentales, series sectoriales INE y evaluación de vintages."
 image: "../assets/img/og/portfolio-og.png"
 ---
@@ -194,36 +195,36 @@ prox_text <- if (isTRUE(st$tiene_eee_siguiente[1])) {
 } else {
   "Aún no aparece la EEE del siguiente mes; se conserva el último ciclo cerrado."
 }
-cat(
-  "::: {.mu-grid .mu-grid-areas}\n\n",
-  "::: {.mu-area}\n",
-  "### Última actualización\n",
-  fmt_date(st$fecha_actualizacion[1]), "\n\n",
-  "Hora local registrada: ", st$fecha_hora_actualizacion[1] %||% "—", "\n",
-  ":::\n\n",
-  "::: {.mu-area}\n",
-  "### Último dato oficial\n",
-  fmt_month(st$ultima_observacion_imacec[1]), "\n\n",
-  "Último mes con IMACEC publicado en la base procesada.\n",
-  ":::\n\n",
-  "::: {.mu-area}\n",
-  "### ", mes_label, "\n",
-  fmt_month(st$periodo_objetivo[1]), "\n\n",
-  mes_text, "\n",
-  ":::\n\n",
-  "::: {.mu-area}\n",
-  "### Estado del ciclo\n",
-  st$ciclo_estado_label[1] %||% "—", "\n\n",
-  prox_text, "\n",
-  ":::\n\n",
-  "::: {.mu-area}\n",
-  "### Siguiente mes potencial\n",
-  fmt_month(st$siguiente_periodo_imacec[1]), "\n\n",
-  "El modelo solo abre este ciclo cuando existe EEE para ese mes.\n",
-  ":::\n\n",
-  ":::\n"
-)
+clean_text <- function(x, fallback = "—") {
+  if (length(x) == 0 || is.null(x) || is.na(x[1]) || identical(as.character(x[1]), "NA")) fallback else as.character(x[1])
+}
+format_update_time <- function(x) {
+  if (length(x) == 0 || is.na(x[1])) return("—")
+  if (inherits(x, "POSIXt")) return(format(x[1], "%Y-%m-%d %H:%M:%S"))
+  x_chr <- as.character(x[1])
+  if (grepl("^[0-9]+(\\.[0-9]+)?$", x_chr)) {
+    return(format(as.POSIXct(as.numeric(x_chr), origin = "1970-01-01", tz = "America/Santiago"), "%Y-%m-%d %H:%M:%S"))
+  }
+  x_chr
+}
+card <- function(title, value, body) {
+  paste0(
+    '<div class="mu-area">',
+    '<h3>', title, '</h3>',
+    '<div class="mu-kpi-value">', value, '</div>',
+    '<p>', body, '</p>',
+    '</div>'
+  )
+}
+cat('<div class="mu-grid mu-grid-areas mu-status-grid">')
+cat(card('Última actualización', fmt_date(st$fecha_actualizacion[1]), paste0('Hora local registrada: ', format_update_time(st$fecha_hora_actualizacion[1]))))
+cat(card('Último dato oficial', fmt_month(st$ultima_observacion_imacec[1]), 'Último mes con IMACEC publicado en la base procesada.'))
+cat(card(mes_label, fmt_month(st$periodo_objetivo[1]), mes_text))
+cat(card('Estado del ciclo', clean_text(st$ciclo_estado_label[1]), prox_text))
+cat(card('Siguiente mes potencial', fmt_month(st$siguiente_periodo_imacec[1]), 'El modelo solo abre este ciclo cuando existe EEE para ese mes.'))
+cat('</div>')
 ```
+
 
 
 

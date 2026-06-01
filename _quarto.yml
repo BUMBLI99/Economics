@@ -42,7 +42,7 @@ format:
     lang: es
     theme: cosmo
     css: assets/css/styles.css
-    page-layout: full
+    page-layout: article
     toc: true
     toc-title: "En esta página"
     code-fold: true
