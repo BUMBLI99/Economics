@@ -94,11 +94,14 @@ body {
 }
 
 main.content {
-  max-width: 1280px;
+  max-width: min(96vw, 1540px);
 }
 
 .page-columns .content {
-  grid-column: body-content-start / body-content-end;
+  grid-column: screen-start / screen-end;
+  width: min(96vw, 1540px);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .toc-active .nav-link.active {
@@ -888,5 +891,46 @@ table {
 
   .mu-equation-panel {
     padding: 0.95rem 1rem;
+  }
+}
+
+
+/* IMACEC plots: full-width stacked sections */
+.mu-plot-section {
+  display: block;
+  width: 100%;
+  clear: both;
+  margin: 0 0 2rem;
+}
+
+.mu-plot-section .cell-output-display,
+.mu-plot-section .html-widget,
+.mu-plot-section .plotly,
+.mu-plot-section .js-plotly-plot,
+.mu-plot-section .plot-container,
+.mu-plot-section .svg-container {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.mu-plot-section .mu-card,
+.mu-plot-section .mu-area {
+  width: 100%;
+}
+
+@media (max-width: 1100px) {
+  main.content,
+  .page-columns .content {
+    width: min(100%, 1100px);
+    max-width: min(100%, 1100px);
+  }
+}
+
+@media (max-width: 720px) {
+  main.content,
+  .page-columns .content {
+    width: min(100%, calc(100vw - 1.5rem));
+    max-width: min(100%, calc(100vw - 1.5rem));
   }
 }

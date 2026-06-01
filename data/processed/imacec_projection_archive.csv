@@ -1,3 +1,2 @@
-fecha_actualizacion,fecha_hora_actualizacion,Periodo,ultima_observacion_imacec,siguiente_periodo_imacec,ciclo_estado,ciclo_estado_label,vintage,vintage_label,modelo,imacec_predicho,imacec_nm_predicho,eee_imacec,eee_imacec_nm
-2026-06-01,2026-06-01 17:48:57,2026-04-01,2026-04-01,2026-05-01,official_review,Ciclo cerrado: dato oficial publicado; esperando siguiente EEE,ine,Vintage INE: indicadores sectoriales completos · Ciclo cerrado: dato oficial publicado; esperando siguiente EEE,Modelo con indicadores sectoriales INE,-1.8833906645824134,0.3413428337018054,0.1,1
-2026-06-01,2026-06-01 17:17:27,2026-05-01,2026-04-01,NA,NA,NA,early,Vintage inicial: supuestos de corto plazo,Modelo inicial con supuestos de corto plazo,0.31984518173260884,1.2697225270744752,NA,NA
+fecha_actualizacion,fecha_hora_actualizacion,Periodo,ultima_observacion_imacec,vintage,vintage_label,modelo,imacec_predicho,imacec_nm_predicho,eee_imacec,eee_imacec_nm
+2026-06-01,2026-06-01 17:17:27,2026-05-01,2026-04-01,early,Vintage inicial: supuestos de corto plazo,Modelo inicial con supuestos de corto plazo,0.31984518173260884,1.2697225270744752,NA,NA

@@ -7,7 +7,7 @@ execute:
   warning: false
 format:
   html:
-    toc: true
+    toc: false
     page-layout: full
 description: "Modelo mensual de nowcasting del IMACEC total y no minero con EEE, indicadores experimentales, series sectoriales INE y evaluación de vintages."
 image: "../assets/img/og/portfolio-og.png"
@@ -260,6 +260,8 @@ resumen |>
 
 ## IMACEC total: observado, ajuste y proyección
 
+::: {.mu-plot-section}
+
 ```{r plot-total}
 hist_plot <- hist |>
   filter(Periodo >= max(Periodo, na.rm = TRUE) %m-% lubridate::period(num = 95, units = "month"))
@@ -315,7 +317,11 @@ plotly::ggplotly(g_total) |>
   plotly::config(displayModeBar = FALSE, responsive = TRUE)
 ```
 
+:::
+
 ## IMACEC no minero: observado, ajuste y proyección
+
+::: {.mu-plot-section}
 
 ```{r plot-nm}
 g_nm <- ggplot(hist_plot, aes(x = Periodo)) +
@@ -366,6 +372,8 @@ plotly::ggplotly(g_nm) |>
   ) |>
   plotly::config(displayModeBar = FALSE, responsive = TRUE)
 ```
+
+:::
 
 ## Supuestos usados cuando falta información contemporánea
 
