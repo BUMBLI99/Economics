@@ -142,7 +142,9 @@ La estructura del proyecto está pensada como una nota técnica aplicada, con es
 
 ```{r data-status, results='asis'}
 if (!has_outputs) {
-  cat('<div class="mu-note"><p>No se encontraron los archivos procesados del proyecto para esta versión de la página.</p></div>')
+  cat("\n::: {.mu-note}\n")
+  cat("No se encontraron los archivos procesados del proyecto para esta versión de la página.\n")
+  cat(":::\n")
 }
 ```
 

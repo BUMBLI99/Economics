@@ -94,14 +94,11 @@ body {
 }
 
 main.content {
-  max-width: min(96vw, 1540px);
+  max-width: 1280px;
 }
 
 .page-columns .content {
-  grid-column: screen-start / screen-end;
-  width: min(96vw, 1540px);
-  margin-left: auto;
-  margin-right: auto;
+  grid-column: body-content-start / body-content-end;
 }
 
 .toc-active .nav-link.active {
@@ -849,7 +846,7 @@ table {
   }
 
   .page-columns .content {
-    grid-column: screen-start / screen-end;
+    grid-column: body-content-start / body-content-end;
     padding-left: clamp(1rem, 3vw, 2rem);
     padding-right: clamp(1rem, 3vw, 2rem);
   }
@@ -919,79 +916,43 @@ table {
   width: 100%;
 }
 
-@media (max-width: 1100px) {
-  main.content,
-  .page-columns .content {
-    width: min(100%, 1100px);
-    max-width: min(100%, 1100px);
-  }
-}
-
-@media (max-width: 720px) {
-  main.content,
-  .page-columns .content {
-    width: min(100%, calc(100vw - 1.5rem));
-    max-width: min(100%, calc(100vw - 1.5rem));
-  }
-}
 
 
 /* ==========================================================
-   Stable layout patch — restores Quarto grid and avoids overlap
+   Stable Quarto layout — scoped full-width only where safe
    ========================================================== */
 
-main.content {
-  max-width: min(100% - 2rem, 1180px) !important;
-  width: auto !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
+#quarto-content.page-layout-full main.content.column-page {
+  grid-column: screen-start / screen-end;
+  width: min(96vw, 1380px);
+  max-width: min(96vw, 1380px);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(1rem, 2.2vw, 2.2rem);
+  padding-right: clamp(1rem, 2.2vw, 2.2rem);
 }
 
-.page-columns .content {
-  grid-column: body-content-start / body-content-end !important;
-  width: auto !important;
-  max-width: min(100% - 2rem, 1180px) !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
+#quarto-content:not(.page-layout-full) main.content,
+#quarto-content:not(.page-layout-full) .page-columns .content {
+  min-width: 0;
 }
 
-/* Keep Quarto's margin sidebar outside the body content. */
 #quarto-margin-sidebar {
   z-index: 1;
 }
 
-/* Wider pages without a TOC, especially the IMACEC monitor. */
-body.mu-imacec-page main.content,
-body.mu-imacec-page .page-columns .content {
-  grid-column: page-start / page-end !important;
-  width: min(100% - 3rem, 1380px) !important;
-  max-width: min(100% - 3rem, 1380px) !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
+main.content {
+  min-width: 0;
 }
 
-body.mu-imacec-page #quarto-margin-sidebar {
-  display: none !important;
-}
-
-/* Prevent dynamically generated grids from swallowing subsequent sections. */
-.mu-status-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-  gap: 1rem;
-  margin: 1.2rem 0 2rem;
-}
-
-/* Plot blocks are always full row blocks, never inline grid items. */
 .mu-plot-section {
-  display: block !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  clear: both !important;
-  margin: 0 0 2.25rem !important;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  clear: both;
+  margin: 0 0 2.5rem 0;
 }
 
-.mu-plot-section .cell,
 .mu-plot-section .cell-output-display,
 .mu-plot-section .html-widget,
 .mu-plot-section .plotly,
@@ -1001,62 +962,11 @@ body.mu-imacec-page #quarto-margin-sidebar {
   display: block !important;
   width: 100% !important;
   max-width: 100% !important;
-  min-width: 0 !important;
-  box-sizing: border-box !important;
 }
 
-/* Figures/images should not overflow or sit oddly on very wide pages. */
-.quarto-figure,
-.figure,
-p > img,
-.cell-output-display > img {
-  max-width: 100% !important;
-}
-
-.cell-output-display > img,
-p > img {
-  height: auto !important;
-}
-
-/* Large static figures get a readable width instead of remaining tiny on a wide page. */
-.cell-output-display:has(img) {
-  width: 100%;
-}
-
-/* Tables scroll horizontally when needed without forcing the page wider. */
-.cell-output-display:has(table),
-.table-responsive {
-  overflow-x: auto !important;
-  max-width: 100% !important;
-}
-
-/* In pages with a TOC, hide it before it starts crowding content. */
-@media (max-width: 1250px) {
-  #quarto-margin-sidebar {
-    display: none !important;
-  }
-
-  .page-columns .content,
-  main.content {
-    grid-column: body-content-start / body-content-end !important;
-    max-width: min(100% - 2rem, 1100px) !important;
-  }
-}
-
-@media (max-width: 760px) {
-  body.mu-imacec-page main.content,
-  body.mu-imacec-page .page-columns .content,
-  .page-columns .content,
-  main.content {
-    width: calc(100% - 1.25rem) !important;
-    max-width: calc(100% - 1.25rem) !important;
-  }
-
-  .mu-status-grid,
-  .mu-grid-featured,
-  .mu-grid-projects,
-  .mu-grid-areas,
-  .mu-kpi-grid {
-    grid-template-columns: 1fr !important;
+@media (max-width: 1100px) {
+  #quarto-content.page-layout-full main.content.column-page {
+    width: min(100%, calc(100vw - 2rem));
+    max-width: min(100%, calc(100vw - 2rem));
   }
 }

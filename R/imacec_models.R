@@ -18,6 +18,13 @@ has_eee_signal <- function(Data, periodo) {
   !is.na(current_value(Data, periodo, "eee_imacec"))
 }
 
+open_next_cycle <- function(Data, last_obs) {
+  # La EEE está fechada por mes de publicación, pero pregunta por el IMACEC de "un mes atrás".
+  # Por tanto, el ciclo para last_obs+1 solo se abre cuando hay una EEE alineada a ese mes.
+  next_p <- last_obs %m+% lubridate::period(num = 1, units = "month")
+  has_eee_signal(Data, next_p)
+}
+
 # Regla operacional del ciclo mensual:
 # - si ya existe EEE para el mes siguiente, se abre un nuevo nowcast;
 # - si todavía no existe EEE, se mantiene en pantalla el último ciclo cerrado
@@ -25,7 +32,7 @@ has_eee_signal <- function(Data, periodo) {
 get_target_period <- function(Data) {
   last_obs <- last_observed_period(Data)
   next_p <- last_obs %m+% lubridate::period(num = 1, units = "month")
-  if (has_eee_signal(Data, next_p)) next_p else last_obs
+  if (open_next_cycle(Data, last_obs)) next_p else last_obs
 }
 
 cycle_state <- function(Data, periodo_objetivo) {
@@ -367,7 +374,7 @@ run_nowcast <- function(model = c("auto", "ine", "experimental", "eee", "early")
 
   last_obs <- last_observed_period(Data_ine)
   next_period <- last_obs %m+% lubridate::period(num = 1, units = "month")
-  eee_next_available <- has_eee_signal(Data_ine, next_period)
+  eee_next_available <- open_next_cycle(Data_ine, last_obs)
 
   # Si todavía no existe EEE para el mes siguiente, no abrimos un nowcast prematuro.
   # La página queda en el último ciclo cerrado: se reconstruye la estimación para el
