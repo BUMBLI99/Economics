@@ -29,7 +29,12 @@ codes <- list(
   uf_daily       = "F073.UFF.PRE.Z.D",
   desempleo      = "F049.DES.TAS.INE9.10.M",
   cobre          = "F019.PPB.PRE.40.M",
-  petroleo       = "F019.PPB.PRE.41AB.M"
+  petroleo       = "F019.PPB.PRE.41AB.M",
+
+  # Encuesta de Expectativas Económicas: expectativas de IMACEC
+  # La serie se publica en el mes de encuesta y se alinea al mes objetivo t-1.
+  eee_imacec    = "F089.IMC.V12.10.M",
+  eee_imacec_nm = "F089.IMCNM.V12.10.M"
 )
 
 codes_ine <- list(

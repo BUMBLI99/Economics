@@ -14,9 +14,9 @@ source("R/imacec_run_all.R", encoding = "UTF-8")
 
 message("Iniciando actualización IMACEC...")
 message("Rango de descarga: ", first_date, " a ", last_date)
-message("Modelo: indicadores sectoriales INE")
+message("Modelo: selección automática por vintage de información")
 
-resultado <- run_nowcast(model = "ine")
+resultado <- run_nowcast(model = "auto")
 exports <- export_imacec_outputs(
   resultado,
   output_dir = "data/processed",
@@ -25,7 +25,13 @@ exports <- export_imacec_outputs(
 )
 
 message("Actualización finalizada.")
+message("Última observación IMACEC: ", format(resultado$update_status$ultima_observacion_imacec, "%Y-%m"))
+message("Período objetivo: ", format(resultado$proyeccion$Periodo, "%Y-%m"))
+message("Vintage: ", resultado$proyeccion$vintage_label)
 message("Nowcast IMACEC total: ", round(resultado$proyeccion$imacec_predicho, 2), "%")
 message("Nowcast IMACEC no minero: ", round(resultado$proyeccion$imacec_nm_predicho, 2), "%")
+if (!is.na(resultado$proyeccion$eee_imacec)) {
+  message("EEE IMACEC total: ", round(resultado$proyeccion$eee_imacec, 2), "%")
+}
 message("Archivos exportados en data/processed y assets/img/imacec.")
-message("Incluye métricas pseudo out-of-sample en data/processed/imacec_oos_metrics.csv.")
+message("Incluye archivo de vintage en data/processed/imacec_projection_archive.csv.")

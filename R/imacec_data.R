@@ -3,6 +3,51 @@
 # Descarga y preparación de base mensual IMACEC
 # ============================================================
 
+fetch_series_optional <- function(code, var_name = NULL, firstdate = first_date, lastdate = last_date) {
+  tryCatch(
+    fetch_series(code, firstdate = firstdate, lastdate = lastdate),
+    error = function(e) {
+      warning(
+        "No se pudo descargar la serie opcional",
+        if (!is.null(var_name)) paste0(" ", var_name) else "",
+        ": ", conditionMessage(e),
+        call. = FALSE
+      )
+      tibble::tibble(date = as.Date(character()), value = numeric())
+    }
+  )
+}
+
+get_eee_expectations <- function() {
+  # La EEE reporta expectativas para el IMACEC de "un mes atrás".
+  # Por eso una encuesta fechada en M se alinea al mes objetivo M-1.
+  eee_series <- list(
+    eee_imacec = codes$eee_imacec,
+    eee_imacec_nm = codes$eee_imacec_nm
+  )
+
+  df_raw <- purrr::imap_dfr(eee_series, function(code, var_name) {
+    fetch_series_optional(code, var_name = var_name) |>
+      dplyr::mutate(var = var_name)
+  })
+
+  if (nrow(df_raw) == 0) {
+    return(tibble::tibble(
+      Periodo = as.Date(character()),
+      eee_imacec = numeric(),
+      eee_imacec_nm = numeric()
+    ))
+  }
+
+  df_raw |>
+    dplyr::filter(!is.na(date)) |>
+    dplyr::mutate(Periodo = lubridate::floor_date(date, "month") %m-% lubridate::months(1)) |>
+    dplyr::group_by(var, Periodo) |>
+    dplyr::summarise(value = dplyr::last(value), .groups = "drop") |>
+    tidyr::pivot_wider(names_from = var, values_from = value) |>
+    dplyr::arrange(Periodo)
+}
+
 get_monthly_base <- function() {
   series_list <- list(
     imacec_nm_raw   = codes$imacec_nm,
@@ -29,7 +74,9 @@ get_monthly_base <- function() {
     tidyr::pivot_wider(names_from = var, values_from = value) |>
     dplyr::arrange(Periodo)
 
-  base_wide |>
+  eee_df <- get_eee_expectations()
+
+  out <- base_wide |>
     dplyr::mutate(
       imacec    = yoy(imacec_raw),
       imacec_nm = yoy(imacec_nm_raw),
@@ -48,7 +95,13 @@ get_monthly_base <- function() {
       desempleo,
       cobre_yoy,
       petroleo_yoy
-    )
+    ) |>
+    dplyr::left_join(eee_df, by = "Periodo")
+
+  if (!"eee_imacec" %in% names(out)) out$eee_imacec <- NA_real_
+  if (!"eee_imacec_nm" %in% names(out)) out$eee_imacec_nm <- NA_real_
+
+  out
 }
 
 get_uf_monthly <- function() {
@@ -92,6 +145,8 @@ add_common_features <- function(df) {
       venta_minorista_lag1 = dplyr::lag(venta_minorista, 1),
       uf_lag1 = dplyr::lag(uf, 1),
       desempleo_lag1 = dplyr::lag(desempleo, 1),
+      eee_imacec_lag1 = dplyr::lag(eee_imacec, 1),
+      eee_imacec_nm_lag1 = dplyr::lag(eee_imacec_nm, 1),
       t = dplyr::row_number()
     )
 }

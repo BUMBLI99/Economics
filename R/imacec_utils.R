@@ -3,6 +3,10 @@
 # Utilidades generales: API BCCh, transformaciones y fechas
 # ============================================================
 
+`%||%` <- function(x, y) {
+  if (is.null(x) || length(x) == 0) y else x
+}
+
 assert_bcch_credentials <- function(user = USER_BCCH, pass = PASS_BCCH) {
   if (identical(user, "") || identical(pass, "")) {
     stop(
@@ -33,12 +37,32 @@ bcch_redact_url <- function(url) {
   url
 }
 
+bcch_strip_bom <- function(txt) {
+  # No usar expresiones regulares tipo "\\ufeff": en algunas instalaciones
+  # de R/PCRE2 falla con "PCRE2 does not support \\u".
+  if (is.na(txt) || !nzchar(txt)) return(txt)
+
+  bom_unicode <- intToUtf8(0xFEFF)
+  if (startsWith(txt, bom_unicode)) {
+    txt <- substring(txt, nchar(bom_unicode, type = "chars") + 1L)
+  }
+  txt <- gsub(bom_unicode, "", txt, fixed = TRUE)
+
+  # Variante byte-order-mark UTF-8 literal. Se maneja sin regex.
+  bom_utf8 <- rawToChar(as.raw(c(0xEF, 0xBB, 0xBF)))
+  if (startsWith(txt, bom_utf8)) {
+    txt <- substring(txt, nchar(bom_utf8, type = "chars") + 1L)
+  }
+  txt
+}
+
 bcch_decode_json_text <- function(raw_response) {
   # La API del BCCh ocasionalmente retorna bytes que hacen fallar a
   # rjson::fromJSON(file = url) con "input string is invalid UTF-8".
   # Por eso se descarga como raw, se normaliza encoding y recién ahí se parsea.
   txt0 <- rawToChar(raw_response)
   encodings <- c("UTF-8", "latin1", "WINDOWS-1252", "unknown")
+  last_error <- NULL
 
   for (enc in encodings) {
     txt <- tryCatch(
@@ -47,19 +71,22 @@ bcch_decode_json_text <- function(raw_response) {
       } else {
         iconv(txt0, from = enc, to = "UTF-8", sub = "")
       },
-      error = function(e) NA_character_
+      error = function(e) {
+        last_error <<- conditionMessage(e)
+        NA_character_
+      }
     )
 
     if (is.na(txt) || !nzchar(txt)) next
 
-    txt <- sub("^\\ufeff", "", txt, perl = TRUE)
-    txt <- sub("^\\xEF\\xBB\\xBF", "", txt, perl = TRUE)
+    txt <- bcch_strip_bom(txt)
     txt <- trimws(txt)
 
     if (jsonlite::validate(txt)) return(txt)
+    last_error <- "jsonlite::validate(txt) == FALSE"
   }
 
-  stop("No se pudo normalizar la respuesta JSON del BCCh a UTF-8.", call. = FALSE)
+  stop("No se pudo normalizar la respuesta JSON del BCCh a UTF-8. Último error: ", last_error, call. = FALSE)
 }
 
 bcch_from_json_safe <- function(url, tries = 3L, pause_base = 1.25) {
@@ -97,37 +124,110 @@ bcch_from_json_safe <- function(url, tries = 3L, pause_base = 1.25) {
   )
 }
 
+bcch_is_success <- function(j) {
+  codigo <- j$Codigo %||% j$codigo %||% NULL
+  descripcion <- tolower(trimws(as.character(j$Descripcion %||% j$description %||% "")))
+
+  # La respuesta normal de SieteRestWS suele traer Codigo = 0 y
+  # Descripcion = "Success". Eso NO es error. El bug anterior trataba
+  # cualquier presencia de Codigo como error, por eso se caía con "Success 0".
+  if (!is.null(codigo)) {
+    codigo_chr <- trimws(as.character(codigo[1]))
+    if (codigo_chr %in% c("0", "0.0", "00", "")) return(TRUE)
+    return(FALSE)
+  }
+
+  if (descripcion %in% c("success", "ok")) return(TRUE)
+  TRUE
+}
+
+bcch_error_message <- function(j) {
+  paste(
+    na.omit(c(
+      as.character(j$Error %||% j$error %||% NA_character_),
+      as.character(j$Descripcion %||% j$description %||% NA_character_),
+      as.character(j$Codigo %||% j$codigo %||% NA_character_)
+    )),
+    collapse = " "
+  )
+}
+
+parse_bcch_date <- function(x) {
+  x <- as.character(x)
+  d <- suppressWarnings(lubridate::dmy(x))
+  bad <- is.na(d)
+  if (any(bad)) d[bad] <- suppressWarnings(lubridate::ymd(x[bad]))
+  bad <- is.na(d)
+  if (any(bad)) d[bad] <- suppressWarnings(as.Date(x[bad]))
+  as.Date(d)
+}
+
+bcch_collect_series_nodes <- function(x) {
+  nodes <- list()
+
+  walk_node <- function(node) {
+    if (is.null(node)) return(NULL)
+    if (is.list(node) && !is.null(node$Obs)) {
+      nodes[[length(nodes) + 1L]] <<- node
+      return(NULL)
+    }
+    if (is.list(node)) {
+      for (child in node) walk_node(child)
+    }
+    NULL
+  }
+
+  walk_node(x)
+  nodes
+}
+
+bcch_pull_obs <- function(node) {
+  if (is.null(node) || is.null(node$Obs) || length(node$Obs) == 0) return(NULL)
+
+  get_obs_field <- function(obs, candidates) {
+    for (nm in candidates) {
+      val <- obs[[nm]]
+      if (!is.null(val) && length(val) > 0) return(as.character(val[1]))
+    }
+    NA_character_
+  }
+
+  fechas <- vapply(node$Obs, get_obs_field, character(1), candidates = c("indexDateString", "indexDate", "date", "Date"))
+  valores <- vapply(node$Obs, get_obs_field, character(1), candidates = c("value", "Value", "valor", "Valor"))
+
+  tibble::tibble(
+    date = parse_bcch_date(fechas),
+    value = suppressWarnings(as.numeric(gsub(",", ".", valores, fixed = TRUE)))
+  ) |>
+    dplyr::filter(!is.na(date)) |>
+    dplyr::arrange(date)
+}
+
 fetch_series <- function(code, firstdate = first_date, lastdate = last_date) {
   if (is.null(code) || identical(code, "")) stop("Código de serie vacío o NULL.")
 
   url <- bcch_url(code, firstdate, lastdate)
   j <- bcch_from_json_safe(url)
 
-  # Si la API retorna una estructura de error, fallar con mensaje legible.
-  if (!is.null(j$Error) || !is.null(j$error) || !is.null(j$Codigo)) {
-    msg <- paste(c(j$Error, j$error, j$Descripcion, j$description, j$Codigo), collapse = " ")
+  # Solo falla si BCCh trae Codigo distinto de cero o un error explícito.
+  # Codigo = 0 / Descripcion = Success es la respuesta normal de éxito.
+  explicit_error <- !is.null(j$Error) || !is.null(j$error)
+  if (explicit_error || !bcch_is_success(j)) {
+    msg <- bcch_error_message(j)
+    if (!nzchar(msg)) msg <- "respuesta sin observaciones o código no exitoso"
     stop("BCCh reportó un error para la serie ", code, ": ", msg, call. = FALSE)
   }
 
-  pull_obs <- function(node) {
-    if (is.null(node) || is.null(node$Obs) || length(node$Obs) == 0) return(NULL)
+  top_nodes <- list(j$Series, j$DAILY, j$MONTHLY, j$WEEKLY, j$QUARTERLY, j$ANNUAL)
+  nodes <- unlist(lapply(top_nodes, bcch_collect_series_nodes), recursive = FALSE)
 
-    tibble::tibble(
-      date  = lubridate::dmy(vapply(node$Obs, function(x) x[["indexDateString"]], character(1))),
-      value = suppressWarnings(as.numeric(gsub(",", ".", vapply(node$Obs, function(x) x[["value"]], character(1)), fixed = TRUE)))
-    )
-  }
-
-  out <- list()
-  if (!is.null(j$Series))    out[[length(out) + 1]] <- pull_obs(j$Series)
-  if (!is.null(j$DAILY))     out[[length(out) + 1]] <- pull_obs(j$DAILY)
-  if (!is.null(j$MONTHLY))   out[[length(out) + 1]] <- pull_obs(j$MONTHLY)
-  if (!is.null(j$WEEKLY))    out[[length(out) + 1]] <- pull_obs(j$WEEKLY)
-  if (!is.null(j$QUARTERLY)) out[[length(out) + 1]] <- pull_obs(j$QUARTERLY)
-  if (!is.null(j$ANNUAL))    out[[length(out) + 1]] <- pull_obs(j$ANNUAL)
-
+  out <- lapply(nodes, bcch_pull_obs)
   out <- out[!vapply(out, is.null, logical(1))]
-  if (length(out) == 0) return(tibble::tibble(date = as.Date(character()), value = numeric()))
+
+  if (length(out) == 0) {
+    warning("La serie BCCh no trajo observaciones: ", code)
+    return(tibble::tibble(date = as.Date(character()), value = numeric()))
+  }
 
   dplyr::bind_rows(out) |>
     dplyr::filter(!is.na(date)) |>
