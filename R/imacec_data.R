@@ -96,7 +96,11 @@ get_monthly_base <- function() {
       cobre_yoy,
       petroleo_yoy
     ) |>
-    dplyr::left_join(eee_df, by = "Periodo")
+    # La EEE puede ser la primera señal disponible para el mes objetivo.
+    # Por eso no basta un left_join desde la base mensual: si la BDE todavía
+    # no tiene ninguna otra serie para ese mes, perderíamos la fila del nowcast.
+    dplyr::full_join(eee_df, by = "Periodo") |>
+    dplyr::arrange(Periodo)
 
   if (!"eee_imacec" %in% names(out)) out$eee_imacec <- NA_real_
   if (!"eee_imacec_nm" %in% names(out)) out$eee_imacec_nm <- NA_real_

@@ -3,18 +3,54 @@
 # Modelos, selección de vintage y nowcast IMACEC
 # ============================================================
 
-get_target_period <- function(Data) {
-  Data |>
-    dplyr::filter(!is.na(imacec)) |>
-    dplyr::summarise(maxp = max(Periodo)) |>
-    dplyr::pull(maxp) %m+% lubridate::period(num = 1, units = "month")
-}
-
 last_observed_period <- function(Data) {
   Data |>
     dplyr::filter(!is.na(imacec)) |>
     dplyr::summarise(maxp = max(Periodo)) |>
     dplyr::pull(maxp)
+}
+
+next_imacec_period <- function(Data) {
+  last_observed_period(Data) %m+% lubridate::period(num = 1, units = "month")
+}
+
+has_eee_signal <- function(Data, periodo) {
+  !is.na(current_value(Data, periodo, "eee_imacec"))
+}
+
+# Regla operacional del ciclo mensual:
+# - si ya existe EEE para el mes siguiente, se abre un nuevo nowcast;
+# - si todavía no existe EEE, se mantiene en pantalla el último ciclo cerrado
+#   (último IMACEC oficial), comparando observado, estimación propia y EEE.
+get_target_period <- function(Data) {
+  last_obs <- last_observed_period(Data)
+  next_p <- last_obs %m+% lubridate::period(num = 1, units = "month")
+  if (has_eee_signal(Data, next_p)) next_p else last_obs
+}
+
+cycle_state <- function(Data, periodo_objetivo) {
+  last_obs <- last_observed_period(Data)
+  if (identical(as.Date(periodo_objetivo), as.Date(last_obs))) {
+    "official_review"
+  } else {
+    "active_nowcast"
+  }
+}
+
+cycle_state_label <- function(state) {
+  dplyr::case_when(
+    state == "official_review" ~ "Ciclo cerrado: dato oficial publicado; esperando siguiente EEE",
+    state == "active_nowcast" ~ "Nowcast activo para mes sin dato oficial",
+    TRUE ~ "Ciclo de actualización"
+  )
+}
+
+mask_target_outcome <- function(Data, periodo_objetivo) {
+  Data |>
+    dplyr::mutate(
+      imacec = dplyr::if_else(Periodo == periodo_objetivo, NA_real_, imacec),
+      imacec_nm = dplyr::if_else(Periodo == periodo_objetivo, NA_real_, imacec_nm)
+    )
 }
 
 mean_last_non_na <- function(x, n = 3) {
@@ -218,7 +254,7 @@ stage_label <- function(stage) {
     stage == "ine" ~ "Vintage INE: indicadores sectoriales completos",
     stage == "experimental" ~ "Vintage intermedio: indicadores experimentales/BCCh disponibles",
     stage == "eee" ~ "Vintage temprano: EEE y supuestos de corto plazo",
-    TRUE ~ "Vintage inicial: supuestos de corto plazo"
+    TRUE ~ "Vintage inicial: sin EEE ni indicadores contemporáneos"
   )
 }
 
@@ -328,26 +364,43 @@ run_nowcast <- function(model = c("auto", "ine", "experimental", "eee", "early")
   model <- match.arg(model)
   cal_df <- read_calendar()
   Data_ine <- build_dataset_ine()
-  periodo_objetivo <- get_target_period(Data_ine)
-  last_obs <- last_observed_period(Data_ine)
 
+  last_obs <- last_observed_period(Data_ine)
+  next_period <- last_obs %m+% lubridate::period(num = 1, units = "month")
+  eee_next_available <- has_eee_signal(Data_ine, next_period)
+
+  # Si todavía no existe EEE para el mes siguiente, no abrimos un nowcast prematuro.
+  # La página queda en el último ciclo cerrado: se reconstruye la estimación para el
+  # último mes observado, usando información contemporánea disponible, pero sin usar
+  # el dato oficial de ese mes en la estimación.
+  periodo_objetivo <- if (model == "auto") {
+    if (eee_next_available) next_period else last_obs
+  } else {
+    next_period
+  }
+
+  ciclo <- cycle_state(Data_ine, periodo_objetivo)
   stage <- if (model == "auto") detect_imacec_stage(Data_ine, periodo_objetivo) else model
 
-  if (stage == "ine") {
-    fits <- fit_models_ine(Data_ine)
-    Data <- Data_ine
-  } else if (stage == "eee") {
-    fits <- fit_models_eee(Data_ine)
-    Data <- Data_ine
+  Data_model <- if (ciclo == "official_review") {
+    mask_target_outcome(Data_ine, periodo_objetivo)
   } else {
-    fits <- fit_models_experimental(Data_ine)
-    Data <- Data_ine
+    Data_ine
+  }
+
+  if (stage == "ine") {
+    fits <- fit_models_ine(Data_model)
+  } else if (stage == "eee") {
+    fits <- fit_models_eee(Data_model)
+  } else {
+    fits <- fit_models_experimental(Data_model)
     if (stage == "early") {
       fits$model_label <- "Modelo inicial con supuestos de corto plazo"
       fits$stage <- "early"
     }
   }
 
+  Data <- Data_ine
   Data_fit <- Data |>
     dplyr::mutate(
       imacec_fit = NA_real_,
@@ -360,7 +413,18 @@ run_nowcast <- function(model = c("auto", "ine", "experimental", "eee", "early")
   Data_fit$imacec_fit[idx_total] <- as.numeric(stats::predict(fits$modelo_imacec, newdata = Data_fit[idx_total, , drop = FALSE]))
   Data_fit$imacec_nm_fit[idx_nm] <- as.numeric(stats::predict(fits$modelo_imacec_nm, newdata = Data_fit[idx_nm, , drop = FALSE]))
 
-  if (is.null(assumptions)) assumptions <- make_default_assumptions(Data, periodo_objetivo)
+  if (is.null(assumptions)) {
+    assumptions <- if (ciclo == "official_review") {
+      structure(list(), assumptions_tbl = tibble::tibble(
+        variable = character(),
+        valor_asumido = numeric(),
+        criterio = character(),
+        periodo_objetivo = as.Date(character())
+      ))
+    } else {
+      make_default_assumptions(Data, periodo_objetivo)
+    }
+  }
   assumptions_tbl <- get_assumptions_table(assumptions)
 
   newdata_imacec <- build_newdata_from_model(
@@ -377,6 +441,8 @@ run_nowcast <- function(model = c("auto", "ine", "experimental", "eee", "early")
   eee_total <- current_value(Data, periodo_objetivo, "eee_imacec")
   eee_nm <- current_value(Data, periodo_objetivo, "eee_imacec_nm")
 
+  vintage_label_full <- paste0(stage_label(stage), " · ", cycle_state_label(ciclo))
+
   proyeccion <- tibble::tibble(
     Periodo = periodo_objetivo,
     imacec_predicho = pred_total$fit,
@@ -389,8 +455,12 @@ run_nowcast <- function(model = c("auto", "ine", "experimental", "eee", "early")
     eee_imacec_nm = eee_nm,
     modelo = fits$model_label,
     vintage = stage,
-    vintage_label = stage_label(stage),
+    vintage_label = vintage_label_full,
+    ciclo_estado = ciclo,
+    ciclo_estado_label = cycle_state_label(ciclo),
     ultima_observacion_imacec = last_obs,
+    siguiente_periodo_imacec = next_period,
+    tiene_eee_siguiente = eee_next_available,
     fecha_actualizacion = Sys.Date(),
     fecha_hora_actualizacion = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
   )
@@ -400,10 +470,14 @@ run_nowcast <- function(model = c("auto", "ine", "experimental", "eee", "early")
     fecha_hora_actualizacion = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
     ultima_observacion_imacec = last_obs,
     periodo_objetivo = periodo_objetivo,
+    siguiente_periodo_imacec = next_period,
+    ciclo_estado = ciclo,
+    ciclo_estado_label = cycle_state_label(ciclo),
     vintage = stage,
-    vintage_label = stage_label(stage),
+    vintage_label = vintage_label_full,
     modelo = fits$model_label,
     tiene_eee = !is.na(eee_total),
+    tiene_eee_siguiente = eee_next_available,
     tiene_experimentales = has_any_current(Data, periodo_objetivo, c("venta_minorista", "monto_credito", "cantidad_credito", "uf"), 2L),
     tiene_ine = has_all_current(Data, periodo_objetivo, c("mineria", "manufactura", "comercio", "electricidad"))
   )
@@ -418,6 +492,7 @@ run_nowcast <- function(model = c("auto", "ine", "experimental", "eee", "early")
     assumptions = assumptions_tbl,
     update_status = update_status,
     model_label = fits$model_label,
-    stage = stage
+    stage = stage,
+    ciclo_estado = ciclo
   )
 }

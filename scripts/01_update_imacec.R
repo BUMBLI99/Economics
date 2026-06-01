@@ -26,10 +26,11 @@ exports <- export_imacec_outputs(
 
 message("Actualización finalizada.")
 message("Última observación IMACEC: ", format(resultado$update_status$ultima_observacion_imacec, "%Y-%m"))
-message("Período objetivo: ", format(resultado$proyeccion$Periodo, "%Y-%m"))
-message("Vintage: ", resultado$proyeccion$vintage_label)
-message("Nowcast IMACEC total: ", round(resultado$proyeccion$imacec_predicho, 2), "%")
-message("Nowcast IMACEC no minero: ", round(resultado$proyeccion$imacec_nm_predicho, 2), "%")
+message("Período en pantalla: ", format(resultado$proyeccion$Periodo, "%Y-%m"))
+message("Estado del ciclo: ", resultado$proyeccion$ciclo_estado_label)
+message("Vintage/modelo: ", resultado$proyeccion$vintage_label)
+message("Estimación IMACEC total: ", round(resultado$proyeccion$imacec_predicho, 2), "%")
+message("Estimación IMACEC no minero: ", round(resultado$proyeccion$imacec_nm_predicho, 2), "%")
 if (!is.na(resultado$proyeccion$eee_imacec)) {
   message("EEE IMACEC total: ", round(resultado$proyeccion$eee_imacec, 2), "%")
 }

@@ -110,12 +110,16 @@ proyeccion <- readr::read_csv(projection_file$path, show_col_types = FALSE) |>
     eee_imacec_nm = NA_real_,
     vintage = NA_character_,
     vintage_label = NA_character_,
+    ciclo_estado = NA_character_,
+    ciclo_estado_label = NA_character_,
+    siguiente_periodo_imacec = as.Date(NA),
     fecha_hora_actualizacion = NA_character_
   )) |>
   mutate(
     Periodo = as.Date(Periodo),
     fecha_actualizacion = as.Date(fecha_actualizacion),
-    ultima_observacion_imacec = as.Date(ultima_observacion_imacec)
+    ultima_observacion_imacec = as.Date(ultima_observacion_imacec),
+    siguiente_periodo_imacec = as.Date(siguiente_periodo_imacec)
   )
 
 status <- read_optional_csv(status_file$path, tibble()) |>
@@ -126,15 +130,20 @@ status <- read_optional_csv(status_file$path, tibble()) |>
     periodo_objetivo = proyeccion$Periodo[1],
     vintage = proyeccion$vintage[1],
     vintage_label = proyeccion$vintage_label[1],
+    ciclo_estado = proyeccion$ciclo_estado[1],
+    ciclo_estado_label = proyeccion$ciclo_estado_label[1],
+    siguiente_periodo_imacec = proyeccion$siguiente_periodo_imacec[1],
     modelo = proyeccion$modelo[1],
     tiene_eee = !is.na(proyeccion$eee_imacec[1]),
+    tiene_eee_siguiente = NA,
     tiene_experimentales = NA,
     tiene_ine = NA
   )) |>
   mutate(
     fecha_actualizacion = as.Date(fecha_actualizacion),
     ultima_observacion_imacec = as.Date(ultima_observacion_imacec),
-    periodo_objetivo = as.Date(periodo_objetivo)
+    periodo_objetivo = as.Date(periodo_objetivo),
+    siguiente_periodo_imacec = as.Date(siguiente_periodo_imacec)
   )
 
 assumptions <- read_optional_csv(assumptions_file$path, tibble()) |>
@@ -164,7 +173,7 @@ if (identical(data_status, "demo")) {
     "## Resultados de ejemplo\n\n",
     "Todavía no se han generado los archivos reales `data/processed/imacec_nowcast_*.csv`. ",
     "Por ahora esta página muestra resultados de ejemplo hasta que se actualice la base procesada del proyecto.\n",
-    ":::"
+    ":::\n"
   )
 }
 ```
@@ -173,6 +182,18 @@ if (identical(data_status, "demo")) {
 
 ```{r status-cards, results='asis'}
 st <- status |> slice(1)
+ciclo <- st$ciclo_estado[1] %||% "active_nowcast"
+mes_label <- if (identical(ciclo, "official_review")) "Mes evaluado" else "Mes proyectado"
+mes_text <- if (identical(ciclo, "official_review")) {
+  "Último mes con dato oficial. Se mantiene en pantalla hasta que aparezca la EEE del siguiente mes."
+} else {
+  "Mes sin IMACEC oficial para el cual está activo el nowcast."
+}
+prox_text <- if (isTRUE(st$tiene_eee_siguiente[1])) {
+  "La EEE del siguiente mes ya está disponible; el ciclo de nowcast está abierto."
+} else {
+  "Aún no aparece la EEE del siguiente mes; se conserva el último ciclo cerrado."
+}
 cat(
   "::: {.mu-grid .mu-grid-areas}\n\n",
   "::: {.mu-area}\n",
@@ -181,23 +202,30 @@ cat(
   "Hora local registrada: ", st$fecha_hora_actualizacion[1] %||% "—", "\n",
   ":::\n\n",
   "::: {.mu-area}\n",
-  "### Último IMACEC observado\n",
+  "### Último dato oficial\n",
   fmt_month(st$ultima_observacion_imacec[1]), "\n\n",
-  "Último mes con dato oficial en la base procesada.\n",
+  "Último mes con IMACEC publicado en la base procesada.\n",
   ":::\n\n",
   "::: {.mu-area}\n",
-  "### Mes proyectado\n",
+  "### ", mes_label, "\n",
   fmt_month(st$periodo_objetivo[1]), "\n\n",
-  "Mes que todavía no tiene IMACEC oficial al momento de actualizar.\n",
+  mes_text, "\n",
   ":::\n\n",
   "::: {.mu-area}\n",
-  "### Vintage vigente\n",
-  st$vintage_label[1] %||% "—", "\n\n",
-  "El modelo cambia según la información disponible para el mes objetivo.\n",
+  "### Estado del ciclo\n",
+  st$ciclo_estado_label[1] %||% "—", "\n\n",
+  prox_text, "\n",
   ":::\n\n",
-  ":::"
+  "::: {.mu-area}\n",
+  "### Siguiente mes potencial\n",
+  fmt_month(st$siguiente_periodo_imacec[1]), "\n\n",
+  "El modelo solo abre este ciclo cuando existe EEE para ese mes.\n",
+  ":::\n\n",
+  ":::\n"
 )
 ```
+
+
 
 ## Pregunta económica
 
@@ -209,12 +237,13 @@ La idea no es producir una proyección oficial, sino construir una herramienta r
 
 ## Flujo de vintages
 
-La página distingue cuatro momentos de información:
+La página sigue el ciclo efectivo de publicación de información:
 
-1. **Vintage temprano:** cuando aún no están los indicadores sectoriales del INE; se usa la EEE para el IMACEC total y supuestos simples para variables contemporáneas faltantes.
-2. **Vintage intermedio:** cuando aparecen indicadores experimentales/BCCh como comercio, crédito, UF u otras variables mensuales, se actualiza la regresión sin depender de la EEE como principal predictor.
-3. **Vintage INE:** cuando se publican los indicadores sectoriales —minería, manufactura, comercio, electricidad y mercado laboral— se estima la especificación más informada.
-4. **Publicación oficial:** cuando aparece el IMACEC efectivo, se compara contra la proyección archivada y el mes objetivo avanza al siguiente período.
+1. **Dato oficial recién publicado:** cuando aparece el IMACEC efectivo de un mes, la página conserva ese ciclo cerrado. En el gráfico se muestran el dato observado, la estimación propia que habría estado disponible con el último vintage y la EEE si existía para ese mes.
+2. **EEE del siguiente mes:** cuando se publica la encuesta para el IMACEC de un mes atrás, se abre el nuevo ciclo de nowcast. En esta etapa se usa la EEE para el IMACEC total y supuestos simples para variables contemporáneas todavía no publicadas.
+3. **Indicadores experimentales/BCCh:** cuando aparecen ventas, crédito u otras señales mensuales, se actualiza la estimación propia con esa información. La EEE se mantiene en el gráfico como punto de comparación, no desaparece.
+4. **Indicadores sectoriales INE:** cuando se publican minería, manufactura, comercio, electricidad y mercado laboral, se usa el vintage más informado. La página conserva simultáneamente la estimación propia y la EEE.
+5. **Nuevo dato oficial:** al publicarse el IMACEC efectivo, se agrega el punto observado y se mantiene la comparación hasta que la EEE del siguiente mes abra el nuevo ciclo.
 
 ## Resultado principal
 
@@ -229,7 +258,7 @@ resumen |>
   )
 ```
 
-## IMACEC total: observado, ajuste y nowcast
+## IMACEC total: observado, ajuste y proyección
 
 ```{r plot-total}
 hist_plot <- hist |>
@@ -243,7 +272,7 @@ g_total <- ggplot(hist_plot, aes(x = Periodo)) +
   geom_line(aes(y = imacec_fit, color = "Ajuste del modelo"), linewidth = 0.75, linetype = "dashed", na.rm = TRUE) +
   geom_point(
     data = nowcast_row,
-    aes(y = imacec_fit, color = "Nowcast propio"),
+    aes(y = imacec_fit, color = "Estimación propia"),
     size = 2.7,
     na.rm = TRUE
   ) +
@@ -257,14 +286,14 @@ g_total <- ggplot(hist_plot, aes(x = Periodo)) +
   scale_color_manual(values = c(
     "Observado" = "#1f4e79",
     "Ajuste del modelo" = "#b03a2e",
-    "Nowcast propio" = "#7f1d1d",
+    "Estimación propia" = "#7f1d1d",
     "EEE" = "#7a5195"
   )) +
   labs(
     x = NULL,
     y = "Var. 12m (%)",
     color = NULL,
-    title = "IMACEC total: observado, ajuste y nowcast",
+    title = "IMACEC total: observado, ajuste y proyección",
     subtitle = st$vintage_label[1]
   ) +
   theme_minimal(base_size = 12) +
@@ -278,12 +307,15 @@ g_total <- ggplot(hist_plot, aes(x = Periodo)) +
 
 plotly::ggplotly(g_total) |>
   plotly::layout(
-    legend = list(orientation = "h", x = 0.5, xanchor = "center", y = -0.22, yanchor = "top"),
-    margin = list(t = 80, b = 95)
-  )
+    autosize = TRUE,
+    height = 620,
+    legend = list(orientation = "h", x = 0.5, xanchor = "center", y = -0.18, yanchor = "top"),
+    margin = list(t = 90, b = 105, l = 70, r = 40)
+  ) |>
+  plotly::config(displayModeBar = FALSE, responsive = TRUE)
 ```
 
-## IMACEC no minero: observado, ajuste y nowcast
+## IMACEC no minero: observado, ajuste y proyección
 
 ```{r plot-nm}
 g_nm <- ggplot(hist_plot, aes(x = Periodo)) +
@@ -292,7 +324,7 @@ g_nm <- ggplot(hist_plot, aes(x = Periodo)) +
   geom_line(aes(y = imacec_nm_fit, color = "Ajuste del modelo"), linewidth = 0.75, linetype = "dashed", na.rm = TRUE) +
   geom_point(
     data = nowcast_row,
-    aes(y = imacec_nm_fit, color = "Nowcast propio"),
+    aes(y = imacec_nm_fit, color = "Estimación propia"),
     size = 2.7,
     na.rm = TRUE
   ) +
@@ -306,14 +338,14 @@ g_nm <- ggplot(hist_plot, aes(x = Periodo)) +
   scale_color_manual(values = c(
     "Observado" = "#1f4e79",
     "Ajuste del modelo" = "#b03a2e",
-    "Nowcast propio" = "#7f1d1d",
+    "Estimación propia" = "#7f1d1d",
     "EEE" = "#7a5195"
   )) +
   labs(
     x = NULL,
     y = "Var. 12m (%)",
     color = NULL,
-    title = "IMACEC no minero: observado, ajuste y nowcast",
+    title = "IMACEC no minero: observado, ajuste y proyección",
     subtitle = st$vintage_label[1]
   ) +
   theme_minimal(base_size = 12) +
@@ -327,9 +359,12 @@ g_nm <- ggplot(hist_plot, aes(x = Periodo)) +
 
 plotly::ggplotly(g_nm) |>
   plotly::layout(
-    legend = list(orientation = "h", x = 0.5, xanchor = "center", y = -0.22, yanchor = "top"),
-    margin = list(t = 80, b = 95)
-  )
+    autosize = TRUE,
+    height = 620,
+    legend = list(orientation = "h", x = 0.5, xanchor = "center", y = -0.18, yanchor = "top"),
+    margin = list(t = 90, b = 105, l = 70, r = 40)
+  ) |>
+  plotly::config(displayModeBar = FALSE, responsive = TRUE)
 ```
 
 ## Supuestos usados cuando falta información contemporánea

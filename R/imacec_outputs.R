@@ -17,13 +17,20 @@ make_summary_table <- function(resultado) {
       Tipo = "Observado"
     )
 
+  tipo_proj <- if ("ciclo_estado" %in% names(resultado$proyeccion) &&
+                   resultado$proyeccion$ciclo_estado[1] == "official_review") {
+    "Estimación previa"
+  } else {
+    "Nowcast vigente"
+  }
+
   fila_proj <- resultado$proyeccion |>
     dplyr::transmute(
       Periodo,
       IMACEC = round(imacec_predicho, 2),
       IMACEC_no_minero = round(imacec_nm_predicho, 2),
       Proyeccion_EEE = round(eee_imacec, 2),
-      Tipo = "Nowcast vigente"
+      Tipo = tipo_proj
     )
 
   dplyr::bind_rows(ultimos_obs, fila_proj)
@@ -85,15 +92,63 @@ compute_fit_metrics <- function(resultado) {
     )
 }
 
+normalize_projection_archive_types <- function(df) {
+  if (is.null(df) || nrow(df) == 0) {
+    return(tibble::tibble())
+  }
+
+  needed <- c(
+    "fecha_actualizacion",
+    "fecha_hora_actualizacion",
+    "Periodo",
+    "ultima_observacion_imacec",
+    "siguiente_periodo_imacec",
+    "ciclo_estado",
+    "ciclo_estado_label",
+    "vintage",
+    "vintage_label",
+    "modelo",
+    "imacec_predicho",
+    "imacec_nm_predicho",
+    "eee_imacec",
+    "eee_imacec_nm"
+  )
+
+  for (nm in needed) {
+    if (!nm %in% names(df)) {
+      df[[nm]] <- NA
+    }
+  }
+
+  df |>
+    dplyr::mutate(
+      fecha_actualizacion = as.Date(fecha_actualizacion),
+      fecha_hora_actualizacion = as.character(fecha_hora_actualizacion),
+      Periodo = as.Date(Periodo),
+      ultima_observacion_imacec = as.Date(ultima_observacion_imacec),
+      siguiente_periodo_imacec = as.Date(siguiente_periodo_imacec),
+      ciclo_estado = as.character(ciclo_estado),
+      ciclo_estado_label = as.character(ciclo_estado_label),
+      vintage = as.character(vintage),
+      vintage_label = as.character(vintage_label),
+      modelo = as.character(modelo),
+      imacec_predicho = suppressWarnings(as.numeric(imacec_predicho)),
+      imacec_nm_predicho = suppressWarnings(as.numeric(imacec_nm_predicho)),
+      eee_imacec = suppressWarnings(as.numeric(eee_imacec)),
+      eee_imacec_nm = suppressWarnings(as.numeric(eee_imacec_nm))
+    ) |>
+    dplyr::select(dplyr::all_of(needed))
+}
+
 make_projection_archive <- function(resultado, output_dir = "data/processed") {
   archive_path <- file.path(output_dir, "imacec_projection_archive.csv")
+
   old <- if (file.exists(archive_path)) {
-    readr::read_csv(archive_path, show_col_types = FALSE) |>
-      dplyr::mutate(
-        Periodo = as.Date(Periodo),
-        fecha_actualizacion = as.Date(fecha_actualizacion),
-        ultima_observacion_imacec = as.Date(ultima_observacion_imacec)
-      )
+    readr::read_csv(
+      archive_path,
+      col_types = readr::cols(.default = readr::col_guess(), fecha_hora_actualizacion = readr::col_character())
+    ) |>
+      normalize_projection_archive_types()
   } else {
     tibble::tibble()
   }
@@ -101,9 +156,12 @@ make_projection_archive <- function(resultado, output_dir = "data/processed") {
   new <- resultado$proyeccion |>
     dplyr::transmute(
       fecha_actualizacion,
-      fecha_hora_actualizacion,
+      fecha_hora_actualizacion = as.character(fecha_hora_actualizacion),
       Periodo,
       ultima_observacion_imacec,
+      siguiente_periodo_imacec,
+      ciclo_estado,
+      ciclo_estado_label,
       vintage,
       vintage_label,
       modelo,
@@ -111,9 +169,11 @@ make_projection_archive <- function(resultado, output_dir = "data/processed") {
       imacec_nm_predicho,
       eee_imacec,
       eee_imacec_nm
-    )
+    ) |>
+    normalize_projection_archive_types()
 
   dplyr::bind_rows(old, new) |>
+    normalize_projection_archive_types() |>
     dplyr::arrange(Periodo, fecha_actualizacion, fecha_hora_actualizacion) |>
     dplyr::distinct(Periodo, fecha_actualizacion, vintage, .keep_all = TRUE)
 }
