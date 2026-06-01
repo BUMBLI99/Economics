@@ -41,7 +41,7 @@ get_eee_expectations <- function() {
 
   df_raw |>
     dplyr::filter(!is.na(date)) |>
-    dplyr::mutate(Periodo = lubridate::floor_date(date, "month") %m-% lubridate::months(1)) |>
+    dplyr::mutate(Periodo = lubridate::floor_date(date, "month") %m-% lubridate::period(num = 1, units = "month")) |>
     dplyr::group_by(var, Periodo) |>
     dplyr::summarise(value = dplyr::last(value), .groups = "drop") |>
     tidyr::pivot_wider(names_from = var, values_from = value) |>

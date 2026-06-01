@@ -7,7 +7,7 @@ get_target_period <- function(Data) {
   Data |>
     dplyr::filter(!is.na(imacec)) |>
     dplyr::summarise(maxp = max(Periodo)) |>
-    dplyr::pull(maxp) %m+% lubridate::months(1)
+    dplyr::pull(maxp) %m+% lubridate::period(num = 1, units = "month")
 }
 
 last_observed_period <- function(Data) {
@@ -272,7 +272,7 @@ build_newdata_from_model <- function(modelo, periodo_objetivo, Data, cal_df, ass
     } else if (grepl("_lag[0-9]+$", term)) {
       base_var <- sub("_lag[0-9]+$", "", term)
       lag_n <- as.integer(sub("^.*_lag([0-9]+)$", "\\1", term))
-      ref_period <- periodo_objetivo %m-% lubridate::months(lag_n)
+      ref_period <- periodo_objetivo %m-% lubridate::period(num = lag_n, units = "month")
 
       val <- Data |>
         dplyr::filter(Periodo == ref_period) |>

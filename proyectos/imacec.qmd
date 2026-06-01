@@ -233,7 +233,7 @@ resumen |>
 
 ```{r plot-total}
 hist_plot <- hist |>
-  filter(Periodo >= max(Periodo, na.rm = TRUE) %m-% months(95))
+  filter(Periodo >= max(Periodo, na.rm = TRUE) %m-% lubridate::period(num = 95, units = "month"))
 
 nowcast_row <- hist_plot |> filter(tipo == "Nowcast")
 

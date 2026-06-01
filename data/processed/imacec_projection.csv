@@ -1,2 +1,2 @@
-Periodo,imacec_predicho,imacec_lwr,imacec_upr,imacec_nm_predicho,imacec_nm_lwr,imacec_nm_upr,modelo,fecha_actualizacion
-2026-04-01,-0.3636843358748454,-2.6335473988891702,1.9061787271394794,0.7894144058137629,-1.5541287172807183,3.132957528908244,Modelo con indicadores sectoriales INE,2026-05-05
+Periodo,imacec_predicho,imacec_lwr,imacec_upr,imacec_nm_predicho,imacec_nm_lwr,imacec_nm_upr,eee_imacec,eee_imacec_nm,modelo,vintage,vintage_label,ultima_observacion_imacec,fecha_actualizacion,fecha_hora_actualizacion
+2026-05-01,0.31984518173260884,-1.4129907906892105,2.052681154154428,1.2697225270744752,-0.3399186659408282,2.8793637200897786,NA,NA,Modelo inicial con supuestos de corto plazo,early,Vintage inicial: supuestos de corto plazo,2026-04-01,2026-06-01,2026-06-01 17:17:27

@@ -156,7 +156,7 @@ plot_nowcast <- function(resultado, variable = c("total", "no_minero"), ultimos_
   history <- make_history_table(resultado)
 
   if (!is.null(ultimos_meses)) {
-    fecha_min <- max(history$Periodo, na.rm = TRUE) %m-% lubridate::months(ultimos_meses - 1)
+    fecha_min <- max(history$Periodo, na.rm = TRUE) %m-% lubridate::period(num = ultimos_meses - 1, units = "month")
     history <- history |>
       dplyr::filter(Periodo >= fecha_min)
   }
