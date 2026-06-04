@@ -1,0 +1,1265 @@
+---
+title: "Tipo de cambio, tasas largas y stress macrofinanciero en LatAm"
+author: "Mauricio Ulloa"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    latex_engine: xelatex
+encoding: UTF-8
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = FALSE,  # NO mostrar código
+  message = FALSE,  # NO mostrar mensajes de R
+  warning = FALSE   # NO mostrar warnings
+)
+```
+
+
+```{r}
+
+## ==========================================================
+## 1. Librerías
+## ==========================================================
+library(rjson)
+library(httr)
+library(jsonlite)
+library(dplyr)
+library(lubridate)
+library(tidyr)
+library(zoo)
+library(tibble)
+
+## ==========================================================
+## 2. Parámetros globales
+## ==========================================================
+bde_user    <- Sys.getenv("BCCH_USER")
+bde_pass    <- Sys.getenv("BCCH_PASS")
+fred_api_key <- Sys.getenv("FRED_API_KEY")
+
+start_date <- "2010-01-01"
+end_date   <- format(Sys.Date(), "%Y-%m-%d")
+
+if (!nzchar(bde_user) || !nzchar(bde_pass)) {
+  stop("Define BCCH_USER y BCCH_PASS en .Renviron antes de ejecutar el script.")
+}
+if (!nzchar(fred_api_key)) {
+  stop("Define FRED_API_KEY en .Renviron antes de ejecutar el script.")
+}
+
+## ==========================================================
+## 3. Helpers
+## ==========================================================
+
+## 3.1 Banco Central de Chile: SieteRestWS
+bde_get_series <- function(user, pass, series_id,
+                           first_date = "2010-01-01",
+                           last_date  = format(Sys.Date(), "%Y-%m-%d")) {
+  
+  base_url <- "https://si3.bcentral.cl/SieteRestWS/SieteRestWS.ashx"
+  
+  res <- httr::GET(
+    base_url,
+    query = list(
+      user       = user,
+      pass       = pass,
+      timeseries = series_id,
+      firstdate  = first_date,
+      lastdate   = last_date,
+      `function` = "GetSeries"
+    ),
+    httr::timeout(60)
+  )
+  
+  httr::stop_for_status(res)
+  
+  txt <- httr::content(res, as = "text", encoding = "UTF-8")
+  
+  txt <- iconv(
+    txt,
+    from = "UTF-8",
+    to   = "UTF-8",
+    sub  = ""
+  )
+  
+  if (is.na(txt) || !nzchar(txt)) {
+    raw <- httr::content(res, as = "raw")
+    txt <- rawToChar(raw)
+    txt <- iconv(
+      txt,
+      from = "latin1",
+      to   = "UTF-8",
+      sub  = ""
+    )
+  }
+  
+  json_data <- jsonlite::fromJSON(txt, simplifyVector = FALSE)
+  
+  if (is.null(json_data$Series$Obs) || length(json_data$Series$Obs) == 0) {
+    warning(paste("Sin observaciones para la serie:", series_id))
+    return(tibble::tibble())
+  }
+  
+  obs_list <- json_data$Series$Obs
+  
+  df <- do.call(
+    rbind,
+    lapply(obs_list, function(x) {
+      data.frame(
+        date_str = enc2utf8(as.character(x$indexDateString)),
+        value    = enc2utf8(as.character(x$value)),
+        status   = enc2utf8(as.character(x$statusCode)),
+        stringsAsFactors = FALSE
+      )
+    })
+  )
+  
+  df$value <- gsub(",", ".", df$value, fixed = TRUE)
+  
+  df %>%
+    mutate(
+      date      = as.Date(date_str, format = "%d-%m-%Y"),
+      value_num = suppressWarnings(as.numeric(value))
+    ) %>%
+    select(date, value_num)
+}
+
+## 3.2 FRED genérico
+fred_get_series <- function(api_key, series_id,
+                            start_date = "2010-01-01",
+                            end_date   = format(Sys.Date(), "%Y-%m-%d")) {
+  url <- "https://api.stlouisfed.org/fred/series/observations"
+  
+  res <- GET(url, query = list(
+    series_id         = series_id,
+    api_key           = api_key,
+    file_type         = "json",
+    observation_start = start_date,
+    observation_end   = end_date
+  ))
+  
+  stop_for_status(res)
+  
+  json_data <- fromJSON(content(res, as = "text", encoding = "UTF-8"))
+  df <- json_data$observations
+  
+  if (is.null(df) || nrow(df) == 0) {
+    warning(paste("Sin observaciones para la serie FRED:", series_id))
+    return(tibble())
+  }
+  
+  df %>%
+    mutate(
+      date      = as.Date(date),
+      value_num = suppressWarnings(as.numeric(value))
+    ) %>%
+    select(date, value_num)
+}
+
+## 3.3 BIS: WS_XRU – tipos de cambio bilaterales contra USD
+bis_get_xru_daily <- function(series_key,
+                              start = "2010-01-01",
+                              end   = format(Sys.Date(), "%Y-%m-%d")) {
+  
+  base <- "https://stats.bis.org/api/v2/data/dataflow/BIS/WS_XRU/1.0"
+  
+  url  <- sprintf(
+    "%s/%s?startPeriod=%s&endPeriod=%s&format=csv",
+    base, series_key, start, end
+  )
+  
+  res <- GET(url)
+  stop_for_status(res)
+  
+  csv_txt <- content(res, as = "text", encoding = "UTF-8")
+  df      <- read.csv(text = csv_txt, stringsAsFactors = FALSE)
+  
+  df %>%
+    mutate(
+      date = as.Date(TIME_PERIOD)   # "YYYY-MM-DD"
+    ) %>%
+    arrange(date)
+}
+
+## 3.4 BIS: WS_EER – effective exchange rates (NEER)
+bis_get_eer_daily <- function(series_key,
+                              start = "2010-01-01",
+                              end   = format(Sys.Date(), "%Y-%m-%d")) {
+  
+  base <- "https://stats.bis.org/api/v2/data/dataflow/BIS/WS_EER/1.0"
+  
+  url  <- sprintf(
+    "%s/%s?startPeriod=%s&endPeriod=%s&format=csv",
+    base, series_key, start, end
+  )
+  
+  res <- httr::GET(url)
+  httr::stop_for_status(res)
+  
+  csv_txt <- httr::content(res, as = "text", encoding = "UTF-8")
+  df      <- read.csv(text = csv_txt, stringsAsFactors = FALSE)
+  
+  df %>%
+    mutate(
+      date = as.Date(TIME_PERIOD)   # "YYYY-MM-DD"
+    ) %>%
+    arrange(date)
+}
+
+## 3.4.b BIS: WS_LONG_CPI – índices de precios mensuales (2010 = 100)
+bis_get_long_cpi_monthly <- function(series_key,
+                                     start = "2010-01-01",
+                                     end   = format(Sys.Date(), "%Y-%m-%d")) {
+  
+  base <- "https://stats.bis.org/api/v2/data/dataflow/BIS/WS_LONG_CPI/1.0"
+  
+  # WS_LONG_CPI es mensual; la API espera periodos tipo YYYY-MM.
+  start_m <- format(as.Date(start), "%Y-%m")
+  end_m   <- format(as.Date(end),   "%Y-%m")
+  
+  url <- sprintf(
+    "%s/%s?startPeriod=%s&endPeriod=%s&format=csv",
+    base, series_key, start_m, end_m
+  )
+  
+  res <- httr::GET(url, httr::timeout(60))
+  httr::stop_for_status(res)
+  
+  csv_txt <- httr::content(res, as = "text", encoding = "UTF-8")
+  df      <- read.csv(text = csv_txt, stringsAsFactors = FALSE, check.names = FALSE)
+  
+  obs_col <- intersect(c("OBS_VALUE", "ObsValue", "value", "VALUE"), names(df))[1]
+  if (is.na(obs_col)) {
+    stop("No se encontró columna de observaciones en la respuesta BIS para ", series_key)
+  }
+  
+  if (!"TIME_PERIOD" %in% names(df)) {
+    stop("No se encontró TIME_PERIOD en la respuesta BIS para ", series_key)
+  }
+  
+  df %>%
+    transmute(
+      date  = as.Date(paste0(substr(as.character(TIME_PERIOD), 1, 7), "-01")),
+      value = suppressWarnings(as.numeric(gsub(",", ".", .data[[obs_col]], fixed = TRUE)))
+    ) %>%
+    filter(!is.na(date), !is.na(value), value > 0) %>%
+    distinct(date, .keep_all = TRUE) %>%
+    arrange(date)
+}
+
+## 3.4 Mensual (nivel) -> diario: interpolación log-lineal
+##    EXTENDIENDO hasta el último día del calendario (manteniendo plano tras el último CPI)
+monthly_to_daily_log <- function(df_monthly, cal_dates) {
+  stopifnot(all(c("date", "value") %in% names(df_monthly)))
+  stopifnot("date" %in% names(cal_dates))
+  
+  df_monthly <- df_monthly %>%
+    arrange(date) %>%
+    filter(!is.na(value) & value > 0)
+  
+  if (nrow(df_monthly) < 2) {
+    stop("Se necesitan al menos 2 observaciones mensuales para interpolar.")
+  }
+  
+  # Rango desde el primer CPI hasta el último día de trading disponible
+  date_min <- min(df_monthly$date)
+  date_max <- max(cal_dates$date)
+  
+  daily_full <- tibble(
+    date = seq(date_min, date_max, by = "day")
+  ) %>%
+    left_join(df_monthly, by = "date") %>%
+    arrange(date) %>%
+    mutate(
+      log_val = if_else(!is.na(value) & value > 0,
+                        log(value),
+                        NA_real_)
+    )
+  
+  # 1) Interpolación log-lineal ENTRE meses observados
+  daily_full$log_val_interp <- zoo::na.approx(
+    daily_full$log_val,
+    x     = daily_full$date,
+    na.rm = FALSE
+  )
+  
+  # 2) Relleno hacia adelante después del último dato mensual (ene-2026)
+  daily_full$log_val_interp <- zoo::na.locf(daily_full$log_val_interp, na.rm = FALSE)
+  
+  daily_full <- daily_full %>%
+    mutate(value_daily = exp(log_val_interp)) %>%
+    select(date, value_daily)
+  
+  # Nos quedamos con TODOS los días hábiles del calendario, ya con CPI rellenado
+  cal_dates %>%
+    left_join(daily_full, by = "date")
+}
+
+## 3.5 Construir índice mensual desde inflación 12m (%)
+build_index_from_yoy12 <- function(df_yoy, base_index = 100) {
+  # df_yoy: columnas date, value_num (inflación 12m en %)
+  if (!all(c("date", "value_num") %in% names(df_yoy))) {
+    stop("df_yoy debe tener columnas 'date' y 'value_num'")
+  }
+  
+  df <- df_yoy %>%
+    arrange(date) %>%
+    mutate(inf12 = value_num)
+  
+  n <- nrow(df)
+  if (n == 0) return(tibble())
+  
+  idx <- rep(NA_real_, n)
+  first12 <- min(12L, n)
+  idx[1:first12] <- base_index
+  
+  if (n > 12L) {
+    for (t in (first12 + 1L):n) {
+      yoy <- df$inf12[t]
+      if (is.na(yoy) || is.na(idx[t - 12L])) {
+        idx[t] <- NA_real_
+      } else {
+        idx[t] <- idx[t - 12L] * (1 + yoy / 100)
+      }
+    }
+  }
+  
+  df %>%
+    mutate(value = idx) %>%
+    select(date, value)
+}
+
+## 3.6 Extender índice mensual hasta dic-2025 usando inflación esperada dic25/dic24
+extend_cpi_with_expectation <- function(df_idx, yoy_dec_2025, base_dec_year = 2024) {
+  # df_idx: data.frame con columnas date, value (índice mensual)
+  if (!all(c("date", "value") %in% names(df_idx))) {
+    stop("df_idx debe tener columnas 'date' y 'value'")
+  }
+  
+  df_idx <- df_idx %>% arrange(date)
+  
+  # Fecha de diciembre de referencia (ejemplo: 2024-12-01)
+  date_dec_ref <- as.Date(sprintf("%d-12-01", base_dec_year))
+  
+  val_dec_ref <- df_idx %>%
+    filter(date == date_dec_ref) %>%
+    pull(value)
+  
+  if (length(val_dec_ref) == 0 || is.na(val_dec_ref)) {
+    warning(paste("No se encontró índice para", date_dec_ref, "en la serie CPI; no se extiende."))
+    return(df_idx)
+  }
+  
+  # Nueva observación: diciembre 2025
+  date_dec_2025 <- as.Date("2025-12-01")
+  val_dec_2025  <- as.numeric(val_dec_ref) * (1 + yoy_dec_2025 / 100)
+  
+  df_new_dec <- tibble(
+    date  = date_dec_2025,
+    value = val_dec_2025
+  )
+  
+  df_idx_ext <- df_idx %>%
+    filter(date <= date_dec_2025, date != date_dec_2025) %>%  # evita duplicar si existiera
+    bind_rows(df_new_dec) %>%
+    arrange(date)
+  
+  df_idx_ext
+}
+
+## 3.6 Extender índice mensual hasta ene-2026 usando inflación esperada ene26/ene25
+extend_cpi_with_expectation_jan <- function(df_idx, yoy_jan_2026, base_jan_year = 2025) {
+  # df_idx: data.frame con columnas date, value (índice mensual)
+  if (!all(c("date", "value") %in% names(df_idx))) {
+    stop("df_idx debe tener columnas 'date' y 'value'")
+  }
+  
+  df_idx <- df_idx %>% arrange(date)
+  
+  # Fecha objetivo (ene-2026)
+  target_jan <- as.Date("2026-01-01")
+  
+  # Si YA tenemos enero-2026 en la serie, no inventamos nada, usamos el dato oficial
+  if (any(df_idx$date == target_jan)) {
+    return(df_idx)
+  }
+  
+  # Si NO hay enero-2026, construimos ene-26 a partir de ene-25 y la inflación esperada
+  date_jan_ref <- as.Date(sprintf("%d-01-01", base_jan_year))
+  
+  val_jan_ref <- df_idx %>%
+    filter(date == date_jan_ref) %>%
+    pull(value)
+  
+  if (length(val_jan_ref) == 0 || is.na(val_jan_ref)) {
+    warning(paste("No se encontró índice para", date_jan_ref, "en la serie CPI; no se extiende."))
+    return(df_idx)
+  }
+  
+  val_jan_2026 <- as.numeric(val_jan_ref) * (1 + yoy_jan_2026 / 100)
+  
+  df_new_jan <- tibble(
+    date  = target_jan,
+    value = val_jan_2026
+  )
+  
+  df_idx_ext <- df_idx %>%
+    filter(date <= target_jan, date != target_jan) %>%
+    bind_rows(df_new_jan) %>%
+    arrange(date)
+  
+  df_idx_ext
+}
+
+## 3.6 Extender índice mensual al MES SIGUIENTE faltante
+##     usando inflación esperada (yoy) del mes t vs t-12
+extend_cpi_with_expectation_next <- function(df_idx, yoy_next) {
+  # df_idx: data.frame con columnas date (primer día de mes) y value (índice)
+  if (!all(c("date", "value") %in% names(df_idx))) {
+    stop("df_idx debe tener columnas 'date' y 'value'")
+  }
+  
+  df_idx <- df_idx %>% arrange(date)
+  
+  # Último mes con dato (real)
+  last_date <- max(df_idx$date, na.rm = TRUE)
+  
+  # MES OBJETIVO (el mes que falta): mes siguiente al último dato
+  target_date <- last_date %m+% months(1)
+  
+  # Si ya existiera target_date (por alguna razón), no hacemos nada
+  if (any(df_idx$date == target_date)) {
+    return(df_idx)
+  }
+  
+  # Mes base para la inflación 12m: mismo mes, un año antes
+  base_date <- target_date %m-% months(12)
+  
+  val_base <- df_idx %>%
+    filter(date == base_date) %>%
+    pull(value)
+  
+  if (length(val_base) == 0 || is.na(val_base)) {
+    warning(paste("No se encontró índice para", base_date, "en la serie CPI; no se extiende."))
+    return(df_idx)
+  }
+  
+  # Forzamos que el índice en target_date cumpla:
+  #   IPC(target) = IPC(base_date) * (1 + yoy_next/100)
+  val_target <- as.numeric(val_base) * (1 + yoy_next / 100)
+  
+  df_new <- tibble(
+    date  = target_date,
+    value = val_target
+  )
+  
+  df_idx_ext <- df_idx %>%
+    filter(date <= target_date, date != target_date) %>%  # evita duplicar
+    bind_rows(df_new) %>%
+    arrange(date)
+  
+  df_idx_ext
+}
+
+## 3.6 Interpolar series diarias (lineal en niveles)
+interp_daily <- function(x) {
+  # Si todo es NA, devolvemos tal cual
+  if (all(is.na(x))) return(x)
+  # Interpolación lineal en el tiempo; no rellena extremos
+  zoo::na.approx(x, na.rm = FALSE)
+}
+
+
+## ==========================================================
+## 4. Series diarias BCCh (tasas, commodities, Nasdaq)
+## ==========================================================
+
+## ---- 4.1 10Y gobierno
+y10_clp_raw <- bde_get_series(bde_user, bde_pass,
+                              "F022.BCLP.TIS.AN10.NO.Z.D",
+                              start_date, end_date)
+y10_brl_raw <- bde_get_series(bde_user, bde_pass,
+                              "F019.TBG.TAS.BRA.D",
+                              start_date, end_date)
+y10_mxn_raw <- bde_get_series(bde_user, bde_pass,
+                              "F019.TBG.TAS.MEX.D",
+                              start_date, end_date)
+y10_pen_raw <- bde_get_series(bde_user, bde_pass,
+                              "F019.TBG.TAS.PER.D",
+                              start_date, end_date)
+y10_col_raw <- bde_get_series(bde_user, bde_pass,
+                              "F019.TBG.TAS.COL.D",
+                              start_date, end_date)
+y10_us_raw  <- bde_get_series(bde_user, bde_pass,
+                              "F019.TBG.TAS.10.D",
+                              start_date, end_date)
+
+## ---- 4.2 Commodities y Nasdaq
+#wti_raw    <- bde_get_series(bde_user, bde_pass,
+#                             "F019.PPB.PRE.41B.D",
+#                             start_date, end_date)
+
+copper_raw <- bde_get_series(bde_user, bde_pass,
+                             "F019.PPB.PRE.100.D",
+                             start_date, end_date)
+nasdaq_raw <- bde_get_series(bde_user, bde_pass,
+                             "F019.IBC.IND.51.D",
+                             start_date, end_date)
+eqcny_raw <- bde_get_series(bde_user, bde_pass,
+                            "F019.IBC.IND.CHN.D",
+                             start_date, end_date)
+
+
+
+## ==========================================================
+## 5. CPI mensual: BIS WS_LONG_CPI (índice, 2010 = 100)
+## ==========================================================
+## Se reemplaza la construcción sintética desde inflación 12m por
+## índices oficiales en nivel. Esto elimina el problema de "serrucho"
+## al pasar de mensual a diario, porque la interpolación se hace sobre
+## un nivel mensual observado y comparable entre países.
+
+cpi_chl_idx <- bis_get_long_cpi_monthly("M.CL.628", start_date, end_date)  # Chile
+cpi_us_idx  <- bis_get_long_cpi_monthly("M.US.628", start_date, end_date)  # United States
+cpi_bra_idx <- bis_get_long_cpi_monthly("M.BR.628", start_date, end_date)  # Brazil
+cpi_col_idx <- bis_get_long_cpi_monthly("M.CO.628", start_date, end_date)  # Colombia
+cpi_mex_idx <- bis_get_long_cpi_monthly("M.MX.628", start_date, end_date)  # Mexico
+cpi_per_idx <- bis_get_long_cpi_monthly("M.PE.628", start_date, end_date)  # Peru
+
+## ==========================================================
+## 6. FRED: VIX y dólar multilateral
+## ==========================================================
+dtw_raw <- bis_get_eer_daily(
+  series_key = "D.N.B.US",
+  start      = start_date,
+  end        = end_date
+) %>%
+  # Lo dejamos con la misma estructura que fred_get_series:
+  transmute(
+    date,
+    value_num = OBS_VALUE
+  )
+
+vix_raw <- fred_get_series(
+  api_key    = fred_api_key,
+  series_id  = "VIXCLS",
+  start_date = start_date,
+  end_date   = end_date
+)
+
+wti_raw    <- fred_get_series( api_key    = fred_api_key,
+  series_id  = "DCOILWTICO",
+  start_date = start_date,
+  end_date   = end_date)
+
+
+## ==========================================================
+## 7. CPI: sin reconstrucción sintética desde inflación 12m
+## ==========================================================
+## Los objetos cpi_*_idx ya vienen directamente desde BIS WS_LONG_CPI.
+## Por lo tanto, NO se usa build_index_from_yoy12() ni inflación esperada
+## para extender artificialmente el último mes.
+
+## ==========================================================
+## 8. Tipos de cambio bilaterales BIS (vs USD)
+## ==========================================================
+fx_clp_bis <- bis_get_xru_daily("D.CL.CLP.A", start_date, end_date)  # Chile CLP/USD
+fx_brl_bis <- bis_get_xru_daily("D.BR.BRL.A", start_date, end_date)  # Brasil BRL/USD
+fx_cny_bis <- bis_get_xru_daily("D.CN.CNY.A", start_date, end_date)  # China CNY/USD
+fx_mxn_bis <- bis_get_xru_daily("D.MX.MXN.A", start_date, end_date)  # México MXN/USD
+fx_pen_bis <- bis_get_xru_daily("D.PE.PEN.A", start_date, end_date)  # Perú PEN/USD
+fx_cop_bis <- bis_get_xru_daily("D.CO.COP.A", start_date, end_date)  # Colombia COP/USD
+
+## Renombrar columnas a nombres compactos
+fx_clp <- fx_clp_bis %>% transmute(date, fx_clp = OBS_VALUE)
+fx_brl <- fx_brl_bis %>% transmute(date, fx_brl = OBS_VALUE)
+fx_cny <- fx_cny_bis %>% transmute(date, cny_usd = OBS_VALUE)
+fx_mxn <- fx_mxn_bis %>% transmute(date, fx_mxn = OBS_VALUE)
+fx_pen <- fx_pen_bis %>% transmute(date, fx_pen = OBS_VALUE)
+fx_cop <- fx_cop_bis %>% transmute(date, fx_cop = OBS_VALUE)
+
+## ==========================================================
+## 8.b Nota CPI
+## ==========================================================
+## Se elimina la extensión por expectativas: si BIS todavía no publicó
+## el último mes, monthly_to_daily_log() mantiene plano el último nivel
+## observado hasta el final del calendario diario.
+
+## ==========================================================
+## 9. Calendario de días hábiles (según FX BIS CLP)
+## ==========================================================
+cal_trading <- fx_clp %>%
+  select(date) %>%
+  distinct() %>%
+  arrange(date)
+
+## ==========================================================
+## 10. CPI diario por país (interpolación log-lineal)
+## ==========================================================
+
+## Chile
+cpi_chl_daily <- monthly_to_daily_log(
+  df_monthly = ipc_chl_idx,
+  cal_dates  = cal_trading
+) %>% rename(cpi_chl_daily = value_daily)
+
+## EEUU
+cpi_us_daily <- monthly_to_daily_log(
+  df_monthly = cpi_us_idx,
+  cal_dates  = cal_trading
+) %>% rename(cpi_us_daily = value_daily)
+
+## Brasil
+cpi_bra_daily <- monthly_to_daily_log(
+  df_monthly = cpi_bra_idx,
+  cal_dates  = cal_trading
+) %>% rename(cpi_bra_daily = value_daily)
+
+## México
+cpi_mex_daily <- monthly_to_daily_log(
+  df_monthly = cpi_mex_idx,
+  cal_dates  = cal_trading
+) %>% rename(cpi_mex_daily = value_daily)
+
+## Perú
+cpi_per_daily <- monthly_to_daily_log(
+  df_monthly = cpi_per_idx,
+  cal_dates  = cal_trading
+) %>% rename(cpi_per_daily = value_daily)
+
+## Colombia
+cpi_col_daily <- monthly_to_daily_log(
+  df_monthly = cpi_col_idx,
+  cal_dates  = cal_trading
+) %>% rename(cpi_col_daily = value_daily)
+
+## ==========================================================
+## 11. CPI relativo vs EEUU: log(CPI_i / CPI_US)
+## ==========================================================
+
+## CHILE vs EEUU
+cpi_rel_chl_us_daily <- cpi_chl_daily %>%
+  inner_join(cpi_us_daily, by = "date") %>%
+  mutate(
+    log_cpi_rel_chl_us = log(cpi_chl_daily / cpi_us_daily)
+  ) %>%
+  select(date, log_cpi_rel_chl_us)
+
+## BRASIL vs EEUU
+cpi_rel_bra_us_daily <- cpi_bra_daily %>%
+  inner_join(cpi_us_daily, by = "date") %>%
+  mutate(
+    log_cpi_rel_bra_us = log(cpi_bra_daily / cpi_us_daily)
+  ) %>%
+  select(date, log_cpi_rel_bra_us)
+
+## MÉXICO vs EEUU
+cpi_rel_mex_us_daily <- cpi_mex_daily %>%
+  inner_join(cpi_us_daily, by = "date") %>%
+  mutate(
+    log_cpi_rel_mex_us = log(cpi_mex_daily / cpi_us_daily)
+  ) %>%
+  select(date, log_cpi_rel_mex_us)
+
+## PERÚ vs EEUU
+cpi_rel_per_us_daily <- cpi_per_daily %>%
+  inner_join(cpi_us_daily, by = "date") %>%
+  mutate(
+    log_cpi_rel_per_us = log(cpi_per_daily / cpi_us_daily)
+  ) %>%
+  select(date, log_cpi_rel_per_us)
+
+## COLOMBIA vs EEUU
+cpi_rel_col_us_daily <- cpi_col_daily %>%
+  inner_join(cpi_us_daily, by = "date") %>%
+  mutate(
+    log_cpi_rel_col_us = log(cpi_col_daily / cpi_us_daily)
+  ) %>%
+  select(date, log_cpi_rel_col_us)
+
+## ==========================================================
+## 12. Renombrar series diarias BCCh / FRED para merge
+## ==========================================================
+y10_clp <- y10_clp_raw %>% transmute(date, y10_clp = value_num)
+y10_brl <- y10_brl_raw %>% transmute(date, y10_brl = value_num)
+y10_mxn <- y10_mxn_raw %>% transmute(date, y10_mxn = value_num)
+y10_pen <- y10_pen_raw %>% transmute(date, y10_pen = value_num)
+y10_col <- y10_col_raw %>% transmute(date, y10_col = value_num)
+y10_us  <- y10_us_raw  %>% transmute(date, y10_us  = value_num)
+
+wti    <- wti_raw    %>% transmute(date, wti    = value_num)
+copper <- copper_raw %>% transmute(date, copper = value_num)
+eq_nsq <- nasdaq_raw %>% transmute(date, eq_nsq = value_num)
+eqcny  <- eqcny_raw  %>% transmute(date, eq_cny = value_num)
+
+dtw <- dtw_raw %>% transmute(date, dtw = value_num)
+vix <- vix_raw %>% transmute(date, vix = value_num)
+
+## ==========================================================
+## 13. Base diaria unificada (db_daily)
+##      - Días hábiles según BIS FX CLP
+## ==========================================================
+db_daily <- cal_trading %>%
+  left_join(fx_clp,  by = "date") %>%
+  left_join(fx_brl,  by = "date") %>%
+  left_join(fx_mxn,  by = "date") %>%
+  left_join(fx_pen,  by = "date") %>%
+  left_join(fx_cop,  by = "date") %>%
+  left_join(fx_cny,  by = "date") %>%   # CNY/USD
+  left_join(y10_clp, by = "date") %>%
+  left_join(y10_brl, by = "date") %>%
+  left_join(y10_mxn, by = "date") %>%
+  left_join(y10_pen, by = "date") %>%
+  left_join(y10_col, by = "date") %>%
+  left_join(y10_us,  by = "date") %>%
+  left_join(eq_nsq,  by = "date") %>%
+  left_join(eqcny,   by = "date") %>%
+  left_join(dtw,     by = "date") %>%
+  left_join(vix,     by = "date") %>%
+  left_join(wti,     by = "date") %>%
+  left_join(copper,  by = "date") %>%
+  left_join(cpi_rel_chl_us_daily, by = "date") %>%
+  left_join(cpi_rel_bra_us_daily, by = "date") %>%
+  left_join(cpi_rel_mex_us_daily, by = "date") %>%
+  left_join(cpi_rel_per_us_daily, by = "date") %>%
+  left_join(cpi_rel_col_us_daily, by = "date") %>%
+  arrange(date)
+
+## ==========================================================
+## 13.b Interpolación de huecos diarios (feriados, etc.)
+##      Se aplica a todas las variables numéricas diarias
+##      antes de calcular logs y correr regresiones
+## ==========================================================
+
+# Vector explícito de variables diarias que quieres interpolar
+vars_daily_interp <- c(
+  "fx_clp", "fx_brl", "fx_mxn", "fx_pen", "fx_cop", "cny_usd",
+  "y10_clp", "y10_brl", "y10_mxn", "y10_pen", "y10_col", "y10_us",
+  "wti", "copper", "eq_nsq", "eq_cny",
+  "dtw", "vix"
+  # si luego agregas otras series diarias, las sumas aquí
+)
+
+db_daily <- db_daily %>%
+  arrange(date) %>%
+  mutate(
+    across(
+      .cols = all_of(vars_daily_interp),
+      .fns  = ~ interp_daily(.x)
+    )
+  )
+
+```
+
+```{r}
+## ==========================================================
+## 14. Preparar variables para modelos FX y 10Y
+## ==========================================================
+library(purrr)
+
+# Asegurar orden por fecha y crear tendencia lineal
+db_daily <- db_daily %>%
+  arrange(date) %>%
+  mutate(trend = row_number())
+
+# Logs de variables globales de precios (se dejan como NA si no son >0)
+db_daily <- db_daily %>%
+  mutate(
+    l_wti    = if_else(wti      > 0, log(wti),      NA_real_),
+    l_pcu    = if_else(copper   > 0, log(copper),   NA_real_),
+    l_eqnsq  = if_else(eq_nsq   > 0, log(eq_nsq),   NA_real_),
+    l_eqcny  = if_else(eq_cny   > 0, log(eq_cny),   NA_real_),
+    l_vix    = if_else(vix      > 0, log(vix),      NA_real_),
+    l_dtw    = if_else(dtw      > 0, log(dtw),      NA_real_),
+    l_cny    = if_else(cny_usd  > 0, log(cny_usd),  NA_real_)
+  )
+
+## ==========================================================
+## 15. Modelo FX fundamental por país
+##      log(FX_i) ~ trend + log(CPI_i/CPI_US) + log WTI + ...
+## ==========================================================
+
+run_fx_model <- function(df, country_code, fx_var, cpi_rel_var) {
+  df_model <- df %>%
+    transmute(
+      date,
+      l_fx   = if_else(.data[[fx_var]] > 0, log(.data[[fx_var]]), NA_real_),
+      trend,
+      cpi_rel = .data[[cpi_rel_var]],    # ya es log(CPI_i/CPI_US)
+      l_wti,
+      l_pcu,
+      l_eqnsq,
+      l_eqcny,
+      l_vix,
+      l_dtw,
+      l_cny
+    ) %>%
+    drop_na()   # solo observaciones completas
+  
+  mod <- lm(
+    l_fx ~ trend + cpi_rel + l_wti + l_pcu +
+      l_eqnsq + l_eqcny + l_vix + l_dtw + l_cny,
+    data = df_model
+  )
+  
+  df_model$res_fx <- resid(mod)
+  mu    <- mean(df_model$res_fx)
+  sigma <- sd(df_model$res_fx)
+  df_model$z_res_fx <- (df_model$res_fx - mu) / sigma
+  
+  list(
+    country    = country_code,
+    model      = mod,
+    residuals  = df_model %>% select(date, res_fx, z_res_fx)
+  )
+}
+
+## Especificación de países y columnas correspondientes
+fx_specs <- tibble::tribble(
+  ~country, ~fx_var,   ~cpi_rel_var,
+  "CLP",    "fx_clp",  "log_cpi_rel_chl_us",
+  "BRL",    "fx_brl",  "log_cpi_rel_bra_us",
+  "MXN",    "fx_mxn",  "log_cpi_rel_mex_us",
+  "PEN",    "fx_pen",  "log_cpi_rel_per_us",
+  "COP",    "fx_cop",  "log_cpi_rel_col_us"
+)
+
+## Estimar modelos FX
+fx_results <- fx_specs %>%
+  mutate(
+    result = pmap(
+      list(country, fx_var, cpi_rel_var),
+      ~ run_fx_model(db_daily, ..1, ..2, ..3)
+    )
+  )
+
+## Lista de modelos por país (para ver summary() etc.)
+fx_models <- setNames(
+  lapply(fx_results$result, `[[`, "model"),
+  fx_specs$country
+)
+
+library(modelsummary)
+
+# fx_models es un named list: nombres = "CLP", "BRL", "MXN", "PEN", "COP"
+modelsummary(
+  fx_models,
+  output   = "latex",                     # o dejar que detecte solo
+  title    = "Fundamental FX regressions",
+  stars    = TRUE,
+  gof_omit = "IC|Log.Lik|Adj|Pseudo"      # para limpiar la parte de GOF
+)
+
+## Residuales FX en formato largo
+fx_residuals_all <- map_dfr(
+  fx_results$result,
+  ~ .x$residuals %>% mutate(country = .x$country)
+)
+
+## Pasar z-residuales a formato ancho y añadir a db_daily
+fx_residuals_wide <- fx_residuals_all %>%
+  select(date, country, z_res_fx) %>%
+  tidyr::pivot_wider(
+    names_from  = country,
+    values_from = z_res_fx,
+    names_prefix = "z_res_fx_"
+  )
+
+db_daily <- db_daily %>%
+  left_join(fx_residuals_wide, by = "date")
+
+## Ejemplos:
+## summary(fx_models$CLP)
+## summary(fx_models$BRL)
+
+
+## ==========================================================
+## 16. Modelo de tasas largas 10Y por país
+##      10Y_i ~ 10Y_US + log(VIX) + log(EQNSQ) + log(DTW) + log(CNY) + trend
+## ==========================================================
+
+run_yield_model <- function(df, country_code, y10_var) {
+  df_model <- df %>%
+    transmute(
+      date,
+      y10    = .data[[y10_var]],
+      y10_us = y10_us,
+      trend,
+      l_vix,
+      l_eqnsq,
+      l_dtw,
+      l_cny
+    ) %>%
+    drop_na()
+  
+  mod <- lm(
+    y10 ~ y10_us + l_vix + l_eqnsq + l_dtw + l_cny + trend,
+    data = df_model
+  )
+  
+  df_model$res_y10 <- resid(mod)
+  mu    <- mean(df_model$res_y10)
+  sigma <- sd(df_model$res_y10)
+  df_model$z_res_y10 <- (df_model$res_y10 - mu) / sigma
+  
+  list(
+    country   = country_code,
+    model     = mod,
+    residuals = df_model %>% select(date, res_y10, z_res_y10)
+  )
+}
+
+yield_specs <- tibble::tribble(
+  ~country, ~y10_var,
+  "CLP", "y10_clp",
+  "BRL", "y10_brl",
+  "MXN", "y10_mxn",
+  "PEN", "y10_pen",
+  "COP", "y10_col"
+)
+
+yield_results <- yield_specs %>%
+  mutate(
+    result = map2(country, y10_var,
+                  ~ run_yield_model(db_daily, .x, .y))
+  )
+
+yield_models <- setNames(
+  lapply(yield_results$result, `[[`, "model"),
+  yield_specs$country
+)
+
+library(modelsummary)
+
+modelsummary(
+  yield_models,
+  output   = "latex",
+  title    = "10-year yield regressions",
+  stars    = TRUE,
+  gof_omit = "IC|Log.Lik|Adj|Pseudo"
+)
+
+yield_residuals_all <- map_dfr(
+  yield_results$result,
+  ~ .x$residuals %>% mutate(country = .x$country)
+)
+
+yield_residuals_wide <- yield_residuals_all %>%
+  select(date, country, z_res_y10) %>%
+  tidyr::pivot_wider(
+    names_from  = country,
+    values_from = z_res_y10,
+    names_prefix = "z_res_y10_"
+  )
+
+db_daily <- db_daily %>%
+  left_join(yield_residuals_wide, by = "date")
+
+## Ejemplos:
+## summary(yield_models$CLP)
+## summary(yield_models$BRL)
+
+## ==========================================================
+## 17. Chequeo rápido
+## ==========================================================
+#glimpse(db_daily)
+#head(db_daily)
+
+```
+```{r}
+## ==========================================================
+## 18. Gráficos de stress FX / 10Y por país
+## ==========================================================
+library(ggplot2)
+
+plot_stress_country <- function(df, country_code) {
+  fx_col  <- paste0("z_res_fx_",  country_code)
+  y10_col <- paste0("z_res_y10_", country_code)
+  
+  fx_sym  <- rlang::sym(fx_col)
+  y10_sym <- rlang::sym(y10_col)
+  
+  df_plot <- df %>%
+    select(date, !!fx_sym, !!y10_sym) %>%
+    rename(
+      z_fx  = !!fx_sym,
+      z_y10 = !!y10_sym
+    ) %>%
+    tidyr::pivot_longer(
+      cols      = c(z_fx, z_y10),
+      names_to  = "serie",
+      values_to = "z_score"
+    )
+  
+  ggplot(df_plot, aes(x = date, y = z_score, colour = serie)) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    geom_line(size = 0.6) +
+    labs(
+      title = paste("Stress FX y 10Y -", country_code),
+      x     = "Fecha",
+      y     = "z-score (residuos)",
+      colour = ""
+    ) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+}
+
+## Ejemplos de uso:
+plot_stress_country(db_daily, "CLP")
+plot_stress_country(db_daily, "BRL")
+plot_stress_country(db_daily, "MXN")
+plot_stress_country(db_daily, "PEN")
+plot_stress_country(db_daily, "COP")
+
+```
+
+```{r}
+## ==========================================================
+## 19. Segunda etapa: z_res_fx_i ~ (y10_i - y10_us)
+## ==========================================================
+
+run_second_stage_fx_y10 <- function(df, country_code, y10_var) {
+  fx_col  <- paste0("z_res_fx_", country_code)
+  fx_sym  <- rlang::sym(fx_col)
+  y10_sym <- rlang::sym(y10_var)
+  
+  df_model <- df %>%
+    transmute(
+      date,
+      z_fx        = !!fx_sym,
+      y10_spread  = !!y10_sym - y10_us   # diferencial vs 10Y US
+    ) %>%
+    drop_na()
+  
+  mod <- lm(z_fx ~ y10_spread, data = df_model)
+  
+  df_model <- df_model %>%
+    mutate(
+      z_fx_hat = fitted(mod),
+      res_2nd  = resid(mod)
+    )
+  
+  list(
+    country = country_code,
+    model   = mod,
+    data    = df_model
+  )
+}
+
+second_stage_specs <- tibble::tribble(
+  ~country, ~y10_var,
+  "CLP", "y10_clp",
+  "BRL", "y10_brl",
+  "MXN", "y10_mxn",
+  "PEN", "y10_pen",
+  "COP", "y10_col"
+)
+
+second_stage_results <- second_stage_specs %>%
+  mutate(
+    result = purrr::map2(country, y10_var,
+                         ~ run_second_stage_fx_y10(db_daily, .x, .y))
+  )
+
+## Modelos de segunda etapa (para ver summary())
+second_stage_models <- setNames(
+  lapply(second_stage_results$result, `[[`, "model"),
+  second_stage_specs$country
+)
+
+library(modelsummary)
+
+modelsummary(
+  second_stage_models,
+  output   = "latex",
+  title    = "Second stage: FX stress vs 10Y spread",
+  stars    = TRUE,
+  gof_omit = "IC|Log.Lik|Adj|Pseudo"
+)
+
+## Pasar a formato ancho y mergear con db_daily
+second_stage_all <- purrr::map_dfr(
+  second_stage_results$result,
+  ~ .x$data %>% mutate(country = .x$country)
+)
+
+second_stage_wide <- second_stage_all %>%
+  select(date, country, z_fx_hat, res_2nd) %>%
+  tidyr::pivot_wider(
+    id_cols     = date,
+    names_from  = country,
+    values_from = c(z_fx_hat, res_2nd),
+    names_sep   = "_"
+  )
+
+db_daily <- db_daily %>%
+  left_join(second_stage_wide, by = "date")
+
+## Chequeo rápido
+#glimpse(db_daily)
+
+plot_second_stage_country <- function(second_stage_results, country_code) {
+  obj <- second_stage_results$result[[which(second_stage_results$country == country_code)]]
+  dfp <- obj$data
+  
+  ggplot(dfp, aes(x = y10_spread, y = z_fx)) +
+    geom_point(alpha = 0.4, size = 0.5) +
+    geom_smooth(method = "lm", se = FALSE, colour = "blue") +
+    labs(
+      title = paste("Segunda etapa FX vs 10Y spread -", country_code),
+      x     = "Diferencial 10Y (y10_i - y10_US)",
+      y     = "z-score residuo FX"
+    ) +
+    theme_minimal()
+}
+
+## Ejemplos:
+## Gráficos segunda etapa para todos los países
+countries <- c("CLP", "BRL", "MXN", "PEN", "COP")
+
+for (cc in countries) {
+  print(plot_second_stage_country(second_stage_results, cc))
+}
+
+
+```
+
+```{r}
+## Paleta fija por país
+country_colors <- c(
+  "CLP" = "#E67E22",  # Chile: naranjo
+  "BRL" = "#3fb1d3",  # Brasil: azul claro
+  "MXN" = "#006400",  # México: verde oscuro
+  "PEN" = "#F1C40F",  # Perú: amarillo
+  "COP" = "#084e89"   # Colombia: azul oscuro / morado
+)
+
+
+## ==========================================================
+## 19. Gráfico global: FX residuals (z-scores) desde 2018
+## ==========================================================
+plot_fx_res_all <- function(df, from_date = as.Date("2018-01-01")) {
+  df_long <- df %>%
+    filter(date >= from_date) %>%
+    select(date, starts_with("z_res_fx_")) %>%
+    tidyr::pivot_longer(
+      cols      = -date,
+      names_to  = "country",
+      values_to = "z_score"
+    ) %>%
+    mutate(
+      country = sub("^z_res_fx_", "", country)
+    )
+  
+  ggplot(df_long, aes(x = date, y = z_score, colour = country)) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    geom_line(size = 0.5) +
+    scale_color_manual(values = country_colors) +   # << AQUÍ
+    labs(
+      title = paste0("Normalized FX Residuals (Z-scores)"),
+      x     = "Date",
+      y     = "Z-score",
+      colour = ""
+    ) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+}
+
+## Uso:
+plot_fx_res_all(db_daily, as.Date("2022-01-01"))
+
+
+## ==========================================================
+## 20. Gráfico global: 10Y residuals (z-scores) desde 2018
+## ==========================================================
+plot_y10_res_all <- function(df, from_date = as.Date("2018-01-01")) {
+  df_long <- df %>%
+    filter(date >= from_date) %>%
+    select(date, starts_with("z_res_y10_")) %>%
+    tidyr::pivot_longer(
+      cols      = -date,
+      names_to  = "country",
+      values_to = "z_score"
+    ) %>%
+    mutate(
+      country = sub("^z_res_y10_", "", country)
+    )
+  
+  ggplot(df_long, aes(x = date, y = z_score, colour = country)) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    geom_line(size = 0.5) +
+    scale_color_manual(values = country_colors) +   # << AQUÍ
+    labs(
+      title = paste0("Normalized 10Y Residuals (Z-scores)"),
+      x     = "Date",
+      y     = "Z-score",
+      colour = ""
+    ) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+}
+
+
+## Uso:
+plot_y10_res_all(db_daily, as.Date("2022-01-01"))
+
+```
+
+```{r}
+## ==========================================================
+## 21. Guardar todos los gráficos en PNG en carpeta "Graficos"
+## ==========================================================
+library(ggplot2)
+
+# Crear carpeta si no existe
+dir.create("Graficos", showWarnings = FALSE)
+
+# OJO: usa los mismos códigos que en tus modelos.
+# Si en los modelos de tasas usaste "COL", pon "COL" aquí.
+countries <- c("CLP", "BRL", "MXN", "PEN", "COP")  # o "COL" en vez de "COP"
+
+## 21.1 Gráficos de stress FX + 10Y por país
+for (cc in countries) {
+  p_stress <- plot_stress_country(db_daily, cc)
+  ggsave(
+    filename = file.path("Graficos", paste0("stress_fx_y10_", cc, ".png")),
+    plot     = p_stress,
+    width    = 14, height = 8, dpi = 240
+  )
+}
+
+## 21.2 Gráficos de segunda etapa: z_res_fx_i vs spread 10Y
+for (cc in countries) {
+  p_2nd <- plot_second_stage_country(second_stage_results, cc)
+  ggsave(
+    filename = file.path("Graficos", paste0("second_stage_fx_y10_", cc, ".png")),
+    plot     = p_2nd,
+    width    = 12, height = 8, dpi = 240
+  )
+}
+
+## 21.3 Gráfico global FX residuals (z-scores) desde 2018
+p_fx_all <- plot_fx_res_all(db_daily, from_date = as.Date("2022-01-01"))
+ggsave(
+  filename = file.path("Graficos", "fx_residuals_zscores_from2018.png"),
+  plot     = p_fx_all,
+  width    = 16, height = 8, dpi = 240
+)
+
+## 21.4 Gráfico global 10Y residuals (z-scores) desde 2018
+p_y10_all <- plot_y10_res_all(db_daily, from_date = as.Date("2022-01-01"))
+ggsave(
+  filename = file.path("Graficos", "y10_residuals_zscores_from2018.png"),
+  plot     = p_y10_all,
+  width    = 16, height = 8, dpi = 240
+)
+
+```
+
+
+
+
+
+

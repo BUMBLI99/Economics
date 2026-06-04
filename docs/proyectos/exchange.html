@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="quarto-1.9.37" name="generator"/>
 <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
-<meta content="Proyecto aplicado de macrofinanzas para estudiar desviaciones del tipo de cambio y tasas soberanas 10Y de economías latinoamericanas respecto de fundamentos externos." name="description"/>
+<meta content="Proyecto aplicado que estima modelos por país para tipo de cambio y tasas soberanas 10Y, usa residuos normalizados como medida de stress y compara episodios recientes en América Latina." name="description"/>
 <title>Tipo de cambio, tasas largas y stress macrofinanciero en LatAm – Mauricio Ulloa</title>
 <style>
 /* Default styles provided by pandoc.
@@ -22,22 +22,22 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 </style>
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta content="./" name="quarto:offset"/>
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet"/>
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" id="quarto-text-highlighting-styles" rel="stylesheet"/>
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet"/>
-<link append-hash="true" data-mode="light" href="site_libs/bootstrap/bootstrap-a0f9fd0d421825b736dc1bbcbcba2219.min.css" id="quarto-bootstrap" rel="stylesheet"/>
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta content="../" name="quarto:offset"/>
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet"/>
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" id="quarto-text-highlighting-styles" rel="stylesheet"/>
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet"/>
+<link append-hash="true" data-mode="light" href="../site_libs/bootstrap/bootstrap-a0f9fd0d421825b736dc1bbcbcba2219.min.css" id="quarto-bootstrap" rel="stylesheet"/>
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -66,15 +66,54 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
-<link href="assets/css/styles.css" rel="stylesheet"/>
+<link href="../site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet"/>
+<script src="../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="../site_libs/plotly-binding-4.12.0/plotly.js"></script>
+<script src="../site_libs/typedarray-0.1/typedarray.min.js"></script>
+<script src="../site_libs/jquery-3.5.1/jquery.min.js"></script>
+<link href="../site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet"/>
+<script src="../site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+<link href="../site_libs/plotly-htmlwidgets-css-2.25.2/plotly-htmlwidgets.css" rel="stylesheet"/>
+<script src="../site_libs/plotly-main-2.25.2/plotly-latest.min.js"></script>
+<link href="../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet"/>
+<script src="../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+<link href="../assets/css/styles.css" rel="stylesheet"/>
 <meta content="Tipo de cambio, tasas largas y stress macrofinanciero en LatAm – Mauricio Ulloa" property="og:title"/>
-<meta content="Proyecto aplicado de macrofinanzas para estudiar desviaciones del tipo de cambio y tasas soberanas 10Y de economías latinoamericanas respecto de fundamentos externos." property="og:description"/>
+<meta content="Proyecto aplicado que estima modelos por país para tipo de cambio y tasas soberanas 10Y, usa residuos normalizados como medida de stress y compara episodios recientes en América Latina." property="og:description"/>
 <meta content="https://mulloav3007.github.io/Economics/assets/img/exchange/fx_residuals_zscores_from2018.jpg" property="og:image"/>
 <meta content="Mauricio Ulloa" property="og:site_name"/>
 <meta content="630" property="og:image:height"/>
 <meta content="1200" property="og:image:width"/>
 <meta content="Tipo de cambio, tasas largas y stress macrofinanciero en LatAm – Mauricio Ulloa" name="twitter:title"/>
-<meta content="Proyecto aplicado de macrofinanzas para estudiar desviaciones del tipo de cambio y tasas soberanas 10Y de economías latinoamericanas respecto de fundamentos externos." name="twitter:description"/>
+<meta content="Proyecto aplicado que estima modelos por país para tipo de cambio y tasas soberanas 10Y, usa residuos normalizados como medida de stress y compara episodios recientes en América Latina." name="twitter:description"/>
 <meta content="https://mulloav3007.github.io/Economics/assets/img/exchange/fx_residuals_zscores_from2018.jpg" name="twitter:image"/>
 <meta content="630" name="twitter:image-height"/>
 <meta content="1200" name="twitter:image-width"/>
@@ -86,7 +125,7 @@ ul.task-list li input[type="checkbox"] {
 <nav class="navbar navbar-expand-lg" data-bs-theme="dark">
 <div class="navbar-container container-fluid">
 <div class="navbar-brand-container mx-auto">
-<a class="navbar-brand" href="./index.html">
+<a class="navbar-brand" href="../index.html">
 <span class="navbar-title">Mauricio Ulloa</span>
 </a>
 </div>
@@ -97,19 +136,19 @@ ul.task-list li input[type="checkbox"] {
 <div class="collapse navbar-collapse" id="navbarCollapse">
 <ul class="navbar-nav navbar-nav-scroll me-auto">
 <li class="nav-item">
-<a aria-current="page" class="nav-link active" href="./index.html">
+<a class="nav-link" href="../index.html">
 <span class="menu-text">Inicio</span></a>
 </li>
 <li class="nav-item">
-<a class="nav-link" href="./proyectos.html">
+<a class="nav-link" href="../proyectos.html">
 <span class="menu-text">Proyectos</span></a>
 </li>
 <li class="nav-item">
-<a class="nav-link" href="./cv.html">
+<a class="nav-link" href="../cv.html">
 <span class="menu-text">CV</span></a>
 </li>
 <li class="nav-item">
-<a class="nav-link" href="./contacto.html">
+<a class="nav-link" href="../contacto.html">
 <span class="menu-text">Contacto</span></a>
 </li>
 </ul>
@@ -130,39 +169,29 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-container page-columns page-rows-contents page-layout-full page-navbar" id="quarto-content">
 <!-- sidebar -->
 <!-- margin-sidebar -->
+<div class="sidebar margin-sidebar" id="quarto-margin-sidebar"><nav class="toc-active" id="TOC" role="doc-toc"><h2 id="toc-title">En esta página</h2><ul><li><a class="nav-link active" data-scroll-target="#motivación" href="#motivación" id="toc-motivación">Motivación</a></li><li><a class="nav-link" data-scroll-target="#lectura-rápida" href="#lectura-rápida" id="toc-lectura-rápida">Lectura rápida</a></li><li><a class="nav-link" data-scroll-target="#metodología" href="#metodología" id="toc-metodología">Metodología</a></li><li><a class="nav-link" data-scroll-target="#resultados-globales" href="#resultados-globales" id="toc-resultados-globales">Resultados globales</a></li><li><a class="nav-link" data-scroll-target="#diagnóstico-de-ajuste" href="#diagnóstico-de-ajuste" id="toc-diagnóstico-de-ajuste">Diagnóstico de ajuste</a></li><li><a class="nav-link" data-scroll-target="#stress-fx-y-10y-por-país" href="#stress-fx-y-10y-por-país" id="toc-stress-fx-y-10y-por-país">Stress FX y 10Y por país</a></li><li><a class="nav-link" data-scroll-target="#segunda-etapa-fx-residual-y-spread-10y" href="#segunda-etapa-fx-residual-y-spread-10y" id="toc-segunda-etapa-fx-residual-y-spread-10y">Segunda etapa</a></li><li><a class="nav-link" data-scroll-target="#interpretación-económica" href="#interpretación-económica" id="toc-interpretación-económica">Interpretación económica</a></li><li><a class="nav-link" data-scroll-target="#limitaciones-y-próximos-pasos" href="#limitaciones-y-próximos-pasos" id="toc-limitaciones-y-próximos-pasos">Limitaciones y próximos pasos</a></li><li><a class="nav-link" data-scroll-target="#descarga" href="#descarga" id="toc-descarga">Descarga</a></li></ul></nav></div>
 <!-- main -->
 <main class="content column-page" id="quarto-document-content">
 <header class="quarto-title-block default" id="title-block-header">
 <div class="quarto-title">
 <h1 class="title">Tipo de cambio, tasas largas y stress macrofinanciero en LatAm</h1>
-<p class="subtitle lead">Portafolio técnico de Mauricio Andrés Ulloa Valdivia</p>
+<p class="subtitle lead">Modelos de FX y tasas soberanas 10Y para Chile, Brasil, México, Perú y Colombia</p>
 </div>
-<div><div class="description">Proyecto aplicado de macrofinanzas para estudiar desviaciones del tipo de cambio y tasas soberanas 10Y de economías latinoamericanas respecto de fundamentos externos.</div></div>
+<div><div class="description">Proyecto aplicado que estima modelos por país para tipo de cambio y tasas soberanas 10Y, usa residuos normalizados como medida de stress y compara episodios recientes en América Latina.</div></div>
 <div class="quarto-title-meta column-page"></div>
 </header>
 
-<div class="mu-home">
-<div class="mu-hero">
-<div class="mu-hero-copy">
-<div class="mu-eyebrow"><p>Proyecto principal</p></div>
-<h1>Tipo de cambio, tasas largas y stress macrofinanciero en LatAm</h1>
-<p>Este sitio presenta un proyecto aplicado para estudiar episodios de presión financiera en <strong>Chile, Brasil, México, Perú y Colombia</strong>, combinando modelos de tipo de cambio bilateral y tasas soberanas a 10 años.</p>
-<p>La idea central es separar movimientos explicables por fundamentos externos de movimientos residuales que podrían interpretarse como stress local o idiosincrático. El foco es analítico y descriptivo: construir una herramienta transparente para lectura macrofinanciera regional, no un modelo de predicción puntual.</p>
-<div class="mu-actions"><p><a class="mu-button mu-button-primary" href="./proyectos/exchange.html">Ver proyecto</a> <a class="mu-button mu-button-secondary" href="assets/files/exchange_report.pdf">Descargar reporte PDF</a> <a class="mu-button mu-button-ghost" href="./contacto.html">Contacto</a></p></div>
-</div>
-<div class="mu-hero-panel">
-<div class="mu-panel-label"><p>Qué mide</p></div>
-<div class="mu-panel-list"><ul><li>Residuos normalizados del tipo de cambio bilateral frente al dólar.</li><li>Residuos normalizados de tasas soberanas 10Y.</li><li>Co-movimiento entre stress cambiario y diferencial de tasas.</li><li>Comparación regional para CLP, BRL, MXN, PEN y COP.</li></ul></div>
-<div class="mu-mini-stack"><p><span>R</span> <span>Series diarias</span> <span>FX</span> <span>10Y yields</span></p></div>
-</div>
-</div>
-<section class="level2" id="proyecto-visible"><h2 class="anchored" data-anchor-id="proyecto-visible">Proyecto visible</h2>
-<div class="mu-section-intro"><p>El portafolio queda concentrado en este proyecto. Los trabajos anteriores pueden mantenerse en el repositorio como material de desarrollo, pero ya no quedan enlazados desde la página pública.</p></div>
-<div class="mu-grid mu-grid-featured"><div class="mu-card mu-card-featured"><div class="mu-card-kicker"><p>Macrofinanzas LatAm</p></div><section class="level3" id="stress-de-tipo-de-cambio-y-tasas-10y"><h3 class="anchored" data-anchor-id="stress-de-tipo-de-cambio-y-tasas-10y">Stress de tipo de cambio y tasas 10Y</h3><p>Modelo aplicado para estudiar desviaciones del FX y de las tasas soberanas respecto de variables globales como tasa 10Y de EE.UU., VIX, dólar multilateral, commodities, equity externo, CNY/USD e inflación relativa.</p><div class="mu-tags"><p><span>R</span> <span>LatAm</span> <span>Tipo de cambio</span> <span>Tasas 10Y</span> <span>Residuos</span></p></div><p><a class="mu-card-link" href="./proyectos/exchange.html">Abrir proyecto</a></p></section></div></div>
-</section>
-<section class="level2" id="enfoque"><h2 class="anchored" data-anchor-id="enfoque">Enfoque</h2><div class="mu-split"><section class="level3 mu-text-block" id="pregunta-económica"><h3 class="anchored" data-anchor-id="pregunta-económica">Pregunta económica</h3><p>¿Cuándo una depreciación cambiaria o un aumento de tasas largas parece consistente con condiciones externas globales, y cuándo aparece como una presión residual específica del país?</p><p>El proyecto construye una medida comparable de stress usando residuos estandarizados. Esto permite mirar episodios recientes con una escala común entre países y entre mercados.</p></section><section class="level3 mu-list-card" id="estructura-del-modelo"><h3 class="anchored" data-anchor-id="estructura-del-modelo">Estructura del modelo</h3><ul><li>Primera etapa: modelos separados para FX y tasa 10Y por país.</li><li>Normalización: residuos transformados a z-scores.</li><li>Segunda etapa: relación entre residuo cambiario y spread soberano 10Y frente a EE.UU.</li><li>Salida pública: gráficos comparables y tablas resumen.</li></ul></section></div></section>
-<section class="level2" id="herramientas"><h2 class="anchored" data-anchor-id="herramientas">Herramientas</h2><div class="mu-tool-strip"><p><span>R / tidyverse</span> <span>ggplot2</span> <span>modelsummary</span> <span>BIS</span> <span>FRED</span> <span>BCCh BDE</span> <span>GitHub Pages</span></p></div></section>
-</div>
+<div class="mu-note"><p>Este proyecto replica la salida analítica de ExchangeReg en formato web. Se publican resultados, gráficos y reporte final; no se publica el archivo de trabajo original con credenciales ni objetos temporales.</p></div>
+<section class="level2" id="motivación"><h2 class="anchored" data-anchor-id="motivación">Motivación</h2><p>En economías pequeñas y abiertas, el tipo de cambio y las tasas largas reaccionan a condiciones externas: dólar global, VIX, commodities, tasas de EE.UU., equity externo y otros precios financieros. El problema práctico es distinguir cuándo el movimiento observado parece consistente con esos fundamentos y cuándo aparece una desviación residual de mayor interés macrofinanciero.</p><p>El objetivo del proyecto es construir una lectura comparable para <strong>CLP, BRL, MXN, PEN y COP</strong>, usando modelos por país y residuos estandarizados.</p></section>
+<section class="level2" id="lectura-rápida"><h2 class="anchored" data-anchor-id="lectura-rápida">Lectura rápida</h2><div class="mu-kpi-grid"><div class="mu-kpi-card"><div class="mu-kpi-label"><p>Países</p></div><div class="mu-kpi-value"><p>5</p></div><p>Chile, Brasil, México, Perú y Colombia.</p></div><div class="mu-kpi-card"><div class="mu-kpi-label"><p>Frecuencia</p></div><div class="mu-kpi-value"><p>Diaria</p></div><p>Datos financieros armonizados desde 2010.</p></div><div class="mu-kpi-card"><div class="mu-kpi-label"><p>Mercados</p></div><div class="mu-kpi-value"><p>FX + 10Y</p></div><p>Tipo de cambio bilateral y tasa soberana larga.</p></div><div class="mu-kpi-card"><div class="mu-kpi-label"><p>Salida</p></div><div class="mu-kpi-value"><p>z-score</p></div><p>Residuos normalizados para comparar episodios.</p></div></div></section>
+<section class="level2" id="metodología"><h2 class="anchored" data-anchor-id="metodología">Metodología</h2><p>La primera etapa estima, para cada país, un modelo de tipo de cambio y un modelo de tasa soberana a 10 años. Los residuos de cada modelo se normalizan como z-scores. Valores positivos o negativos persistentes indican desviaciones respecto del comportamiento explicado por los fundamentos incluidos.</p><section class="level3" id="modelo-de-tipo-de-cambio"><h3 class="anchored" data-anchor-id="modelo-de-tipo-de-cambio">Modelo de tipo de cambio</h3><p>El modelo para el tipo de cambio bilateral usa como variable dependiente el logaritmo del FX frente al dólar. Los regresores incluyen tendencia, inflación relativa contra EE.UU., WTI, cobre, Nasdaq, equity China, VIX, dólar multilateral y CNY/USD.</p></section><section class="level3" id="índices-de-precios"><h3 class="anchored" data-anchor-id="índices-de-precios">Índices de precios</h3><p>La inflación relativa se construye desde índices de precios al consumidor de BIS <code>WS_LONG_CPI</code>, en nivel mensual y base 2010=100, para Chile, Estados Unidos, Brasil, Colombia, México y Perú. El índice mensual se convierte a frecuencia diaria mediante interpolación log-lineal y se mantiene plano después del último dato observado. Esto evita el patrón de serrucho que aparecía al reconstruir un CPI diario desde variaciones publicadas en otra frecuencia.</p></section><section class="level3" id="modelo-de-tasa-soberana-10y"><h3 class="anchored" data-anchor-id="modelo-de-tasa-soberana-10y">Modelo de tasa soberana 10Y</h3><p>El modelo de tasa 10Y usa como regresores la tasa 10Y de EE.UU., VIX, Nasdaq, dólar multilateral, CNY/USD y tendencia. La interpretación es similar: el residuo captura la parte de la tasa local no explicada por esos factores globales en la especificación lineal.</p></section><section class="level3" id="segunda-etapa"><h3 class="anchored" data-anchor-id="segunda-etapa">Segunda etapa</h3><p>Como chequeo adicional, el proyecto estima la relación entre el residuo cambiario normalizado y el diferencial de tasa soberana 10Y frente a EE.UU. Esta parte no debe leerse como causalidad estructural; funciona como resumen empírico del vínculo entre presión cambiaria y spread largo.</p></section></section>
+<section class="level2" id="resultados-globales"><h2 class="anchored" data-anchor-id="resultados-globales">Resultados globales</h2><div class="mu-wide-figure"><p><img alt="Residuos normalizados del tipo de cambio" src="../assets/img/exchange/fx_residuals_zscores_from2018.jpg"/></p></div><div class="mu-wide-figure"><p><img alt="Residuos normalizados de tasas soberanas 10Y" src="../assets/img/exchange/y10_residuals_zscores_from2018.jpg"/></p></div></section>
+<section class="level2" id="diagnóstico-de-ajuste"><h2 class="anchored" data-anchor-id="diagnóstico-de-ajuste">Diagnóstico de ajuste</h2><table class="table"><thead><tr><th>Modelo</th><th style="text-align:right;">CLP</th><th style="text-align:right;">BRL</th><th style="text-align:right;">MXN</th><th style="text-align:right;">PEN</th><th style="text-align:right;">COP</th></tr></thead><tbody><tr><td>FX - R²</td><td style="text-align:right;">0.959</td><td style="text-align:right;">0.963</td><td style="text-align:right;">0.882</td><td style="text-align:right;">0.901</td><td style="text-align:right;">0.969</td></tr><tr><td>FX - RMSE</td><td style="text-align:right;">0.04</td><td style="text-align:right;">0.06</td><td style="text-align:right;">0.06</td><td style="text-align:right;">0.04</td><td style="text-align:right;">0.05</td></tr><tr><td>10Y - R²</td><td style="text-align:right;">0.646</td><td style="text-align:right;">0.605</td><td style="text-align:right;">0.907</td><td style="text-align:right;">0.646</td><td style="text-align:right;">0.824</td></tr><tr><td>10Y - RMSE</td><td style="text-align:right;">0.62</td><td style="text-align:right;">1.32</td><td style="text-align:right;">0.44</td><td style="text-align:right;">0.63</td><td style="text-align:right;">0.92</td></tr></tbody></table><p>El ajuste del tipo de cambio es alto en todos los países, lo que sugiere que buena parte del movimiento cambiario diario se alinea con fundamentos externos incluidos en la especificación. El ajuste de tasas 10Y es más heterogéneo: México y Colombia muestran mayor capacidad explicativa, mientras Chile, Brasil y Perú dejan una fracción más amplia en el componente residual.</p></section>
+<section class="level2" id="stress-fx-y-10y-por-país"><h2 class="anchored" data-anchor-id="stress-fx-y-10y-por-país">Stress FX y 10Y por país</h2><div class="mu-figure-grid"><div class="mu-chart"><p><img alt="CLP" src="../assets/img/exchange/stress_fx_y10_CLP.jpg"/></p></div><div class="mu-chart"><p><img alt="BRL" src="../assets/img/exchange/stress_fx_y10_BRL.jpg"/></p></div><div class="mu-chart"><p><img alt="MXN" src="../assets/img/exchange/stress_fx_y10_MXN.jpg"/></p></div><div class="mu-chart"><p><img alt="PEN" src="../assets/img/exchange/stress_fx_y10_PEN.jpg"/></p></div><div class="mu-chart"><p><img alt="COP" src="../assets/img/exchange/stress_fx_y10_COP.jpg"/></p></div></div></section>
+<section class="level2" id="segunda-etapa-fx-residual-y-spread-10y"><h2 class="anchored" data-anchor-id="segunda-etapa-fx-residual-y-spread-10y">Segunda etapa: FX residual y spread 10Y</h2><table class="table"><thead><tr><th>País</th><th style="text-align:right;">Coeficiente del spread 10Y</th><th style="text-align:right;">R²</th><th>Lectura</th></tr></thead><tbody><tr><td>CLP</td><td style="text-align:right;">0.345</td><td style="text-align:right;">0.076</td><td>Relación positiva y estadísticamente significativa.</td></tr><tr><td>BRL</td><td style="text-align:right;">0.011</td><td style="text-align:right;">0.000</td><td>Relación prácticamente nula en esta especificación.</td></tr><tr><td>MXN</td><td style="text-align:right;">0.317</td><td style="text-align:right;">0.072</td><td>Relación positiva y significativa.</td></tr><tr><td>PEN</td><td style="text-align:right;">0.426</td><td style="text-align:right;">0.160</td><td>Relación positiva más marcada.</td></tr><tr><td>COP</td><td style="text-align:right;">0.028</td><td style="text-align:right;">0.002</td><td>Relación positiva pero económicamente pequeña.</td></tr></tbody></table><div class="mu-figure-grid"><div class="mu-chart"><p><img alt="CLP segunda etapa" src="../assets/img/exchange/second_stage_fx_y10_CLP.jpg"/></p></div><div class="mu-chart"><p><img alt="BRL segunda etapa" src="../assets/img/exchange/second_stage_fx_y10_BRL.jpg"/></p></div><div class="mu-chart"><p><img alt="MXN segunda etapa" src="../assets/img/exchange/second_stage_fx_y10_MXN.jpg"/></p></div><div class="mu-chart"><p><img alt="PEN segunda etapa" src="../assets/img/exchange/second_stage_fx_y10_PEN.jpg"/></p></div><div class="mu-chart"><p><img alt="COP segunda etapa" src="../assets/img/exchange/second_stage_fx_y10_COP.jpg"/></p></div></div></section>
+<section class="level2" id="interpretación-económica"><h2 class="anchored" data-anchor-id="interpretación-económica">Interpretación económica</h2><p>Una lectura útil del ejercicio es pensar en tres capas. Primero, los fundamentos externos explican una parte importante de los movimientos financieros regionales. Segundo, los residuos permiten comparar episodios que no se explican bien por esos fundamentos. Tercero, la relación entre residuo cambiario y spread largo no es homogénea: es más clara para Chile, México y Perú, más débil para Colombia y prácticamente nula para Brasil en esta versión.</p><p>La contribución del proyecto no es afirmar que un residuo sea automáticamente un shock doméstico puro. La contribución es entregar una métrica disciplinada para detectar cuándo vale la pena mirar con más atención eventos locales, riesgo político, shocks de liquidez, sorpresas fiscales, cambios regulatorios o episodios de stress financiero.</p></section>
+<section class="level2" id="limitaciones-y-próximos-pasos"><h2 class="anchored" data-anchor-id="limitaciones-y-próximos-pasos">Limitaciones y próximos pasos</h2><div class="mu-split"><div class="mu-list-card"><h3>Limitaciones</h3><ul><li>La especificación es lineal y reducida.</li><li>Los residuos pueden capturar variables omitidas, cambios de régimen o errores de medición.</li><li>Las comparaciones entre países dependen de la calidad y sincronización de las series diarias.</li><li>La segunda etapa es descriptiva, no causal.</li></ul></div><div class="mu-list-card"><h3>Extensiones naturales</h3><ul><li>Ventanas rolling para evaluar estabilidad de coeficientes.</li><li>Evaluación pseudo out-of-sample.</li><li>Índice sintético de stress regional.</li><li>Inclusión de EMBI, CDS o spreads corporativos cuando haya datos consistentes.</li></ul></div></div></section>
+<section class="level2" id="descarga"><h2 class="anchored" data-anchor-id="descarga">Descarga</h2><p><a class="mu-button mu-button-primary" href="../assets/files/exchange_report.pdf">Descargar reporte PDF</a></p></section>
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -585,5 +614,5 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </footer>
-<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

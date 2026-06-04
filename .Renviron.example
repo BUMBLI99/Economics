@@ -1,18 +1,6 @@
-# Credenciales para actualizar el proyecto de estrés financiero
-# Copia estas líneas a tu archivo .Renviron real, completa los valores y reinicia RStudio.
+# Copia este archivo como .Renviron en la raíz del repo.
+# Completa tus claves locales. No subas .Renviron a GitHub.
 
 BCCH_USER=tu_usuario_bcch
 BCCH_PASS=tu_password_bcch
 FRED_API_KEY=tu_api_key_fred
-
-# Opcional:
-# TRUE: intenta descargar datos vivos desde BCCh/FRED/BIS.
-# FALSE: usa solo la base local data/raw/estres_financiero/merged_full_dataset.csv.
-ESTRES_USE_LIVE=TRUE
-
-# TRUE: si falla una API, usa la base local de ExchangeReg como respaldo.
-# FALSE: si falla una API, interrumpe el pipeline.
-ESTRES_FALLBACK_LOCAL=TRUE
-
-# Opcional: fecha inicial de descarga.
-ESTRES_START_DATE=2010-01-01
