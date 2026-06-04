@@ -4,8 +4,16 @@ repo <- normalizePath(repo, winslash = "/", mustWork = TRUE)
 setwd(repo)
 
 renv <- file.path(repo, ".Renviron")
-if (file.exists(renv)) {
-  readRenviron(renv)
+if (file.exists(renv)) readRenviron(renv)
+
+# When running outside RStudio, rmarkdown may not see Pandoc unless RSTUDIO_PANDOC is set.
+if (!nzchar(Sys.getenv("RSTUDIO_PANDOC"))) {
+  candidates <- c(
+    "C:/Program Files/Quarto/bin/tools",
+    file.path(Sys.getenv("LOCALAPPDATA"), "Programs/Quarto/bin/tools")
+  )
+  candidates <- candidates[file.exists(file.path(candidates, "pandoc.exe"))]
+  if (length(candidates) > 0) Sys.setenv(RSTUDIO_PANDOC = candidates[[1]])
 }
 
 required <- c(
@@ -16,6 +24,13 @@ missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TR
 if (length(missing) > 0) {
   message("Instalando paquetes faltantes: ", paste(missing, collapse = ", "))
   install.packages(missing, repos = "https://cloud.r-project.org")
+}
+
+if (!rmarkdown::pandoc_available()) {
+  stop(
+    "R no encuentra Pandoc. Instala Quarto o ejecuta solo el sitio con: ",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File .\\render_exchange_site.ps1 -NoModel"
+  )
 }
 
 needed_env <- c("BCCH_USER", "BCCH_PASS", "FRED_API_KEY")
@@ -30,10 +45,7 @@ if (length(missing_env) > 0) {
 
 input <- file.path(repo, "modelos", "exchange", "Exchange_CPI_BIS.Rmd")
 out_dir <- file.path(repo, "modelos", "exchange")
-
-if (!file.exists(input)) {
-  stop("No existe el modelo: ", input)
-}
+if (!file.exists(input)) stop("No existe el modelo: ", input)
 
 message("Renderizando modelo Exchange con CPI BIS...")
 rmarkdown::render(
@@ -45,5 +57,4 @@ rmarkdown::render(
   quiet = FALSE,
   envir = new.env(parent = globalenv())
 )
-
 message("Modelo renderizado: ", file.path(out_dir, "exchange_report.pdf"))

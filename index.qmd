@@ -1,8 +1,8 @@
 ---
-title: "Tipo de cambio, tasas largas y stress macrofinanciero en LatAm"
+title: "Macroeconomía aplicada, política monetaria y análisis de datos"
 subtitle: "Portafolio técnico de Mauricio Andrés Ulloa Valdivia"
-description: "Proyecto aplicado de macrofinanzas para estudiar desviaciones del tipo de cambio y tasas soberanas 10Y de economías latinoamericanas respecto de fundamentos externos."
-image: "assets/img/exchange/fx_residuals_zscores_from2018.jpg"
+description: "Portafolio de análisis económico aplicado con proyectos de macroeconomía chilena, política monetaria, nowcasting, escenarios tipo IPoM y visualización de datos económicos."
+image: "assets/img/og/portfolio-og.png"
 toc: false
 page-layout: full
 ---
@@ -11,99 +11,179 @@ page-layout: full
 :::::::::: mu-hero
 ::::: mu-hero-copy
 ::: mu-eyebrow
-Proyecto principal
+Portafolio técnico
 :::
 
-# Tipo de cambio, tasas largas y stress macrofinanciero en LatAm
+# Macroeconomía aplicada, política monetaria y análisis de datos
 
-Este sitio presenta un proyecto aplicado para estudiar episodios de presión financiera en **Chile, Brasil, México, Perú y Colombia**, combinando modelos de tipo de cambio bilateral y tasas soberanas a 10 años. La idea central es separar movimientos explicables por fundamentos externos de movimientos residuales que podrían interpretarse como stress local o idiosincrático.
+Soy economista formado en la Universidad de Chile, con foco en macroeconomía aplicada, política monetaria, proyecciones, econometría de series de tiempo y visualización de datos. Este sitio reúne proyectos aplicados orientados al seguimiento de indicadores, análisis de escenarios y discusión económica con base empírica.
 
-El trabajo usa datos diarios, regresiones por país, residuos estandarizados y visualizaciones comparables entre monedas y mercados de deuda soberana. El foco es analítico y descriptivo: construir una herramienta transparente para lectura macrofinanciera regional, no un modelo de predicción puntual.
+Trabajo principalmente con **R**, **Matlab/IRIS**, **Python**, **Stata** y **GitHub**, combinando construcción de bases, estimación econométrica, simulación macroeconómica y comunicación visual de resultados.
 
 ::: mu-actions
-[Ver proyecto](proyectos/exchange.qmd){.mu-button .mu-button-primary} [Descargar reporte PDF](assets/files/exchange_report.pdf){.mu-button .mu-button-secondary} [Contacto](contacto.qmd){.mu-button .mu-button-ghost}
+[Ver proyectos](proyectos.qmd){.mu-button .mu-button-primary} [Descargar CV](cv_mauricio_ulloa.pdf){.mu-button .mu-button-secondary} [Contacto](contacto.qmd){.mu-button .mu-button-ghost}
 :::
 :::::
 
 :::::: mu-hero-panel
 ::: mu-panel-label
-Qué mide
+Foco del portafolio
 :::
 
 ::: mu-panel-list
-- Residuos normalizados del tipo de cambio bilateral frente al dólar.
-- Residuos normalizados de tasas soberanas 10Y.
-- Co-movimiento entre stress cambiario y diferencial de tasas.
-- Comparación regional para CLP, BRL, MXN, PEN y COP.
+- Seguimiento macroeconómico y nowcasting.
+- Proyección de inflación, actividad y TPM.
+- Escenarios tipo IPoM con supuestos externos.
+- Visualización de datos para análisis económico.
 :::
 
 ::: mu-mini-stack
 <span>R</span>
-<span>Series diarias</span>
-<span>FX</span>
-<span>10Y yields</span>
+<span>Matlab/IRIS</span>
+<span>Python</span>
+<span>GitHub Pages</span>
 :::
 ::::::
 ::::::::::
 
-## Proyecto visible
+## Proyectos destacados
 
 ::: mu-section-intro
-El portafolio queda concentrado en este proyecto. Los trabajos anteriores pueden mantenerse en el repositorio como material de desarrollo, pero ya no quedan enlazados desde la página pública.
+Una selección de proyectos aplicados con metodología explícita, datos trazables y visualización orientada al seguimiento macroeconómico y la discusión de política económica.
 :::
 
 :::::::::::: {.mu-grid .mu-grid-featured}
 ::::: {.mu-card .mu-card-featured}
 ::: mu-card-kicker
+Proyecto aplicado
+:::
+
+### Nowcasting de actividad económica en Chile
+
+Modelo mensual en R para anticipar la evolución del IMACEC total y no minero a partir de indicadores sectoriales, rezagos macroeconómicos, variables calendario y evaluación fuera de muestra.
+
+::: mu-tags
+<span>R</span>
+<span>Series de tiempo</span>
+<span>IMACEC</span>
+<span>Nowcasting</span>
+:::
+
+[Abrir proyecto](proyectos/imacec.qmd){.mu-card-link}
+:::::
+
+::::: {.mu-card .mu-card-featured}
+::: mu-card-kicker
+Simulación macro
+:::
+
+### Escenarios macroeconómicos inspirados en IPoM
+
+Modelo semi-estructural para construir un escenario de referencia tipo IPoM, simular escenarios alternativos con supuestos externos y comparar inflación, TPM y brecha de actividad.
+
+::: mu-tags
+<span>Matlab</span>
+<span>IRIS</span>
+<span>Inflación</span>
+<span>Escenarios</span>
+:::
+
+[Abrir proyecto](proyectos/ipom-iris.qmd){.mu-card-link}
+:::::
+
+::::: {.mu-card .mu-card-featured}
+::: mu-card-kicker
+Nota técnica
+:::
+
+### Transmisión de la TPM a tasas de mercado
+
+Análisis del traspaso de la Tasa de Política Monetaria hacia tasas bancarias y financieras en Chile, con visualizaciones por horizonte, fase del ciclo monetario y tipo de tasa.
+
+::: mu-tags
+<span>R</span>
+<span>Política monetaria</span>
+<span>Pass-through</span>
+<span>Chile</span>
+:::
+
+[Abrir proyecto](proyectos/transmision-tpm.qmd){.mu-card-link}
+:::::
+
+::::: {.mu-card .mu-card-featured}
+::: mu-card-kicker
 Macrofinanzas LatAm
 :::
 
-### Stress de tipo de cambio y tasas 10Y
+### Tipo de cambio, tasas largas y stress macrofinanciero
 
-Modelo aplicado para estudiar desviaciones del FX y de las tasas soberanas respecto de variables globales como tasa 10Y de EE.UU., VIX, dólar multilateral, commodities, equity externo, CNY/USD e inflación relativa.
+Modelos diarios para CLP, BRL, MXN, PEN y COP que separan movimientos explicables por factores externos de residuos comparables en FX y tasas soberanas 10Y.
 
 ::: mu-tags
 <span>R</span>
 <span>LatAm</span>
 <span>Tipo de cambio</span>
 <span>Tasas 10Y</span>
-<span>Residuos</span>
 :::
 
 [Abrir proyecto](proyectos/exchange.qmd){.mu-card-link}
 :::::
+
 ::::::::::::
 
-## Enfoque
+## Líneas de trabajo
 
 ::::: mu-split
 ::: mu-text-block
-### Pregunta económica
+### Qué se encuentra en este sitio
 
-¿Cuándo una depreciación cambiaria o un aumento de tasas largas parece consistente con condiciones externas globales, y cuándo aparece como una presión residual específica del país?
+El portafolio está organizado como una colección de herramientas y notas técnicas. Cada proyecto parte desde una pregunta económica específica, documenta la construcción de datos, explicita la estrategia metodológica y termina en gráficos o tablas que facilitan la interpretación.
 
-El proyecto construye una medida comparable de stress usando residuos estandarizados. Esto permite mirar episodios recientes con una escala común entre países y entre mercados.
+La prioridad no es solo mostrar resultados, sino dejar trazabilidad: fuentes, transformaciones, supuestos, estimación, visualización y límites de interpretación.
 :::
 
 ::: mu-list-card
-### Estructura del modelo
+### Enfoque metodológico
 
-- Primera etapa: modelos separados para FX y tasa 10Y por país.
-- Normalización: residuos transformados a z-scores.
-- Segunda etapa: relación entre residuo cambiario y spread soberano 10Y frente a EE.UU.
-- Salida pública: gráficos comparables y tablas resumen.
+- Bases documentadas y scripts ejecutables.
+- Separación entre datos brutos, datos procesados y salidas.
+- Visualizaciones sobrias, comparables y legibles.
+- Lectura económica prudente, sin sobrerreaccionar a correlaciones.
+- Documentación breve de supuestos, frecuencia y transformaciones.
 :::
 :::::
+
+## Áreas de interés
+
+:::::: {.mu-grid .mu-grid-areas}
+::: mu-area
+### Macroeconomía aplicada
+
+Seguimiento de actividad, inflación, brecha de producto, condiciones externas y escenarios de riesgo para economías pequeñas y abiertas.
+:::
+
+::: mu-area
+### Política monetaria y finanzas
+
+Análisis de TPM, tasas de mercado, curva de rendimiento, expectativas, pass-through y condiciones financieras.
+:::
+
+::: mu-area
+### Datos y comunicación económica
+
+Procesos de datos, tableros estáticos/interactivos, gráficos para informes y documentación técnica orientada a decisiones.
+:::
+::::::
 
 ## Herramientas
 
 ::: mu-tool-strip
 <span>R / tidyverse</span>
-<span>ggplot2</span>
-<span>modelsummary</span>
-<span>BIS</span>
-<span>FRED</span>
-<span>BCCh BDE</span>
-<span>GitHub Pages</span>
+<span>ggplot2 / plotly</span>
+<span>Matlab / IRIS</span>
+<span>Python</span>
+<span>Stata</span>
+<span>GitHub</span>
+<span>LaTeX</span>
 :::
 ::::::::::::::::::::::::::::::

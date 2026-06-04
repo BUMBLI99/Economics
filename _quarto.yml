@@ -6,6 +6,10 @@ project:
     - proyectos.qmd
     - cv.qmd
     - contacto.qmd
+    - proyectos/imacec.qmd
+    - proyectos/ipom-iris.qmd
+    - proyectos/transmision-tpm.qmd
+    - proyectos/curva-rendimiento.qmd
     - proyectos/exchange.qmd
   resources:
     - cv_mauricio_ulloa.pdf
@@ -16,7 +20,7 @@ project:
 website:
   title: "Mauricio Ulloa"
   site-url: "https://mulloav3007.github.io/Economics/"
-  description: "Portafolio técnico de economía aplicada, macrofinanzas, tipo de cambio, tasas soberanas y visualización de datos."
+  description: "Portafolio técnico de economía aplicada, macroeconomía, política monetaria, proyecciones y visualización de datos."
   open-graph: true
   twitter-card: true
   navbar:
@@ -36,7 +40,7 @@ website:
         aria-label: Repositorio en GitHub
   page-footer:
     left: "© 2026 Mauricio Ulloa"
-    right: "Economía aplicada · Macrofinanzas · Datos"
+    right: "Economía aplicada · Macroeconomía · Datos"
 
 format:
   html:

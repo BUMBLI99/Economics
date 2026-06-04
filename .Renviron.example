@@ -1,6 +1,5 @@
-# Copia este archivo como .Renviron en la raíz del repo.
-# Completa tus claves locales. No subas .Renviron a GitHub.
-
+# Copia este archivo como .Renviron y completa tus credenciales locales.
+# No subas .Renviron a GitHub.
 BCCH_USER=tu_usuario_bcch
 BCCH_PASS=tu_password_bcch
 FRED_API_KEY=tu_api_key_fred

@@ -1,11 +1,14 @@
 <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
-<html lang="es" xml:lang="es" xmlns="http://www.w3.org/1999/xhtml"><head>
-<meta charset="utf-8"/>
-<meta content="quarto-1.9.37" name="generator"/>
-<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
-<meta content="Proyecto aplicado de macrofinanzas para estudiar desviaciones del tipo de cambio y tasas soberanas 10Y de economías latinoamericanas respecto de fundamentos externos." name="description"/>
-<title>Tipo de cambio, tasas largas y stress macrofinanciero en LatAm – Mauricio Ulloa</title>
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Portafolio de análisis económico aplicado con proyectos de macroeconomía chilena, política monetaria, nowcasting, escenarios tipo IPoM y visualización de datos económicos.">
+
+<title>Macroeconomía aplicada, política monetaria y análisis de datos – Mauricio Ulloa</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,22 +25,24 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 </style>
+
+
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta content="./" name="quarto:offset"/>
+<meta name="quarto:offset" content="./">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet"/>
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" id="quarto-text-highlighting-styles" rel="stylesheet"/>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet"/>
-<link append-hash="true" data-mode="light" href="site_libs/bootstrap/bootstrap-a0f9fd0d421825b736dc1bbcbcba2219.min.css" id="quarto-bootstrap" rel="stylesheet"/>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-a0f9fd0d421825b736dc1bbcbcba2219.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -66,103 +71,242 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
-<link href="assets/css/styles.css" rel="stylesheet"/>
-<meta content="Tipo de cambio, tasas largas y stress macrofinanciero en LatAm – Mauricio Ulloa" property="og:title"/>
-<meta content="Proyecto aplicado de macrofinanzas para estudiar desviaciones del tipo de cambio y tasas soberanas 10Y de economías latinoamericanas respecto de fundamentos externos." property="og:description"/>
-<meta content="https://mulloav3007.github.io/Economics/assets/img/exchange/fx_residuals_zscores_from2018.jpg" property="og:image"/>
-<meta content="Mauricio Ulloa" property="og:site_name"/>
-<meta content="630" property="og:image:height"/>
-<meta content="1200" property="og:image:width"/>
-<meta content="Tipo de cambio, tasas largas y stress macrofinanciero en LatAm – Mauricio Ulloa" name="twitter:title"/>
-<meta content="Proyecto aplicado de macrofinanzas para estudiar desviaciones del tipo de cambio y tasas soberanas 10Y de economías latinoamericanas respecto de fundamentos externos." name="twitter:description"/>
-<meta content="https://mulloav3007.github.io/Economics/assets/img/exchange/fx_residuals_zscores_from2018.jpg" name="twitter:image"/>
-<meta content="630" name="twitter:image-height"/>
-<meta content="1200" name="twitter:image-width"/>
-<meta content="summary_large_image" name="twitter:card"/>
+
+
+<link rel="stylesheet" href="assets/css/styles.css">
+<meta property="og:title" content="Macroeconomía aplicada, política monetaria y análisis de datos – Mauricio Ulloa">
+<meta property="og:description" content="Portafolio de análisis económico aplicado con proyectos de macroeconomía chilena, política monetaria, nowcasting, escenarios tipo IPoM y visualización de datos económicos.">
+<meta property="og:image" content="https://mulloav3007.github.io/Economics/assets/img/og/portfolio-og.png">
+<meta property="og:site_name" content="Mauricio Ulloa">
+<meta property="og:image:height" content="630">
+<meta property="og:image:width" content="1200">
+<meta name="twitter:title" content="Macroeconomía aplicada, política monetaria y análisis de datos – Mauricio Ulloa">
+<meta name="twitter:description" content="Portafolio de análisis económico aplicado con proyectos de macroeconomía chilena, política monetaria, nowcasting, escenarios tipo IPoM y visualización de datos económicos.">
+<meta name="twitter:image" content="https://mulloav3007.github.io/Economics/assets/img/og/portfolio-og.png">
+<meta name="twitter:image-height" content="630">
+<meta name="twitter:image-width" content="1200">
+<meta name="twitter:card" content="summary_large_image">
 </head>
+
 <body class="nav-fixed quarto-light">
+
 <div id="quarto-search-results"></div>
-<header class="headroom fixed-top" id="quarto-header">
-<nav class="navbar navbar-expand-lg" data-bs-theme="dark">
-<div class="navbar-container container-fluid">
-<div class="navbar-brand-container mx-auto">
-<a class="navbar-brand" href="./index.html">
-<span class="navbar-title">Mauricio Ulloa</span>
-</a>
-</div>
-<div class="" id="quarto-search" title="Buscar"></div>
-<button aria-controls="navbarCollapse" aria-expanded="false" aria-label="Navegación de palanca" class="navbar-toggler" data-bs-target="#navbarCollapse" data-bs-toggle="collapse" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }" role="menu" type="button">
-<span class="navbar-toggler-icon"></span>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Mauricio Ulloa</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
 </button>
-<div class="collapse navbar-collapse" id="navbarCollapse">
-<ul class="navbar-nav navbar-nav-scroll me-auto">
-<li class="nav-item">
-<a aria-current="page" class="nav-link active" href="./index.html">
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
 <span class="menu-text">Inicio</span></a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="./proyectos.html">
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./proyectos.html"> 
 <span class="menu-text">Proyectos</span></a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="./cv.html">
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./cv.html"> 
 <span class="menu-text">CV</span></a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="./contacto.html">
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./contacto.html"> 
 <span class="menu-text">Contacto</span></a>
-</li>
+  </li>  
 </ul>
-<ul class="navbar-nav navbar-nav-scroll ms-auto">
-<li class="nav-item compact">
-<a class="nav-link" href="https://github.com/mulloav3007/Economics"> <i aria-label="Repositorio en GitHub" class="bi bi-github" role="img">
-</i>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/mulloav3007/Economics"> <i class="bi bi-github" role="img" aria-label="Repositorio en GitHub">
+</i> 
 <span class="menu-text"></span></a>
-</li>
+  </li>  
 </ul>
-</div> <!-- /navcollapse -->
-<div class="quarto-navbar-tools">
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
 </div>
-</div> <!-- /container-fluid -->
-</nav>
+      </div> <!-- /container-fluid -->
+    </nav>
 </header>
 <!-- content -->
-<div class="quarto-container page-columns page-rows-contents page-layout-full page-navbar" id="quarto-content">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
+    
 <!-- main -->
 <main class="content column-page" id="quarto-document-content">
-<header class="quarto-title-block default" id="title-block-header">
+
+<header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Tipo de cambio, tasas largas y stress macrofinanciero en LatAm</h1>
+<h1 class="title">Macroeconomía aplicada, política monetaria y análisis de datos</h1>
 <p class="subtitle lead">Portafolio técnico de Mauricio Andrés Ulloa Valdivia</p>
 </div>
-<div><div class="description">Proyecto aplicado de macrofinanzas para estudiar desviaciones del tipo de cambio y tasas soberanas 10Y de economías latinoamericanas respecto de fundamentos externos.</div></div>
-<div class="quarto-title-meta column-page"></div>
+
+<div>
+  <div class="description">
+    Portafolio de análisis económico aplicado con proyectos de macroeconomía chilena, política monetaria, nowcasting, escenarios tipo IPoM y visualización de datos económicos.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta column-page">
+
+    
+  
+    
+  </div>
+  
+
+
 </header>
+
 
 <div class="mu-home">
 <div class="mu-hero">
 <div class="mu-hero-copy">
-<div class="mu-eyebrow"><p>Proyecto principal</p></div>
-<h1>Tipo de cambio, tasas largas y stress macrofinanciero en LatAm</h1>
-<p>Este sitio presenta un proyecto aplicado para estudiar episodios de presión financiera en <strong>Chile, Brasil, México, Perú y Colombia</strong>, combinando modelos de tipo de cambio bilateral y tasas soberanas a 10 años.</p>
-<p>La idea central es separar movimientos explicables por fundamentos externos de movimientos residuales que podrían interpretarse como stress local o idiosincrático. El foco es analítico y descriptivo: construir una herramienta transparente para lectura macrofinanciera regional, no un modelo de predicción puntual.</p>
-<div class="mu-actions"><p><a class="mu-button mu-button-primary" href="./proyectos/exchange.html">Ver proyecto</a> <a class="mu-button mu-button-secondary" href="assets/files/exchange_report.pdf">Descargar reporte PDF</a> <a class="mu-button mu-button-ghost" href="./contacto.html">Contacto</a></p></div>
+<div class="mu-eyebrow">
+<p>Portafolio técnico</p>
+</div>
+<section id="macroeconomía-aplicada-política-monetaria-y-análisis-de-datos" class="level1">
+<h1>Macroeconomía aplicada, política monetaria y análisis de datos</h1>
+<p>Soy economista formado en la Universidad de Chile, con foco en macroeconomía aplicada, política monetaria, proyecciones, econometría de series de tiempo y visualización de datos. Este sitio reúne proyectos aplicados orientados al seguimiento de indicadores, análisis de escenarios y discusión económica con base empírica.</p>
+<p>Trabajo principalmente con <strong>R</strong>, <strong>Matlab/IRIS</strong>, <strong>Python</strong>, <strong>Stata</strong> y <strong>GitHub</strong>, combinando construcción de bases, estimación econométrica, simulación macroeconómica y comunicación visual de resultados.</p>
+<div class="mu-actions">
+<p><a href="./proyectos.html" class="mu-button mu-button-primary">Ver proyectos</a> <a href="cv_mauricio_ulloa.pdf" class="mu-button mu-button-secondary">Descargar CV</a> <a href="./contacto.html" class="mu-button mu-button-ghost">Contacto</a></p>
+</div>
+</section>
 </div>
 <div class="mu-hero-panel">
-<div class="mu-panel-label"><p>Qué mide</p></div>
-<div class="mu-panel-list"><ul><li>Residuos normalizados del tipo de cambio bilateral frente al dólar.</li><li>Residuos normalizados de tasas soberanas 10Y.</li><li>Co-movimiento entre stress cambiario y diferencial de tasas.</li><li>Comparación regional para CLP, BRL, MXN, PEN y COP.</li></ul></div>
-<div class="mu-mini-stack"><p><span>R</span> <span>Series diarias</span> <span>FX</span> <span>10Y yields</span></p></div>
+<div class="mu-panel-label">
+<p>Foco del portafolio</p>
+</div>
+<div class="mu-panel-list">
+<ul>
+<li>Seguimiento macroeconómico y nowcasting.</li>
+<li>Proyección de inflación, actividad y TPM.</li>
+<li>Escenarios tipo IPoM con supuestos externos.</li>
+<li>Visualización de datos para análisis económico.</li>
+</ul>
+</div>
+<div class="mu-mini-stack">
+<p><span>R</span> <span>Matlab/IRIS</span> <span>Python</span> <span>GitHub Pages</span></p>
 </div>
 </div>
-<section class="level2" id="proyecto-visible"><h2 class="anchored" data-anchor-id="proyecto-visible">Proyecto visible</h2>
-<div class="mu-section-intro"><p>El portafolio queda concentrado en este proyecto. Los trabajos anteriores pueden mantenerse en el repositorio como material de desarrollo, pero ya no quedan enlazados desde la página pública.</p></div>
-<div class="mu-grid mu-grid-featured"><div class="mu-card mu-card-featured"><div class="mu-card-kicker"><p>Macrofinanzas LatAm</p></div><section class="level3" id="stress-de-tipo-de-cambio-y-tasas-10y"><h3 class="anchored" data-anchor-id="stress-de-tipo-de-cambio-y-tasas-10y">Stress de tipo de cambio y tasas 10Y</h3><p>Modelo aplicado para estudiar desviaciones del FX y de las tasas soberanas respecto de variables globales como tasa 10Y de EE.UU., VIX, dólar multilateral, commodities, equity externo, CNY/USD e inflación relativa.</p><div class="mu-tags"><p><span>R</span> <span>LatAm</span> <span>Tipo de cambio</span> <span>Tasas 10Y</span> <span>Residuos</span></p></div><p><a class="mu-card-link" href="./proyectos/exchange.html">Abrir proyecto</a></p></section></div></div>
+</div>
+<section id="proyectos-destacados" class="level2">
+<h2 class="anchored" data-anchor-id="proyectos-destacados">Proyectos destacados</h2>
+<div class="mu-section-intro">
+<p>Una selección de proyectos aplicados con metodología explícita, datos trazables y visualización orientada al seguimiento macroeconómico y la discusión de política económica.</p>
+</div>
+<div class="mu-grid mu-grid-featured">
+<div class="mu-card mu-card-featured">
+<div class="mu-card-kicker">
+<p>Proyecto aplicado</p>
+</div>
+<section id="nowcasting-de-actividad-económica-en-chile" class="level3">
+<h3 class="anchored" data-anchor-id="nowcasting-de-actividad-económica-en-chile">Nowcasting de actividad económica en Chile</h3>
+<p>Modelo mensual en R para anticipar la evolución del IMACEC total y no minero a partir de indicadores sectoriales, rezagos macroeconómicos, variables calendario y evaluación fuera de muestra.</p>
+<div class="mu-tags">
+<p><span>R</span> <span>Series de tiempo</span> <span>IMACEC</span> <span>Nowcasting</span></p>
+</div>
+<p><a href="./proyectos/imacec.html" class="mu-card-link">Abrir proyecto</a></p>
 </section>
-<section class="level2" id="enfoque"><h2 class="anchored" data-anchor-id="enfoque">Enfoque</h2><div class="mu-split"><section class="level3 mu-text-block" id="pregunta-económica"><h3 class="anchored" data-anchor-id="pregunta-económica">Pregunta económica</h3><p>¿Cuándo una depreciación cambiaria o un aumento de tasas largas parece consistente con condiciones externas globales, y cuándo aparece como una presión residual específica del país?</p><p>El proyecto construye una medida comparable de stress usando residuos estandarizados. Esto permite mirar episodios recientes con una escala común entre países y entre mercados.</p></section><section class="level3 mu-list-card" id="estructura-del-modelo"><h3 class="anchored" data-anchor-id="estructura-del-modelo">Estructura del modelo</h3><ul><li>Primera etapa: modelos separados para FX y tasa 10Y por país.</li><li>Normalización: residuos transformados a z-scores.</li><li>Segunda etapa: relación entre residuo cambiario y spread soberano 10Y frente a EE.UU.</li><li>Salida pública: gráficos comparables y tablas resumen.</li></ul></section></div></section>
-<section class="level2" id="herramientas"><h2 class="anchored" data-anchor-id="herramientas">Herramientas</h2><div class="mu-tool-strip"><p><span>R / tidyverse</span> <span>ggplot2</span> <span>modelsummary</span> <span>BIS</span> <span>FRED</span> <span>BCCh BDE</span> <span>GitHub Pages</span></p></div></section>
 </div>
+<div class="mu-card mu-card-featured">
+<div class="mu-card-kicker">
+<p>Simulación macro</p>
+</div>
+<section id="escenarios-macroeconómicos-inspirados-en-ipom" class="level3">
+<h3 class="anchored" data-anchor-id="escenarios-macroeconómicos-inspirados-en-ipom">Escenarios macroeconómicos inspirados en IPoM</h3>
+<p>Modelo semi-estructural para construir un escenario de referencia tipo IPoM, simular escenarios alternativos con supuestos externos y comparar inflación, TPM y brecha de actividad.</p>
+<div class="mu-tags">
+<p><span>Matlab</span> <span>IRIS</span> <span>Inflación</span> <span>Escenarios</span></p>
+</div>
+<p><a href="./proyectos/ipom-iris.html" class="mu-card-link">Abrir proyecto</a></p>
+</section>
+</div>
+<div class="mu-card mu-card-featured">
+<div class="mu-card-kicker">
+<p>Nota técnica</p>
+</div>
+<section id="transmisión-de-la-tpm-a-tasas-de-mercado" class="level3">
+<h3 class="anchored" data-anchor-id="transmisión-de-la-tpm-a-tasas-de-mercado">Transmisión de la TPM a tasas de mercado</h3>
+<p>Análisis del traspaso de la Tasa de Política Monetaria hacia tasas bancarias y financieras en Chile, con visualizaciones por horizonte, fase del ciclo monetario y tipo de tasa.</p>
+<div class="mu-tags">
+<p><span>R</span> <span>Política monetaria</span> <span>Pass-through</span> <span>Chile</span></p>
+</div>
+<p><a href="./proyectos/transmision-tpm.html" class="mu-card-link">Abrir proyecto</a></p>
+</section>
+</div>
+<div class="mu-card mu-card-featured">
+<div class="mu-card-kicker">
+<p>Macrofinanzas LatAm</p>
+</div>
+<section id="tipo-de-cambio-tasas-largas-y-stress-macrofinanciero" class="level3">
+<h3 class="anchored" data-anchor-id="tipo-de-cambio-tasas-largas-y-stress-macrofinanciero">Tipo de cambio, tasas largas y stress macrofinanciero</h3>
+<p>Modelos diarios para CLP, BRL, MXN, PEN y COP que separan movimientos explicables por factores externos de residuos comparables en FX y tasas soberanas 10Y.</p>
+<div class="mu-tags">
+<p><span>R</span> <span>LatAm</span> <span>Tipo de cambio</span> <span>Tasas 10Y</span></p>
+</div>
+<p><a href="./proyectos/exchange.html" class="mu-card-link">Abrir proyecto</a></p>
+</section>
+</div>
+</div>
+</section>
+<section id="líneas-de-trabajo" class="level2">
+<h2 class="anchored" data-anchor-id="líneas-de-trabajo">Líneas de trabajo</h2>
+<div class="mu-split">
+<section id="qué-se-encuentra-en-este-sitio" class="level3 mu-text-block">
+<h3 class="anchored" data-anchor-id="qué-se-encuentra-en-este-sitio">Qué se encuentra en este sitio</h3>
+<p>El portafolio está organizado como una colección de herramientas y notas técnicas. Cada proyecto parte desde una pregunta económica específica, documenta la construcción de datos, explicita la estrategia metodológica y termina en gráficos o tablas que facilitan la interpretación.</p>
+<p>La prioridad no es solo mostrar resultados, sino dejar trazabilidad: fuentes, transformaciones, supuestos, estimación, visualización y límites de interpretación.</p>
+</section>
+<section id="enfoque-metodológico" class="level3 mu-list-card">
+<h3 class="anchored" data-anchor-id="enfoque-metodológico">Enfoque metodológico</h3>
+<ul>
+<li>Bases documentadas y scripts ejecutables.</li>
+<li>Separación entre datos brutos, datos procesados y salidas.</li>
+<li>Visualizaciones sobrias, comparables y legibles.</li>
+<li>Lectura económica prudente, sin sobrerreaccionar a correlaciones.</li>
+<li>Documentación breve de supuestos, frecuencia y transformaciones.</li>
+</ul>
+</section>
+</div>
+</section>
+<section id="áreas-de-interés" class="level2">
+<h2 class="anchored" data-anchor-id="áreas-de-interés">Áreas de interés</h2>
+<div class="mu-grid mu-grid-areas">
+<section id="macroeconomía-aplicada" class="level3 mu-area">
+<h3 class="anchored" data-anchor-id="macroeconomía-aplicada">Macroeconomía aplicada</h3>
+<p>Seguimiento de actividad, inflación, brecha de producto, condiciones externas y escenarios de riesgo para economías pequeñas y abiertas.</p>
+</section>
+<section id="política-monetaria-y-finanzas" class="level3 mu-area">
+<h3 class="anchored" data-anchor-id="política-monetaria-y-finanzas">Política monetaria y finanzas</h3>
+<p>Análisis de TPM, tasas de mercado, curva de rendimiento, expectativas, pass-through y condiciones financieras.</p>
+</section>
+<section id="datos-y-comunicación-económica" class="level3 mu-area">
+<h3 class="anchored" data-anchor-id="datos-y-comunicación-económica">Datos y comunicación económica</h3>
+<p>Procesos de datos, tableros estáticos/interactivos, gráficos para informes y documentación técnica orientada a decisiones.</p>
+</section>
+</div>
+</section>
+<section id="herramientas" class="level2">
+<h2 class="anchored" data-anchor-id="herramientas">Herramientas</h2>
+<div class="mu-tool-strip">
+<p><span>R / tidyverse</span> <span>ggplot2 / plotly</span> <span>Matlab / IRIS</span> <span>Python</span> <span>Stata</span> <span>GitHub</span> <span>LaTeX</span></p>
+</div>
+</section>
+</div>
+
+
+
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -573,17 +717,21 @@ ul.task-list li input[type="checkbox"] {
   </script>
 </div> <!-- /content -->
 <footer class="footer">
-<div class="nav-footer">
-<div class="nav-footer-left">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
 <p>© 2026 Mauricio Ulloa</p>
-</div>
-<div class="nav-footer-center">
-       
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
     </div>
-<div class="nav-footer-right">
+    <div class="nav-footer-right">
 <p>Economía aplicada · Macroeconomía · Datos</p>
 </div>
-</div>
+  </div>
 </footer>
+
+
+
+
 <script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
