@@ -85,8 +85,8 @@ Macrofinanzas regionales
 Modelos diarios para CLP, BRL, MXN, PEN y COP que comparan movimientos del tipo de cambio y tasas soberanas 10Y respecto de fundamentos externos observables.
 
 ::: {.mu-meta}
-**Estado:** proyecto aplicado con resultados gráficos y reporte PDF.  
-**Herramientas:** R, tidyverse, ggplot2, modelsummary, BIS, FRED y BCCh.
+**Estado:** proyecto aplicado integrado al sitio, con dashboard web y outputs reproducibles.  
+**Herramientas:** R, tidyverse, ggplot2/plotly, BIS, FRED y BCCh.
 :::
 
 [Abrir proyecto](proyectos/exchange.qmd){.mu-card-link}

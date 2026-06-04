@@ -1,60 +1,9 @@
+# Backward-compatible wrapper.
+# Antes este archivo intentaba renderizar un PDF con rmarkdown. Ahora el flujo
+# principal genera outputs web (CSV + graficos) sin depender de Pandoc.
+
 args <- commandArgs(trailingOnly = TRUE)
 repo <- if (length(args) >= 1) args[[1]] else getwd()
 repo <- normalizePath(repo, winslash = "/", mustWork = TRUE)
-setwd(repo)
 
-renv <- file.path(repo, ".Renviron")
-if (file.exists(renv)) readRenviron(renv)
-
-# When running outside RStudio, rmarkdown may not see Pandoc unless RSTUDIO_PANDOC is set.
-if (!nzchar(Sys.getenv("RSTUDIO_PANDOC"))) {
-  candidates <- c(
-    "C:/Program Files/Quarto/bin/tools",
-    file.path(Sys.getenv("LOCALAPPDATA"), "Programs/Quarto/bin/tools")
-  )
-  candidates <- candidates[file.exists(file.path(candidates, "pandoc.exe"))]
-  if (length(candidates) > 0) Sys.setenv(RSTUDIO_PANDOC = candidates[[1]])
-}
-
-required <- c(
-  "rmarkdown", "knitr", "rjson", "httr", "jsonlite", "dplyr",
-  "lubridate", "tidyr", "zoo", "tibble", "ggplot2", "purrr", "modelsummary"
-)
-missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]
-if (length(missing) > 0) {
-  message("Instalando paquetes faltantes: ", paste(missing, collapse = ", "))
-  install.packages(missing, repos = "https://cloud.r-project.org")
-}
-
-if (!rmarkdown::pandoc_available()) {
-  stop(
-    "R no encuentra Pandoc. Instala Quarto o ejecuta solo el sitio con: ",
-    "powershell -NoProfile -ExecutionPolicy Bypass -File .\\render_exchange_site.ps1 -NoModel"
-  )
-}
-
-needed_env <- c("BCCH_USER", "BCCH_PASS", "FRED_API_KEY")
-missing_env <- needed_env[!nzchar(Sys.getenv(needed_env))]
-if (length(missing_env) > 0) {
-  stop(
-    "Faltan variables en .Renviron o en el entorno: ",
-    paste(missing_env, collapse = ", "),
-    "\nCopia .Renviron.example como .Renviron, completa tus claves y vuelve a ejecutar."
-  )
-}
-
-input <- file.path(repo, "modelos", "exchange", "Exchange_CPI_BIS.Rmd")
-out_dir <- file.path(repo, "modelos", "exchange")
-if (!file.exists(input)) stop("No existe el modelo: ", input)
-
-message("Renderizando modelo Exchange con CPI BIS...")
-rmarkdown::render(
-  input = input,
-  output_format = "pdf_document",
-  output_file = "exchange_report.pdf",
-  output_dir = out_dir,
-  clean = TRUE,
-  quiet = FALSE,
-  envir = new.env(parent = globalenv())
-)
-message("Modelo renderizado: ", file.path(out_dir, "exchange_report.pdf"))
+source(file.path(repo, "scripts", "exchange", "build_exchange_outputs.R"), local = TRUE)
