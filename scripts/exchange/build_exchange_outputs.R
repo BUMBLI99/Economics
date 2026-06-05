@@ -51,6 +51,9 @@ if (!nzchar(start_date)) start_date <- "2010-01-01"
 end_date <- Sys.getenv("EXCHANGE_END_DATE")
 if (!nzchar(end_date)) end_date <- format(Sys.Date(), "%Y-%m-%d")
 
+cpi_extension_window <- suppressWarnings(as.integer(Sys.getenv("EXCHANGE_CPI_EXTENSION_WINDOW", "6")))
+if (is.na(cpi_extension_window) || cpi_extension_window < 1) cpi_extension_window <- 6L
+
 needed_env <- c("BCCH_USER", "BCCH_PASS", "FRED_API_KEY")
 missing_env <- needed_env[!nzchar(Sys.getenv(needed_env))]
 if (length(missing_env) > 0) {
@@ -194,6 +197,85 @@ bis_get_long_cpi_monthly <- function(series_key,
     arrange(date)
 }
 
+extend_cpi_monthly <- function(df_monthly, end, country, series_key, window = 6L) {
+  stopifnot(all(c("date", "value") %in% names(df_monthly)))
+
+  df_obs <- df_monthly %>%
+    arrange(date) %>%
+    filter(!is.na(date), !is.na(value), value > 0) %>%
+    distinct(date, .keep_all = TRUE)
+
+  if (nrow(df_obs) < 2) {
+    stop("Se necesitan al menos dos observaciones mensuales de CPI para ", country, ".")
+  }
+
+  end_month <- as.Date(lubridate::floor_date(as.Date(end), "month"))
+  last_observed <- max(df_obs$date, na.rm = TRUE)
+
+  log_mom <- diff(log(df_obs$value))
+  recent_log_mom <- tail(log_mom[is.finite(log_mom)], window)
+  monthly_log_assumption <- mean(recent_log_mom, na.rm = TRUE)
+
+  if (!is.finite(monthly_log_assumption)) {
+    monthly_log_assumption <- mean(log_mom[is.finite(log_mom)], na.rm = TRUE)
+  }
+  if (!is.finite(monthly_log_assumption)) {
+    stop("No se pudo calcular supuesto de inflación mensual para ", country, ".")
+  }
+
+  months_to_add <- as.Date(character())
+  if (last_observed < end_month) {
+    months_to_add <- seq.Date(
+      from = as.Date(lubridate::floor_date(last_observed %m+% months(1), "month")),
+      to = end_month,
+      by = "month"
+    )
+  }
+
+  df_obs_tagged <- df_obs %>% mutate(cpi_status = "observed")
+
+  if (length(months_to_add) > 0) {
+    last_value <- df_obs$value[nrow(df_obs)]
+    assumed_values <- numeric(length(months_to_add))
+    for (i in seq_along(months_to_add)) {
+      last_value <- last_value * exp(monthly_log_assumption)
+      assumed_values[[i]] <- last_value
+    }
+
+    df_assumed <- tibble(
+      date = months_to_add,
+      value = assumed_values,
+      cpi_status = "assumed_avg_last6"
+    )
+  } else {
+    df_assumed <- tibble(
+      date = as.Date(character()),
+      value = numeric(),
+      cpi_status = character()
+    )
+  }
+
+  data_extended <- bind_rows(df_obs_tagged, df_assumed) %>% arrange(date)
+
+  info <- tibble(
+    country = country,
+    series_key = series_key,
+    method = paste0("Promedio de las últimas ", window, " variaciones mensuales observadas"),
+    window_months = window,
+    monthly_log_assumption = monthly_log_assumption,
+    monthly_inflation_assumption_pct = 100 * (exp(monthly_log_assumption) - 1),
+    first_observed_date = min(df_obs$date, na.rm = TRUE),
+    last_observed_date = last_observed,
+    first_assumed_date = if (nrow(df_assumed) > 0) min(df_assumed$date) else as.Date(NA),
+    last_assumed_date = if (nrow(df_assumed) > 0) max(df_assumed$date) else as.Date(NA),
+    n_observed_months = nrow(df_obs),
+    n_assumed_months = nrow(df_assumed),
+    last_model_cpi_month = max(data_extended$date, na.rm = TRUE)
+  )
+
+  list(data = data_extended, info = info)
+}
+
 monthly_to_daily_log <- function(df_monthly, cal_dates) {
   stopifnot(all(c("date", "value") %in% names(df_monthly)))
   stopifnot("date" %in% names(cal_dates))
@@ -267,7 +349,20 @@ cpi_specs <- tribble(
   "PEN", "M.PE.628"
 )
 cpi_monthly <- cpi_specs %>%
-  mutate(data = map(series_key, ~ bis_get_long_cpi_monthly(.x, start_date, end_date)))
+  mutate(
+    raw_data = map(series_key, ~ bis_get_long_cpi_monthly(.x, start_date, end_date)),
+    extended = pmap(
+      list(raw_data, country, series_key),
+      ~ extend_cpi_monthly(..1, end_date, ..2, ..3, cpi_extension_window)
+    ),
+    data = map(extended, "data"),
+    extension_info = map(extended, "info")
+  )
+
+cpi_extension_summary <- cpi_monthly %>%
+  select(extension_info) %>%
+  tidyr::unnest(extension_info) %>%
+  mutate(monthly_inflation_assumption_pct = round(monthly_inflation_assumption_pct, 4))
 
 cal_trading <- fx_clp %>% select(date) %>% distinct() %>% arrange(date)
 
@@ -278,15 +373,22 @@ cpi_daily_wide <- cpi_monthly %>%
   tidyr::pivot_wider(names_from = country, values_from = value_daily, names_prefix = "cpi_") %>%
   arrange(date)
 
-cpi_sources <- cpi_monthly %>%
+cpi_sources <- cpi_extension_summary %>%
   transmute(
     country,
     series_key,
-    first_date = map_chr(data, ~ as.character(min(.x$date, na.rm = TRUE))),
-    last_date  = map_chr(data, ~ as.character(max(.x$date, na.rm = TRUE))),
-    n_months   = map_int(data, nrow)
+    first_observed_date,
+    last_observed_date,
+    first_assumed_date,
+    last_assumed_date,
+    last_model_cpi_month,
+    n_observed_months,
+    n_assumed_months,
+    monthly_inflation_assumption_pct,
+    method
   )
 readr::write_csv(cpi_sources, file.path(out_data, "cpi_sources.csv"))
+readr::write_csv(cpi_extension_summary, file.path(out_data, "cpi_extension_summary.csv"))
 
 # ------------------------------------------------------------
 # Base diaria
@@ -499,8 +601,15 @@ readr::write_csv(second_stage_all, file.path(out_data, "second_stage_data.csv"))
 readr::write_csv(latest_snapshot, file.path(out_data, "latest_snapshot.csv"))
 
 metadata <- tibble(
-  item = c("start_date", "end_date", "latest_model_date", "created_at"),
-  value = c(start_date, end_date, as.character(latest_date), as.character(Sys.time()))
+  item = c(
+    "start_date", "end_date", "latest_model_date", "created_at",
+    "cpi_extension_method", "cpi_extension_window_months"
+  ),
+  value = c(
+    start_date, end_date, as.character(latest_date), as.character(Sys.time()),
+    paste0("Promedio de las últimas ", cpi_extension_window, " variaciones mensuales observadas"),
+    as.character(cpi_extension_window)
+  )
 )
 readr::write_csv(metadata, file.path(out_data, "metadata.csv"))
 

@@ -79,6 +79,7 @@ second_summary <- read_exchange_csv("second_stage_summary.csv")
 model_coefficients <- read_exchange_csv("model_coefficients.csv")
 metadata <- read_exchange_csv("metadata.csv")
 latest_snapshot <- read_exchange_csv("latest_snapshot.csv")
+cpi_extension <- read_exchange_csv("cpi_extension_summary.csv")
 
 data_ready <- !is.null(residuals_long) && !is.null(second_stage_data)
 if (data_ready) {
@@ -101,6 +102,12 @@ if (data_ready) {
 
 latest_model_date <- if (data_ready) max(residuals_long$date, na.rm = TRUE) else NA
 sample_start <- if (data_ready) min(residuals_long$date, na.rm = TRUE) else NA
+cpi_extension_window_label <- if (!is.null(cpi_extension) && "window_months" %in% names(cpi_extension)) {
+  ww <- unique(na.omit(cpi_extension$window_months))
+  if (length(ww) > 0) ww[[1]] else 6
+} else {
+  6
+}
 
 plot_missing <- function(msg = "No se encontraron los datos procesados del modelo.") {
   if (has_htmltools) {
@@ -371,12 +378,16 @@ $$
 + \gamma_{3i}\log(Nasdaq_t)
 + \gamma_{4i}\log(ChinaEq_t)
 + \gamma_{5i}\log(VIX_t)
-+ \gamma_{6i}\log(DXY_t)
++ \gamma_{6i}\log(EER^{US}_t)
 + \gamma_{7i}\log(CNY_t)
 + u^{FX}_{i,t}
 $$
 
 $S_{i,t}$ es el tipo de cambio bilateral frente al dólar, medido como moneda local por USD. El término $P_{i,t}/P_{US,t}$ captura precios relativos frente a EE.UU. y el resto de controles resume factores externos comunes: commodities, equity global/China, volatilidad, dólar multilateral y CNY/USD.
+::: 
+
+::: {.exchange-assumption-note}
+**Supuesto para IPC no publicado.** Si la muestra diaria avanza más allá del último IPC mensual de BIS, cada índice se extiende con una inflación mensual igual al promedio de las últimas `r cpi_extension_window_label` variaciones mensuales observadas de ese país. El supuesto solo afecta los meses todavía no publicados; luego la serie mensual se interpola log-linealmente a frecuencia diaria.
 :::
 
 ::: {.mu-equation-card}
@@ -387,7 +398,7 @@ y^{10}_{i,t}
 = \delta_i + \phi_i y^{10}_{US,t}
 + \theta_{1i}\log(VIX_t)
 + \theta_{2i}\log(Nasdaq_t)
-+ \theta_{3i}\log(DXY_t)
++ \theta_{3i}\log(EER^{US}_t)
 + \theta_{4i}\log(CNY_t)
 + \eta_i t
 + u^{10Y}_{i,t}

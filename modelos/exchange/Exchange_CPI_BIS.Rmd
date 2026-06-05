@@ -28,7 +28,7 @@ scripts/exchange/build_exchange_outputs.R
 
 El proyecto estima modelos diarios para tipo de cambio bilateral y tasas soberanas a 10 años de Chile, Brasil, México, Perú y Colombia. La variable de interés pública no es el nivel ajustado en sí mismo, sino el residuo normalizado de cada ecuación, interpretado como desviación respecto de fundamentos externos observables.
 
-La inflación relativa se construye con índices de precios al consumidor de BIS `WS_LONG_CPI`, en nivel mensual base 2010=100. Luego se pasa a frecuencia diaria por interpolación log-lineal y se mantiene plano después del último dato observado. Esto evita reconstruir índices diarios desde variaciones interanuales o mensuales y elimina el patrón artificial de serrucho.
+La inflación relativa se construye con índices de precios al consumidor de BIS `WS_LONG_CPI`, en nivel mensual base 2010=100. Cuando la muestra diaria avanza más allá del último IPC mensual publicado por BIS, cada índice se extiende con una inflación mensual igual al promedio de las últimas seis variaciones mensuales observadas de ese país. Luego se pasa a frecuencia diaria por interpolación log-lineal. Esto evita reconstruir índices diarios desde variaciones interanuales o mensuales y elimina el patrón artificial de serrucho.
 
 ## Outputs generados
 

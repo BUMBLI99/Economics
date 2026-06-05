@@ -1,0 +1,7 @@
+country,series_key,method,window_months,monthly_log_assumption,monthly_inflation_assumption_pct,first_observed_date,last_observed_date,first_assumed_date,last_assumed_date,n_observed_months,n_assumed_months,last_model_cpi_month
+CLP,M.CL.628,Promedio de las últimas 6 variaciones mensuales observadas,6,0.004502540000762778,0.4513,2010-01-01,2026-04-01,2026-05-01,2026-06-01,196,2,2026-06-01
+US,M.US.628,Promedio de las últimas 6 variaciones mensuales observadas,6,0.004165490554429052,0.4174,2010-01-01,2026-04-01,2026-05-01,2026-06-01,195,2,2026-06-01
+BRL,M.BR.628,Promedio de las últimas 6 variaciones mensuales observadas,6,0.005133714978937369,0.5147,2010-01-01,2026-04-01,2026-05-01,2026-06-01,196,2,2026-06-01
+COP,M.CO.628,Promedio de las últimas 6 variaciones mensuales observadas,6,0.006894333097638909,0.6918,2010-01-01,2026-04-01,2026-05-01,2026-06-01,196,2,2026-06-01
+MXN,M.MX.628,Promedio de las últimas 6 variaciones mensuales observadas,6,0.004779969095422072,0.4791,2010-01-01,2026-04-01,2026-05-01,2026-06-01,196,2,2026-06-01
+PEN,M.PE.628,Promedio de las últimas 6 variaciones mensuales observadas,6,0.006686003357659676,0.6708,2010-01-01,2026-04-01,2026-05-01,2026-06-01,196,2,2026-06-01

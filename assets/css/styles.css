@@ -1341,3 +1341,19 @@ main.content {
     font-size: 0.82rem;
   }
 }
+
+/* ExchangeReg: compact methodological note */
+.exchange-assumption-note {
+  margin: 1.05rem 0 1.35rem;
+  padding: 0.95rem 1.1rem;
+  border: 1px solid rgba(123, 94, 66, 0.25);
+  border-left: 4px solid rgba(123, 94, 66, 0.55);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--mu-muted);
+  font-size: 0.96rem;
+}
+
+.exchange-assumption-note strong {
+  color: var(--mu-accent);
+}
