@@ -1413,3 +1413,78 @@ main.content {
   border-color: rgba(230,126,34,0.45);
   text-decoration: none;
 }
+
+/* ==========================================================
+   ExchangeReg final layout fix: centered content, no overflow
+   ========================================================== */
+.exchange-wide-block {
+  width: min(100%, 1120px) !important;
+  max-width: 1120px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box;
+}
+
+.exchange-chart-card {
+  width: min(100%, 1080px) !important;
+  max-width: 1080px !important;
+  margin: 1.25rem auto 2.35rem !important;
+  padding: clamp(0.9rem, 1.4vw, 1.25rem) !important;
+  overflow: hidden !important;
+  box-sizing: border-box;
+}
+
+.exchange-chart-card .cell,
+.exchange-chart-card .cell-output,
+.exchange-chart-card .cell-output-display,
+.exchange-chart-card .html-widget,
+.exchange-chart-card .plotly,
+.exchange-chart-card .js-plotly-plot,
+.exchange-chart-card .plot-container,
+.exchange-chart-card .svg-container {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.exchange-chart-card .cell-output-display:has(.plotly),
+.exchange-chart-card .cell-output-display:has(.js-plotly-plot) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+.exchange-country-tabs,
+.exchange-policy-tabs,
+.exchange-country-tabs .tab-content,
+.exchange-country-tabs .tab-pane,
+.exchange-policy-tabs .tab-content,
+.exchange-policy-tabs .tab-pane {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.exchange-country-tabs .nav-tabs,
+.exchange-policy-tabs .nav-tabs,
+.exchange-estimation-tabs .nav-tabs {
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  .exchange-wide-block,
+  .exchange-chart-card {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .exchange-chart-card {
+    padding: 0.7rem !important;
+  }
+}

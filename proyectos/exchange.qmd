@@ -2,7 +2,7 @@
 title: "Tipo de cambio, tasas largas y riesgo soberano en LatAm"
 subtitle: "Modelos diarios para CLP, BRL, MXN, PEN y COP"
 description: "Proyecto aplicado que estima desviaciones de tipo de cambio y tasas soberanas a 10 años incorporando factores globales y EMBIG país para América Latina."
-page-layout: full
+page-layout: article
 execute:
   echo: false
   warning: false
@@ -145,16 +145,27 @@ plot_global_residuals <- function(market_name, from_date = as.Date("2022-01-01")
   title <- if (market_name == "FX") "Residuos normalizados del tipo de cambio" else "Residuos normalizados de tasas soberanas 10Y"
   ylab <- if (market_name == "FX") "z-score residuo FX" else "z-score residuo 10Y"
   p <- plotly::plot_ly(
-    dfp, x = ~date, y = ~z_score, color = ~country_chr, colors = country_cols,
-    type = "scatter", mode = "lines", line = list(width = 1.65),
+    dfp,
+    x = ~date,
+    y = ~z_score,
+    color = ~country_chr,
+    colors = country_cols,
+    type = "scatter",
+    mode = "lines",
+    line = list(width = 1.45),
     hovertemplate = paste("País: %{fullData.name}", "Fecha: %{x|%d-%m-%Y}", "z-score: %{y:.2f}", sep = "<br>")
-  ) %>% plotly::layout(
-      autosize = TRUE, height = 610, margin = list(l = 70, r = 34, t = 92, b = 78),
-      title = list(text = title, x = 0, font = list(size = 18, color = "#27384a")),
+  ) %>%
+    plotly::layout(
+      autosize = TRUE,
+      height = 520,
+      margin = list(l = 70, r = 22, t = 70, b = 92),
+      title = list(text = title, x = 0, y = 0.98, font = list(size = 18, color = "#27384a")),
       xaxis = list(title = "", showgrid = TRUE, gridcolor = "#e8e4dc"),
       yaxis = list(title = ylab, zeroline = FALSE, showgrid = TRUE, gridcolor = "#e8e4dc"),
-      legend = list(orientation = "h", x = 0, y = 1.09, xanchor = "left", yanchor = "bottom"),
-      paper_bgcolor = "rgba(0,0,0,0)", plot_bgcolor = "#ffffff",
+      legend = list(orientation = "h", x = 0, y = -0.18, xanchor = "left", yanchor = "top"),
+      hovermode = "x unified",
+      paper_bgcolor = "rgba(0,0,0,0)",
+      plot_bgcolor = "#ffffff",
       shapes = list(
         list(type = "line", xref = "paper", x0 = 0, x1 = 1, yref = "y", y0 = 0,  y1 = 0,  line = list(color = "#8a94a3", width = 1.1, dash = "dash")),
         list(type = "line", xref = "paper", x0 = 0, x1 = 1, yref = "y", y0 = 2,  y1 = 2,  line = list(color = "#c8c0b3", width = 1, dash = "dot")),
@@ -166,18 +177,31 @@ plot_global_residuals <- function(market_name, from_date = as.Date("2022-01-01")
 
 plot_country_stress <- function(cc, from_date = as.Date("2022-01-01")) {
   if (!data_ready || !has_plotly) return(plot_missing("No se encontraron los datos del modelo."))
-  dfp <- residuals_long %>% filter(country == cc, date >= from_date, !is.na(z_score)) %>% mutate(market_chr = as.character(market))
+  dfp <- residuals_long %>%
+    filter(country == cc, date >= from_date, !is.na(z_score)) %>%
+    mutate(market_chr = as.character(market))
   p <- plotly::plot_ly(
-    dfp, x = ~date, y = ~z_score, color = ~market_chr, colors = market_cols,
-    type = "scatter", mode = "lines", line = list(width = 1.9),
+    dfp,
+    x = ~date,
+    y = ~z_score,
+    color = ~market_chr,
+    colors = market_cols,
+    type = "scatter",
+    mode = "lines",
+    line = list(width = 1.7),
     hovertemplate = paste("Mercado: %{fullData.name}", "Fecha: %{x|%d-%m-%Y}", "z-score: %{y:.2f}", sep = "<br>")
-  ) %>% plotly::layout(
-      autosize = TRUE, height = 560, margin = list(l = 68, r = 32, t = 88, b = 74),
-      title = list(text = paste0("Stress conjunto FX y 10Y — ", country_label[[cc]]), x = 0, font = list(size = 17, color = "#27384a")),
+  ) %>%
+    plotly::layout(
+      autosize = TRUE,
+      height = 500,
+      margin = list(l = 70, r = 22, t = 70, b = 88),
+      title = list(text = paste0("Stress conjunto FX y 10Y — ", country_label[[cc]]), x = 0, y = 0.98, font = list(size = 17, color = "#27384a")),
       xaxis = list(title = "", showgrid = TRUE, gridcolor = "#e8e4dc"),
       yaxis = list(title = "z-score", zeroline = FALSE, showgrid = TRUE, gridcolor = "#e8e4dc"),
-      legend = list(orientation = "h", x = 0, y = 1.10, xanchor = "left", yanchor = "bottom"),
-      paper_bgcolor = "rgba(0,0,0,0)", plot_bgcolor = "#ffffff",
+      legend = list(orientation = "h", x = 0, y = -0.17, xanchor = "left", yanchor = "top"),
+      hovermode = "x unified",
+      paper_bgcolor = "rgba(0,0,0,0)",
+      plot_bgcolor = "#ffffff",
       shapes = list(
         list(type = "line", xref = "paper", x0 = 0, x1 = 1, yref = "y", y0 = 0,  y1 = 0,  line = list(color = "#8a94a3", width = 1.1, dash = "dash")),
         list(type = "line", xref = "paper", x0 = 0, x1 = 1, yref = "y", y0 = 2,  y1 = 2,  line = list(color = "#c8c0b3", width = 1, dash = "dot")),
@@ -196,17 +220,20 @@ plot_country_second_stage <- function(cc) {
   p <- plotly::plot_ly() %>%
     plotly::add_markers(
       data = dfp, x = ~y10_spread, y = ~z_fx, type = "scattergl",
-      marker = list(color = "rgba(39,56,74,0.36)", size = 4.2), name = "Observaciones diarias",
+      marker = list(color = "rgba(39,56,74,0.34)", size = 4.0), name = "Observaciones diarias",
       hovertemplate = paste("Fecha: %{customdata|%d-%m-%Y}", "Spread 10Y: %{x:.2f} p.p.", "Residuo FX: %{y:.2f}", sep = "<br>"), customdata = ~date
     ) %>%
-    plotly::add_lines(data = dfp, x = ~y10_spread, y = ~z_fx_hat, line = list(color = "#7b5e42", width = 2.4), name = "Ajuste lineal", hovertemplate = "Ajuste: %{y:.2f}<extra></extra>") %>%
+    plotly::add_lines(data = dfp, x = ~y10_spread, y = ~z_fx_hat, line = list(color = "#7b5e42", width = 2.2), name = "Ajuste lineal", hovertemplate = "Ajuste: %{y:.2f}<extra></extra>") %>%
     plotly::layout(
-      autosize = TRUE, height = 590, margin = list(l = 72, r = 34, t = 92, b = 88),
-      title = list(text = paste0("Segunda etapa — ", country_label[[cc]], "<br><sup>b = ", beta, " · R² = ", r2, "</sup>"), x = 0, font = list(size = 17, color = "#27384a")),
+      autosize = TRUE,
+      height = 520,
+      margin = list(l = 76, r = 22, t = 76, b = 94),
+      title = list(text = paste0("Segunda etapa — ", country_label[[cc]], "<br><sup>b = ", beta, " · R² = ", r2, "</sup>"), x = 0, y = 0.98, font = list(size = 17, color = "#27384a")),
       xaxis = list(title = "Diferencial 10Y frente a EE.UU. (p.p.)", showgrid = TRUE, gridcolor = "#e8e4dc"),
       yaxis = list(title = "z-score residuo FX", showgrid = TRUE, gridcolor = "#e8e4dc"),
-      legend = list(orientation = "h", x = 0, y = 1.10, xanchor = "left", yanchor = "bottom"),
-      paper_bgcolor = "rgba(0,0,0,0)", plot_bgcolor = "#ffffff",
+      legend = list(orientation = "h", x = 0, y = -0.18, xanchor = "left", yanchor = "top"),
+      paper_bgcolor = "rgba(0,0,0,0)",
+      plot_bgcolor = "#ffffff",
       shapes = list(list(type = "line", xref = "paper", x0 = 0, x1 = 1, yref = "y", y0 = 0, y1 = 0, line = list(color = "#8a94a3", width = 1)))
     )
   plotly_config(p)
@@ -214,25 +241,68 @@ plot_country_second_stage <- function(cc) {
 
 plot_policy_dashboard <- function(cc) {
   if (is.null(dashboard_data) || !has_plotly) return(plot_missing("No se encontraron los datos de tasas y TPM."))
-  dfp <- dashboard_data %>% filter(country == cc, !is.na(value))
-  if (nrow(dfp) == 0) return(plot_missing("No hay datos disponibles para este país."))
-  gp <- ggplot2::ggplot(dfp, ggplot2::aes(x = date, y = value, colour = series, group = series)) +
-    ggplot2::geom_hline(
-      data = tibble::tibble(panel = factor("Desvíos del modelo (z-score)", levels = levels(dfp$panel))),
-      ggplot2::aes(yintercept = 0), inherit.aes = FALSE, linetype = "dashed", linewidth = 0.35, colour = "grey45"
-    ) +
-    ggplot2::geom_line(linewidth = 0.6, na.rm = TRUE) +
-    ggplot2::facet_grid(panel ~ ., scales = "free_y", switch = "y") +
-    ggplot2::labs(title = paste0(country_label[[cc]], ": TPM, tasa 10Y y desvíos del modelo"), x = "Fecha", y = NULL, colour = NULL) +
-    ggplot2::theme_minimal(base_size = 12) +
-    ggplot2::theme(
-      legend.position = "bottom", strip.placement = "outside",
-      strip.text.y.left = ggplot2::element_text(angle = 0, face = "bold", margin = ggplot2::margin(r = 12)),
-      panel.grid.minor = ggplot2::element_blank(), panel.spacing.y = grid::unit(1.55, "lines"),
-      plot.title = ggplot2::element_text(face = "bold", size = 14), plot.margin = ggplot2::margin(t = 14, r = 14, b = 10, l = 14)
+  dfp <- dashboard_data %>%
+    filter(country == cc, !is.na(value)) %>%
+    mutate(
+      panel_chr = as.character(panel),
+      series_chr = as.character(series),
+      series_label = case_when(
+        panel_chr == "Desvíos del modelo (z-score)" & series_chr == "Tasa 10Y" ~ "Desvío 10Y",
+        TRUE ~ series_chr
+      )
     )
-  p <- plotly::ggplotly(gp, tooltip = c("x", "y", "colour")) %>%
-    plotly::layout(autosize = TRUE, height = 650, margin = list(l = 95, r = 32, t = 76, b = 84), legend = list(orientation = "h", x = 0, y = -0.08), paper_bgcolor = "rgba(0,0,0,0)", plot_bgcolor = "#ffffff")
+  if (nrow(dfp) == 0) return(plot_missing("No hay datos disponibles para este país."))
+
+  policy_cols <- c("TPM" = "#ff6f61", "Tasa 10Y" = "#00a64f", "FX" = "#4e93ff", "Desvío 10Y" = "#00a64f")
+  rates <- dfp %>% filter(panel_chr == "Tasas (%)")
+  zdat  <- dfp %>% filter(panel_chr == "Desvíos del modelo (z-score)")
+  x_rng <- range(dfp$date, na.rm = TRUE)
+
+  p <- plotly::plot_ly()
+  for (ss in c("TPM", "Tasa 10Y")) {
+    dd <- rates %>% filter(series_label == ss)
+    if (nrow(dd) > 0) {
+      p <- p %>% plotly::add_lines(
+        data = dd, x = ~date, y = ~value, name = ss,
+        line = list(color = policy_cols[[ss]], width = ifelse(ss == "TPM", 1.9, 2.0), shape = ifelse(ss == "TPM", "hv", "linear")),
+        hovertemplate = paste0(ss, "<br>Fecha: %{x|%d-%m-%Y}<br>Valor: %{y:.2f}%<extra></extra>"),
+        xaxis = "x", yaxis = "y"
+      )
+    }
+  }
+  for (ss in c("FX", "Desvío 10Y")) {
+    dd <- zdat %>% filter(series_label == ss)
+    if (nrow(dd) > 0) {
+      p <- p %>% plotly::add_lines(
+        data = dd, x = ~date, y = ~value, name = ss,
+        line = list(color = policy_cols[[ss]], width = 1.8),
+        hovertemplate = paste0(ss, "<br>Fecha: %{x|%d-%m-%Y}<br>z-score: %{y:.2f}<extra></extra>"),
+        xaxis = "x2", yaxis = "y2"
+      )
+    }
+  }
+
+  p <- p %>% plotly::layout(
+    autosize = TRUE,
+    height = 620,
+    margin = list(l = 78, r = 22, t = 76, b = 100),
+    title = list(text = paste0(country_label[[cc]], ": TPM, tasa 10Y y desvíos del modelo"), x = 0, y = 0.98, font = list(size = 18, color = "#27384a")),
+    xaxis = list(domain = c(0, 1), anchor = "y", range = x_rng, showticklabels = FALSE, showgrid = TRUE, gridcolor = "#e8e4dc"),
+    yaxis = list(domain = c(0.57, 1.00), title = "Tasas (%)", showgrid = TRUE, gridcolor = "#e8e4dc", zeroline = FALSE),
+    xaxis2 = list(domain = c(0, 1), anchor = "y2", range = x_rng, title = "Fecha", showgrid = TRUE, gridcolor = "#e8e4dc"),
+    yaxis2 = list(domain = c(0.00, 0.46), title = "z-score", showgrid = TRUE, gridcolor = "#e8e4dc", zeroline = FALSE),
+    legend = list(orientation = "h", x = 0, y = -0.18, xanchor = "left", yanchor = "top"),
+    hovermode = "x unified",
+    paper_bgcolor = "rgba(0,0,0,0)",
+    plot_bgcolor = "#ffffff",
+    shapes = list(
+      list(type = "line", xref = "x2", x0 = x_rng[1], x1 = x_rng[2], yref = "y2", y0 = 0, y1 = 0, line = list(color = "#8a94a3", width = 1.0, dash = "dash"))
+    ),
+    annotations = list(
+      list(text = "Tasas (%)", x = 0, y = 1.04, xref = "paper", yref = "paper", showarrow = FALSE, xanchor = "left", font = list(size = 12, color = "#66717f")),
+      list(text = "Desvíos del modelo", x = 0, y = 0.49, xref = "paper", yref = "paper", showarrow = FALSE, xanchor = "left", font = list(size = 12, color = "#66717f"))
+    )
+  )
   plotly_config(p)
 }
 
@@ -477,7 +547,7 @@ if (!is.null(second_summary) && all(c("country", "beta_y10_spread", "p_value", "
 }
 ```
 
-::: {.column-page .exchange-wide-block}
+::: {.exchange-wide-block}
 
 ## Dashboard regional interactivo
 

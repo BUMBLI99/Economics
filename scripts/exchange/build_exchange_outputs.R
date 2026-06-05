@@ -381,14 +381,18 @@ bcrp_get_many_series_safe <- function(code_map,
   purrr::reduce(series_list, full_join, by = "date") %>% arrange(date)
 }
 
-interp_daily <- function(x) {
+# Relleno prudente de frecuencia diaria:
+# - series financieras: interpolación solo para huecos cortos internos;
+# - series tipo TPM/EMBI: arrastre solo para huecos cortos;
+# - nunca se extiende indefinidamente una serie si la fuente deja de actualizar.
+interp_daily <- function(x, maxgap = 5L) {
   if (all(is.na(x))) return(x)
-  zoo::na.locf(zoo::na.approx(x, na.rm = FALSE), na.rm = FALSE)
+  zoo::na.approx(x, na.rm = FALSE, maxgap = maxgap)
 }
 
-locf_daily <- function(x) {
+locf_daily <- function(x, maxgap = 5L) {
   if (all(is.na(x))) return(x)
-  zoo::na.locf(x, na.rm = FALSE)
+  zoo::na.locf(x, na.rm = FALSE, maxgap = maxgap)
 }
 
 rmse <- function(x) sqrt(mean(x^2, na.rm = TRUE))
@@ -792,8 +796,20 @@ dashboard_country_data <- purrr::map_dfr(seq_len(nrow(country_dashboard_specs)),
   fx_z_var <- paste0("z_res_fx_", cc)
   y10_z_var <- paste0("z_res_y10_", cc)
 
+  # Se corta el dashboard en la última fecha donde existen desvíos del modelo.
+  # Esto evita que tasas/TPM o variables financieras se proyecten visualmente
+  # cuando alguna fuente diaria dejó de entregar datos recientes.
+  last_model_cc <- db_daily %>%
+    filter(!is.na(.data[[fx_z_var]]), !is.na(.data[[y10_z_var]])) %>%
+    summarise(last_date = max(date, na.rm = TRUE)) %>%
+    pull(last_date)
+
+  if (!is.finite(as.numeric(last_model_cc))) {
+    return(tibble(date = as.Date(character()), country = character(), panel = character(), series = character(), value = numeric()))
+  }
+
   rates_panel <- db_daily %>%
-    filter(date >= from_export) %>%
+    filter(date >= from_export, date <= last_model_cc) %>%
     transmute(
       date,
       country = cc,
@@ -804,7 +820,7 @@ dashboard_country_data <- purrr::map_dfr(seq_len(nrow(country_dashboard_specs)),
     pivot_longer(c(TPM, `Tasa 10Y`), names_to = "series", values_to = "value")
 
   z_panel <- db_daily %>%
-    filter(date >= from_export) %>%
+    filter(date >= from_export, date <= last_model_cc) %>%
     transmute(
       date,
       country = cc,
@@ -819,6 +835,7 @@ dashboard_country_data <- purrr::map_dfr(seq_len(nrow(country_dashboard_specs)),
   filter(!is.na(value)) %>%
   mutate(country = factor(country, levels = countries)) %>%
   arrange(country, panel, series, date)
+
 
 readr::write_csv(db_daily, file.path(out_data, "db_daily_exchange.csv"))
 readr::write_csv(residuals_long, file.path(out_data, "residuals_long.csv"))
@@ -932,7 +949,7 @@ plot_static_policy_dashboard <- function(cc) {
       strip.placement = "outside",
       strip.text.y.left = element_text(angle = 0, face = "bold"),
       panel.grid.minor = element_blank(),
-      panel.spacing.y = grid::unit(1.4, "lines"),
+      panel.spacing.y = unit(1.4, "lines"),
       plot.title = element_text(face = "bold")
     )
 }
