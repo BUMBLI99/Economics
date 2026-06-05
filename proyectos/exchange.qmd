@@ -150,12 +150,12 @@ plot_global_residuals <- function(market_name, from_date = as.Date("2022-01-01")
     )
   ) %>%
     plotly::layout(
-      height = 520,
-      margin = list(l = 64, r = 28, t = 48, b = 56),
+      height = 560,
+      margin = list(l = 64, r = 28, t = 56, b = 92),
       title = list(text = title, x = 0, font = list(size = 18, color = "#27384a")),
       xaxis = list(title = "", showgrid = TRUE, gridcolor = "#e8e4dc"),
       yaxis = list(title = ylab, zeroline = FALSE, showgrid = TRUE, gridcolor = "#e8e4dc"),
-      legend = list(orientation = "h", x = 0, y = -0.16),
+      legend = list(orientation = "h", x = 0, y = -0.13),
       paper_bgcolor = "rgba(0,0,0,0)",
       plot_bgcolor = "#ffffff",
       shapes = list(
@@ -191,12 +191,12 @@ plot_country_stress <- function(cc, from_date = as.Date("2022-01-01")) {
     )
   ) %>%
     plotly::layout(
-      height = 500,
-      margin = list(l = 62, r = 24, t = 44, b = 58),
+      height = 560,
+      margin = list(l = 62, r = 24, t = 56, b = 92),
       title = list(text = paste0("Stress conjunto FX y 10Y — ", country_label[[cc]]), x = 0, font = list(size = 17, color = "#27384a")),
       xaxis = list(title = "", showgrid = TRUE, gridcolor = "#e8e4dc"),
       yaxis = list(title = "z-score", zeroline = FALSE, showgrid = TRUE, gridcolor = "#e8e4dc"),
-      legend = list(orientation = "h", x = 0, y = -0.16),
+      legend = list(orientation = "h", x = 0, y = -0.13),
       paper_bgcolor = "rgba(0,0,0,0)",
       plot_bgcolor = "#ffffff",
       shapes = list(
@@ -243,8 +243,8 @@ plot_country_second_stage <- function(cc) {
       hovertemplate = "Ajuste: %{y:.2f}<extra></extra>"
     ) %>%
     plotly::layout(
-      height = 500,
-      margin = list(l = 66, r = 24, t = 54, b = 66),
+      height = 580,
+      margin = list(l = 70, r = 28, t = 66, b = 112),
       title = list(
         text = paste0("Segunda etapa — ", country_label[[cc]], "<br><sup>b = ", beta, " · R² = ", r2, "</sup>"),
         x = 0,
@@ -252,7 +252,7 @@ plot_country_second_stage <- function(cc) {
       ),
       xaxis = list(title = "Diferencial 10Y frente a EE.UU. (p.p.)", showgrid = TRUE, gridcolor = "#e8e4dc"),
       yaxis = list(title = "z-score residuo FX", showgrid = TRUE, gridcolor = "#e8e4dc"),
-      legend = list(orientation = "h", x = 0, y = -0.18),
+      legend = list(orientation = "h", x = 0, y = -0.15),
       paper_bgcolor = "rgba(0,0,0,0)",
       plot_bgcolor = "#ffffff"
     )
@@ -262,7 +262,7 @@ plot_country_second_stage <- function(cc) {
 
 term_labels <- c(
   "trend" = "Tendencia temporal",
-  "cpi_rel" = "Precios relativos vs. EE.UU.",
+  "cpi_rel" = "Precios relativos frente a EE.UU.",
   "l_wti" = "Petróleo WTI",
   "l_pcu" = "Cobre",
   "l_eqnsq" = "Nasdaq",
@@ -273,25 +273,39 @@ term_labels <- c(
   "y10_us" = "Treasury 10Y EE.UU."
 )
 
-coef_table <- function(block_name) {
+coef_matrix_table <- function(block_name) {
   if (is.null(model_coefficients)) {
-    return(knitr::asis_output("<p>No se encontró <code>model_coefficients.csv</code>.</p>"))
+    return(knitr::asis_output("<p>No se encontró la tabla de coeficientes.</p>"))
   }
-  model_coefficients %>%
+
+  tab <- model_coefficients %>%
     filter(block == block_name, term != "(Intercept)") %>%
     mutate(
+      country = factor(country, levels = country_order),
       Variable = ifelse(term %in% names(term_labels), term_labels[term], term),
       estimate = as.numeric(estimate),
       p_value = as.numeric(p_value),
-      País = country
+      cell = paste0(
+        "<span class='coef-main'>", fmt_num(estimate, 3), "</span>",
+        "<span class='coef-p'>(", fmt_num(p_value, 3), ")</span>"
+      )
     ) %>%
-    select(País, Variable, Estimación = estimate, `p-value` = p_value) %>%
-    mutate(
-      Estimación = fmt_num(Estimación, 4),
-      `p-value` = fmt_num(`p-value`, 3)
-    ) %>%
-    arrange(match(País, country_order), Variable) %>%
-    knitr::kable(align = "llrr")
+    select(Variable, country, cell) %>%
+    distinct(Variable, country, .keep_all = TRUE) %>%
+    tidyr::pivot_wider(names_from = country, values_from = cell) %>%
+    arrange(match(Variable, unname(term_labels)))
+
+  wanted <- c("Variable", country_order)
+  missing_cols <- setdiff(wanted, names(tab))
+  for (cc in missing_cols) tab[[cc]] <- "—"
+  tab <- tab[, wanted]
+
+  knitr::kable(
+    tab,
+    escape = FALSE,
+    align = c("l", rep("c", length(country_order))),
+    table.attr = "class='exchange-coef-table'"
+  )
 }
 ```
 
@@ -426,7 +440,7 @@ if (!is.null(fit_summary) && all(c("country", "block", "r2", "rmse") %in% names(
 
 ### Coeficientes de primera etapa
 
-Los coeficientes se presentan con nombres económicos, no con los nombres internos del script. La lectura debe ser prudente: son modelos reducidos para extraer residuos comparables, no una identificación estructural de cada canal.
+La tabla presenta los coeficientes por variable y país. En cada celda se reporta el coeficiente estimado y, entre paréntesis, el p-value. La lectura debe ser prudente: son modelos reducidos para extraer residuos comparables, no una identificación estructural de cada canal.
 
 ::: {.panel-tabset .exchange-estimation-tabs}
 
@@ -434,14 +448,14 @@ Los coeficientes se presentan con nombres económicos, no con los nombres intern
 
 ```{r}
 #| label: exchange-coefs-fx
-coef_table("FX")
+coef_matrix_table("FX")
 ```
 
 #### Tasa soberana 10Y
 
 ```{r}
 #| label: exchange-coefs-y10
-coef_table("10Y")
+coef_matrix_table("10Y")
 ```
 
 :::
@@ -488,7 +502,7 @@ plot_global_residuals("10Y")
 
 ## Selector por país
 
-Cada pestaña mantiene la misma plantilla: primero el stress conjunto de FX y 10Y; después la segunda etapa entre residuo cambiario y spread soberano 10Y frente a EE.UU. Los gráficos se construyen directamente desde los CSV del modelo al renderizar la página.
+Cada pestaña mantiene la misma plantilla: primero el stress conjunto de FX y 10Y; después la segunda etapa entre residuo cambiario y spread soberano 10Y frente a EE.UU.
 
 ::: {.panel-tabset .exchange-country-tabs}
 
@@ -601,11 +615,6 @@ Comparar países con una misma especificación, detectar episodios residuales ex
 ::: {.mu-area}
 ### Qué no permite
 No identifica causalidad estructural ni separa perfectamente riesgo político, fiscal, liquidez, intervención cambiaria o errores de medición.
-:::
-
-::: {.mu-area}
-### Próximo salto natural
-Agregar validación fuera de muestra, ventanas rolling, EMBI/CDS y un índice sintético regional con umbrales explícitos por régimen.
 :::
 
 :::

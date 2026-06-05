@@ -1273,3 +1273,71 @@ main.content {
 .exchange-country-figure {
   display: none;
 }
+
+/* ExchangeReg refinements: interactive charts and coefficient matrices */
+.exchange-chart-card {
+  overflow: visible !important;
+  padding: clamp(0.75rem, 1.2vw, 1rem);
+}
+
+.exchange-chart-card .cell-output-display:has(.plotly),
+.exchange-chart-card .cell-output-display:has(.js-plotly-plot) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+}
+
+.exchange-chart-card .html-widget,
+.exchange-chart-card .plotly,
+.exchange-chart-card .js-plotly-plot,
+.exchange-chart-card .plot-container,
+.exchange-chart-card .svg-container {
+  overflow: visible !important;
+}
+
+.exchange-country-tabs .tab-content,
+.exchange-country-tabs .tab-pane {
+  overflow: visible !important;
+}
+
+.exchange-coef-table {
+  font-size: 0.92rem;
+  table-layout: fixed;
+}
+
+.exchange-coef-table th:first-child,
+.exchange-coef-table td:first-child {
+  width: 28%;
+  text-align: left;
+}
+
+.exchange-coef-table th:not(:first-child),
+.exchange-coef-table td:not(:first-child) {
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.exchange-coef-table .coef-main {
+  display: block;
+  color: var(--mu-accent);
+  font-weight: 760;
+  line-height: 1.15;
+}
+
+.exchange-coef-table .coef-p {
+  display: block;
+  color: var(--mu-muted);
+  font-size: 0.82em;
+  line-height: 1.15;
+  margin-top: 0.12rem;
+}
+
+@media (max-width: 760px) {
+  .exchange-coef-table {
+    font-size: 0.82rem;
+  }
+}
