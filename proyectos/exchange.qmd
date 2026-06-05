@@ -162,7 +162,7 @@ plot_global_residuals <- function(market_name, from_date = as.Date("2022-01-01")
       title = list(text = title, x = 0, y = 0.98, font = list(size = 18, color = "#27384a")),
       xaxis = list(title = "", showgrid = TRUE, gridcolor = "#e8e4dc"),
       yaxis = list(title = ylab, zeroline = FALSE, showgrid = TRUE, gridcolor = "#e8e4dc"),
-      legend = list(orientation = "h", x = 0, y = -0.18, xanchor = "left", yanchor = "top"),
+      legend = list(orientation = "h", x = 0, y = -0.14, xanchor = "left", yanchor = "top"),
       hovermode = "x unified",
       paper_bgcolor = "rgba(0,0,0,0)",
       plot_bgcolor = "#ffffff",
@@ -231,7 +231,7 @@ plot_country_second_stage <- function(cc) {
       title = list(text = paste0("Segunda etapa — ", country_label[[cc]], "<br><sup>b = ", beta, " · R² = ", r2, "</sup>"), x = 0, y = 0.98, font = list(size = 17, color = "#27384a")),
       xaxis = list(title = "Diferencial 10Y frente a EE.UU. (p.p.)", showgrid = TRUE, gridcolor = "#e8e4dc"),
       yaxis = list(title = "z-score residuo FX", showgrid = TRUE, gridcolor = "#e8e4dc"),
-      legend = list(orientation = "h", x = 0, y = -0.18, xanchor = "left", yanchor = "top"),
+      legend = list(orientation = "h", x = 0, y = -0.14, xanchor = "left", yanchor = "top"),
       paper_bgcolor = "rgba(0,0,0,0)",
       plot_bgcolor = "#ffffff",
       shapes = list(list(type = "line", xref = "paper", x0 = 0, x1 = 1, yref = "y", y0 = 0, y1 = 0, line = list(color = "#8a94a3", width = 1)))
@@ -284,14 +284,14 @@ plot_policy_dashboard <- function(cc) {
 
   p <- p %>% plotly::layout(
     autosize = TRUE,
-    height = 620,
-    margin = list(l = 78, r = 22, t = 76, b = 100),
+    height = 880,
+    margin = list(l = 82, r = 30, t = 84, b = 125),
     title = list(text = paste0(country_label[[cc]], ": TPM, tasa 10Y y desvíos del modelo"), x = 0, y = 0.98, font = list(size = 18, color = "#27384a")),
-    xaxis = list(domain = c(0, 1), anchor = "y", range = x_rng, showticklabels = FALSE, showgrid = TRUE, gridcolor = "#e8e4dc"),
-    yaxis = list(domain = c(0.57, 1.00), title = "Tasas (%)", showgrid = TRUE, gridcolor = "#e8e4dc", zeroline = FALSE),
+    xaxis = list(domain = c(0, 1), anchor = "y", range = x_rng, title = "", showticklabels = FALSE, showgrid = TRUE, gridcolor = "#e8e4dc"),
+    yaxis = list(domain = c(0.62, 1.00), title = "Tasas (%)", showgrid = TRUE, gridcolor = "#e8e4dc", zeroline = FALSE),
     xaxis2 = list(domain = c(0, 1), anchor = "y2", range = x_rng, title = "Fecha", showgrid = TRUE, gridcolor = "#e8e4dc"),
-    yaxis2 = list(domain = c(0.00, 0.46), title = "z-score", showgrid = TRUE, gridcolor = "#e8e4dc", zeroline = FALSE),
-    legend = list(orientation = "h", x = 0, y = -0.18, xanchor = "left", yanchor = "top"),
+    yaxis2 = list(domain = c(0.06, 0.50), title = "z-score", showgrid = TRUE, gridcolor = "#e8e4dc", zeroline = FALSE),
+    legend = list(orientation = "h", x = 0, y = -0.14, xanchor = "left", yanchor = "top"),
     hovermode = "x unified",
     paper_bgcolor = "rgba(0,0,0,0)",
     plot_bgcolor = "#ffffff",
@@ -299,8 +299,8 @@ plot_policy_dashboard <- function(cc) {
       list(type = "line", xref = "x2", x0 = x_rng[1], x1 = x_rng[2], yref = "y2", y0 = 0, y1 = 0, line = list(color = "#8a94a3", width = 1.0, dash = "dash"))
     ),
     annotations = list(
-      list(text = "Tasas (%)", x = 0, y = 1.04, xref = "paper", yref = "paper", showarrow = FALSE, xanchor = "left", font = list(size = 12, color = "#66717f")),
-      list(text = "Desvíos del modelo", x = 0, y = 0.49, xref = "paper", yref = "paper", showarrow = FALSE, xanchor = "left", font = list(size = 12, color = "#66717f"))
+      list(text = "Tasas (%)", x = 0, y = 1.035, xref = "paper", yref = "paper", showarrow = FALSE, xanchor = "left", font = list(size = 12, color = "#66717f")),
+      list(text = "Desvíos del modelo", x = 0, y = 0.535, xref = "paper", yref = "paper", showarrow = FALSE, xanchor = "left", font = list(size = 12, color = "#66717f"))
     )
   )
   plotly_config(p)
