@@ -774,6 +774,52 @@ rates_embi_latest <- db_daily %>%
     tpm_clp, tpm_brl, tpm_mxn, tpm_pen, tpm_cop
   )
 
+
+country_dashboard_specs <- tibble::tribble(
+  ~country, ~y10_var,  ~tpm_var,  ~country_name,
+  "CLP",    "y10_clp", "tpm_clp", "Chile",
+  "BRL",    "y10_brl", "tpm_brl", "Brasil",
+  "MXN",    "y10_mxn", "tpm_mxn", "México",
+  "PEN",    "y10_pen", "tpm_pen", "Perú",
+  "COP",    "y10_col", "tpm_cop", "Colombia"
+)
+
+dashboard_country_data <- purrr::map_dfr(seq_len(nrow(country_dashboard_specs)), function(i) {
+  spec <- country_dashboard_specs[i, ]
+  cc <- spec$country
+  y10_var <- spec$y10_var
+  tpm_var <- spec$tpm_var
+  fx_z_var <- paste0("z_res_fx_", cc)
+  y10_z_var <- paste0("z_res_y10_", cc)
+
+  rates_panel <- db_daily %>%
+    filter(date >= from_export) %>%
+    transmute(
+      date,
+      country = cc,
+      panel = "Tasas (%)",
+      TPM = .data[[tpm_var]],
+      `Tasa 10Y` = .data[[y10_var]]
+    ) %>%
+    pivot_longer(c(TPM, `Tasa 10Y`), names_to = "series", values_to = "value")
+
+  z_panel <- db_daily %>%
+    filter(date >= from_export) %>%
+    transmute(
+      date,
+      country = cc,
+      panel = "Desvíos del modelo (z-score)",
+      FX = .data[[fx_z_var]],
+      `Tasa 10Y` = .data[[y10_z_var]]
+    ) %>%
+    pivot_longer(c(FX, `Tasa 10Y`), names_to = "series", values_to = "value")
+
+  bind_rows(rates_panel, z_panel)
+}) %>%
+  filter(!is.na(value)) %>%
+  mutate(country = factor(country, levels = countries)) %>%
+  arrange(country, panel, series, date)
+
 readr::write_csv(db_daily, file.path(out_data, "db_daily_exchange.csv"))
 readr::write_csv(residuals_long, file.path(out_data, "residuals_long.csv"))
 readr::write_csv(fit_summary, file.path(out_data, "model_fit_summary.csv"))
@@ -783,6 +829,7 @@ readr::write_csv(second_stage_all, file.path(out_data, "second_stage_data.csv"))
 readr::write_csv(latest_snapshot, file.path(out_data, "latest_snapshot.csv"))
 readr::write_csv(model_sample_table, file.path(out_data, "model_sample_table.csv"))
 readr::write_csv(rates_embi_latest, file.path(out_data, "rates_embi_latest.csv"))
+readr::write_csv(dashboard_country_data, file.path(out_data, "country_dashboard_data.csv"))
 
 metadata <- tibble(
   item = c("start_date", "end_date", "latest_model_date", "created_at", "model_version", "cpi_extension_window"),
@@ -828,6 +875,87 @@ openxlsx::addWorksheet(wb, "yield_model_data_used"); openxlsx::writeData(wb, "yi
 openxlsx::addWorksheet(wb, "model_samples"); openxlsx::writeData(wb, "model_samples", model_sample_table)
 openxlsx::addWorksheet(wb, "latest_obs"); openxlsx::writeData(wb, "latest_obs", latest_obs_table)
 openxlsx::saveWorkbook(wb, file = file.path(out_file, "exchange_model_outputs_2025.xlsx"), overwrite = TRUE)
+
+
+# ------------------------------------------------------------
+# Reporte PDF ligero para descarga web
+# ------------------------------------------------------------
+plot_static_residuals <- function(market_name, from_date = as.Date("2022-01-01")) {
+  dfp <- residuals_long %>% filter(market == market_name, date >= from_date, !is.na(z_score))
+  title <- if (market_name == "FX") "Residuos normalizados del tipo de cambio" else "Residuos normalizados de tasas soberanas 10Y"
+  ggplot(dfp, aes(x = date, y = z_score, colour = country)) +
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.35, colour = "grey45") +
+    geom_hline(yintercept = c(-2, 2), linetype = "dotted", linewidth = 0.3, colour = "grey60") +
+    geom_line(linewidth = 0.45, na.rm = TRUE) +
+    labs(title = title, x = NULL, y = "z-score", colour = NULL) +
+    theme_minimal(base_size = 11) +
+    theme(legend.position = "bottom", panel.grid.minor = element_blank(), plot.title = element_text(face = "bold"))
+}
+
+plot_static_country_stress <- function(cc, from_date = as.Date("2022-01-01")) {
+  dfp <- residuals_long %>% filter(country == cc, date >= from_date, !is.na(z_score))
+  ggplot(dfp, aes(x = date, y = z_score, colour = market)) +
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.35, colour = "grey45") +
+    geom_hline(yintercept = c(-2, 2), linetype = "dotted", linewidth = 0.3, colour = "grey60") +
+    geom_line(linewidth = 0.5, na.rm = TRUE) +
+    labs(title = paste0("Stress conjunto FX y 10Y — ", cc), x = NULL, y = "z-score", colour = NULL) +
+    theme_minimal(base_size = 11) +
+    theme(legend.position = "bottom", panel.grid.minor = element_blank(), plot.title = element_text(face = "bold"))
+}
+
+plot_static_second_stage <- function(cc) {
+  dfp <- second_stage_all %>% filter(country == cc, !is.na(y10_spread), !is.na(z_fx))
+  ggplot(dfp, aes(x = y10_spread, y = z_fx)) +
+    geom_hline(yintercept = 0, linewidth = 0.3, colour = "grey45") +
+    geom_point(alpha = 0.23, size = 0.7, colour = "#27384a") +
+    geom_line(aes(y = z_fx_hat), colour = "#7b5e42", linewidth = 0.75) +
+    labs(title = paste0("Segunda etapa — ", cc), x = "Diferencial 10Y frente a EE.UU. (p.p.)", y = "z-score residuo FX") +
+    theme_minimal(base_size = 11) +
+    theme(panel.grid.minor = element_blank(), plot.title = element_text(face = "bold"))
+}
+
+plot_static_policy_dashboard <- function(cc) {
+  dfp <- dashboard_country_data %>%
+    filter(country == cc) %>%
+    mutate(panel = factor(panel, levels = c("Tasas (%)", "Desvíos del modelo (z-score)")))
+  ggplot(dfp, aes(x = date, y = value, colour = series)) +
+    geom_hline(
+      data = tibble(panel = factor("Desvíos del modelo (z-score)", levels = levels(dfp$panel))),
+      aes(yintercept = 0), inherit.aes = FALSE, linetype = "dashed", linewidth = 0.35, colour = "grey45"
+    ) +
+    geom_line(linewidth = 0.55, na.rm = TRUE) +
+    facet_grid(panel ~ ., scales = "free_y", switch = "y") +
+    labs(title = paste0(cc, ": TPM, tasa 10Y y desvíos del modelo"), x = NULL, y = NULL, colour = NULL) +
+    theme_minimal(base_size = 11) +
+    theme(
+      legend.position = "bottom",
+      strip.placement = "outside",
+      strip.text.y.left = element_text(angle = 0, face = "bold"),
+      panel.grid.minor = element_blank(),
+      panel.spacing.y = grid::unit(1.4, "lines"),
+      plot.title = element_text(face = "bold")
+    )
+}
+
+report_pdf <- file.path(out_file, "exchange_model_report.pdf")
+tryCatch({
+  grDevices::pdf(report_pdf, width = 11, height = 8.5, onefile = TRUE)
+  plot.new()
+  text(0.5, 0.64, "Modelo de tasas y tipo de cambio", cex = 1.55, font = 2)
+  text(0.5, 0.56, "FX, tasa soberana 10Y y EMBIG país", cex = 1.05)
+  text(0.5, 0.49, paste0("Actualizado: ", latest_date), cex = 0.9, col = "grey35")
+  print(plot_static_residuals("FX"))
+  print(plot_static_residuals("10Y"))
+  for (cc in countries) print(plot_static_policy_dashboard(cc))
+  for (cc in countries) {
+    print(plot_static_country_stress(cc))
+    print(plot_static_second_stage(cc))
+  }
+  grDevices::dev.off()
+}, error = function(e) {
+  warning("No se pudo generar el PDF de descarga: ", e$message)
+  if (grDevices::dev.cur() > 1) grDevices::dev.off()
+})
 
 message("Outputs ExchangeReg generados en: ", out_data)
 message("Modelo: FX_EMBI_CPI_BIS | Ultima fecha: ", latest_date)

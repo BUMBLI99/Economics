@@ -77,9 +77,9 @@ second_stage_data <- read_exchange_csv("second_stage_data.csv")
 fit_summary <- read_exchange_csv("model_fit_summary.csv")
 second_summary <- read_exchange_csv("second_stage_summary.csv")
 model_coefficients <- read_exchange_csv("model_coefficients.csv")
-cpi_extension_summary <- read_exchange_csv("cpi_extension_summary.csv")
 metadata <- read_exchange_csv("metadata.csv")
 latest_snapshot <- read_exchange_csv("latest_snapshot.csv")
+dashboard_data <- read_exchange_csv("country_dashboard_data.csv")
 
 data_ready <- !is.null(residuals_long) && !is.null(second_stage_data)
 if (data_ready) {
@@ -100,6 +100,18 @@ if (data_ready) {
     arrange(country, date)
 }
 
+if (!is.null(dashboard_data)) {
+  dashboard_data <- dashboard_data %>%
+    mutate(
+      date = as.Date(date),
+      country = factor(country, levels = country_order),
+      country_label = country_label[as.character(country)],
+      panel = factor(panel, levels = c("Tasas (%)", "Desvíos del modelo (z-score)")),
+      series = factor(series, levels = c("TPM", "Tasa 10Y", "FX"))
+    ) %>%
+    arrange(country, panel, series, date)
+}
+
 latest_model_date <- if (data_ready) max(residuals_long$date, na.rm = TRUE) else NA
 sample_start <- if (data_ready) min(residuals_long$date, na.rm = TRUE) else NA
 
@@ -109,7 +121,7 @@ plot_missing <- function(msg = "No se encontraron los datos procesados del model
       class = "exchange-missing-card",
       htmltools::strong("Gráfico no disponible"),
       htmltools::p(msg),
-      htmltools::p("Ejecuta el modelo desde el repo para generar los CSV en data/processed/exchange/." )
+      htmltools::p("Actualiza el modelo y vuelve a renderizar la página." )
     )
   } else {
     knitr::asis_output(paste0("<p>", msg, "</p>"))
@@ -126,138 +138,101 @@ plotly_config <- function(p) {
 }
 
 plot_global_residuals <- function(market_name, from_date = as.Date("2022-01-01")) {
-  if (!data_ready || !has_plotly) return(plot_missing("Falta residuals_long.csv o el paquete plotly."))
+  if (!data_ready || !has_plotly) return(plot_missing("No se encontraron los datos del modelo."))
   dfp <- residuals_long %>%
     filter(market == market_name, date >= from_date, !is.na(z_score)) %>%
     mutate(country_chr = as.character(country))
-
   title <- if (market_name == "FX") "Residuos normalizados del tipo de cambio" else "Residuos normalizados de tasas soberanas 10Y"
   ylab <- if (market_name == "FX") "z-score residuo FX" else "z-score residuo 10Y"
-
   p <- plotly::plot_ly(
-    dfp,
-    x = ~date,
-    y = ~z_score,
-    color = ~country_chr,
-    colors = country_cols,
-    type = "scatter",
-    mode = "lines",
-    line = list(width = 1.65),
-    hovertemplate = paste(
-      "País: %{fullData.name}",
-      "Fecha: %{x|%d-%m-%Y}",
-      "z-score: %{y:.2f}",
-      sep = "<br>"
-    )
-  ) %>%
-    plotly::layout(
-      height = 560,
-      margin = list(l = 64, r = 28, t = 56, b = 92),
+    dfp, x = ~date, y = ~z_score, color = ~country_chr, colors = country_cols,
+    type = "scatter", mode = "lines", line = list(width = 1.65),
+    hovertemplate = paste("País: %{fullData.name}", "Fecha: %{x|%d-%m-%Y}", "z-score: %{y:.2f}", sep = "<br>")
+  ) %>% plotly::layout(
+      autosize = TRUE, height = 610, margin = list(l = 70, r = 34, t = 92, b = 78),
       title = list(text = title, x = 0, font = list(size = 18, color = "#27384a")),
       xaxis = list(title = "", showgrid = TRUE, gridcolor = "#e8e4dc"),
       yaxis = list(title = ylab, zeroline = FALSE, showgrid = TRUE, gridcolor = "#e8e4dc"),
-      legend = list(orientation = "h", x = 0, y = -0.13),
-      paper_bgcolor = "rgba(0,0,0,0)",
-      plot_bgcolor = "#ffffff",
+      legend = list(orientation = "h", x = 0, y = 1.09, xanchor = "left", yanchor = "bottom"),
+      paper_bgcolor = "rgba(0,0,0,0)", plot_bgcolor = "#ffffff",
       shapes = list(
         list(type = "line", xref = "paper", x0 = 0, x1 = 1, yref = "y", y0 = 0,  y1 = 0,  line = list(color = "#8a94a3", width = 1.1, dash = "dash")),
         list(type = "line", xref = "paper", x0 = 0, x1 = 1, yref = "y", y0 = 2,  y1 = 2,  line = list(color = "#c8c0b3", width = 1, dash = "dot")),
         list(type = "line", xref = "paper", x0 = 0, x1 = 1, yref = "y", y0 = -2, y1 = -2, line = list(color = "#c8c0b3", width = 1, dash = "dot"))
       )
     )
-
   plotly_config(p)
 }
 
 plot_country_stress <- function(cc, from_date = as.Date("2022-01-01")) {
-  if (!data_ready || !has_plotly) return(plot_missing("Falta residuals_long.csv o el paquete plotly."))
-  dfp <- residuals_long %>%
-    filter(country == cc, date >= from_date, !is.na(z_score)) %>%
-    mutate(market_chr = as.character(market))
-
+  if (!data_ready || !has_plotly) return(plot_missing("No se encontraron los datos del modelo."))
+  dfp <- residuals_long %>% filter(country == cc, date >= from_date, !is.na(z_score)) %>% mutate(market_chr = as.character(market))
   p <- plotly::plot_ly(
-    dfp,
-    x = ~date,
-    y = ~z_score,
-    color = ~market_chr,
-    colors = market_cols,
-    type = "scatter",
-    mode = "lines",
-    line = list(width = 1.85),
-    hovertemplate = paste(
-      "Mercado: %{fullData.name}",
-      "Fecha: %{x|%d-%m-%Y}",
-      "z-score: %{y:.2f}",
-      sep = "<br>"
-    )
-  ) %>%
-    plotly::layout(
-      height = 560,
-      margin = list(l = 62, r = 24, t = 56, b = 92),
+    dfp, x = ~date, y = ~z_score, color = ~market_chr, colors = market_cols,
+    type = "scatter", mode = "lines", line = list(width = 1.9),
+    hovertemplate = paste("Mercado: %{fullData.name}", "Fecha: %{x|%d-%m-%Y}", "z-score: %{y:.2f}", sep = "<br>")
+  ) %>% plotly::layout(
+      autosize = TRUE, height = 560, margin = list(l = 68, r = 32, t = 88, b = 74),
       title = list(text = paste0("Stress conjunto FX y 10Y — ", country_label[[cc]]), x = 0, font = list(size = 17, color = "#27384a")),
       xaxis = list(title = "", showgrid = TRUE, gridcolor = "#e8e4dc"),
       yaxis = list(title = "z-score", zeroline = FALSE, showgrid = TRUE, gridcolor = "#e8e4dc"),
-      legend = list(orientation = "h", x = 0, y = -0.13),
-      paper_bgcolor = "rgba(0,0,0,0)",
-      plot_bgcolor = "#ffffff",
+      legend = list(orientation = "h", x = 0, y = 1.10, xanchor = "left", yanchor = "bottom"),
+      paper_bgcolor = "rgba(0,0,0,0)", plot_bgcolor = "#ffffff",
       shapes = list(
         list(type = "line", xref = "paper", x0 = 0, x1 = 1, yref = "y", y0 = 0,  y1 = 0,  line = list(color = "#8a94a3", width = 1.1, dash = "dash")),
         list(type = "line", xref = "paper", x0 = 0, x1 = 1, yref = "y", y0 = 2,  y1 = 2,  line = list(color = "#c8c0b3", width = 1, dash = "dot")),
         list(type = "line", xref = "paper", x0 = 0, x1 = 1, yref = "y", y0 = -2, y1 = -2, line = list(color = "#c8c0b3", width = 1, dash = "dot"))
       )
     )
-
   plotly_config(p)
 }
 
 plot_country_second_stage <- function(cc) {
-  if (!data_ready || !has_plotly) return(plot_missing("Falta second_stage_data.csv o el paquete plotly."))
-  dfp <- second_stage_data %>%
-    filter(country == cc, !is.na(y10_spread), !is.na(z_fx)) %>%
-    arrange(y10_spread)
+  if (!data_ready || !has_plotly) return(plot_missing("No se encontraron los datos del modelo."))
+  dfp <- second_stage_data %>% filter(country == cc, !is.na(y10_spread), !is.na(z_fx)) %>% arrange(y10_spread)
   sm <- if (!is.null(second_summary)) second_summary %>% filter(country == cc) else NULL
   beta <- if (!is.null(sm) && nrow(sm) > 0) fmt_num(sm$beta_y10_spread[1], 3) else "—"
   r2 <- if (!is.null(sm) && nrow(sm) > 0) fmt_num(sm$r2[1], 3) else "—"
-
   p <- plotly::plot_ly() %>%
     plotly::add_markers(
-      data = dfp,
-      x = ~y10_spread,
-      y = ~z_fx,
-      type = "scattergl",
-      marker = list(color = "rgba(39,56,74,0.42)", size = 5),
-      name = "Observaciones diarias",
-      hovertemplate = paste(
-        "Fecha: %{customdata|%d-%m-%Y}",
-        "Spread 10Y: %{x:.2f} p.p.",
-        "Residuo FX: %{y:.2f}",
-        sep = "<br>"
-      ),
-      customdata = ~date
+      data = dfp, x = ~y10_spread, y = ~z_fx, type = "scattergl",
+      marker = list(color = "rgba(39,56,74,0.36)", size = 4.2), name = "Observaciones diarias",
+      hovertemplate = paste("Fecha: %{customdata|%d-%m-%Y}", "Spread 10Y: %{x:.2f} p.p.", "Residuo FX: %{y:.2f}", sep = "<br>"), customdata = ~date
     ) %>%
-    plotly::add_lines(
-      data = dfp,
-      x = ~y10_spread,
-      y = ~z_fx_hat,
-      line = list(color = "#7b5e42", width = 2.4),
-      name = "Ajuste lineal",
-      hovertemplate = "Ajuste: %{y:.2f}<extra></extra>"
-    ) %>%
+    plotly::add_lines(data = dfp, x = ~y10_spread, y = ~z_fx_hat, line = list(color = "#7b5e42", width = 2.4), name = "Ajuste lineal", hovertemplate = "Ajuste: %{y:.2f}<extra></extra>") %>%
     plotly::layout(
-      height = 580,
-      margin = list(l = 70, r = 28, t = 66, b = 112),
-      title = list(
-        text = paste0("Segunda etapa — ", country_label[[cc]], "<br><sup>b = ", beta, " · R² = ", r2, "</sup>"),
-        x = 0,
-        font = list(size = 17, color = "#27384a")
-      ),
+      autosize = TRUE, height = 590, margin = list(l = 72, r = 34, t = 92, b = 88),
+      title = list(text = paste0("Segunda etapa — ", country_label[[cc]], "<br><sup>b = ", beta, " · R² = ", r2, "</sup>"), x = 0, font = list(size = 17, color = "#27384a")),
       xaxis = list(title = "Diferencial 10Y frente a EE.UU. (p.p.)", showgrid = TRUE, gridcolor = "#e8e4dc"),
       yaxis = list(title = "z-score residuo FX", showgrid = TRUE, gridcolor = "#e8e4dc"),
-      legend = list(orientation = "h", x = 0, y = -0.15),
-      paper_bgcolor = "rgba(0,0,0,0)",
-      plot_bgcolor = "#ffffff"
+      legend = list(orientation = "h", x = 0, y = 1.10, xanchor = "left", yanchor = "bottom"),
+      paper_bgcolor = "rgba(0,0,0,0)", plot_bgcolor = "#ffffff",
+      shapes = list(list(type = "line", xref = "paper", x0 = 0, x1 = 1, yref = "y", y0 = 0, y1 = 0, line = list(color = "#8a94a3", width = 1)))
     )
+  plotly_config(p)
+}
 
+plot_policy_dashboard <- function(cc) {
+  if (is.null(dashboard_data) || !has_plotly) return(plot_missing("No se encontraron los datos de tasas y TPM."))
+  dfp <- dashboard_data %>% filter(country == cc, !is.na(value))
+  if (nrow(dfp) == 0) return(plot_missing("No hay datos disponibles para este país."))
+  gp <- ggplot2::ggplot(dfp, ggplot2::aes(x = date, y = value, colour = series, group = series)) +
+    ggplot2::geom_hline(
+      data = tibble::tibble(panel = factor("Desvíos del modelo (z-score)", levels = levels(dfp$panel))),
+      ggplot2::aes(yintercept = 0), inherit.aes = FALSE, linetype = "dashed", linewidth = 0.35, colour = "grey45"
+    ) +
+    ggplot2::geom_line(linewidth = 0.6, na.rm = TRUE) +
+    ggplot2::facet_grid(panel ~ ., scales = "free_y", switch = "y") +
+    ggplot2::labs(title = paste0(country_label[[cc]], ": TPM, tasa 10Y y desvíos del modelo"), x = "Fecha", y = NULL, colour = NULL) +
+    ggplot2::theme_minimal(base_size = 12) +
+    ggplot2::theme(
+      legend.position = "bottom", strip.placement = "outside",
+      strip.text.y.left = ggplot2::element_text(angle = 0, face = "bold", margin = ggplot2::margin(r = 12)),
+      panel.grid.minor = ggplot2::element_blank(), panel.spacing.y = grid::unit(1.55, "lines"),
+      plot.title = ggplot2::element_text(face = "bold", size = 14), plot.margin = ggplot2::margin(t = 14, r = 14, b = 10, l = 14)
+    )
+  p <- plotly::ggplotly(gp, tooltip = c("x", "y", "colour")) %>%
+    plotly::layout(autosize = TRUE, height = 650, margin = list(l = 95, r = 32, t = 76, b = 84), legend = list(orientation = "h", x = 0, y = -0.08), paper_bgcolor = "rgba(0,0,0,0)", plot_bgcolor = "#ffffff")
   plotly_config(p)
 }
 
@@ -270,7 +245,7 @@ term_labels <- c(
   "l_eqnsq" = "Nasdaq",
   "l_eqcny" = "Equity China",
   "l_vix" = "VIX",
-  "l_dtw" = "Dólar multilateral BIS",
+  "l_dtw" = "Dólar multilateral",
   "l_cny" = "CNY/USD",
   "y10_us" = "Treasury 10Y EE.UU.",
   "embi_100" = "EMBIG país / 100 pbs"
@@ -360,6 +335,19 @@ Según los datos procesados disponibles.
 :::
 :::
 
+```{r}
+#| label: exchange-pdf-button
+#| results: asis
+pdf_file <- first_existing(c(
+  file.path("..", "assets", "files", "exchange_model_report.pdf"),
+  file.path("assets", "files", "exchange_model_report.pdf"),
+  file.path("..", "..", "assets", "files", "exchange_model_report.pdf")
+))
+if (!is.na(pdf_file)) {
+  cat('<p><a class="exchange-download-btn" href="../assets/files/exchange_model_report.pdf" download>Descargar reporte PDF</a></p>')
+}
+```
+
 ## Estructura del modelo
 
 ::: {.mu-equation-card}
@@ -382,10 +370,6 @@ $$
 $$
 
 $S_{i,t}$ es el tipo de cambio bilateral frente al dólar, medido como moneda local por USD. El término $P_{i,t}/P_{US,t}$ captura precios relativos frente a EE.UU. y el resto de controles resume factores externos comunes: commodities, índice oro/plata, equity global/China, volatilidad, dólar multilateral, CNY/USD y tasa Treasury 10Y.
-:::
-
-::: {.exchange-method-note}
-**Supuesto IPC.** Los IPC mensuales provienen de BIS en nivel. Si el mes corriente aún no está publicado, el índice se extiende con la inflación mensual promedio de las últimas seis observaciones de cada país y luego se interpola log-linealmente a frecuencia diaria.
 :::
 
 
@@ -445,7 +429,7 @@ if (!is.null(fit_summary) && all(c("country", "block", "r2", "rmse") %in% names(
     )
   knitr::kable(fit_tab, align = "llrrrr")
 } else {
-  knitr::asis_output("<p>No se encontró la tabla de ajuste. Ejecuta el modelo para regenerar <code>model_fit_summary.csv</code>.</p>")
+  knitr::asis_output("<p>No se encontró la tabla de ajuste. Actualiza el modelo para regenerar la tabla.</p>")
 }
 ```
 
@@ -489,9 +473,11 @@ if (!is.null(second_summary) && all(c("country", "beta_y10_spread", "p_value", "
     )
   knitr::kable(second_tab, align = "lrrrll")
 } else {
-  knitr::asis_output("<p>No se encontró la tabla de segunda etapa. Ejecuta el modelo para regenerar <code>second_stage_summary.csv</code>.</p>")
+  knitr::asis_output("<p>No se encontró la tabla de segunda etapa. Actualiza el modelo para regenerar la tabla.</p>")
 }
 ```
+
+::: {.column-page .exchange-wide-block}
 
 ## Dashboard regional interactivo
 
@@ -611,6 +597,62 @@ document.addEventListener('shown.bs.tab', function () {
 });
 </script>
 ```
+
+
+## TPM, tasa 10Y y desvíos del modelo
+
+Cada gráfico muestra, desde 2025, la tasa de política monetaria y la tasa soberana 10Y en el panel superior. El panel inferior compara los desvíos normalizados del tipo de cambio y de la tasa 10Y.
+
+::: {.panel-tabset .exchange-policy-tabs}
+
+### Chile · CLP
+
+::: {.exchange-chart-card}
+```{r}
+#| label: exchange-policy-clp
+plot_policy_dashboard("CLP")
+```
+:::
+
+### Brasil · BRL
+
+::: {.exchange-chart-card}
+```{r}
+#| label: exchange-policy-brl
+plot_policy_dashboard("BRL")
+```
+:::
+
+### México · MXN
+
+::: {.exchange-chart-card}
+```{r}
+#| label: exchange-policy-mxn
+plot_policy_dashboard("MXN")
+```
+:::
+
+### Perú · PEN
+
+::: {.exchange-chart-card}
+```{r}
+#| label: exchange-policy-pen
+plot_policy_dashboard("PEN")
+```
+:::
+
+### Colombia · COP
+
+::: {.exchange-chart-card}
+```{r}
+#| label: exchange-policy-cop
+plot_policy_dashboard("COP")
+```
+:::
+
+:::
+
+:::
 
 ## Lectura económica
 

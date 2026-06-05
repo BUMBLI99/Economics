@@ -1355,3 +1355,61 @@ main.content {
 .exchange-method-note p:last-child {
   margin-bottom: 0;
 }
+
+
+/* Exchange final refinements: wider integrated charts and PDF button */
+.exchange-wide-block {
+  max-width: 1220px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.exchange-chart-card {
+  width: min(100%, 1120px);
+  max-width: 1120px;
+  margin: 1.15rem auto 1.6rem;
+  padding: clamp(0.85rem, 1.4vw, 1.25rem) !important;
+  overflow: visible !important;
+  border-radius: 20px;
+}
+
+.exchange-chart-card .cell-output,
+.exchange-chart-card .cell-output-display,
+.exchange-chart-card .html-widget,
+.exchange-chart-card .plotly,
+.exchange-chart-card .js-plotly-plot,
+.exchange-chart-card .plot-container,
+.exchange-chart-card .svg-container {
+  max-width: 100% !important;
+  width: 100% !important;
+  overflow: visible !important;
+}
+
+.exchange-country-tabs .tab-content,
+.exchange-country-tabs .tab-pane,
+.exchange-policy-tabs .tab-content,
+.exchange-policy-tabs .tab-pane {
+  overflow: visible !important;
+  padding-bottom: 1.25rem;
+}
+
+.exchange-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.2rem 0 1.25rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--mu-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--mu-text);
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(39,56,74,0.08);
+}
+
+.exchange-download-btn:hover {
+  color: var(--mu-accent);
+  border-color: rgba(230,126,34,0.45);
+  text-decoration: none;
+}
