@@ -1,6 +1,6 @@
-country,beta_y10_spread,p_value,r2,n_obs,lectura
-CLP,0.3826,1.9599999999999996e-74,0.0935,3395,relacion positiva relevante
-BRL,0.0161,0.0792,9e-4,3395,relacion practicamente nula
-MXN,0.2665,3.97e-40,0.0505,3395,relacion positiva relevante
-PEN,0.4146,3.3499999999999993e-124,0.1526,3395,relacion positiva mas marcada
-COP,0.0308,0.0027,0.0026,3395,relacion practicamente nula
+country,n_obs,beta_y10_spread,p_value,r2,lectura
+CLP,3395,0.2778,0,0.0493,relación positiva significativa
+BRL,3395,0.1203,0,0.0508,relación positiva significativa
+MXN,3395,0.1928,0,0.0264,relación positiva significativa
+PEN,3395,0.3368,0,0.1007,relación positiva significativa
+COP,3395,0.1051,0,0.0309,relación positiva significativa

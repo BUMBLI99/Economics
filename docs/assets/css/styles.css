@@ -1342,18 +1342,16 @@ main.content {
   }
 }
 
-/* ExchangeReg: compact methodological note */
-.exchange-assumption-note {
-  margin: 1.05rem 0 1.35rem;
-  padding: 0.95rem 1.1rem;
-  border: 1px solid rgba(123, 94, 66, 0.25);
-  border-left: 4px solid rgba(123, 94, 66, 0.55);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.72);
-  color: var(--mu-muted);
+/* ExchangeReg CPI / method note */
+.exchange-method-note {
+  margin: 1.1rem 0 1.35rem;
+  padding: 0.95rem 1.05rem;
+  border-left: 4px solid var(--mu-accent);
+  border-radius: 14px;
+  background: rgba(230, 126, 34, 0.075);
+  color: var(--mu-text);
   font-size: 0.96rem;
 }
-
-.exchange-assumption-note strong {
-  color: var(--mu-accent);
+.exchange-method-note p:last-child {
+  margin-bottom: 0;
 }

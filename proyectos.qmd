@@ -83,13 +83,13 @@ Análisis visual y econométrico del traspaso de movimientos de la Tasa de Polí
 ::: {.mu-card-kicker}
 Macrofinanzas regionales
 :::
-### Tipo de cambio, tasas largas y stress macrofinanciero en LatAm
+### Tipo de cambio, tasas largas y riesgo soberano en LatAm
 
-Modelos diarios para CLP, BRL, MXN, PEN y COP que comparan movimientos del tipo de cambio y tasas soberanas 10Y respecto de fundamentos externos observables.
+Modelos diarios para CLP, BRL, MXN, PEN y COP que comparan movimientos del tipo de cambio y tasas soberanas 10Y frente a fundamentos externos y riesgo soberano medido con EMBIG país.
 
 ::: {.mu-meta}
 **Estado:** proyecto aplicado integrado al sitio, con dashboard interactivo desde datos procesados.  
-**Herramientas:** R, tidyverse, ggplot2/plotly, BIS, FRED y BCCh.
+**Herramientas:** R, tidyverse, plotly, BIS, FRED, BCCh y BCRPData.
 :::
 
 [Abrir proyecto](proyectos/exchange.qmd){.mu-card-link}

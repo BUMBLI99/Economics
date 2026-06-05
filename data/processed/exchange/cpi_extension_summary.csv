@@ -1,7 +1,7 @@
-country,series_key,method,window_months,monthly_log_assumption,monthly_inflation_assumption_pct,first_observed_date,last_observed_date,first_assumed_date,last_assumed_date,n_observed_months,n_assumed_months,last_model_cpi_month
-CLP,M.CL.628,Promedio de las últimas 6 variaciones mensuales observadas,6,0.004502540000762778,0.4513,2010-01-01,2026-04-01,2026-05-01,2026-06-01,196,2,2026-06-01
-US,M.US.628,Promedio de las últimas 6 variaciones mensuales observadas,6,0.004165490554429052,0.4174,2010-01-01,2026-04-01,2026-05-01,2026-06-01,195,2,2026-06-01
-BRL,M.BR.628,Promedio de las últimas 6 variaciones mensuales observadas,6,0.005133714978937369,0.5147,2010-01-01,2026-04-01,2026-05-01,2026-06-01,196,2,2026-06-01
-COP,M.CO.628,Promedio de las últimas 6 variaciones mensuales observadas,6,0.006894333097638909,0.6918,2010-01-01,2026-04-01,2026-05-01,2026-06-01,196,2,2026-06-01
-MXN,M.MX.628,Promedio de las últimas 6 variaciones mensuales observadas,6,0.004779969095422072,0.4791,2010-01-01,2026-04-01,2026-05-01,2026-06-01,196,2,2026-06-01
-PEN,M.PE.628,Promedio de las últimas 6 variaciones mensuales observadas,6,0.006686003357659676,0.6708,2010-01-01,2026-04-01,2026-05-01,2026-06-01,196,2,2026-06-01
+country,series_key,last_observed_month,target_month,months_extended,assumed_monthly_inflation,method,assumed_monthly_inflation_pct,cpi_extension_window
+CLP,M.CL.628,2026-04-01,2026-06-01,2,0.004526165497501307,Monthly CPI extended with average of last 6 observed m/m changes.,0.4526165497501307,6
+US,M.US.628,2026-04-01,2026-06-01,2,0.0041839336791258215,Monthly CPI extended with average of last 6 observed m/m changes.,0.41839336791258214,6
+BRL,M.BR.628,2026-04-01,2026-06-01,2,0.005149999979090454,Monthly CPI extended with average of last 6 observed m/m changes.,0.5149999979090454,6
+COP,M.CO.628,2026-04-01,2026-06-01,2,0.006926159642490326,Monthly CPI extended with average of last 6 observed m/m changes.,0.6926159642490326,6
+MXN,M.MX.628,2026-04-01,2026-06-01,2,0.0047939465549252285,Monthly CPI extended with average of last 6 observed m/m changes.,0.47939465549252286,6
+PEN,M.PE.628,2026-04-01,2026-06-01,2,0.006739336396645257,Monthly CPI extended with average of last 6 observed m/m changes.,0.6739336396645257,6

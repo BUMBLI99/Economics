@@ -1,8 +1,7 @@
 # ============================================================
-# ExchangeReg: construccion de outputs para sitio web
-# Autor: Mauricio Ulloa
-# Objetivo: descargar datos, estimar modelos FX/10Y y generar
-#           datasets + graficos web para Quarto/GitHub Pages.
+# ExchangeReg: FX, tasas 10Y y riesgo soberano LatAm
+# Objetivo: replicar el modelo FX/EMBI y generar outputs web
+#           para Quarto/GitHub Pages.
 # ============================================================
 
 args <- commandArgs(trailingOnly = TRUE)
@@ -17,7 +16,7 @@ message("Repo: ", repo)
 
 required <- c(
   "httr", "jsonlite", "dplyr", "tidyr", "tibble", "lubridate",
-  "zoo", "purrr", "ggplot2", "readr", "scales"
+  "zoo", "purrr", "readr", "ggplot2", "scales", "openxlsx"
 )
 missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]
 if (length(missing) > 0) {
@@ -34,9 +33,10 @@ suppressPackageStartupMessages({
   library(lubridate)
   library(zoo)
   library(purrr)
-  library(ggplot2)
   library(readr)
+  library(ggplot2)
   library(scales)
+  library(openxlsx)
 })
 
 # ------------------------------------------------------------
@@ -50,9 +50,11 @@ start_date <- Sys.getenv("EXCHANGE_START_DATE")
 if (!nzchar(start_date)) start_date <- "2010-01-01"
 end_date <- Sys.getenv("EXCHANGE_END_DATE")
 if (!nzchar(end_date)) end_date <- format(Sys.Date(), "%Y-%m-%d")
+from_export <- as.Date(Sys.getenv("EXCHANGE_EXPORT_FROM"))
+if (is.na(from_export)) from_export <- as.Date("2025-01-01")
 
-cpi_extension_window <- suppressWarnings(as.integer(Sys.getenv("EXCHANGE_CPI_EXTENSION_WINDOW", "6")))
-if (is.na(cpi_extension_window) || cpi_extension_window < 1) cpi_extension_window <- 6L
+cpi_extension_window <- suppressWarnings(as.integer(Sys.getenv("EXCHANGE_CPI_EXTENSION_WINDOW")))
+if (is.na(cpi_extension_window) || cpi_extension_window < 1L) cpi_extension_window <- 6L
 
 needed_env <- c("BCCH_USER", "BCCH_PASS", "FRED_API_KEY")
 missing_env <- needed_env[!nzchar(Sys.getenv(needed_env))]
@@ -63,6 +65,8 @@ if (length(missing_env) > 0) {
     "\nCopia .Renviron.example como .Renviron y completa tus claves."
   )
 }
+
+countries <- c("CLP", "BRL", "MXN", "PEN", "COP")
 
 out_data <- file.path(repo, "data", "processed", "exchange")
 out_img  <- file.path(repo, "assets", "img", "exchange")
@@ -122,6 +126,18 @@ bde_get_series <- function(user, pass, series_id,
     select(date, value_num) %>%
     filter(!is.na(date)) %>%
     arrange(date)
+}
+
+safe_bde_get_series <- function(user, pass, series_id,
+                                first_date = "2010-01-01",
+                                last_date  = format(Sys.Date(), "%Y-%m-%d")) {
+  tryCatch(
+    bde_get_series(user, pass, series_id, first_date, last_date),
+    error = function(e) {
+      warning(sprintf("No se pudo descargar BDE %s: %s", series_id, e$message))
+      tibble(date = as.Date(character()), value_num = numeric())
+    }
+  )
 }
 
 fred_get_series <- function(api_key, series_id,
@@ -197,83 +213,59 @@ bis_get_long_cpi_monthly <- function(series_key,
     arrange(date)
 }
 
-extend_cpi_monthly <- function(df_monthly, end, country, series_key, window = 6L) {
-  stopifnot(all(c("date", "value") %in% names(df_monthly)))
+extend_cpi_with_recent_average <- function(df_idx, end_date, window = 6L) {
+  stopifnot(all(c("date", "value") %in% names(df_idx)))
+  df_idx <- df_idx %>% arrange(date) %>% filter(!is.na(value), value > 0)
+  if (nrow(df_idx) < 2) stop("Se necesitan al menos dos observaciones mensuales de CPI.")
 
-  df_obs <- df_monthly %>%
+  target_month <- lubridate::floor_date(as.Date(end_date), "month")
+  last_obs <- max(df_idx$date, na.rm = TRUE)
+
+  mom <- df_idx %>%
     arrange(date) %>%
-    filter(!is.na(date), !is.na(value), value > 0) %>%
-    distinct(date, .keep_all = TRUE)
+    mutate(mom = value / dplyr::lag(value) - 1) %>%
+    pull(mom) %>%
+    stats::na.omit()
 
-  if (nrow(df_obs) < 2) {
-    stop("Se necesitan al menos dos observaciones mensuales de CPI para ", country, ".")
-  }
+  assumption_mom <- mean(utils::tail(mom, window), na.rm = TRUE)
+  if (!is.finite(assumption_mom)) assumption_mom <- 0
 
-  end_month <- as.Date(lubridate::floor_date(as.Date(end), "month"))
-  last_observed <- max(df_obs$date, na.rm = TRUE)
-
-  log_mom <- diff(log(df_obs$value))
-  recent_log_mom <- tail(log_mom[is.finite(log_mom)], window)
-  monthly_log_assumption <- mean(recent_log_mom, na.rm = TRUE)
-
-  if (!is.finite(monthly_log_assumption)) {
-    monthly_log_assumption <- mean(log_mom[is.finite(log_mom)], na.rm = TRUE)
-  }
-  if (!is.finite(monthly_log_assumption)) {
-    stop("No se pudo calcular supuesto de inflación mensual para ", country, ".")
-  }
-
-  months_to_add <- as.Date(character())
-  if (last_observed < end_month) {
-    months_to_add <- seq.Date(
-      from = as.Date(lubridate::floor_date(last_observed %m+% months(1), "month")),
-      to = end_month,
-      by = "month"
+  if (last_obs >= target_month) {
+    out <- df_idx %>% mutate(cpi_source = "observado")
+    summary <- tibble(
+      last_observed_month = last_obs,
+      target_month = target_month,
+      months_extended = 0L,
+      assumed_monthly_inflation = assumption_mom,
+      method = paste0("No extension; BIS CPI available through target month. Window=", window)
     )
+    return(list(data = out, summary = summary))
   }
 
-  df_obs_tagged <- df_obs %>% mutate(cpi_status = "observed")
+  extend_months <- seq(last_obs %m+% months(1), target_month, by = "month")
+  last_value <- df_idx$value[which.max(df_idx$date)]
+  assumed_values <- last_value * cumprod(rep(1 + assumption_mom, length(extend_months)))
 
-  if (length(months_to_add) > 0) {
-    last_value <- df_obs$value[nrow(df_obs)]
-    assumed_values <- numeric(length(months_to_add))
-    for (i in seq_along(months_to_add)) {
-      last_value <- last_value * exp(monthly_log_assumption)
-      assumed_values[[i]] <- last_value
-    }
-
-    df_assumed <- tibble(
-      date = months_to_add,
-      value = assumed_values,
-      cpi_status = "assumed_avg_last6"
-    )
-  } else {
-    df_assumed <- tibble(
-      date = as.Date(character()),
-      value = numeric(),
-      cpi_status = character()
-    )
-  }
-
-  data_extended <- bind_rows(df_obs_tagged, df_assumed) %>% arrange(date)
-
-  info <- tibble(
-    country = country,
-    series_key = series_key,
-    method = paste0("Promedio de las últimas ", window, " variaciones mensuales observadas"),
-    window_months = window,
-    monthly_log_assumption = monthly_log_assumption,
-    monthly_inflation_assumption_pct = 100 * (exp(monthly_log_assumption) - 1),
-    first_observed_date = min(df_obs$date, na.rm = TRUE),
-    last_observed_date = last_observed,
-    first_assumed_date = if (nrow(df_assumed) > 0) min(df_assumed$date) else as.Date(NA),
-    last_assumed_date = if (nrow(df_assumed) > 0) max(df_assumed$date) else as.Date(NA),
-    n_observed_months = nrow(df_obs),
-    n_assumed_months = nrow(df_assumed),
-    last_model_cpi_month = max(data_extended$date, na.rm = TRUE)
+  extension <- tibble(
+    date = as.Date(extend_months),
+    value = as.numeric(assumed_values),
+    cpi_source = "supuesto_promedio_6m"
   )
 
-  list(data = data_extended, info = info)
+  out <- bind_rows(
+    df_idx %>% mutate(cpi_source = "observado"),
+    extension
+  ) %>% arrange(date)
+
+  summary <- tibble(
+    last_observed_month = last_obs,
+    target_month = target_month,
+    months_extended = length(extend_months),
+    assumed_monthly_inflation = assumption_mom,
+    method = paste0("Monthly CPI extended with average of last ", window, " observed m/m changes.")
+  )
+
+  list(data = out, summary = summary)
 }
 
 monthly_to_daily_log <- function(df_monthly, cal_dates) {
@@ -282,7 +274,7 @@ monthly_to_daily_log <- function(df_monthly, cal_dates) {
   df_monthly <- df_monthly %>% arrange(date) %>% filter(!is.na(value), value > 0)
   if (nrow(df_monthly) < 2) stop("Se necesitan al menos dos observaciones mensuales de CPI.")
   daily_full <- tibble(date = seq(min(df_monthly$date), max(cal_dates$date), by = "day")) %>%
-    left_join(df_monthly, by = "date") %>%
+    left_join(df_monthly %>% select(date, value), by = "date") %>%
     arrange(date) %>%
     mutate(log_val = if_else(!is.na(value) & value > 0, log(value), NA_real_))
   daily_full$log_val_interp <- zoo::na.approx(daily_full$log_val, x = daily_full$date, na.rm = FALSE)
@@ -294,28 +286,130 @@ monthly_to_daily_log <- function(df_monthly, cal_dates) {
     arrange(date)
 }
 
+parse_bcrp_date <- function(x) {
+  x0 <- trimws(as.character(x))
+  x0 <- iconv(x0, from = "", to = "ASCII//TRANSLIT", sub = "")
+  out <- rep(as.Date(NA), length(x0))
+  has_letters <- grepl("[A-Za-z]", x0)
+  if (any(has_letters)) {
+    xx <- x0[has_letters]
+    xx <- gsub("\\.", "", xx)
+    xx <- gsub("/", "", xx)
+    xx <- gsub("-", "", xx)
+    xx <- gsub("\\s+", "", xx)
+    m <- regexec("^([0-9]{1,2})([A-Za-z]+)([0-9]{2}|[0-9]{4})$", xx)
+    parts <- regmatches(xx, m)
+    parsed <- rep(as.Date(NA), length(xx))
+    month_map <- c(
+      ene = 1, jan = 1, feb = 2, mar = 3, abr = 4, apr = 4,
+      may = 5, jun = 6, jul = 7, ago = 8, aug = 8, set = 9,
+      sep = 9, oct = 10, nov = 11, dic = 12, dec = 12
+    )
+    for (i in seq_along(parts)) {
+      pp <- parts[[i]]
+      if (length(pp) == 4) {
+        dd <- suppressWarnings(as.integer(pp[2]))
+        mm_key <- tolower(substr(pp[3], 1, 3))
+        yy <- suppressWarnings(as.integer(pp[4]))
+        if (!is.na(dd) && mm_key %in% names(month_map) && !is.na(yy)) {
+          mm <- unname(month_map[[mm_key]])
+          if (yy < 100) yy <- ifelse(yy >= 50, 1900 + yy, 2000 + yy)
+          parsed[i] <- as.Date(sprintf("%04d-%02d-%02d", yy, mm, dd))
+        }
+      }
+    }
+    out[has_letters] <- parsed
+  }
+  no_letters <- !has_letters & nzchar(x0)
+  if (any(no_letters)) {
+    xx <- x0[no_letters]
+    parsed <- suppressWarnings(lubridate::ymd(xx))
+    idx <- is.na(parsed)
+    if (any(idx)) parsed[idx] <- suppressWarnings(lubridate::dmy(xx[idx]))
+    idx <- is.na(parsed)
+    if (any(idx)) parsed[idx] <- suppressWarnings(lubridate::mdy(xx[idx]))
+    out[no_letters] <- parsed
+  }
+  bad <- is.na(out) & nzchar(x0)
+  if (any(bad)) {
+    warning("No se pudieron parsear algunas fechas BCRP. Ejemplos: ", paste(utils::head(unique(x0[bad]), 5), collapse = ", "))
+  }
+  out
+}
+
+bcrp_get_one_series_json <- function(series_code, var_name,
+                                     start = "1998-01-01",
+                                     end   = format(Sys.Date(), "%Y-%m-%d")) {
+  url <- sprintf(
+    "https://estadisticas.bcrp.gob.pe/estadisticas/series/api/%s/json/%s/%s/esp",
+    series_code, start, end
+  )
+  res <- httr::GET(url, httr::timeout(60))
+  httr::stop_for_status(res)
+  txt <- httr::content(res, as = "text", encoding = "UTF-8")
+  js  <- jsonlite::fromJSON(txt, simplifyVector = FALSE)
+  if (is.null(js$periods) || length(js$periods) == 0) {
+    warning("BCRPData devolvio respuesta sin observaciones para: ", series_code)
+    return(tibble(date = as.Date(character()), !!var_name := numeric()))
+  }
+  dates <- vapply(js$periods, `[[`, character(1), "name")
+  values <- vapply(js$periods, function(p) {
+    if (is.null(p$values) || length(p$values) == 0) NA_character_ else as.character(p$values[[1]])
+  }, character(1))
+  out <- tibble(
+    date = parse_bcrp_date(dates),
+    value = parse_num(values)
+  ) %>%
+    filter(!is.na(date)) %>%
+    arrange(date) %>%
+    rename(!!var_name := value)
+  end_date_check <- as.Date(end)
+  if (any(out$date > end_date_check, na.rm = TRUE)) {
+    stop(
+      "BCRPData produjo fechas posteriores al end solicitado para ", series_code,
+      ". Ultima fecha parseada: ", max(out$date, na.rm = TRUE),
+      ". Revisa parse_bcrp_date()."
+    )
+  }
+  out
+}
+
+bcrp_get_many_series_safe <- function(code_map,
+                                      start = "1998-01-01",
+                                      end   = format(Sys.Date(), "%Y-%m-%d")) {
+  series_list <- purrr::imap(code_map, ~ bcrp_get_one_series_json(.x, .y, start, end))
+  purrr::reduce(series_list, full_join, by = "date") %>% arrange(date)
+}
+
 interp_daily <- function(x) {
   if (all(is.na(x))) return(x)
   zoo::na.locf(zoo::na.approx(x, na.rm = FALSE), na.rm = FALSE)
 }
 
+locf_daily <- function(x) {
+  if (all(is.na(x))) return(x)
+  zoo::na.locf(x, na.rm = FALSE)
+}
+
 rmse <- function(x) sqrt(mean(x^2, na.rm = TRUE))
 
-model_summary_row <- function(model, country, block) {
+model_summary_row <- function(model, country, block, metadata = NULL) {
   tibble(
     country = country,
     block = block,
     n_obs = length(stats::resid(model)),
     r2 = unname(summary(model)$r.squared),
     adj_r2 = unname(summary(model)$adj.r.squared),
-    rmse = rmse(stats::resid(model))
+    rmse = rmse(stats::resid(model)),
+    first_obs = if (!is.null(metadata)) as.character(metadata$first_obs[[1]]) else NA_character_,
+    last_obs = if (!is.null(metadata)) as.character(metadata$last_obs[[1]]) else NA_character_
   )
 }
 
 # ------------------------------------------------------------
 # Descarga de datos
 # ------------------------------------------------------------
-message("Descargando tasas soberanas BCCh...")
+message("Descargando tasas soberanas 10Y desde BCCh...")
 y10_clp <- bde_get_series(bde_user, bde_pass, "F022.BCLP.TIS.AN10.NO.Z.D", start_date, end_date) %>% rename(y10_clp = value_num)
 y10_brl <- bde_get_series(bde_user, bde_pass, "F019.TBG.TAS.BRA.D",       start_date, end_date) %>% rename(y10_brl = value_num)
 y10_mxn <- bde_get_series(bde_user, bde_pass, "F019.TBG.TAS.MEX.D",       start_date, end_date) %>% rename(y10_mxn = value_num)
@@ -323,12 +417,20 @@ y10_pen <- bde_get_series(bde_user, bde_pass, "F019.TBG.TAS.PER.D",       start_
 y10_col <- bde_get_series(bde_user, bde_pass, "F019.TBG.TAS.COL.D",       start_date, end_date) %>% rename(y10_col = value_num)
 y10_us  <- bde_get_series(bde_user, bde_pass, "F019.TBG.TAS.10.D",        start_date, end_date) %>% rename(y10_us = value_num)
 
-message("Descargando commodities/equity BCCh y FRED...")
-copper <- bde_get_series(bde_user, bde_pass, "F019.PPB.PRE.100.D", start_date, end_date) %>% rename(copper = value_num)
-eq_nsq <- bde_get_series(bde_user, bde_pass, "F019.IBC.IND.51.D",  start_date, end_date) %>% rename(eq_nsq = value_num)
-eq_cny <- bde_get_series(bde_user, bde_pass, "F019.IBC.IND.CHN.D", start_date, end_date) %>% rename(eq_cny = value_num)
-wti    <- fred_get_series(fred_api_key, "DCOILWTICO", start_date, end_date) %>% rename(wti = value_num)
-vix    <- fred_get_series(fred_api_key, "VIXCLS",     start_date, end_date) %>% rename(vix = value_num)
+message("Descargando TPM desde BCCh...")
+tpm_clp <- safe_bde_get_series(bde_user, bde_pass, "F022.TPM.TIN.D001.NO.Z.D", start_date, end_date) %>% rename(tpm_clp = value_num)
+tpm_brl <- safe_bde_get_series(bde_user, bde_pass, "F019.TPM.TIN.BRA.D",       start_date, end_date) %>% rename(tpm_brl = value_num)
+tpm_mxn <- safe_bde_get_series(bde_user, bde_pass, "F019.TPM.TIN.MEX.D",       start_date, end_date) %>% rename(tpm_mxn = value_num)
+tpm_pen <- safe_bde_get_series(bde_user, bde_pass, "F019.TPM.TIN.PER.D",       start_date, end_date) %>% rename(tpm_pen = value_num)
+tpm_cop <- safe_bde_get_series(bde_user, bde_pass, "F019.TPM.TIN.COL.D",       start_date, end_date) %>% rename(tpm_cop = value_num)
+
+message("Descargando commodities, equity y volatilidad...")
+copper      <- bde_get_series(bde_user, bde_pass, "F019.PPB.PRE.100.D", start_date, end_date) %>% rename(copper = value_num)
+eq_nsq      <- bde_get_series(bde_user, bde_pass, "F019.IBC.IND.51.D",  start_date, end_date) %>% rename(eq_nsq = value_num)
+eq_cny      <- bde_get_series(bde_user, bde_pass, "F019.IBC.IND.CHN.D", start_date, end_date) %>% rename(eq_cny = value_num)
+wti         <- fred_get_series(fred_api_key, "DCOILWTICO", start_date, end_date) %>% rename(wti = value_num)
+vix         <- fred_get_series(fred_api_key, "VIXCLS",     start_date, end_date) %>% rename(vix = value_num)
+gold_silver <- fred_get_series(fred_api_key, "NASDAQXAU", start_date, end_date) %>% rename(gold_silver = value_num)
 
 message("Descargando BIS FX/EER/CPI...")
 dtw <- bis_get_daily("WS_EER", "D.N.B.US", start_date, end_date) %>% rename(dtw = value_num)
@@ -339,6 +441,21 @@ fx_mxn <- bis_get_daily("WS_XRU", "D.MX.MXN.A", start_date, end_date) %>% rename
 fx_pen <- bis_get_daily("WS_XRU", "D.PE.PEN.A", start_date, end_date) %>% rename(fx_pen = value_num)
 fx_cop <- bis_get_daily("WS_XRU", "D.CO.COP.A", start_date, end_date) %>% rename(fx_cop = value_num)
 
+message("Descargando EMBIG diario desde BCRPData...")
+embi_codes <- c(
+  embi_latam = "PD04708XD",
+  embi_pen   = "PD04709XD",
+  embi_brl   = "PD04711XD",
+  embi_mxn   = "PD04713XD",
+  embi_cop   = "PD04715XD",
+  embi_clp   = "PD38581XD",
+  embi_em    = "PD38580XD"
+)
+embi <- bcrp_get_many_series_safe(embi_codes, start = start_date, end = end_date)
+
+# ------------------------------------------------------------
+# CPI diario y CPI relativo
+# ------------------------------------------------------------
 cpi_specs <- tribble(
   ~country, ~series_key,
   "CLP", "M.CL.628",
@@ -348,21 +465,23 @@ cpi_specs <- tribble(
   "MXN", "M.MX.628",
   "PEN", "M.PE.628"
 )
-cpi_monthly <- cpi_specs %>%
-  mutate(
-    raw_data = map(series_key, ~ bis_get_long_cpi_monthly(.x, start_date, end_date)),
-    extended = pmap(
-      list(raw_data, country, series_key),
-      ~ extend_cpi_monthly(..1, end_date, ..2, ..3, cpi_extension_window)
-    ),
-    data = map(extended, "data"),
-    extension_info = map(extended, "info")
-  )
 
-cpi_extension_summary <- cpi_monthly %>%
-  select(extension_info) %>%
-  tidyr::unnest(extension_info) %>%
-  mutate(monthly_inflation_assumption_pct = round(monthly_inflation_assumption_pct, 4))
+cpi_monthly_raw <- cpi_specs %>%
+  mutate(data_raw = map(series_key, ~ bis_get_long_cpi_monthly(.x, start_date, end_date)))
+
+cpi_extended <- cpi_monthly_raw %>%
+  mutate(ext = map(data_raw, ~ extend_cpi_with_recent_average(.x, end_date, cpi_extension_window)))
+
+cpi_monthly <- cpi_extended %>%
+  transmute(country, series_key, data = map(ext, "data"))
+
+cpi_extension_summary <- cpi_extended %>%
+  transmute(country, series_key, summary = map(ext, "summary")) %>%
+  tidyr::unnest(summary) %>%
+  mutate(
+    assumed_monthly_inflation_pct = 100 * assumed_monthly_inflation,
+    cpi_extension_window = cpi_extension_window
+  )
 
 cal_trading <- fx_clp %>% select(date) %>% distinct() %>% arrange(date)
 
@@ -373,20 +492,16 @@ cpi_daily_wide <- cpi_monthly %>%
   tidyr::pivot_wider(names_from = country, values_from = value_daily, names_prefix = "cpi_") %>%
   arrange(date)
 
-cpi_sources <- cpi_extension_summary %>%
+cpi_sources <- cpi_extended %>%
   transmute(
     country,
     series_key,
-    first_observed_date,
-    last_observed_date,
-    first_assumed_date,
-    last_assumed_date,
-    last_model_cpi_month,
-    n_observed_months,
-    n_assumed_months,
-    monthly_inflation_assumption_pct,
-    method
+    first_observed_date = map_chr(data_raw, ~ as.character(min(.x$date, na.rm = TRUE))),
+    last_observed_date  = map_chr(data_raw, ~ as.character(max(.x$date, na.rm = TRUE))),
+    n_observed_months   = map_int(data_raw, nrow),
+    last_model_date = map_chr(map(ext, "data"), ~ as.character(max(.x$date, na.rm = TRUE)))
   )
+
 readr::write_csv(cpi_sources, file.path(out_data, "cpi_sources.csv"))
 readr::write_csv(cpi_extension_summary, file.path(out_data, "cpi_extension_summary.csv"))
 
@@ -406,24 +521,44 @@ db_daily <- cal_trading %>%
   left_join(y10_pen, by = "date") %>%
   left_join(y10_col, by = "date") %>%
   left_join(y10_us,  by = "date") %>%
+  left_join(tpm_clp, by = "date") %>%
+  left_join(tpm_brl, by = "date") %>%
+  left_join(tpm_mxn, by = "date") %>%
+  left_join(tpm_pen, by = "date") %>%
+  left_join(tpm_cop, by = "date") %>%
   left_join(eq_nsq,  by = "date") %>%
   left_join(eq_cny,  by = "date") %>%
   left_join(dtw,     by = "date") %>%
   left_join(vix,     by = "date") %>%
   left_join(wti,     by = "date") %>%
   left_join(copper,  by = "date") %>%
+  left_join(gold_silver, by = "date") %>%
+  left_join(embi,    by = "date") %>%
   left_join(cpi_daily_wide, by = "date") %>%
   arrange(date)
 
 vars_daily_interp <- c(
   "fx_clp", "fx_brl", "fx_mxn", "fx_pen", "fx_cop", "cny_usd",
   "y10_clp", "y10_brl", "y10_mxn", "y10_pen", "y10_col", "y10_us",
-  "wti", "copper", "eq_nsq", "eq_cny", "dtw", "vix"
+  "wti", "copper", "eq_nsq", "eq_cny", "gold_silver", "dtw", "vix"
 )
+
+vars_daily_locf <- c(
+  "tpm_clp", "tpm_brl", "tpm_mxn", "tpm_pen", "tpm_cop",
+  "embi_latam", "embi_em", "embi_clp", "embi_brl", "embi_mxn", "embi_pen", "embi_cop"
+)
+
+# Agrega cualquier columna faltante de TPM/EMBI como NA para que el script falle solo si la especificacion la necesita.
+for (nm in vars_daily_locf) {
+  if (!nm %in% names(db_daily)) db_daily[[nm]] <- NA_real_
+}
 
 db_daily <- db_daily %>%
   arrange(date) %>%
-  mutate(across(all_of(vars_daily_interp), interp_daily)) %>%
+  mutate(
+    across(all_of(vars_daily_interp), interp_daily),
+    across(all_of(vars_daily_locf), locf_daily)
+  ) %>%
   mutate(
     trend = row_number(),
     log_cpi_rel_chl_us = log(cpi_CLP / cpi_US),
@@ -431,17 +566,18 @@ db_daily <- db_daily %>%
     log_cpi_rel_mex_us = log(cpi_MXN / cpi_US),
     log_cpi_rel_per_us = log(cpi_PEN / cpi_US),
     log_cpi_rel_col_us = log(cpi_COP / cpi_US),
-    l_wti   = if_else(wti > 0, log(wti), NA_real_),
-    l_pcu   = if_else(copper > 0, log(copper), NA_real_),
-    l_eqnsq = if_else(eq_nsq > 0, log(eq_nsq), NA_real_),
-    l_eqcny = if_else(eq_cny > 0, log(eq_cny), NA_real_),
-    l_vix   = if_else(vix > 0, log(vix), NA_real_),
-    l_dtw   = if_else(dtw > 0, log(dtw), NA_real_),
-    l_cny   = if_else(cny_usd > 0, log(cny_usd), NA_real_)
+    l_wti         = if_else(wti         > 0, log(wti),         NA_real_),
+    l_pcu         = if_else(copper      > 0, log(copper),      NA_real_),
+    l_gold_silver = if_else(gold_silver > 0, log(gold_silver), NA_real_),
+    l_eqnsq       = if_else(eq_nsq      > 0, log(eq_nsq),      NA_real_),
+    l_eqcny       = if_else(eq_cny      > 0, log(eq_cny),      NA_real_),
+    l_vix         = if_else(vix         > 0, log(vix),         NA_real_),
+    l_dtw         = if_else(dtw         > 0, log(dtw),         NA_real_),
+    l_cny         = if_else(cny_usd     > 0, log(cny_usd),     NA_real_)
   )
 
 # ------------------------------------------------------------
-# Modelos
+# Modelos FX y 10Y con EMBIG
 # ------------------------------------------------------------
 run_fx_model <- function(df, country_code, fx_var, cpi_rel_var) {
   df_model <- df %>%
@@ -450,28 +586,57 @@ run_fx_model <- function(df, country_code, fx_var, cpi_rel_var) {
       l_fx = if_else(.data[[fx_var]] > 0, log(.data[[fx_var]]), NA_real_),
       trend,
       cpi_rel = .data[[cpi_rel_var]],
-      l_wti, l_pcu, l_eqnsq, l_eqcny, l_vix, l_dtw, l_cny
+      l_wti, l_pcu, l_gold_silver, l_eqnsq, l_eqcny, l_vix, l_dtw, l_cny, y10_us
     ) %>%
     drop_na()
-  mod <- lm(l_fx ~ trend + cpi_rel + l_wti + l_pcu + l_eqnsq + l_eqcny + l_vix + l_dtw + l_cny,
-            data = df_model)
-  res <- resid(mod)
-  df_model %>%
-    mutate(res_fx = res, z_res_fx = as.numeric(scale(res_fx))) %>%
-    select(date, res_fx, z_res_fx) -> residuals
-  list(country = country_code, model = mod, residuals = residuals)
+  mod <- lm(
+    l_fx ~ trend + cpi_rel + l_wti + l_pcu + l_gold_silver +
+      l_eqnsq + l_eqcny + l_vix + l_dtw + l_cny + y10_us,
+    data = df_model
+  )
+  df_model <- df_model %>%
+    mutate(
+      country = country_code,
+      fitted_fx = fitted(mod),
+      res_fx = resid(mod),
+      z_res_fx = as.numeric((res_fx - mean(res_fx, na.rm = TRUE)) / sd(res_fx, na.rm = TRUE))
+    )
+  metadata <- tibble(model = "FX", country = country_code, first_obs = min(df_model$date), last_obs = max(df_model$date), n_obs = nrow(df_model))
+  list(country = country_code, model = mod, metadata = metadata, residuals = df_model %>% select(date, country, l_fx, fitted_fx, res_fx, z_res_fx), data = df_model)
 }
 
-run_yield_model <- function(df, country_code, y10_var) {
+run_yield_model <- function(df, country_code, y10_var, embi_var, cpi_rel_var) {
   df_model <- df %>%
-    transmute(date, y10 = .data[[y10_var]], y10_us = y10_us, trend, l_vix, l_eqnsq, l_dtw, l_cny) %>%
+    transmute(
+      date,
+      y10 = .data[[y10_var]],
+      y10_us = y10_us,
+      embi = .data[[embi_var]],
+      embi_100 = .data[[embi_var]] / 100,
+      cpi_rel = .data[[cpi_rel_var]],
+      trend,
+      l_vix, l_eqnsq, l_dtw, l_cny
+    ) %>%
     drop_na()
-  mod <- lm(y10 ~ y10_us + l_vix + l_eqnsq + l_dtw + l_cny + trend, data = df_model)
-  res <- resid(mod)
-  df_model %>%
-    mutate(res_y10 = res, z_res_y10 = as.numeric(scale(res_y10))) %>%
-    select(date, res_y10, z_res_y10) -> residuals
-  list(country = country_code, model = mod, residuals = residuals)
+  mod <- lm(y10 ~ y10_us + embi_100 + l_vix + l_eqnsq + l_dtw + l_cny + trend, data = df_model)
+  df_model <- df_model %>%
+    mutate(
+      country = country_code,
+      fitted_y10 = fitted(mod),
+      res_y10 = resid(mod),
+      z_res_y10 = as.numeric((res_y10 - mean(res_y10, na.rm = TRUE)) / sd(res_y10, na.rm = TRUE))
+    )
+  metadata <- tibble(
+    model = "10Y",
+    country = country_code,
+    first_obs = min(df_model$date),
+    last_obs = max(df_model$date),
+    n_obs = nrow(df_model),
+    embi_min = min(df_model$embi, na.rm = TRUE),
+    embi_max = max(df_model$embi, na.rm = TRUE),
+    embi_sd = sd(df_model$embi, na.rm = TRUE)
+  )
+  list(country = country_code, model = mod, metadata = metadata, residuals = df_model %>% select(date, country, y10, fitted_y10, res_y10, z_res_y10), data = df_model)
 }
 
 fx_specs <- tribble(
@@ -482,37 +647,48 @@ fx_specs <- tribble(
   "PEN",    "fx_pen",  "log_cpi_rel_per_us",
   "COP",    "fx_cop",  "log_cpi_rel_col_us"
 )
+
 yield_specs <- tribble(
-  ~country, ~y10_var,
-  "CLP", "y10_clp",
-  "BRL", "y10_brl",
-  "MXN", "y10_mxn",
-  "PEN", "y10_pen",
-  "COP", "y10_col"
+  ~country, ~y10_var,  ~embi_var,  ~cpi_rel_var,
+  "CLP",    "y10_clp", "embi_clp", "log_cpi_rel_chl_us",
+  "BRL",    "y10_brl", "embi_brl", "log_cpi_rel_bra_us",
+  "MXN",    "y10_mxn", "embi_mxn", "log_cpi_rel_mex_us",
+  "PEN",    "y10_pen", "embi_pen", "log_cpi_rel_per_us",
+  "COP",    "y10_col", "embi_cop", "log_cpi_rel_col_us"
 )
 
-message("Estimando modelos FX y 10Y...")
+message("Estimando modelos FX y 10Y/EMBIG...")
 fx_results <- fx_specs %>% mutate(result = pmap(list(country, fx_var, cpi_rel_var), ~ run_fx_model(db_daily, ..1, ..2, ..3)))
-yield_results <- yield_specs %>% mutate(result = map2(country, y10_var, ~ run_yield_model(db_daily, .x, .y)))
+yield_results <- yield_specs %>% mutate(result = pmap(list(country, y10_var, embi_var, cpi_rel_var), ~ run_yield_model(db_daily, ..1, ..2, ..3, ..4)))
 
 fx_models <- setNames(lapply(fx_results$result, `[[`, "model"), fx_specs$country)
 yield_models <- setNames(lapply(yield_results$result, `[[`, "model"), yield_specs$country)
+fx_metadata <- map_dfr(fx_results$result, "metadata")
+yield_metadata <- map_dfr(yield_results$result, "metadata")
+model_sample_table <- bind_rows(fx_metadata, yield_metadata)
 
-fx_residuals_all <- map_dfr(fx_results$result, ~ .x$residuals %>% mutate(country = .x$country))
-yield_residuals_all <- map_dfr(yield_results$result, ~ .x$residuals %>% mutate(country = .x$country))
+fx_model_data_all <- map_dfr(fx_results$result, "data")
+yield_model_data_all <- map_dfr(yield_results$result, "data")
+fx_residuals_all <- map_dfr(fx_results$result, "residuals")
+yield_residuals_all <- map_dfr(yield_results$result, "residuals")
 
 fx_residuals_wide <- fx_residuals_all %>% select(date, country, z_res_fx) %>% pivot_wider(names_from = country, values_from = z_res_fx, names_prefix = "z_res_fx_")
 yield_residuals_wide <- yield_residuals_all %>% select(date, country, z_res_y10) %>% pivot_wider(names_from = country, values_from = z_res_y10, names_prefix = "z_res_y10_")
 
 db_daily <- db_daily %>%
+  select(-matches("^z_res_fx_"), -matches("^z_res_y10_")) %>%
   left_join(fx_residuals_wide, by = "date") %>%
   left_join(yield_residuals_wide, by = "date")
 
+missing_fx_z <- setdiff(paste0("z_res_fx_", countries), names(db_daily))
+missing_y10_z <- setdiff(paste0("z_res_y10_", countries), names(db_daily))
+if (length(missing_fx_z) > 0) stop("Faltan columnas z_res_fx en db_daily: ", paste(missing_fx_z, collapse = ", "))
+if (length(missing_y10_z) > 0) stop("Faltan columnas z_res_y10 en db_daily: ", paste(missing_y10_z, collapse = ", "))
+
 fit_summary <- bind_rows(
-  imap_dfr(fx_models, ~ model_summary_row(.x, .y, "FX")),
-  imap_dfr(yield_models, ~ model_summary_row(.x, .y, "10Y"))
-) %>%
-  mutate(across(c(r2, adj_r2, rmse), ~ round(.x, 4)))
+  imap_dfr(fx_models, ~ model_summary_row(.x, .y, "FX", fx_metadata %>% filter(country == .y))),
+  imap_dfr(yield_models, ~ model_summary_row(.x, .y, "10Y", yield_metadata %>% filter(country == .y)))
+) %>% mutate(across(c(r2, adj_r2, rmse), ~ round(.x, 4)))
 
 tidy_lm_coefficients <- function(model, country, block) {
   sm <- summary(model)$coefficients
@@ -530,11 +706,10 @@ tidy_lm_coefficients <- function(model, country, block) {
 model_coefficients <- bind_rows(
   imap_dfr(fx_models, ~ tidy_lm_coefficients(.x, .y, "FX")),
   imap_dfr(yield_models, ~ tidy_lm_coefficients(.x, .y, "10Y"))
-) %>%
-  mutate(across(c(estimate, std_error, statistic, p_value), ~ signif(.x, 5)))
+) %>% mutate(across(c(estimate, std_error, statistic, p_value), ~ signif(.x, 6)))
 
 # ------------------------------------------------------------
-# Segunda etapa
+# Segunda etapa: residuo FX vs spread 10Y
 # ------------------------------------------------------------
 run_second_stage_fx_y10 <- function(df, country_code, y10_var) {
   fx_col <- paste0("z_res_fx_", country_code)
@@ -546,42 +721,40 @@ run_second_stage_fx_y10 <- function(df, country_code, y10_var) {
     ) %>%
     drop_na()
   mod <- lm(z_fx ~ y10_spread, data = df_model)
-  df_model <- df_model %>% mutate(z_fx_hat = fitted(mod), res_2nd = resid(mod))
+  df_model <- df_model %>% mutate(country = country_code, z_fx_hat = fitted(mod), res_2nd = resid(mod))
   list(country = country_code, model = mod, data = df_model)
 }
 
 second_stage_results <- yield_specs %>% mutate(result = map2(country, y10_var, ~ run_second_stage_fx_y10(db_daily, .x, .y)))
 second_stage_models <- setNames(lapply(second_stage_results$result, `[[`, "model"), yield_specs$country)
-second_stage_all <- map_dfr(second_stage_results$result, ~ .x$data %>% mutate(country = .x$country))
+second_stage_all <- map_dfr(second_stage_results$result, "data")
 
 second_stage_summary <- imap_dfr(second_stage_models, function(mod, cc) {
-  coefs <- summary(mod)$coefficients
+  sm <- summary(mod)
+  coefs <- sm$coefficients
+  beta <- unname(coefs["y10_spread", "Estimate"])
+  pval <- unname(coefs["y10_spread", "Pr(>|t|)"])
   tibble(
     country = cc,
-    beta_y10_spread = unname(coefs["y10_spread", "Estimate"]),
-    p_value = unname(coefs["y10_spread", "Pr(>|t|)"]),
-    r2 = unname(summary(mod)$r.squared),
-    n_obs = length(resid(mod))
-  )
-}) %>%
-  mutate(
-    beta_y10_spread = round(beta_y10_spread, 4),
-    p_value = signif(p_value, 3),
-    r2 = round(r2, 4),
-    lectura = case_when(
-      r2 >= 0.12 ~ "relacion positiva mas marcada",
-      r2 >= 0.05 ~ "relacion positiva relevante",
-      r2 >= 0.01 ~ "relacion debil",
-      TRUE ~ "relacion practicamente nula"
+    n_obs = length(resid(mod)),
+    beta_y10_spread = beta,
+    p_value = pval,
+    r2 = unname(sm$r.squared),
+    lectura = dplyr::case_when(
+      is.na(pval) ~ "sin lectura",
+      pval < 0.05 & beta > 0 ~ "relación positiva significativa",
+      pval < 0.05 & beta < 0 ~ "relación negativa significativa",
+      TRUE ~ "relación débil/no significativa"
     )
   )
+}) %>% mutate(across(c(beta_y10_spread, p_value, r2), ~ round(.x, 4)))
 
 # ------------------------------------------------------------
-# Datasets para Quarto
+# Outputs para Quarto
 # ------------------------------------------------------------
 residuals_long <- bind_rows(
-  fx_residuals_all %>% transmute(date, country, market = "FX", z_score = z_res_fx),
-  yield_residuals_all %>% transmute(date, country, market = "10Y", z_score = z_res_y10)
+  fx_residuals_all %>% transmute(date, country, market = "FX", z_score = z_res_fx, residual = res_fx),
+  yield_residuals_all %>% transmute(date, country, market = "10Y", z_score = z_res_y10, residual = res_y10)
 ) %>% arrange(market, country, date)
 
 latest_date <- max(residuals_long$date, na.rm = TRUE)
@@ -592,6 +765,15 @@ latest_snapshot <- residuals_long %>%
   arrange(country) %>%
   mutate(across(c(FX, `10Y`), ~ round(.x, 2)))
 
+rates_embi_latest <- db_daily %>%
+  filter(date == max(date, na.rm = TRUE)) %>%
+  transmute(
+    date,
+    y10_clp, y10_brl, y10_mxn, y10_pen, y10_col, y10_us,
+    embi_clp, embi_brl, embi_mxn, embi_pen, embi_cop,
+    tpm_clp, tpm_brl, tpm_mxn, tpm_pen, tpm_cop
+  )
+
 readr::write_csv(db_daily, file.path(out_data, "db_daily_exchange.csv"))
 readr::write_csv(residuals_long, file.path(out_data, "residuals_long.csv"))
 readr::write_csv(fit_summary, file.path(out_data, "model_fit_summary.csv"))
@@ -599,118 +781,53 @@ readr::write_csv(model_coefficients, file.path(out_data, "model_coefficients.csv
 readr::write_csv(second_stage_summary, file.path(out_data, "second_stage_summary.csv"))
 readr::write_csv(second_stage_all, file.path(out_data, "second_stage_data.csv"))
 readr::write_csv(latest_snapshot, file.path(out_data, "latest_snapshot.csv"))
+readr::write_csv(model_sample_table, file.path(out_data, "model_sample_table.csv"))
+readr::write_csv(rates_embi_latest, file.path(out_data, "rates_embi_latest.csv"))
 
 metadata <- tibble(
-  item = c(
-    "start_date", "end_date", "latest_model_date", "created_at",
-    "cpi_extension_method", "cpi_extension_window_months"
-  ),
-  value = c(
-    start_date, end_date, as.character(latest_date), as.character(Sys.time()),
-    paste0("Promedio de las últimas ", cpi_extension_window, " variaciones mensuales observadas"),
-    as.character(cpi_extension_window)
-  )
+  item = c("start_date", "end_date", "latest_model_date", "created_at", "model_version", "cpi_extension_window"),
+  value = c(start_date, end_date, as.character(latest_date), as.character(Sys.time()), "FX_EMBI_CPI_BIS", as.character(cpi_extension_window))
 )
 readr::write_csv(metadata, file.path(out_data, "metadata.csv"))
 
-# ------------------------------------------------------------
-# Graficos estaticos opcionales
-# ------------------------------------------------------------
-# La pagina Quarto ya no usa JPG/PNG de este modelo: renderiza graficos
-# interactivos directamente desde los CSV anteriores. Para no duplicar
-# peso en el sitio, la generacion de imagenes estaticas queda desactivada
-# por defecto. Activar solo si se necesita una miniatura externa:
-# EXCHANGE_WRITE_STATIC_PNG=TRUE
-write_static_png <- toupper(Sys.getenv("EXCHANGE_WRITE_STATIC_PNG", "FALSE")) %in% c("TRUE", "1", "YES", "SI", "SÍ")
-
-if (write_static_png) {
-  country_colors <- c(
-    "CLP" = "#E67E22",
-    "BRL" = "#3fb1d3",
-    "MXN" = "#006400",
-    "PEN" = "#F1C40F",
-    "COP" = "#084e89"
+# Excel opcional equivalente al script original, desde 2025.
+z_scores_2025 <- db_daily %>% filter(date >= from_export) %>% select(date, starts_with("z_res_fx_"), starts_with("z_res_y10_"))
+rates_2025 <- db_daily %>%
+  filter(date >= from_export) %>%
+  select(
+    date,
+    tpm_clp, tpm_brl, tpm_mxn, tpm_pen, tpm_cop,
+    y10_clp, y10_brl, y10_mxn, y10_pen, y10_col, y10_us,
+    embi_clp, embi_brl, embi_mxn, embi_pen, embi_cop,
+    embi_latam, embi_em,
+    log_cpi_rel_chl_us, log_cpi_rel_bra_us, log_cpi_rel_mex_us,
+    log_cpi_rel_per_us, log_cpi_rel_col_us
   )
+fx_model_data_2025 <- db_daily %>%
+  filter(date >= from_export) %>%
+  select(
+    date,
+    fx_clp, fx_brl, fx_mxn, fx_pen, fx_cop,
+    y10_us, wti, copper, gold_silver, eq_nsq, eq_cny,
+    vix, dtw, cny_usd, starts_with("log_cpi_rel_"), starts_with("z_res_fx_")
+  )
+latest_obs_table <- db_daily %>%
+  summarise(across(-date, ~ {
+    idx <- which(!is.na(.x))
+    if (length(idx) == 0) as.Date(NA) else max(date[idx], na.rm = TRUE)
+  })) %>%
+  pivot_longer(everything(), names_to = "variable", values_to = "last_non_missing_obs") %>%
+  arrange(variable)
 
-  mu_theme <- function() {
-    theme_minimal(base_size = 13) +
-      theme(
-        plot.title = element_text(face = "bold", colour = "#27384a", size = 17),
-        plot.subtitle = element_text(colour = "#66717f", size = 11),
-        axis.title = element_text(colour = "#27384a", face = "bold"),
-        axis.text = element_text(colour = "#4e5965"),
-        legend.position = "bottom",
-        legend.title = element_blank(),
-        panel.grid.minor = element_blank(),
-        plot.background = element_rect(fill = "white", colour = NA),
-        panel.background = element_rect(fill = "white", colour = NA)
-      )
-  }
+wb <- openxlsx::createWorkbook()
+openxlsx::addWorksheet(wb, "z_scores_2025"); openxlsx::writeData(wb, "z_scores_2025", z_scores_2025)
+openxlsx::addWorksheet(wb, "rates_embi_2025"); openxlsx::writeData(wb, "rates_embi_2025", rates_2025)
+openxlsx::addWorksheet(wb, "fx_model_data_2025"); openxlsx::writeData(wb, "fx_model_data_2025", fx_model_data_2025)
+openxlsx::addWorksheet(wb, "fx_model_data_used"); openxlsx::writeData(wb, "fx_model_data_used", fx_model_data_all)
+openxlsx::addWorksheet(wb, "yield_model_data_used"); openxlsx::writeData(wb, "yield_model_data_used", yield_model_data_all)
+openxlsx::addWorksheet(wb, "model_samples"); openxlsx::writeData(wb, "model_samples", model_sample_table)
+openxlsx::addWorksheet(wb, "latest_obs"); openxlsx::writeData(wb, "latest_obs", latest_obs_table)
+openxlsx::saveWorkbook(wb, file = file.path(out_file, "exchange_model_outputs_2025.xlsx"), overwrite = TRUE)
 
-  plot_global_res <- function(df, market = c("FX", "10Y"), from_date = as.Date("2022-01-01")) {
-    market <- match.arg(market)
-    ylab <- if (market == "FX") "z-score residuo FX" else "z-score residuo 10Y"
-    title <- if (market == "FX") "Residuos normalizados del tipo de cambio" else "Residuos normalizados de tasas soberanas 10Y"
-    dfp <- df %>% filter(.data$market == .env$market, date >= from_date)
-    ggplot(dfp, aes(date, z_score, colour = country)) +
-      geom_hline(yintercept = 0, linewidth = 0.35, linetype = "dashed", colour = "#8a94a3") +
-      geom_hline(yintercept = c(-2, 2), linewidth = 0.25, linetype = "dotted", colour = "#c8c0b3") +
-      geom_line(linewidth = 0.55, alpha = 0.95) +
-      scale_color_manual(values = country_colors) +
-      scale_x_date(labels = scales::label_date("%Y"), breaks = scales::breaks_pretty(7)) +
-      labs(title = title, subtitle = "Desviaciones respecto de fundamentos externos observables", x = NULL, y = ylab) +
-      mu_theme()
-  }
-
-  plot_stress_country <- function(df, country_code, from_date = as.Date("2022-01-01")) {
-    fx_col  <- paste0("z_res_fx_",  country_code)
-    y10_col <- paste0("z_res_y10_", country_code)
-    df_plot <- df %>%
-      filter(date >= from_date) %>%
-      select(date, z_fx = all_of(fx_col), z_y10 = all_of(y10_col)) %>%
-      pivot_longer(c(z_fx, z_y10), names_to = "serie", values_to = "z_score") %>%
-      mutate(serie = recode(serie, z_fx = "FX residual", z_y10 = "10Y residual"))
-    ggplot(df_plot, aes(date, z_score, colour = serie)) +
-      geom_hline(yintercept = 0, linewidth = 0.35, linetype = "dashed", colour = "#8a94a3") +
-      geom_hline(yintercept = c(-2, 2), linewidth = 0.25, linetype = "dotted", colour = "#c8c0b3") +
-      geom_line(linewidth = 0.55) +
-      scale_color_manual(values = c("FX residual" = "#27384a", "10Y residual" = "#7b5e42")) +
-      labs(title = paste("Stress FX y 10Y -", country_code), subtitle = "Residuos normalizados por mercado", x = NULL, y = "z-score") +
-      mu_theme()
-  }
-
-  plot_second_stage_country <- function(second_stage_results, country_code) {
-    obj <- second_stage_results$result[[which(second_stage_results$country == country_code)]]
-    dfp <- obj$data
-    sm <- summary(obj$model)
-    beta <- unname(coef(obj$model)["y10_spread"])
-    ggplot(dfp, aes(y10_spread, z_fx)) +
-      geom_point(alpha = 0.30, size = 0.65, colour = "#27384a") +
-      geom_smooth(method = "lm", se = FALSE, linewidth = 0.8, colour = "#7b5e42") +
-      labs(
-        title = paste("Segunda etapa FX vs spread 10Y -", country_code),
-        subtitle = paste0("Coeficiente = ", round(beta, 3), " · R² = ", round(sm$r.squared, 3)),
-        x = "Diferencial 10Y frente a EE.UU. (p.p.)",
-        y = "z-score residuo FX"
-      ) +
-      mu_theme()
-  }
-
-  save_plot <- function(plot, filename, width = 13, height = 5.6) {
-    ggsave(file.path(out_img, filename), plot = plot, width = width, height = height, dpi = 190, bg = "white")
-  }
-
-  save_plot(plot_global_res(residuals_long, "FX"),  "fx_residuals_zscores_from2018.jpg",  width = 14.5, height = 5.7)
-  save_plot(plot_global_res(residuals_long, "10Y"), "y10_residuals_zscores_from2018.jpg", width = 14.5, height = 5.7)
-
-  for (cc in fx_specs$country) {
-    save_plot(plot_stress_country(db_daily, cc), paste0("stress_fx_y10_", cc, ".jpg"), width = 14.2, height = 5.5)
-    save_plot(plot_second_stage_country(second_stage_results, cc), paste0("second_stage_fx_y10_", cc, ".jpg"), width = 13.2, height = 5.9)
-  }
-} else {
-  message("No se generan imagenes estaticas: la pagina usa graficos Plotly desde CSV.")
-}
-
-message("Outputs ExchangeReg actualizados en:")
-message(" - ", out_data)
-message(" - graficos interactivos renderizados por Quarto desde CSV")
+message("Outputs ExchangeReg generados en: ", out_data)
+message("Modelo: FX_EMBI_CPI_BIS | Ultima fecha: ", latest_date)

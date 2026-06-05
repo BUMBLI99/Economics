@@ -1,7 +1,7 @@
 ---
-title: "Tipo de cambio, tasas largas y stress macrofinanciero en LatAm"
+title: "Tipo de cambio, tasas largas y riesgo soberano en LatAm"
 subtitle: "Modelos diarios para CLP, BRL, MXN, PEN y COP"
-description: "Proyecto aplicado que estima desviaciones de tipo de cambio y tasas soberanas a 10 años respecto de fundamentos externos observables en América Latina."
+description: "Proyecto aplicado que estima desviaciones de tipo de cambio y tasas soberanas a 10 años incorporando factores globales y EMBIG país para América Latina."
 page-layout: full
 execute:
   echo: false
@@ -77,9 +77,9 @@ second_stage_data <- read_exchange_csv("second_stage_data.csv")
 fit_summary <- read_exchange_csv("model_fit_summary.csv")
 second_summary <- read_exchange_csv("second_stage_summary.csv")
 model_coefficients <- read_exchange_csv("model_coefficients.csv")
+cpi_extension_summary <- read_exchange_csv("cpi_extension_summary.csv")
 metadata <- read_exchange_csv("metadata.csv")
 latest_snapshot <- read_exchange_csv("latest_snapshot.csv")
-cpi_extension <- read_exchange_csv("cpi_extension_summary.csv")
 
 data_ready <- !is.null(residuals_long) && !is.null(second_stage_data)
 if (data_ready) {
@@ -102,12 +102,6 @@ if (data_ready) {
 
 latest_model_date <- if (data_ready) max(residuals_long$date, na.rm = TRUE) else NA
 sample_start <- if (data_ready) min(residuals_long$date, na.rm = TRUE) else NA
-cpi_extension_window_label <- if (!is.null(cpi_extension) && "window_months" %in% names(cpi_extension)) {
-  ww <- unique(na.omit(cpi_extension$window_months))
-  if (length(ww) > 0) ww[[1]] else 6
-} else {
-  6
-}
 
 plot_missing <- function(msg = "No se encontraron los datos procesados del modelo.") {
   if (has_htmltools) {
@@ -272,12 +266,14 @@ term_labels <- c(
   "cpi_rel" = "Precios relativos frente a EE.UU.",
   "l_wti" = "Petróleo WTI",
   "l_pcu" = "Cobre",
+  "l_gold_silver" = "Índice oro/plata",
   "l_eqnsq" = "Nasdaq",
   "l_eqcny" = "Equity China",
   "l_vix" = "VIX",
-  "l_dtw" = "Dólar multilateral",
+  "l_dtw" = "Dólar multilateral BIS",
   "l_cny" = "CNY/USD",
-  "y10_us" = "Treasury 10Y EE.UU."
+  "y10_us" = "Treasury 10Y EE.UU.",
+  "embi_100" = "EMBIG país / 100 pbs"
 )
 
 coef_matrix_table <- function(block_name) {
@@ -318,7 +314,7 @@ coef_matrix_table <- function(block_name) {
 
 ## Qué mide el proyecto
 
-Este proyecto estima una medida comparable de **presión macrofinanciera residual** para cinco economías latinoamericanas. La pregunta central es simple: ¿qué parte de los movimientos del tipo de cambio y de las tasas soberanas largas luce inusual después de controlar por factores externos comunes?
+Este proyecto estima una medida comparable de **presión macrofinanciera residual** para cinco economías latinoamericanas. La pregunta central es simple: ¿qué parte de los movimientos del tipo de cambio y de las tasas soberanas largas luce inusual después de controlar por factores externos comunes y por riesgo soberano medido con EMBIG país?
 
 La unidad de análisis no es el movimiento bruto del dólar o de la tasa local, sino el **residuo estandarizado** de modelos de primera etapa. Eso permite comparar países con escalas financieras distintas y separar, al menos de forma reducida, movimientos comunes globales de episodios que requieren una lectura local más cuidadosa.
 
@@ -340,7 +336,7 @@ Mercados
 ::: {.mu-kpi-value}
 FX + 10Y
 :::
-Tipo de cambio bilateral y tasa soberana larga.
+Tipo de cambio bilateral, tasa soberana larga y EMBIG país.
 :::
 
 ::: {.mu-kpi-card}
@@ -350,7 +346,7 @@ Frecuencia
 ::: {.mu-kpi-value}
 Diaria
 :::
-Series financieras armonizadas desde 2010.
+Series financieras diarias armonizadas desde 2010.
 :::
 
 ::: {.mu-kpi-card}
@@ -375,20 +371,23 @@ $$
 + \rho_i \log\left(\frac{P_{i,t}}{P_{US,t}}\right)
 + \gamma_{1i}\log(WTI_t)
 + \gamma_{2i}\log(Cu_t)
-+ \gamma_{3i}\log(Nasdaq_t)
-+ \gamma_{4i}\log(ChinaEq_t)
-+ \gamma_{5i}\log(VIX_t)
-+ \gamma_{6i}\log(EER^{US}_t)
-+ \gamma_{7i}\log(CNY_t)
++ \gamma_{3i}\log(GoldSilver_t)
++ \gamma_{4i}\log(Nasdaq_t)
++ \gamma_{5i}\log(ChinaEq_t)
++ \gamma_{6i}\log(VIX_t)
++ \gamma_{7i}\log(EER^{US}_t)
++ \gamma_{8i}\log(CNY_t)
++ \gamma_{9i}y^{10}_{US,t}
 + u^{FX}_{i,t}
 $$
 
-$S_{i,t}$ es el tipo de cambio bilateral frente al dólar, medido como moneda local por USD. El término $P_{i,t}/P_{US,t}$ captura precios relativos frente a EE.UU. y el resto de controles resume factores externos comunes: commodities, equity global/China, volatilidad, dólar multilateral y CNY/USD.
-::: 
-
-::: {.exchange-assumption-note}
-**Supuesto para IPC no publicado.** Si la muestra diaria avanza más allá del último IPC mensual de BIS, cada índice se extiende con una inflación mensual igual al promedio de las últimas `r cpi_extension_window_label` variaciones mensuales observadas de ese país. El supuesto solo afecta los meses todavía no publicados; luego la serie mensual se interpola log-linealmente a frecuencia diaria.
+$S_{i,t}$ es el tipo de cambio bilateral frente al dólar, medido como moneda local por USD. El término $P_{i,t}/P_{US,t}$ captura precios relativos frente a EE.UU. y el resto de controles resume factores externos comunes: commodities, índice oro/plata, equity global/China, volatilidad, dólar multilateral, CNY/USD y tasa Treasury 10Y.
 :::
+
+::: {.exchange-method-note}
+**Supuesto IPC.** Los IPC mensuales provienen de BIS en nivel. Si el mes corriente aún no está publicado, el índice se extiende con la inflación mensual promedio de las últimas seis observaciones de cada país y luego se interpola log-linealmente a frecuencia diaria.
+:::
+
 
 ::: {.mu-equation-card}
 ### Primera etapa: tasa soberana 10Y
@@ -396,6 +395,7 @@ $S_{i,t}$ es el tipo de cambio bilateral frente al dólar, medido como moneda lo
 $$
 y^{10}_{i,t}
 = \delta_i + \phi_i y^{10}_{US,t}
++ \lambda_i EMBIG_{i,t}/100
 + \theta_{1i}\log(VIX_t)
 + \theta_{2i}\log(Nasdaq_t)
 + \theta_{3i}\log(EER^{US}_t)
@@ -404,7 +404,7 @@ y^{10}_{i,t}
 + u^{10Y}_{i,t}
 $$
 
-La tasa local a 10 años se compara con la Treasury 10Y y con condiciones financieras globales. La intención no es explicar toda la curva local, sino construir una métrica comparable de desviación respecto de factores externos observables.
+La tasa local a 10 años se compara con la Treasury 10Y, el EMBIG país y condiciones financieras globales. La intención no es explicar toda la curva local, sino construir una métrica comparable de desviación respecto de factores externos y riesgo soberano observable.
 :::
 
 ::: {.mu-equation-card}
@@ -513,7 +513,7 @@ plot_global_residuals("10Y")
 
 ## Selector por país
 
-Cada pestaña mantiene la misma plantilla: primero el stress conjunto de FX y 10Y; después la segunda etapa entre residuo cambiario y spread soberano 10Y frente a EE.UU.
+Cada pestaña mantiene la misma plantilla: primero el stress conjunto de FX y 10Y; después la segunda etapa entre residuo cambiario y spread soberano 10Y frente a EE.UU. La primera etapa de tasas ya controla por EMBIG país.
 
 ::: {.panel-tabset .exchange-country-tabs}
 
