@@ -971,22 +971,49 @@ main.content {
   }
 }
 
+
 /* ---------------- ExchangeReg page ---------------- */
+.exchange-wide-chart,
 .mu-wide-figure {
-  background: rgba(255,255,255,0.82);
+  background: rgba(255,255,255,0.88);
   border: 1px solid var(--mu-border);
   border-radius: var(--mu-radius);
   box-shadow: var(--mu-shadow-soft);
-  padding: clamp(0.65rem, 1.4vw, 1rem);
-  margin: 1.2rem 0 1.8rem;
+  padding: clamp(0.55rem, 1.1vw, 0.85rem);
+  margin: 1.1rem 0 2rem;
+  overflow: hidden;
 }
 
+.exchange-wide-chart img,
 .mu-wide-figure img,
 .mu-chart img {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 14px;
+  border-radius: 15px;
+}
+
+.mu-equation-card {
+  background: rgba(255,255,255,0.86);
+  border: 1px solid var(--mu-border);
+  border-radius: var(--mu-radius);
+  box-shadow: var(--mu-shadow-soft);
+  padding: clamp(1.15rem, 2.1vw, 1.65rem);
+  margin: 1.1rem 0 1.35rem;
+}
+
+.mu-equation-card h3 {
+  margin-top: 0;
+}
+
+.mu-equation-card p {
+  color: var(--mu-muted);
+}
+
+.mu-equation-card .math.display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.4rem 0;
 }
 
 .mu-figure-grid {
@@ -1007,15 +1034,16 @@ main.content {
 }
 
 /* ==========================================================
-   ExchangeReg integrated dashboard
+   ExchangeReg country selector
    ========================================================== */
 .exchange-selector-card {
-  background: rgba(255, 255, 255, 0.84);
+  background: rgba(255, 255, 255, 0.86);
   border: 1px solid var(--mu-border);
   border-radius: var(--mu-radius);
   box-shadow: var(--mu-shadow-soft);
   padding: clamp(1rem, 2vw, 1.35rem);
   margin: 1.15rem 0 2rem;
+  overflow: hidden;
 }
 
 .exchange-selector-row {
@@ -1025,7 +1053,7 @@ main.content {
   justify-content: space-between;
   gap: 0.75rem;
   padding-bottom: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.15rem;
   border-bottom: 1px solid rgba(221, 216, 207, 0.9);
 }
 
@@ -1036,13 +1064,13 @@ main.content {
 }
 
 .exchange-select {
-  min-width: min(100%, 280px);
+  min-width: min(100%, 310px);
   border-radius: 999px;
   border: 1px solid var(--mu-border-strong);
   background: var(--mu-surface);
   color: var(--mu-accent);
   font-weight: 760;
-  padding: 0.58rem 0.9rem;
+  padding: 0.62rem 0.95rem;
   outline: none;
 }
 
@@ -1051,11 +1079,18 @@ main.content {
   box-shadow: 0 0 0 0.18rem rgba(39, 56, 74, 0.10);
 }
 
+/* Sin JavaScript todos los paneles quedan visibles; con JS se activa el selector. */
 .exchange-country-panel {
+  display: block;
+  padding-top: 0.2rem;
+  margin-top: 0.9rem;
+}
+
+.exchange-js .exchange-country-panel {
   display: none;
 }
 
-.exchange-country-panel.is-active {
+.exchange-js .exchange-country-panel.is-active {
   display: block;
 }
 
@@ -1063,7 +1098,7 @@ main.content {
   color: var(--mu-muted);
   margin-top: 0.55rem;
   margin-bottom: 1rem;
-  max-width: 980px;
+  max-width: 1040px;
 }
 
 .exchange-country-header {
@@ -1076,7 +1111,7 @@ main.content {
 
 .exchange-country-header span {
   color: var(--mu-accent);
-  font-size: 1.25rem;
+  font-size: 1.28rem;
   font-weight: 850;
   letter-spacing: -0.02em;
 }
@@ -1093,43 +1128,43 @@ main.content {
   font-weight: 780;
 }
 
-.exchange-two-col {
+.exchange-country-figures {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 1rem;
-  align-items: start;
+  margin-top: 1rem;
 }
 
-.exchange-two-col figure {
+.exchange-country-figure {
   margin: 0;
   background: var(--mu-surface);
   border: 1px solid var(--mu-border);
   border-radius: 18px;
   box-shadow: 0 10px 24px rgba(31, 42, 53, 0.055);
-  padding: 0.6rem;
+  padding: clamp(0.45rem, 0.8vw, 0.7rem);
   overflow: hidden;
 }
 
-.exchange-two-col img {
+.exchange-country-figure img {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 12px;
+  border-radius: 13px;
 }
 
-.exchange-two-col figcaption {
+.exchange-country-figure figcaption {
   color: var(--mu-muted);
-  font-size: 0.86rem;
+  font-size: 0.88rem;
   font-weight: 700;
   text-align: center;
   margin-top: 0.55rem;
 }
 
-@media (max-width: 920px) {
-  .exchange-two-col {
-    grid-template-columns: 1fr;
-  }
+.exchange-panorama img {
+  object-fit: contain;
+}
 
+@media (max-width: 920px) {
   .exchange-country-header strong {
     width: 100%;
     justify-content: center;

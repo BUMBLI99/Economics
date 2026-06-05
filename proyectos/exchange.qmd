@@ -30,15 +30,26 @@ read_exchange_csv <- function(name) {
 }
 
 asset_img <- function(file) file.path("..", "assets", "img", "exchange", file)
-```
 
-::: {.mu-note}
-Este proyecto reemplaza al antiguo ejercicio de stress financiero centrado solo en Chile. La página queda integrada como el resto del portafolio: metodología, outputs reproducibles, tablas de diagnóstico, visualización global y selector por país.
-:::
+country_meta <- data.frame(
+  country = c("CLP", "BRL", "MXN", "PEN", "COP"),
+  label   = c("Chile · CLP", "Brasil · BRL", "México · MXN", "Perú · PEN", "Colombia · COP"),
+  lectura = c(
+    "La presión cambiaria residual y el spread 10Y muestran una asociación positiva. La lectura es útil como monitoreo macrofinanciero, no como identificación causal.",
+    "La relación FX residual–spread 10Y es débil en esta especificación. Brasil probablemente requiere controles locales adicionales, especialmente riesgo fiscal, política doméstica y primas de riesgo idiosincráticas.",
+    "La asociación es positiva y relativamente clara. Es consistente con episodios donde depreciación residual y aumento del spread largo se mueven conjuntamente.",
+    "Es el caso con vínculo más marcado en la segunda etapa. La interpretación debe considerar la menor volatilidad cambiaria relativa y la gestión activa del mercado FX.",
+    "La asociación es positiva pero económicamente pequeña. La lectura por país debería complementarse con petróleo, fiscal, liquidez local y primas de riesgo soberano."
+  ),
+  stringsAsFactors = FALSE
+)
+```
 
 ## Qué mide el proyecto
 
-El ejercicio separa movimientos observados de **tipo de cambio** y **tasas soberanas a 10 años** en dos componentes: una parte explicada por fundamentos externos observables y un residuo normalizado. Ese residuo no debe interpretarse mecánicamente como “shock doméstico puro”; es una señal operacional para detectar episodios en que el precio financiero local se mueve más de lo que sugiere la especificación global.
+Este proyecto compara movimientos de **tipo de cambio** y **tasas soberanas a 10 años** en cinco economías latinoamericanas. La idea no es mirar depreciaciones o aumentos de tasas en bruto, sino separar una parte explicada por fundamentos externos observables y una parte residual estandarizada.
+
+El residuo no debe leerse mecánicamente como “shock doméstico puro”. Es una métrica de monitoreo: cuando el residuo se vuelve persistente o extremo, el caso merece una revisión más detallada de factores locales, liquidez, riesgo político, sorpresas fiscales o shocks regulatorios.
 
 ::: {.mu-kpi-grid}
 ::: {.mu-kpi-card}
@@ -82,82 +93,78 @@ Residuo normalizado por país y mercado.
 :::
 :::
 
-## Estructura del modelo
+## Especificación del modelo
 
-::: {.mu-split}
-::: {.mu-text-block}
-### Primera etapa: fundamentos externos
+La estimación se organiza en dos etapas. La primera etapa obtiene residuos de tipo de cambio y de tasa larga para cada país. La segunda etapa resume la asociación entre presión cambiaria residual y spread soberano 10Y frente a EE.UU.
 
-Para cada país se estima un modelo reducido de tipo de cambio y otro de tasa 10Y. La especificación de FX usa el logaritmo del tipo de cambio bilateral frente al dólar y controla por tendencia, inflación relativa contra EE.UU., WTI, cobre, Nasdaq, equity China, VIX, dólar multilateral y CNY/USD.
+::: {.mu-equation-card}
+### Primera etapa: tipo de cambio
 
-La especificación de tasas 10Y usa la tasa 10Y de EE.UU., VIX, Nasdaq, dólar multilateral, CNY/USD y tendencia. La comparación relevante es el residuo estandarizado, no una interpretación estructural fuerte de cada coeficiente.
+$$
+\log S_{i,t}
+= \alpha_i + \beta_i t
++ \rho_i \log\left(\frac{CPI_{i,t}}{CPI_{US,t}}\right)
++ \Gamma_i' X_t
++ u^{FX}_{i,t}
+$$
+
+Donde $S_{i,t}$ es el tipo de cambio bilateral frente al dólar, expresado como moneda local por USD. El término de precios relativos aproxima presiones de inflación relativa contra EE.UU. El vector $X_t$ agrupa fundamentos externos comunes: petróleo WTI, cobre, Nasdaq, equity China, VIX, dólar multilateral y CNY/USD.
+
+El indicador publicado es el residuo estandarizado:
+
+$$
+z^{FX}_{i,t}=\frac{u^{FX}_{i,t}-\bar u^{FX}_{i}}{\sigma(u^{FX}_{i})}
+$$
 :::
 
-::: {.mu-list-card}
-### Corrección importante de CPI
+::: {.mu-equation-card}
+### Primera etapa: tasa soberana 10Y
 
-La inflación relativa se construye desde índices BIS `WS_LONG_CPI` en nivel mensual, base 2010=100:
+$$
+y^{10}_{i,t}
+= \delta_i + \phi_i y^{10}_{US,t}
++ \Theta_i' G_t
++ \eta_i t
++ u^{10Y}_{i,t}
+$$
 
-- Chile: `M.CL.628`
-- Estados Unidos: `M.US.628`
-- Brasil: `M.BR.628`
-- Colombia: `M.CO.628`
-- México: `M.MX.628`
-- Perú: `M.PE.628`
+Donde $y^{10}_{i,t}$ es la tasa soberana local a 10 años y $y^{10}_{US,t}$ es la tasa Treasury 10Y. El vector $G_t$ incluye factores globales financieros: VIX, Nasdaq, dólar multilateral y CNY/USD. La salida comparable entre países es:
 
-Luego se interpola log-linealmente a frecuencia diaria y se mantiene plano después del último dato observado. Esto evita el patrón artificial de serrucho que aparecía al reconstruir un CPI desde variaciones.
+$$
+z^{10Y}_{i,t}=\frac{u^{10Y}_{i,t}-\bar u^{10Y}_{i}}{\sigma(u^{10Y}_{i})}
+$$
 :::
+
+::: {.mu-equation-card}
+### Segunda etapa: presión cambiaria y spread largo
+
+$$
+z^{FX}_{i,t}
+= a_i + b_i\left(y^{10}_{i,t}-y^{10}_{US,t}\right)+e_{i,t}
+$$
+
+Esta ecuación es descriptiva. Resume si los episodios de presión cambiaria residual tienden a coincidir con un mayor spread soberano largo frente a EE.UU. No identifica causalidad estructural.
 :::
 
-## Dashboard de residuos
+## Dashboard regional
 
-Los gráficos globales permiten comparar magnitud y sincronización de episodios regionales. Las líneas punteadas en ±2 desvíos estándar funcionan como referencia visual de episodios extremos, no como regla mecánica de crisis.
+Los gráficos globales muestran la sincronización regional de los residuos. Las líneas en torno a ±2 desvíos estándar funcionan como referencia visual de episodios extremos; no son una regla mecánica de crisis.
 
 ### Tipo de cambio
 
-```{r exchange-fx-plot}
-residuals <- read_exchange_csv("residuals_long.csv")
-if (!is.null(residuals) && all(c("date", "country", "market", "z_score") %in% names(residuals)) &&
-    requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("plotly", quietly = TRUE)) {
-  residuals$date <- as.Date(residuals$date)
-  dfp <- residuals[residuals$market == "FX" & residuals$date >= as.Date("2022-01-01"), ]
-  p <- ggplot2::ggplot(dfp, ggplot2::aes(date, z_score, colour = country)) +
-    ggplot2::geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3, colour = "#8a94a3") +
-    ggplot2::geom_hline(yintercept = c(-2, 2), linetype = "dotted", linewidth = 0.25, colour = "#c8c0b3") +
-    ggplot2::geom_line(linewidth = 0.55) +
-    ggplot2::labs(x = NULL, y = "z-score residuo FX", colour = NULL) +
-    ggplot2::theme_minimal(base_size = 13) +
-    ggplot2::theme(legend.position = "bottom")
-  plotly::ggplotly(p, tooltip = c("x", "y", "colour")) |>
-    plotly::layout(legend = list(orientation = "h", x = 0.02, y = -0.12))
-} else {
-  knitr::asis_output(paste0('<div class="mu-wide-figure"><img src="', asset_img("fx_residuals_zscores_from2018.jpg"), '" alt="Residuos normalizados del tipo de cambio"></div>'))
-}
-```
+::: {.exchange-wide-chart}
+![Residuos normalizados del tipo de cambio](../assets/img/exchange/fx_residuals_zscores_from2018.jpg)
+:::
 
 ### Tasas soberanas 10Y
 
-```{r exchange-y10-plot}
-residuals <- read_exchange_csv("residuals_long.csv")
-if (!is.null(residuals) && all(c("date", "country", "market", "z_score") %in% names(residuals)) &&
-    requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("plotly", quietly = TRUE)) {
-  residuals$date <- as.Date(residuals$date)
-  dfp <- residuals[residuals$market == "10Y" & residuals$date >= as.Date("2022-01-01"), ]
-  p <- ggplot2::ggplot(dfp, ggplot2::aes(date, z_score, colour = country)) +
-    ggplot2::geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3, colour = "#8a94a3") +
-    ggplot2::geom_hline(yintercept = c(-2, 2), linetype = "dotted", linewidth = 0.25, colour = "#c8c0b3") +
-    ggplot2::geom_line(linewidth = 0.55) +
-    ggplot2::labs(x = NULL, y = "z-score residuo 10Y", colour = NULL) +
-    ggplot2::theme_minimal(base_size = 13) +
-    ggplot2::theme(legend.position = "bottom")
-  plotly::ggplotly(p, tooltip = c("x", "y", "colour")) |>
-    plotly::layout(legend = list(orientation = "h", x = 0.02, y = -0.12))
-} else {
-  knitr::asis_output(paste0('<div class="mu-wide-figure"><img src="', asset_img("y10_residuals_zscores_from2018.jpg"), '" alt="Residuos normalizados de tasas soberanas 10Y"></div>'))
-}
-```
+::: {.exchange-wide-chart}
+![Residuos normalizados de tasas soberanas 10Y](../assets/img/exchange/y10_residuals_zscores_from2018.jpg)
+:::
 
-## Diagnóstico de ajuste
+## Estimaciones principales
+
+### Ajuste de primera etapa
 
 ```{r exchange-fit-table}
 fit <- read_exchange_csv("model_fit_summary.csv")
@@ -181,95 +188,16 @@ if (!is.null(fit) && all(c("country", "block", "r2", "rmse") %in% names(fit)) &&
 }
 ```
 
-El ajuste del modelo cambiario suele ser más alto que el de tasas largas, lo que es esperable: las tasas soberanas incorporan prima de riesgo local, expectativas fiscales, liquidez, shocks regulatorios y cambios de régimen monetario que no necesariamente quedan capturados por factores globales lineales.
+El ajuste del bloque cambiario suele ser mayor que el de tasas largas. Esto es razonable: las tasas soberanas incorporan prima de riesgo local, expectativas fiscales, liquidez y shocks de régimen monetario que una especificación global lineal no captura completamente.
 
-## Selector por país
-
-Usa el selector para revisar cada país con la misma plantilla: primero la trayectoria conjunta de residuos FX/10Y y luego la segunda etapa entre residuo cambiario y spread 10Y frente a EE.UU.
-
-<div class="exchange-selector-card">
-  <div class="exchange-selector-row">
-    <label for="exchange-country-select">País</label>
-    <select id="exchange-country-select" class="exchange-select">
-      <option value="CLP" selected>Chile · CLP</option>
-      <option value="BRL">Brasil · BRL</option>
-      <option value="MXN">México · MXN</option>
-      <option value="PEN">Perú · PEN</option>
-      <option value="COP">Colombia · COP</option>
-    </select>
-  </div>
-
-  <div class="exchange-country-panel is-active" data-country="CLP">
-    <div class="exchange-country-header"><span>Chile · CLP</span><strong>Segunda etapa: β = 0,345 · R² = 0,076</strong></div>
-    <p>Relación positiva entre presión cambiaria residual y spread 10Y. Es una asociación empírica útil para seguimiento, no una identificación causal.</p>
-    <div class="exchange-two-col">
-      <figure><img src="../assets/img/exchange/stress_fx_y10_CLP.jpg" alt="Stress FX y 10Y CLP"><figcaption>Stress FX y 10Y</figcaption></figure>
-      <figure><img src="../assets/img/exchange/second_stage_fx_y10_CLP.jpg" alt="Segunda etapa CLP"><figcaption>FX residual vs spread 10Y</figcaption></figure>
-    </div>
-  </div>
-
-  <div class="exchange-country-panel" data-country="BRL">
-    <div class="exchange-country-header"><span>Brasil · BRL</span><strong>Segunda etapa: β = 0,011 · R² = 0,000</strong></div>
-    <p>La relación FX residual–spread 10Y es prácticamente nula en esta versión. Brasil parece requerir controles locales adicionales para una lectura más informativa.</p>
-    <div class="exchange-two-col">
-      <figure><img src="../assets/img/exchange/stress_fx_y10_BRL.jpg" alt="Stress FX y 10Y BRL"><figcaption>Stress FX y 10Y</figcaption></figure>
-      <figure><img src="../assets/img/exchange/second_stage_fx_y10_BRL.jpg" alt="Segunda etapa BRL"><figcaption>FX residual vs spread 10Y</figcaption></figure>
-    </div>
-  </div>
-
-  <div class="exchange-country-panel" data-country="MXN">
-    <div class="exchange-country-header"><span>México · MXN</span><strong>Segunda etapa: β = 0,317 · R² = 0,072</strong></div>
-    <p>La asociación es positiva y de magnitud relevante. Es consistente con episodios en que depreciación residual y spread largo se mueven conjuntamente.</p>
-    <div class="exchange-two-col">
-      <figure><img src="../assets/img/exchange/stress_fx_y10_MXN.jpg" alt="Stress FX y 10Y MXN"><figcaption>Stress FX y 10Y</figcaption></figure>
-      <figure><img src="../assets/img/exchange/second_stage_fx_y10_MXN.jpg" alt="Segunda etapa MXN"><figcaption>FX residual vs spread 10Y</figcaption></figure>
-    </div>
-  </div>
-
-  <div class="exchange-country-panel" data-country="PEN">
-    <div class="exchange-country-header"><span>Perú · PEN</span><strong>Segunda etapa: β = 0,426 · R² = 0,160</strong></div>
-    <p>Es el caso con vínculo más marcado en la segunda etapa. Conviene interpretarlo con cautela por la menor volatilidad cambiaria relativa y la gestión del mercado FX.</p>
-    <div class="exchange-two-col">
-      <figure><img src="../assets/img/exchange/stress_fx_y10_PEN.jpg" alt="Stress FX y 10Y PEN"><figcaption>Stress FX y 10Y</figcaption></figure>
-      <figure><img src="../assets/img/exchange/second_stage_fx_y10_PEN.jpg" alt="Segunda etapa PEN"><figcaption>FX residual vs spread 10Y</figcaption></figure>
-    </div>
-  </div>
-
-  <div class="exchange-country-panel" data-country="COP">
-    <div class="exchange-country-header"><span>Colombia · COP</span><strong>Segunda etapa: β = 0,028 · R² = 0,002</strong></div>
-    <p>La asociación es positiva pero económicamente pequeña. La lectura por país debería complementarse con primas de riesgo, petróleo, fiscal y liquidez local.</p>
-    <div class="exchange-two-col">
-      <figure><img src="../assets/img/exchange/stress_fx_y10_COP.jpg" alt="Stress FX y 10Y COP"><figcaption>Stress FX y 10Y</figcaption></figure>
-      <figure><img src="../assets/img/exchange/second_stage_fx_y10_COP.jpg" alt="Segunda etapa COP"><figcaption>FX residual vs spread 10Y</figcaption></figure>
-    </div>
-  </div>
-</div>
-
-<script>
-(function() {
-  const selector = document.getElementById("exchange-country-select");
-  const panels = document.querySelectorAll(".exchange-country-panel");
-  if (!selector || panels.length === 0) return;
-  function showCountry(country) {
-    panels.forEach(function(panel) {
-      panel.classList.toggle("is-active", panel.dataset.country === country);
-    });
-  }
-  selector.addEventListener("change", function(event) {
-    showCountry(event.target.value);
-  });
-  showCountry(selector.value);
-})();
-</script>
-
-## Segunda etapa: resumen comparado
+### Segunda etapa
 
 ```{r exchange-second-table}
 second <- read_exchange_csv("second_stage_summary.csv")
 if (!is.null(second) && all(c("country", "beta_y10_spread", "r2", "lectura") %in% names(second)) && requireNamespace("knitr", quietly = TRUE)) {
   tab <- data.frame(
     País = second$country,
-    `Coeficiente spread 10Y` = fmt_num(second$beta_y10_spread, 3),
+    `Coeficiente bᵢ` = fmt_num(second$beta_y10_spread, 3),
     `R²` = fmt_num(second$r2, 3),
     Lectura = second$lectura,
     check.names = FALSE
@@ -280,9 +208,67 @@ if (!is.null(second) && all(c("country", "beta_y10_spread", "r2", "lectura") %in
 }
 ```
 
+El coeficiente $b_i$ resume cuánto se asocia el residuo cambiario normalizado con el spread soberano 10Y. Un coeficiente positivo indica que, en esa muestra, mayores spreads largos tienden a coincidir con mayor presión cambiaria residual.
+
+## Selector por país
+
+Usa el selector para revisar cada país con la misma plantilla: primero el stress conjunto de FX y 10Y, luego la segunda etapa entre residuo cambiario y spread 10Y frente a EE.UU.
+
+```{r exchange-country-selector, results='asis'}
+second <- read_exchange_csv("second_stage_summary.csv")
+if (is.null(second)) second <- data.frame(country = country_meta$country, beta_y10_spread = NA_real_, r2 = NA_real_)
+meta <- merge(country_meta, second[, intersect(names(second), c("country", "beta_y10_spread", "r2"))], by = "country", all.x = TRUE, sort = FALSE)
+meta <- meta[match(country_meta$country, meta$country), ]
+
+options_html <- paste0(
+  sprintf('<option value="%s"%s>%s</option>',
+          meta$country,
+          ifelse(meta$country == "CLP", ' selected', ''),
+          meta$label),
+  collapse = "\n"
+)
+
+panel_html <- paste(vapply(seq_len(nrow(meta)), function(i) {
+  cc <- meta$country[i]
+  beta <- fmt_num(meta$beta_y10_spread[i], 3)
+  r2 <- fmt_num(meta$r2[i], 3)
+  paste0(
+    '<section class="exchange-country-panel', if (cc == "CLP") ' is-active' else '', '" data-country="', cc, '">',
+    '<div class="exchange-country-header"><span>', meta$label[i], '</span><strong>Segunda etapa: bᵢ = ', beta, ' · R² = ', r2, '</strong></div>',
+    '<p>', meta$lectura[i], '</p>',
+    '<div class="exchange-country-figures">',
+      '<figure class="exchange-country-figure exchange-panorama"><img src="../assets/img/exchange/stress_fx_y10_', cc, '.jpg" alt="Stress FX y 10Y ', cc, '"><figcaption>Stress conjunto: residuo FX y residuo 10Y normalizados.</figcaption></figure>',
+      '<figure class="exchange-country-figure exchange-panorama"><img src="../assets/img/exchange/second_stage_fx_y10_', cc, '.jpg" alt="Segunda etapa FX y spread 10Y ', cc, '"><figcaption>Segunda etapa: residuo FX normalizado frente al diferencial 10Y con EE.UU.</figcaption></figure>',
+    '</div>',
+    '</section>'
+  )
+}, character(1)), collapse = "\n")
+
+cat(paste0(
+  '<div class="exchange-selector-card" id="exchange-selector-card">',
+  '<div class="exchange-selector-row"><label for="exchange-country-select">País</label><select id="exchange-country-select" class="exchange-select">',
+  options_html,
+  '</select></div>',
+  panel_html,
+  '</div>',
+  '<script>',
+  '(function(){',
+  'var card=document.getElementById("exchange-selector-card");',
+  'var selector=document.getElementById("exchange-country-select");',
+  'if(!card||!selector){return;}',
+  'var panels=card.querySelectorAll(".exchange-country-panel");',
+  'card.classList.add("exchange-js");',
+  'function showCountry(country){for(var i=0;i<panels.length;i++){panels[i].classList.toggle("is-active",panels[i].getAttribute("data-country")===country);}}',
+  'selector.addEventListener("change",function(e){showCountry(e.target.value);});',
+  'showCountry(selector.value);',
+  '})();',
+  '</script>'
+))
+```
+
 ## Interpretación económica
 
-La contribución del proyecto es disciplinar la conversación sobre stress macrofinanciero regional. En vez de mirar solamente depreciaciones o aumentos de tasas en bruto, el ejercicio pregunta si esos movimientos son inusuales después de controlar por un conjunto común de fundamentos externos. Esto ayuda a distinguir episodios regionales sincronizados de episodios que podrían requerir una lectura local más fina.
+La contribución del proyecto es disciplinar la lectura de stress macrofinanciero regional. En vez de mirar movimientos financieros aislados, el ejercicio pregunta si esos movimientos son inusuales después de controlar por un conjunto común de fundamentos externos.
 
 ::: {.mu-grid .mu-grid-areas}
 ::: {.mu-area}
@@ -300,27 +286,5 @@ No identifica causalidad estructural ni separa perfectamente shocks domésticos,
 Agregar validación fuera de muestra, ventanas rolling, EMBI/CDS y un índice sintético regional de stress con umbrales explícitos.
 :::
 :::
-
-## Reproducibilidad
-
-El flujo integrado del repo es:
-
-```powershell
-.\render_exchange_site.bat
-```
-
-Para renderizar solo la página con los outputs ya existentes:
-
-```powershell
-.\render_exchange_site.bat -NoModel
-```
-
-Los outputs principales quedan en:
-
-```text
-data/processed/exchange/
-assets/img/exchange/
-docs/
-```
 
 [Descargar reporte PDF](../assets/files/exchange_report.pdf){.mu-button .mu-button-secondary}

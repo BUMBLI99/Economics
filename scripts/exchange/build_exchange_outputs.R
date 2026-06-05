@@ -412,6 +412,25 @@ fit_summary <- bind_rows(
 ) %>%
   mutate(across(c(r2, adj_r2, rmse), ~ round(.x, 4)))
 
+tidy_lm_coefficients <- function(model, country, block) {
+  sm <- summary(model)$coefficients
+  tibble(
+    country = country,
+    block = block,
+    term = rownames(sm),
+    estimate = unname(sm[, "Estimate"]),
+    std_error = unname(sm[, "Std. Error"]),
+    statistic = unname(sm[, "t value"]),
+    p_value = unname(sm[, "Pr(>|t|)"])
+  )
+}
+
+model_coefficients <- bind_rows(
+  imap_dfr(fx_models, ~ tidy_lm_coefficients(.x, .y, "FX")),
+  imap_dfr(yield_models, ~ tidy_lm_coefficients(.x, .y, "10Y"))
+) %>%
+  mutate(across(c(estimate, std_error, statistic, p_value), ~ signif(.x, 5)))
+
 # ------------------------------------------------------------
 # Segunda etapa
 # ------------------------------------------------------------
@@ -474,6 +493,7 @@ latest_snapshot <- residuals_long %>%
 readr::write_csv(db_daily, file.path(out_data, "db_daily_exchange.csv"))
 readr::write_csv(residuals_long, file.path(out_data, "residuals_long.csv"))
 readr::write_csv(fit_summary, file.path(out_data, "model_fit_summary.csv"))
+readr::write_csv(model_coefficients, file.path(out_data, "model_coefficients.csv"))
 readr::write_csv(second_stage_summary, file.path(out_data, "second_stage_summary.csv"))
 readr::write_csv(second_stage_all, file.path(out_data, "second_stage_data.csv"))
 readr::write_csv(latest_snapshot, file.path(out_data, "latest_snapshot.csv"))
@@ -525,10 +545,11 @@ plot_global_res <- function(df, market = c("FX", "10Y"), from_date = as.Date("20
     mu_theme()
 }
 
-plot_stress_country <- function(df, country_code) {
+plot_stress_country <- function(df, country_code, from_date = as.Date("2022-01-01")) {
   fx_col  <- paste0("z_res_fx_",  country_code)
   y10_col <- paste0("z_res_y10_", country_code)
   df_plot <- df %>%
+    filter(date >= from_date) %>%
     select(date, z_fx = all_of(fx_col), z_y10 = all_of(y10_col)) %>%
     pivot_longer(c(z_fx, z_y10), names_to = "serie", values_to = "z_score") %>%
     mutate(serie = recode(serie, z_fx = "FX residual", z_y10 = "10Y residual"))
@@ -558,16 +579,17 @@ plot_second_stage_country <- function(second_stage_results, country_code) {
     mu_theme()
 }
 
-save_plot <- function(plot, filename, width = 12, height = 6.8) {
-  ggsave(file.path(out_img, filename), plot = plot, width = width, height = height, dpi = 180, bg = "white")
+save_plot <- function(plot, filename, width = 13, height = 5.6) {
+  ggsave(file.path(out_img, filename), plot = plot, width = width, height = height, dpi = 190, bg = "white")
 }
 
-save_plot(plot_global_res(residuals_long, "FX"),  "fx_residuals_zscores_from2018.jpg",  width = 13.5, height = 6.6)
-save_plot(plot_global_res(residuals_long, "10Y"), "y10_residuals_zscores_from2018.jpg", width = 13.5, height = 6.6)
+# Graficos panoramicos para integracion web: menos alto, mas ancho y legibles en tarjetas.
+save_plot(plot_global_res(residuals_long, "FX"),  "fx_residuals_zscores_from2018.jpg",  width = 14.5, height = 5.7)
+save_plot(plot_global_res(residuals_long, "10Y"), "y10_residuals_zscores_from2018.jpg", width = 14.5, height = 5.7)
 
 for (cc in fx_specs$country) {
-  save_plot(plot_stress_country(db_daily, cc), paste0("stress_fx_y10_", cc, ".jpg"), width = 11.5, height = 6.5)
-  save_plot(plot_second_stage_country(second_stage_results, cc), paste0("second_stage_fx_y10_", cc, ".jpg"), width = 11.5, height = 6.5)
+  save_plot(plot_stress_country(db_daily, cc), paste0("stress_fx_y10_", cc, ".jpg"), width = 14.2, height = 5.5)
+  save_plot(plot_second_stage_country(second_stage_results, cc), paste0("second_stage_fx_y10_", cc, ".jpg"), width = 13.2, height = 5.9)
 }
 
 message("Outputs ExchangeReg actualizados en:")
