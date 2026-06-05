@@ -505,93 +505,103 @@ metadata <- tibble(
 readr::write_csv(metadata, file.path(out_data, "metadata.csv"))
 
 # ------------------------------------------------------------
-# Graficos web
+# Graficos estaticos opcionales
 # ------------------------------------------------------------
-country_colors <- c(
-  "CLP" = "#E67E22",
-  "BRL" = "#3fb1d3",
-  "MXN" = "#006400",
-  "PEN" = "#F1C40F",
-  "COP" = "#084e89"
-)
+# La pagina Quarto ya no usa JPG/PNG de este modelo: renderiza graficos
+# interactivos directamente desde los CSV anteriores. Para no duplicar
+# peso en el sitio, la generacion de imagenes estaticas queda desactivada
+# por defecto. Activar solo si se necesita una miniatura externa:
+# EXCHANGE_WRITE_STATIC_PNG=TRUE
+write_static_png <- toupper(Sys.getenv("EXCHANGE_WRITE_STATIC_PNG", "FALSE")) %in% c("TRUE", "1", "YES", "SI", "SÍ")
 
-mu_theme <- function() {
-  theme_minimal(base_size = 13) +
-    theme(
-      plot.title = element_text(face = "bold", colour = "#27384a", size = 17),
-      plot.subtitle = element_text(colour = "#66717f", size = 11),
-      axis.title = element_text(colour = "#27384a", face = "bold"),
-      axis.text = element_text(colour = "#4e5965"),
-      legend.position = "bottom",
-      legend.title = element_blank(),
-      panel.grid.minor = element_blank(),
-      plot.background = element_rect(fill = "white", colour = NA),
-      panel.background = element_rect(fill = "white", colour = NA)
-    )
-}
+if (write_static_png) {
+  country_colors <- c(
+    "CLP" = "#E67E22",
+    "BRL" = "#3fb1d3",
+    "MXN" = "#006400",
+    "PEN" = "#F1C40F",
+    "COP" = "#084e89"
+  )
 
-plot_global_res <- function(df, market = c("FX", "10Y"), from_date = as.Date("2022-01-01")) {
-  market <- match.arg(market)
-  ylab <- if (market == "FX") "z-score residuo FX" else "z-score residuo 10Y"
-  title <- if (market == "FX") "Residuos normalizados del tipo de cambio" else "Residuos normalizados de tasas soberanas 10Y"
-  dfp <- df %>% filter(.data$market == .env$market, date >= from_date)
-  ggplot(dfp, aes(date, z_score, colour = country)) +
-    geom_hline(yintercept = 0, linewidth = 0.35, linetype = "dashed", colour = "#8a94a3") +
-    geom_hline(yintercept = c(-2, 2), linewidth = 0.25, linetype = "dotted", colour = "#c8c0b3") +
-    geom_line(linewidth = 0.55, alpha = 0.95) +
-    scale_color_manual(values = country_colors) +
-    scale_x_date(labels = scales::label_date("%Y"), breaks = scales::breaks_pretty(7)) +
-    labs(title = title, subtitle = "Desviaciones respecto de fundamentos externos observables", x = NULL, y = ylab) +
-    mu_theme()
-}
+  mu_theme <- function() {
+    theme_minimal(base_size = 13) +
+      theme(
+        plot.title = element_text(face = "bold", colour = "#27384a", size = 17),
+        plot.subtitle = element_text(colour = "#66717f", size = 11),
+        axis.title = element_text(colour = "#27384a", face = "bold"),
+        axis.text = element_text(colour = "#4e5965"),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        panel.grid.minor = element_blank(),
+        plot.background = element_rect(fill = "white", colour = NA),
+        panel.background = element_rect(fill = "white", colour = NA)
+      )
+  }
 
-plot_stress_country <- function(df, country_code, from_date = as.Date("2022-01-01")) {
-  fx_col  <- paste0("z_res_fx_",  country_code)
-  y10_col <- paste0("z_res_y10_", country_code)
-  df_plot <- df %>%
-    filter(date >= from_date) %>%
-    select(date, z_fx = all_of(fx_col), z_y10 = all_of(y10_col)) %>%
-    pivot_longer(c(z_fx, z_y10), names_to = "serie", values_to = "z_score") %>%
-    mutate(serie = recode(serie, z_fx = "FX residual", z_y10 = "10Y residual"))
-  ggplot(df_plot, aes(date, z_score, colour = serie)) +
-    geom_hline(yintercept = 0, linewidth = 0.35, linetype = "dashed", colour = "#8a94a3") +
-    geom_hline(yintercept = c(-2, 2), linewidth = 0.25, linetype = "dotted", colour = "#c8c0b3") +
-    geom_line(linewidth = 0.55) +
-    scale_color_manual(values = c("FX residual" = "#27384a", "10Y residual" = "#7b5e42")) +
-    labs(title = paste("Stress FX y 10Y -", country_code), subtitle = "Residuos normalizados por mercado", x = NULL, y = "z-score") +
-    mu_theme()
-}
+  plot_global_res <- function(df, market = c("FX", "10Y"), from_date = as.Date("2022-01-01")) {
+    market <- match.arg(market)
+    ylab <- if (market == "FX") "z-score residuo FX" else "z-score residuo 10Y"
+    title <- if (market == "FX") "Residuos normalizados del tipo de cambio" else "Residuos normalizados de tasas soberanas 10Y"
+    dfp <- df %>% filter(.data$market == .env$market, date >= from_date)
+    ggplot(dfp, aes(date, z_score, colour = country)) +
+      geom_hline(yintercept = 0, linewidth = 0.35, linetype = "dashed", colour = "#8a94a3") +
+      geom_hline(yintercept = c(-2, 2), linewidth = 0.25, linetype = "dotted", colour = "#c8c0b3") +
+      geom_line(linewidth = 0.55, alpha = 0.95) +
+      scale_color_manual(values = country_colors) +
+      scale_x_date(labels = scales::label_date("%Y"), breaks = scales::breaks_pretty(7)) +
+      labs(title = title, subtitle = "Desviaciones respecto de fundamentos externos observables", x = NULL, y = ylab) +
+      mu_theme()
+  }
 
-plot_second_stage_country <- function(second_stage_results, country_code) {
-  obj <- second_stage_results$result[[which(second_stage_results$country == country_code)]]
-  dfp <- obj$data
-  sm <- summary(obj$model)
-  beta <- unname(coef(obj$model)["y10_spread"])
-  ggplot(dfp, aes(y10_spread, z_fx)) +
-    geom_point(alpha = 0.30, size = 0.65, colour = "#27384a") +
-    geom_smooth(method = "lm", se = FALSE, linewidth = 0.8, colour = "#7b5e42") +
-    labs(
-      title = paste("Segunda etapa FX vs spread 10Y -", country_code),
-      subtitle = paste0("Coeficiente = ", round(beta, 3), " · R² = ", round(sm$r.squared, 3)),
-      x = "Diferencial 10Y frente a EE.UU. (p.p.)",
-      y = "z-score residuo FX"
-    ) +
-    mu_theme()
-}
+  plot_stress_country <- function(df, country_code, from_date = as.Date("2022-01-01")) {
+    fx_col  <- paste0("z_res_fx_",  country_code)
+    y10_col <- paste0("z_res_y10_", country_code)
+    df_plot <- df %>%
+      filter(date >= from_date) %>%
+      select(date, z_fx = all_of(fx_col), z_y10 = all_of(y10_col)) %>%
+      pivot_longer(c(z_fx, z_y10), names_to = "serie", values_to = "z_score") %>%
+      mutate(serie = recode(serie, z_fx = "FX residual", z_y10 = "10Y residual"))
+    ggplot(df_plot, aes(date, z_score, colour = serie)) +
+      geom_hline(yintercept = 0, linewidth = 0.35, linetype = "dashed", colour = "#8a94a3") +
+      geom_hline(yintercept = c(-2, 2), linewidth = 0.25, linetype = "dotted", colour = "#c8c0b3") +
+      geom_line(linewidth = 0.55) +
+      scale_color_manual(values = c("FX residual" = "#27384a", "10Y residual" = "#7b5e42")) +
+      labs(title = paste("Stress FX y 10Y -", country_code), subtitle = "Residuos normalizados por mercado", x = NULL, y = "z-score") +
+      mu_theme()
+  }
 
-save_plot <- function(plot, filename, width = 13, height = 5.6) {
-  ggsave(file.path(out_img, filename), plot = plot, width = width, height = height, dpi = 190, bg = "white")
-}
+  plot_second_stage_country <- function(second_stage_results, country_code) {
+    obj <- second_stage_results$result[[which(second_stage_results$country == country_code)]]
+    dfp <- obj$data
+    sm <- summary(obj$model)
+    beta <- unname(coef(obj$model)["y10_spread"])
+    ggplot(dfp, aes(y10_spread, z_fx)) +
+      geom_point(alpha = 0.30, size = 0.65, colour = "#27384a") +
+      geom_smooth(method = "lm", se = FALSE, linewidth = 0.8, colour = "#7b5e42") +
+      labs(
+        title = paste("Segunda etapa FX vs spread 10Y -", country_code),
+        subtitle = paste0("Coeficiente = ", round(beta, 3), " · R² = ", round(sm$r.squared, 3)),
+        x = "Diferencial 10Y frente a EE.UU. (p.p.)",
+        y = "z-score residuo FX"
+      ) +
+      mu_theme()
+  }
 
-# Graficos panoramicos para integracion web: menos alto, mas ancho y legibles en tarjetas.
-save_plot(plot_global_res(residuals_long, "FX"),  "fx_residuals_zscores_from2018.jpg",  width = 14.5, height = 5.7)
-save_plot(plot_global_res(residuals_long, "10Y"), "y10_residuals_zscores_from2018.jpg", width = 14.5, height = 5.7)
+  save_plot <- function(plot, filename, width = 13, height = 5.6) {
+    ggsave(file.path(out_img, filename), plot = plot, width = width, height = height, dpi = 190, bg = "white")
+  }
 
-for (cc in fx_specs$country) {
-  save_plot(plot_stress_country(db_daily, cc), paste0("stress_fx_y10_", cc, ".jpg"), width = 14.2, height = 5.5)
-  save_plot(plot_second_stage_country(second_stage_results, cc), paste0("second_stage_fx_y10_", cc, ".jpg"), width = 13.2, height = 5.9)
+  save_plot(plot_global_res(residuals_long, "FX"),  "fx_residuals_zscores_from2018.jpg",  width = 14.5, height = 5.7)
+  save_plot(plot_global_res(residuals_long, "10Y"), "y10_residuals_zscores_from2018.jpg", width = 14.5, height = 5.7)
+
+  for (cc in fx_specs$country) {
+    save_plot(plot_stress_country(db_daily, cc), paste0("stress_fx_y10_", cc, ".jpg"), width = 14.2, height = 5.5)
+    save_plot(plot_second_stage_country(second_stage_results, cc), paste0("second_stage_fx_y10_", cc, ".jpg"), width = 13.2, height = 5.9)
+  }
+} else {
+  message("No se generan imagenes estaticas: la pagina usa graficos Plotly desde CSV.")
 }
 
 message("Outputs ExchangeReg actualizados en:")
 message(" - ", out_data)
-message(" - ", out_img)
+message(" - graficos interactivos renderizados por Quarto desde CSV")

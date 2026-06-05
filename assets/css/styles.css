@@ -1170,3 +1170,106 @@ main.content {
     justify-content: center;
   }
 }
+
+/* ==========================================================
+   ExchangeReg integrated Plotly version
+   ========================================================== */
+.exchange-chart-card {
+  background: rgba(255,255,255,0.92);
+  border: 1px solid var(--mu-border);
+  border-radius: var(--mu-radius);
+  box-shadow: var(--mu-shadow-soft);
+  padding: clamp(0.75rem, 1.4vw, 1.05rem);
+  margin: 1.1rem 0 2rem;
+  overflow: hidden;
+}
+
+.exchange-chart-card .cell-output-display,
+.exchange-chart-card .html-widget,
+.exchange-chart-card .plotly,
+.exchange-chart-card .js-plotly-plot,
+.exchange-chart-card .plot-container,
+.exchange-chart-card .svg-container {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.exchange-country-tabs,
+.exchange-estimation-tabs {
+  margin-top: 1.1rem;
+}
+
+.exchange-country-tabs .nav-tabs,
+.exchange-estimation-tabs .nav-tabs {
+  border-bottom: 1px solid rgba(221,216,207,0.95);
+  gap: 0.25rem;
+}
+
+.exchange-country-tabs .nav-tabs .nav-link,
+.exchange-estimation-tabs .nav-tabs .nav-link {
+  color: var(--mu-muted);
+  font-weight: 800;
+  border-radius: 999px 999px 0 0;
+  border-color: transparent;
+  padding: 0.62rem 0.95rem;
+}
+
+.exchange-country-tabs .nav-tabs .nav-link.active,
+.exchange-estimation-tabs .nav-tabs .nav-link.active {
+  color: var(--mu-accent);
+  background: rgba(255,255,255,0.92);
+  border-color: rgba(221,216,207,0.95) rgba(221,216,207,0.95) transparent;
+}
+
+.exchange-missing-card {
+  background: rgba(255,255,255,0.92);
+  border: 1px dashed rgba(123,94,66,0.45);
+  border-radius: 18px;
+  color: var(--mu-muted);
+  padding: 1.25rem 1.35rem;
+}
+
+.exchange-missing-card strong {
+  color: var(--mu-accent);
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.exchange-thumb-card {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+  padding: 1rem;
+  background:
+    radial-gradient(circle at 20% 18%, rgba(63,177,211,0.25), transparent 9rem),
+    radial-gradient(circle at 78% 28%, rgba(230,126,34,0.18), transparent 10rem),
+    linear-gradient(135deg, rgba(39,56,74,0.95), rgba(39,56,74,0.72));
+  color: #fff;
+  border-radius: 18px;
+  text-align: center;
+}
+
+.exchange-thumb-card strong {
+  display: block;
+  font-size: clamp(1.25rem, 2.2vw, 1.7rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.exchange-thumb-card span {
+  display: block;
+  margin-top: 0.45rem;
+  color: rgba(255,255,255,0.76);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.74rem;
+}
+
+/* Static-image containers from earlier Exchange version remain harmless,
+   but integrated pages should primarily use .exchange-chart-card. */
+.exchange-wide-chart,
+.exchange-country-figure {
+  display: none;
+}

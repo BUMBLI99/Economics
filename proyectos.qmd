@@ -75,7 +75,10 @@ Análisis visual y econométrico del traspaso de movimientos de la Tasa de Polí
 
 ::: {.mu-card}
 ::: {.mu-card-thumb}
-![Stress macrofinanciero LatAm](assets/img/exchange/fx_residuals_zscores_from2018.jpg)
+::: {.exchange-thumb-card}
+<strong>FX · 10Y · LatAm</strong>
+<span>residuos interactivos</span>
+::: 
 :::
 ::: {.mu-card-kicker}
 Macrofinanzas regionales
@@ -85,7 +88,7 @@ Macrofinanzas regionales
 Modelos diarios para CLP, BRL, MXN, PEN y COP que comparan movimientos del tipo de cambio y tasas soberanas 10Y respecto de fundamentos externos observables.
 
 ::: {.mu-meta}
-**Estado:** proyecto aplicado integrado al sitio, con dashboard web y outputs reproducibles.  
+**Estado:** proyecto aplicado integrado al sitio, con dashboard interactivo desde datos procesados.  
 **Herramientas:** R, tidyverse, ggplot2/plotly, BIS, FRED y BCCh.
 :::
 
