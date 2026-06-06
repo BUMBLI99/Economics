@@ -59,6 +59,8 @@ format:
     anchor-sections: true
     fig-align: center
     df-print: paged
+    include-after-body:
+      - assets/js/plotly-resize.js
 
 execute:
   freeze: auto

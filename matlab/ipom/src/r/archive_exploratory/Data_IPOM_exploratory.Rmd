@@ -1,0 +1,2396 @@
+---
+title: " "
+output:
+  pdf_document:
+    latex_engine: xelatex
+header-includes:
+  - \pagenumbering{gobble}
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, echo=FALSE, include=FALSE}
+
+## ==========================================================
+## 1. Librerías
+## ==========================================================
+
+library(rjson)
+library(httr)
+library(jsonlite)
+library(dplyr)
+library(lubridate)
+library(zoo)
+library(mFilter)   # para hpfilter
+
+library(ggplot2)
+library(readxl)
+
+## ==========================================================
+## 2. Funciones helper
+## ==========================================================
+bde_get_series <- function(user, pass, series_id,
+                           first_date = "1996-01-01",
+                           last_date  = format(Sys.Date(), "%Y-%m-%d")) {
+
+  base_url <- "https://si3.bcentral.cl/SieteRestWS/SieteRestWS.ashx"
+
+  res <- httr::GET(
+    base_url,
+    query = list(
+      user       = user,
+      pass       = pass,
+      timeseries = series_id,
+      firstdate  = first_date,
+      lastdate   = last_date,
+      `function` = "GetSeries"
+    ),
+    httr::timeout(60)
+  )
+
+  httr::stop_for_status(res)
+
+  txt <- httr::content(res, as = "text", encoding = "UTF-8")
+
+  txt <- iconv(
+    txt,
+    from = "UTF-8",
+    to = "UTF-8",
+    sub = ""
+  )
+
+  if (is.na(txt) || !nzchar(txt)) {
+    raw <- httr::content(res, as = "raw")
+    txt <- rawToChar(raw)
+    txt <- iconv(
+      txt,
+      from = "latin1",
+      to = "UTF-8",
+      sub = ""
+    )
+  }
+
+  json_data <- jsonlite::fromJSON(txt, simplifyVector = FALSE)
+
+  if (is.null(json_data$Series$Obs) || length(json_data$Series$Obs) == 0) {
+    return(data.frame())
+  }
+
+  obs_list <- json_data$Series$Obs
+
+  df <- do.call(
+    rbind,
+    lapply(obs_list, function(x) {
+      data.frame(
+        indexDateString = enc2utf8(as.character(x$indexDateString)),
+        value           = enc2utf8(as.character(x$value)),
+        statusCode      = enc2utf8(as.character(x$statusCode)),
+        stringsAsFactors = FALSE
+      )
+    })
+  )
+
+  names(df) <- c("date_str", "value", "status")
+
+  df$date <- as.Date(df$date_str, format = "%d-%m-%Y")
+
+  if (all(is.na(df$date))) {
+    df$date <- as.Date(df$date_str)
+  }
+
+  df$value <- gsub(",", ".", df$value, fixed = TRUE)
+
+  suppressWarnings({
+    df$value_num <- as.numeric(df$value)
+  })
+
+  df
+}
+
+## ---- 2.2 FRED: descarga genérica ----
+fred_get_series <- function(api_key, series_id,
+                            start_date = "1996-01-01",
+                            end_date   = format(Sys.Date(), "%Y-%m-%d")) {
+  url <- "https://api.stlouisfed.org/fred/series/observations"
+  
+  res <- GET(url, query = list(
+    series_id         = series_id,
+    api_key           = api_key,
+    file_type         = "json",
+    observation_start = start_date,
+    observation_end   = end_date
+  ))
+  
+  stop_for_status(res)
+  
+  json_data <- fromJSON(content(res, as = "text", encoding = "UTF-8"))
+  df <- json_data$observations
+  
+  if (is.null(df) || nrow(df) == 0) {
+    warning(paste("Sin observaciones para la serie FRED:", series_id))
+    return(data.frame())
+  }
+  
+  df$date <- as.Date(df$date)
+  suppressWarnings({
+    df$value_num <- as.numeric(df$value)
+  })
+  
+  df
+}
+
+## ---- 2.3 Conversión a frecuencia trimestral (promedio) ----
+to_quarterly <- function(df, varname,
+                         date_col = "date",
+                         value_col = "value_num",
+                         fun = mean) {
+  if (nrow(df) == 0) return(data.frame())
+  
+  df %>%
+    select(all_of(c(date_col, value_col))) %>%
+    rename(date = !!date_col, value = !!value_col) %>%
+    mutate(qdate = as.yearqtr(date)) %>%
+    group_by(qdate) %>%
+    summarise(
+      !!varname := fun(value, na.rm = TRUE),
+      .groups = "drop"
+    )
+}
+
+## ==========================================================
+## 3. Parámetros de conexión y rango de fechas
+## ==========================================================
+
+## Rellena con tus credenciales reales:
+bde_user <- Sys.getenv("BDE_USER")
+bde_pass <- Sys.getenv("BDE_PASS")
+
+## API key de FRED:
+fred_api_key <- Sys.getenv("FRED_API_KEY")
+
+## Rango de fechas (ajústalo según lo que necesites)
+start_date <- "1996-01-01"
+end_date   <- format(Sys.Date(), "%Y-%m-%d")
+
+## ==========================================================
+## 4. Descarga de series del BDE
+## ==========================================================
+
+## PIB no minero (trimestral)
+pib_no_minero_raw <- bde_get_series(
+  user       = bde_user,
+  pass       = bde_pass,
+  series_id  = "F032.PIB.FLU.R.CLP.EP18.N03.Z.1.T",
+  first_date = start_date,
+  last_date  = end_date
+)
+
+## IPC (mensual -> trimestral)
+ipc_raw <- bde_get_series(
+  user       = bde_user,
+  pass       = bde_pass,
+  series_id  = "G073.IPC.IND.2023.M",
+  first_date = start_date,
+  last_date  = end_date
+)
+
+## IPC sin volátiles (mensual -> trimestral)
+ipc_sin_vol_raw <- bde_get_series(
+  user       = bde_user,
+  pass       = bde_pass,
+  series_id  = "G073.IPCSV.IND.2023.M",
+  first_date = start_date,
+  last_date  = end_date
+)
+
+## TPM (mensual -> trimestral)
+tpm_raw <- bde_get_series(
+  user       = bde_user,
+  pass       = bde_pass,
+  series_id  = "F022.TPM.TIN.D001.NO.Z.M",
+  first_date = start_date,
+  last_date  = end_date
+)
+
+## Tasa de colocaciones (mensual -> trimestral)
+tasa_coloc_raw <- bde_get_series(
+  user       = bde_user,
+  pass       = bde_pass,
+  series_id  = "F022.COL.TIN.MA03.RE.Z.M",
+  first_date = start_date,
+  last_date  = end_date
+)
+
+## Índice de TCR (mensual -> trimestral)
+tcr_raw <- bde_get_series(
+  user       = bde_user,
+  pass       = bde_pass,
+  series_id  = "F073.TCR.IND.199101.M",
+  first_date = start_date,
+  last_date  = end_date
+)
+
+## Precio del cobre (mensual -> trimestral)
+cobre_raw <- bde_get_series(
+  user       = bde_user,
+  pass       = bde_pass,
+  series_id  = "F019.PPB.PRE.40.M",
+  first_date = start_date,
+  last_date  = end_date
+)
+
+## Precio del petróleo (mensual -> trimestral)
+petroleo_raw <- bde_get_series(
+  user       = bde_user,
+  pass       = bde_pass,
+  series_id  = "F019.PPB.PRE.41B.M",
+  first_date = start_date,
+  last_date  = end_date
+)
+
+
+## Expectativas inflación IPC sin volátiles 12m adelante (mensual -> trimestral)
+eee_ipc12_raw <- bde_get_series(
+  user       = bde_user,
+  pass       = bde_pass,
+  series_id  = "F089.IPC.V12.14.M",
+  first_date = start_date,
+  last_date  = end_date
+)
+
+eee_ipcSV12_raw <- bde_get_series(
+  user       = bde_user,
+  pass       = bde_pass,
+  series_id  = "F089.IPCSV.V12.14.M",
+  first_date = start_date,
+  last_date  = end_date
+)
+
+
+alimentos_proxy_raw <- bde_get_series(
+  user       = bde_user,
+  pass       = bde_pass,
+  series_id  =  "F019.PPBA.INP.46T.M",
+  first_date = start_date,
+  last_date  = end_date
+)
+
+alimentos_proxy_q <- to_quarterly(alimentos_proxy_raw, "alimentos_proxy")
+
+## Precio del petróleo (mensual -> trimestral)
+Energy_raw <- bde_get_series(
+  user       = bde_user,
+  pass       = bde_pass,
+  series_id  = "G073.IPCEN.IND.2023.M",
+  first_date = start_date,
+  last_date  = end_date
+)
+
+
+## ==========================================================
+## 5. Descarga de series FRED (FEDFUNDS, VIX, 10Y)
+## ==========================================================
+
+## Federal Funds Effective Rate (FEDFUNDS) – mensual/diaria -> trimestral
+ffr_raw <- fred_get_series(
+  api_key    = fred_api_key,
+  series_id  = "FEDFUNDS",
+  start_date = start_date,
+  end_date   = end_date
+)
+
+## VIX (VIXCLS) – diaria -> trimestral
+vix_raw <- fred_get_series(
+  api_key    = fred_api_key,
+  series_id  = "VIXCLS",
+  start_date = start_date,
+  end_date   = end_date
+)
+
+## 10Y Treasury Yield – uso la serie mensual GS10 -> trimestral
+us10y_raw <- fred_get_series(
+  api_key    = fred_api_key,
+  series_id  = "GS10",   # Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity, Monthly
+  start_date = start_date,
+  end_date   = end_date
+)
+
+## IPC Estados Unidos (CPIAUCSL) – mensual -> trimestral
+cpi_us_raw <- fred_get_series(
+  api_key    = fred_api_key,
+  series_id  = "CPIAUCSL",   # Consumer Price Index for All Urban Consumers: All Items
+  start_date = start_date,
+  end_date   = end_date
+)
+
+## ==========================================================
+## 6. Convertir todas las series a frecuencia trimestral
+##    (promedio dentro del trimestre)
+## ==========================================================
+
+pib_no_minero_q <- to_quarterly(pib_no_minero_raw, "pib_no_minero")
+ipc_q           <- to_quarterly(ipc_raw,           "ipc")
+ipc_sin_vol_q   <- to_quarterly(ipc_sin_vol_raw,   "ipc_sin_vol")
+tpm_q           <- to_quarterly(tpm_raw,           "tpm")
+tasa_coloc_q    <- to_quarterly(tasa_coloc_raw,    "tasa_coloc")
+tcr_q           <- to_quarterly(tcr_raw,           "tcr")
+cobre_q         <- to_quarterly(cobre_raw,         "cobre")
+petroleo_q      <- to_quarterly(petroleo_raw,      "petroleo")
+Energy_q      <- to_quarterly(Energy_raw,      "energia")
+alimentos_proxy_q      <- to_quarterly(alimentos_proxy_raw,      "alimentos")
+
+eee_ipc12_q    <- to_quarterly(eee_ipc12_raw,    "eee_ipc12")
+eee_ipcsv12_q    <- to_quarterly(eee_ipcSV12_raw,    "eee_ipcsv12")
+
+ffr_q           <- to_quarterly(ffr_raw,           "ffr")
+vix_q           <- to_quarterly(vix_raw,           "vix")
+us10y_q         <- to_quarterly(us10y_raw,         "us10y")
+cpi_us_q        <- to_quarterly(cpi_us_raw, "cpi_us")
+
+## ==========================================================
+## 7. Fusionar en una sola base trimestral
+## ==========================================================
+
+## Lista de todos los data frames trimestrales
+lista_q <- list(
+  pib_no_minero_q,
+  ipc_q,
+  ipc_sin_vol_q,
+  tpm_q,
+  tasa_coloc_q,
+  tcr_q,
+  cobre_q,
+  petroleo_q,
+  Energy_q,
+  alimentos_proxy_q,
+  ffr_q,
+  vix_q,
+  us10y_q,
+  cpi_us_q,
+  eee_ipc12_q,
+  eee_ipcsv12_q
+)
+
+names(lista_q) <- c(
+  "pib_no_minero",
+  "ipc",
+  "ipc_sin_vol",
+  "tpm",
+  "tasa_coloc",
+  "tcr",
+  "cobre",
+  "petroleo",
+  "energia",
+  "alimentos",
+  "ffr",
+  "vix",
+  "us10y",
+  "cpi_us",
+  "eee_ipc12",
+  "eee_ipcsv12"
+)
+
+
+## Merge secuencial por qdate (full join para mantener todo)
+db_trimestral <- Reduce(
+  function(x, y) full_join(x, y, by = "qdate"),
+  lista_q
+)
+
+## (Opcional) agregar año y trimestre como columnas separadas
+db_trimestral <- db_trimestral %>%
+  mutate(
+    date_q = as.Date(qdate),
+    year   = year(date_q),
+    quarter = quarter(date_q)
+  ) %>%
+  select(qdate, year, quarter, everything())
+
+## Ver resultado
+head(db_trimestral)
+
+base_2020q1 <- cpi_us_q %>%
+  filter(qdate == as.yearqtr("2020 Q1")) %>%
+  pull(cpi_us)
+
+cpi_us_q <- cpi_us_q %>%
+  mutate(
+    cpi_us_2020q1 = 100 * cpi_us / base_2020q1,
+    L_CPI_US      = 100 * log(cpi_us)
+  )
+
+i_last <- nrow(db_trimestral)-1
+
+if ((is.na(db_trimestral$pib_no_minero[i_last]))) {
+  db_trimestral$pib_no_minero[i_last] <- 50878.65069
+}
+
+
+
+```
+
+
+```{r}
+
+db_trimestral <- db_trimestral %>%
+  mutate(tpm = case_when(
+    qdate <= as.yearqtr("2001Q2", format = "%YQ%q") ~ tpm + 3,
+    qdate == as.yearqtr("2001Q3", format = "%YQ%q") ~ 6.5,
+    TRUE ~ tpm  # El resto queda igual
+  ))
+
+## ==========================================================
+## 8. Transformaciones logarítmicas (ln(x)*100)
+## ==========================================================
+
+db_trimestral <- db_trimestral %>%
+  mutate(
+    lpib_no_minero = if_else(!is.na(pib_no_minero) & pib_no_minero > 0,
+                             log(pib_no_minero) * 100, NA_real_),
+    lipc = if_else(!is.na(ipc) & ipc > 0,
+                   log(ipc) * 100, NA_real_),
+    lipc_sin_vol = if_else(!is.na(ipc_sin_vol) & ipc_sin_vol > 0,
+                           log(ipc_sin_vol) * 100, NA_real_),
+    ltcr = if_else(!is.na(tcr) & tcr > 0,
+                   log(tcr) * 100, NA_real_),
+    lcpi_us = if_else(!is.na(cpi_us) & cpi_us > 0,
+                      log(cpi_us) * 100, NA_real_),
+    ltcr = if_else(!is.na(tcr) & tcr > 0,
+                      log(tcr) * 100, NA_real_)
+    
+  )
+## ==========================================================
+## Helper: HP one-sided (endpoint recursion)
+## ==========================================================
+hp_onesided <- function(x, lambda = 1600, min_obs = 20) {
+  out <- rep(NA_real_, length(x))
+
+  valid <- which(!is.na(x))
+  if (length(valid) < min_obs) return(out)
+
+  x_valid <- x[valid]
+
+  for (i in seq_along(x_valid)) {
+    if (i >= min_obs) {
+      hp_i <- mFilter::hpfilter(x_valid[1:i], freq = lambda)
+      out[valid[i]] <- as.numeric(tail(hp_i$trend, 1))
+    }
+  }
+
+  out
+}
+
+## ==========================================================
+## 9. PIB potencial y brecha de producto
+## ==========================================================
+
+## ==========================================================
+## 9.1. PIB potencial histórico con HP one-sided (hasta 2020Q4)
+## ==========================================================
+
+idx_hist <- which(db_trimestral$year < 2021 & !is.na(db_trimestral$lpib_no_minero))
+
+db_trimestral$pib_pot <- NA_real_
+
+lpib_hist <- db_trimestral$lpib_no_minero[idx_hist]
+pib_pot_hist_onesided <- hp_onesided(lpib_hist, lambda = 1600, min_obs = 20)
+
+db_trimestral$pib_pot[idx_hist] <- pib_pot_hist_onesided
+
+
+## 9.2. Trayectoria exógena de GAP 2021Q1–2026Q1
+
+# GAP trimestrales que entregaste 
+gap_values <- c(-0.477,
+-0.696,
+3.363,
+4.150,
+3.089,
+2.260,
+1.819,
+-0.166,
+0.864,
+0.031,
+-0.153,
+-0.206,
+0.341,
+-0.909,
+-0.445,
+-0.141,
+0.690,
+-0.072,
+-0.265,
+-0.297,
+-0.385
+)
+
+# Nos quedamos solo con la trayectoria hasta 2025Q3 (primeros 19 trimestres)
+gap_values_use <- gap_values[1:20]
+
+# Índices de los trimestres desde 2021Q1 en adelante
+idx_2021_on <- which(db_trimestral$year >= 2021)
+idx_2021_on <- idx_2021_on[order(db_trimestral$qdate[idx_2021_on])]
+
+# Match 2021Q1–2025Q3 con los primeros 19 índices
+idx_gap <- idx_2021_on[1:length(gap_values_use)]
+
+# Columna con la brecha exógena
+db_trimestral$gap_exog <- NA_real_
+db_trimestral$gap_exog[idx_gap] <- gap_values_use
+
+## 9.3. Definir PIB potencial (log*100) para 2021Q1–2025Q3
+## gap_t = lpib_no_minero_t - pib_pot_t  =>  pib_pot_t = lpib_no_minero_t - gap_t
+
+db_trimestral$pib_pot[idx_gap] <-
+  db_trimestral$lpib_no_minero[idx_gap] - db_trimestral$gap_exog[idx_gap]
+
+## 9.4. Calcular la brecha de producto implícita para todo el período
+## (para 2021Q1–2025Q3 coincide exactamente con gap_exog;
+##  para el resto proviene del HP filter)
+
+db_trimestral$gap_pib <-
+  db_trimestral$lpib_no_minero - db_trimestral$pib_pot
+
+## Usar PIB no minero en nivel (no log) para HP one-sided
+idx_hist2 <- which(db_trimestral$year < 2021 & !is.na(db_trimestral$pib_no_minero))
+
+db_trimestral <- db_trimestral %>%
+  mutate(
+    pib_pot_nivel = NA_real_
+  )
+
+pib_hist_nivel <- db_trimestral$pib_no_minero[idx_hist2]
+pib_pot_nivel_onesided <- hp_onesided(pib_hist_nivel, lambda = 1600, min_obs = 20)
+
+db_trimestral$pib_pot_nivel[idx_hist2] <- pib_pot_nivel_onesided
+
+db_trimestral <- db_trimestral %>%
+  mutate(
+    Gap_PIB_nivel = if_else(
+      !is.na(pib_no_minero) & !is.na(pib_pot_nivel) & pib_pot_nivel > 0,
+      (pib_no_minero / pib_pot_nivel - 1) * 100,
+      NA_real_
+    )
+  )
+## ==========================================================
+## 9B. Brecha IPoM impuesta directamente
+##      Mantiene consistencia con el resto del código:
+##      - gap_pib_bcch
+##      - pib_pot_bcch
+##      - pib_pot_bcch_nivel
+##
+##      Lógica:
+##      - 2000Q1–2004Q4: HP como fallback porque gap_ipom es NA
+##      - 2005Q1–2020Q4: gap_ipom impuesto directamente
+##      - 2021Q1 en adelante: gap_exog, si existe
+## ==========================================================
+
+## ----------------------------------------------------------
+## 9B.0 Chequeos mínimos y columnas base
+## ----------------------------------------------------------
+
+if (!"lpib_no_minero" %in% names(db_trimestral)) {
+  db_trimestral <- db_trimestral %>%
+    mutate(
+      lpib_no_minero = if_else(
+        !is.na(pib_no_minero) & pib_no_minero > 0,
+        log(pib_no_minero) * 100,
+        NA_real_
+      )
+    )
+}
+
+if (!"date_q" %in% names(db_trimestral)) {
+  db_trimestral <- db_trimestral %>%
+    mutate(date_q = as.Date(qdate))
+}
+
+db_trimestral <- db_trimestral %>%
+  arrange(qdate) %>%
+  mutate(
+    year = as.integer(format(qdate, "%Y")),
+    quarter = as.integer(format(qdate, "%q")),
+    q_key = paste0(year, "Q", quarter)
+  )
+
+## ----------------------------------------------------------
+## 9B.1 Vector de brecha IPoM
+## ----------------------------------------------------------
+
+gap_ipom <- c(
+  "2000Q1" = NA_real_,
+  "2000Q2" = NA_real_,
+  "2000Q3" = NA_real_,
+  "2000Q4" = NA_real_,
+  "2001Q1" = NA_real_,
+  "2001Q2" = NA_real_,
+  "2001Q3" = NA_real_,
+  "2001Q4" = NA_real_,
+  "2002Q1" = NA_real_,
+  "2002Q2" = NA_real_,
+  "2002Q3" = NA_real_,
+  "2002Q4" = NA_real_,
+  "2003Q1" = NA_real_,
+  "2003Q2" = NA_real_,
+  "2003Q3" = NA_real_,
+  "2003Q4" = NA_real_,
+  "2004Q1" = NA_real_,
+  "2004Q2" = NA_real_,
+  "2004Q3" = NA_real_,
+  "2004Q4" = NA_real_,
+  "2005Q1" = -1.527887880853019,
+  "2005Q2" = -0.464535634145224,
+  "2005Q3" = -0.049960828867782,
+  "2005Q4" =  0.236864640807253,
+  "2006Q1" =  0.030595324619410,
+  "2006Q2" =  0.930235716987221,
+  "2006Q3" =  1.286785607540944,
+  "2006Q4" =  1.977677393410471,
+  "2007Q1" =  1.421756299228252,
+  "2007Q2" =  1.424505058172437,
+  "2007Q3" =  0.724361560219916,
+  "2007Q4" =  2.096486426044563,
+  "2008Q1" =  3.634844462965947,
+  "2008Q2" =  3.206805120133200,
+  "2008Q3" =  2.523492399631880,
+  "2008Q4" =  0.789649580280021,
+  "2009Q1" = -1.180537251723738,
+  "2009Q2" = -3.142083003577766,
+  "2009Q3" = -3.173495439758515,
+  "2009Q4" = -3.230633230243645,
+  "2010Q1" = -3.950076533912397,
+  "2010Q2" = -2.083870145350612,
+  "2010Q3" = -0.834154030068399,
+  "2010Q4" = -0.239137647336928,
+  "2011Q1" =  0.882896498803024,
+  "2011Q2" =  0.789750374547906,
+  "2011Q3" =  0.655063323578633,
+  "2011Q4" =  0.715548582089198,
+  "2012Q1" =  1.405335275613238,
+  "2012Q2" =  1.754035186181808,
+  "2012Q3" =  1.501498030977182,
+  "2012Q4" =  1.025552169038948,
+  "2013Q1" =  1.095610769547752,
+  "2013Q2" =  1.917628892176995,
+  "2013Q3" =  1.331995500976639,
+  "2013Q4" =  0.987385453366233,
+  "2014Q1" =  0.242373407466071,
+  "2014Q2" =  0.042391855714659,
+  "2014Q3" = -0.360206426635656,
+  "2014Q4" =  0.212496482224025,
+  "2015Q1" = -0.419402871936825,
+  "2015Q2" =  0.245439492731944,
+  "2015Q3" =  0.333210863726664,
+  "2015Q4" =  0.263412949346189,
+  "2016Q1" =  0.277155225493084,
+  "2016Q2" = -0.365147811042368,
+  "2016Q3" = -0.223600232059690,
+  "2016Q4" = -0.576432401750536,
+  "2017Q1" = -1.511464125978532,
+  "2017Q2" = -1.740232020226526,
+  "2017Q3" = -0.838145763952616,
+  "2017Q4" = -0.911059514515241,
+  "2018Q1" = -0.689896038581141,
+  "2018Q2" = -0.209042006808946,
+  "2018Q3" = -1.158675803398886,
+  "2018Q4" = -1.049162387263532,
+  "2019Q1" = -1.348643289415455,
+  "2019Q2" = -1.222656665280987,
+  "2019Q3" = -1.272354526909674,
+  "2019Q4" = -5.614611927982665,
+  "2020Q1" = -2.961179307194357,
+  "2020Q2" = -15.644322721802661,
+  "2020Q3" = -11.209283594069989,
+  "2020Q4" = -3.743220983959708
+)
+
+gap_ipom_df <- tibble::tibble(
+  q_key = names(gap_ipom),
+  gap_ipom_aux = as.numeric(gap_ipom)
+)
+
+## ----------------------------------------------------------
+## 9B.2 HP fallback para 2000Q1–2004Q4
+##     Esto no depende de que exista gap_pib antes.
+## ----------------------------------------------------------
+
+db_trimestral <- db_trimestral %>%
+  select(
+    -any_of(c(
+      "gap_ipom_aux",
+      "pib_pot_hp_fallback",
+      "gap_hp_fallback",
+      "gap_pib_bcch",
+      "pib_pot_bcch",
+      "pib_pot_bcch_nivel",
+      "gap_pib_ipom",
+      "pib_pot_ipom"
+    ))
+  )
+
+db_trimestral$pib_pot_hp_fallback <- NA_real_
+db_trimestral$gap_hp_fallback     <- NA_real_
+
+idx_hp <- which(
+  db_trimestral$qdate <= as.yearqtr("2020 Q4") &
+    !is.na(db_trimestral$lpib_no_minero)
+)
+
+if (length(idx_hp) >= 8) {
+  hp_aux <- mFilter::hpfilter(
+    db_trimestral$lpib_no_minero[idx_hp],
+    freq = 1600
+  )
+  
+  db_trimestral$pib_pot_hp_fallback[idx_hp] <- as.numeric(hp_aux$trend)
+  db_trimestral$gap_hp_fallback[idx_hp] <-
+    db_trimestral$lpib_no_minero[idx_hp] -
+    db_trimestral$pib_pot_hp_fallback[idx_hp]
+}
+
+## ----------------------------------------------------------
+## 9B.3 Pegar brecha IPoM a la base
+## ----------------------------------------------------------
+
+db_trimestral <- db_trimestral %>%
+  left_join(gap_ipom_df, by = "q_key")
+
+## ----------------------------------------------------------
+## 9B.4 Imponer brecha final manteniendo nombre gap_pib_bcch
+## ----------------------------------------------------------
+
+if (!"gap_exog" %in% names(db_trimestral)) {
+  db_trimestral$gap_exog <- NA_real_
+}
+
+db_trimestral <- db_trimestral %>%
+  mutate(
+    gap_pib_bcch = case_when(
+      
+      ## 2000Q1–2004Q4: HP fallback porque gap_ipom es NA
+      qdate >= as.yearqtr("2000 Q1") &
+        qdate <= as.yearqtr("2004 Q4") &
+        is.na(gap_ipom_aux) ~ gap_hp_fallback,
+      
+      ## 2005Q1–2020Q4: brecha IPoM histórica directa
+      qdate >= as.yearqtr("2005 Q1") &
+        qdate <= as.yearqtr("2020 Q4") &
+        !is.na(gap_ipom_aux) ~ gap_ipom_aux,
+      
+      ## 2021Q1 en adelante: brecha oficial IPoM que tú pusiste en gap_values
+      qdate >= as.yearqtr("2021 Q1") &
+        !is.na(gap_exog) ~ gap_exog,
+      
+      TRUE ~ NA_real_
+    )
+  )
+## ----------------------------------------------------------
+## 9B.5 Construir potencial implícito manteniendo nombre pib_pot_bcch
+##
+##     Definición usada en el resto del script:
+##     gap_pib_bcch = lpib_no_minero - pib_pot_bcch
+##
+##     Por tanto:
+##     pib_pot_bcch = lpib_no_minero - gap_pib_bcch
+## ----------------------------------------------------------
+
+db_trimestral <- db_trimestral %>%
+  mutate(
+    pib_pot_bcch = if_else(
+      !is.na(lpib_no_minero) & !is.na(gap_pib_bcch),
+      lpib_no_minero - gap_pib_bcch,
+      NA_real_
+    ),
+    
+    pib_pot_bcch_nivel = if_else(
+      !is.na(pib_pot_bcch),
+      exp(pib_pot_bcch / 100),
+      NA_real_
+    ),
+    
+    ## Alias para claridad, pero NO reemplazan los nombres antiguos.
+    gap_pib_ipom = gap_pib_bcch,
+    pib_pot_ipom = pib_pot_bcch
+  )
+
+## ----------------------------------------------------------
+## 9B.6 Chequeo rápido
+## ----------------------------------------------------------
+
+check_gap_ipom <- db_trimestral %>%
+  filter(
+    qdate >= as.yearqtr("2000 Q1"),
+    qdate <= as.yearqtr("2020 Q4")
+  ) %>%
+  summarise(
+    n_total = n(),
+    n_na_gap_pib_bcch = sum(is.na(gap_pib_bcch)),
+    min_q = min(qdate),
+    max_q = max(qdate)
+  )
+
+print(check_gap_ipom)
+
+if (check_gap_ipom$n_na_gap_pib_bcch > 0) {
+  warning("Hay NA en gap_pib_bcch entre 2000Q1 y 2020Q4. Revisa lpib_no_minero/pib_no_minero.")
+}
+
+## ----------------------------------------------------------
+## 9B.7 Gráfico de brecha
+## ----------------------------------------------------------
+
+df_gap_plot <- db_trimestral %>%
+  filter(
+    qdate >= as.yearqtr("2000 Q1") 
+  ) %>%
+  mutate(
+    fuente_gap = case_when(
+      qdate <= as.yearqtr("2004 Q4") ~ "HP fallback",
+      qdate >= as.yearqtr("2005 Q1") ~ "IPoM impuesto",
+      TRUE ~ NA_character_
+    )
+  )
+
+ggplot(df_gap_plot, aes(x = date_q, y = gap_pib_bcch)) +
+  geom_hline(yintercept = 0, linewidth = 0.4) +
+  geom_line(linewidth = 0.8, na.rm = TRUE) +
+  labs(
+    title = "Brecha de producto no minero",
+    subtitle = "2000Q1–2004Q4: HP fallback; 2005Q1–2020Q4: IPoM impuesto",
+    x = NULL,
+    y = "Porcentaje"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title.position = "plot"
+  )
+
+## ==========================================================
+## 10. Precios reales de cobre y petróleo (deflactados por CPI US)
+##     y transformación ln(x) * 100
+## ==========================================================
+## 10.1. Tomar CPI US de referencia en 2020Q1
+ref_2020q1 <- with(db_trimestral, which(year == 2020 & quarter == 1)[1])
+
+cpi_us_ref <- db_trimestral$cpi_us[ref_2020q1]
+
+## 10.2. Deflactar precios nominales a dólares de 2020Q1
+db_trimestral <- db_trimestral %>%
+  mutate(
+    # Precios reales en dólares de 2020Q1:
+    # p_real_t = p_nom_t * (CPI_2020Q1 / CPI_t)
+    cobre_real = if_else(
+      !is.na(cobre) & !is.na(cpi_us) & cobre > 0 & cpi_us > 0,
+      cobre * cpi_us_ref / cpi_us,
+      NA_real_
+    ),
+    petroleo_real = if_else(
+      !is.na(petroleo) & !is.na(cpi_us) & petroleo > 0 & cpi_us > 0,
+      petroleo * cpi_us_ref / cpi_us,
+      NA_real_
+    ),
+    
+    # Logaritmo natural de los precios reales * 100
+    lcobre_real = if_else(
+      !is.na(cobre_real) & cobre_real > 0,
+      log(cobre_real) * 100,
+      NA_real_
+    ),
+    lpetroleo_real = if_else(
+      !is.na(petroleo_real) & petroleo_real > 0,
+      log(petroleo_real) * 100,
+      NA_real_
+    ),
+    energiav12 = if_else(
+      !is.na(energia),
+      (log(energia) - lag(log(energia), 4)) * 100 ,
+      NA_real_
+    )
+  )
+
+## ==========================================================
+## 11. Crecimiento socios comerciales (ponderado) 
+##     e incorporación a db_trimestral
+## ==========================================================
+
+
+## 11.1 Descargar tasas de crecimiento del PIB (porcentaje, trimestral) por país
+
+crec_bra_raw <- bde_get_series(
+  user       = bde_user,  pass       = bde_pass,  series_id  = "F019.PIB.VAR.BRA.T",   # Brasil
+  first_date = start_date,  last_date  = end_date
+)
+
+crec_chn_raw <- bde_get_series(
+  user       = bde_user,  pass       = bde_pass,  series_id  = "F019.PIB.VAR.CHN.T",   # China
+  first_date = start_date,  last_date  = end_date
+)
+
+crec_usa_raw <- bde_get_series(
+  user       = bde_user,  pass       = bde_pass,  series_id  = "F019.PIB.VAR.10.T",    # Estados Unidos
+  first_date = start_date,  last_date  = end_date
+)
+
+crec_jpn_raw <- bde_get_series(
+  user       = bde_user,  pass       = bde_pass,  series_id  = "F019.PIB.VAR.30.T",    # Japón
+  first_date = start_date,  last_date  = end_date
+)
+
+crec_eur_raw <- bde_get_series(
+  user       = bde_user,  pass       = bde_pass,  series_id  = "F019.PIB.VAR.20.T",    # Zona Euro
+  first_date = start_date,  last_date  = end_date
+)
+
+## 11.2 Pasar cada serie a formato trimestral con qdate y year
+
+crec_bra_q <- crec_bra_raw %>%
+  mutate(
+    qdate = as.yearqtr(date),
+    year  = year(date)
+  ) %>%
+  select(qdate, year, Brasil_g = value_num)
+
+nuevo_q <- max(crec_bra_q$qdate) + 0.25   # siguiente trimestre
+
+crec_bra_q <- crec_bra_q %>%
+  add_row(
+    qdate    = nuevo_q,
+    year     = floor(as.numeric(nuevo_q)),
+    Brasil_g = 2.10
+  ) %>%
+  arrange(qdate)
+
+crec_chn_q <- crec_chn_raw %>%
+  mutate(
+    qdate = as.yearqtr(date),    year  = year(date)
+  ) %>%
+  select(qdate, year, China_g = value_num)
+
+crec_usa_q <- crec_usa_raw %>%
+  mutate(
+    qdate = as.yearqtr(date),    year  = year(date)
+  ) %>%
+  select(qdate, year, EEUU_g = value_num)
+
+crec_jpn_q <- crec_jpn_raw %>%
+  mutate(
+    qdate = as.yearqtr(date),    year  = year(date)
+  ) %>%
+  select(qdate, year, Japon_g = value_num)
+
+crec_eur_q <- crec_eur_raw %>%
+  mutate(
+    qdate = as.yearqtr(date),    year  = year(date)
+  ) %>%
+  select(qdate, year, Euro_g = value_num)
+
+## 11.3 Combinar en una sola tabla trimestral de crecimientos por país
+
+crec_socios_q <- Reduce(
+  function(x, y) full_join(x, y, by = c("qdate", "year")),
+  list(crec_bra_q, crec_chn_q, crec_usa_q, crec_jpn_q, crec_eur_q)
+)
+
+## 11.4 Leer ponderadores anuales desde Excel
+
+file_path_pond <- file.path("..", "..", "data", "raw", "Ponderadores.xls")
+
+Ponderadores <- read_excel(
+  file_path_pond,
+  sheet     = "NuevosPonderadores",
+  skip      = 1,
+  col_names = TRUE,
+  range     = cell_limits(c(1, 1), c(NA, 6))
+)
+
+Ponderadores <- Ponderadores %>%
+  rename(year = fecha) %>%
+  mutate(year = as.integer(year)) %>%
+  rename(
+    Brasil_w = Brasil,
+    China_w  = China,
+    EEUU_w   = `Estados Unidos`,
+    Japon_w  = Japón,
+    Euro_w   = `Zona Euro`
+  )
+
+## 11.5 Asignar ponderadores a cada trimestre y calcular crecimiento ponderado
+
+crec_socios_q <- crec_socios_q %>%
+  left_join(Ponderadores, by = "year") %>%
+  rowwise() %>%
+  mutate(
+    crec_socios = sum(
+      Brasil_g * Brasil_w,
+      China_g  * China_w,
+      EEUU_g   * EEUU_w,
+      Japon_g  * Japon_w,
+      Euro_g   * Euro_w,
+      na.rm = TRUE
+    ) /
+    sum(
+      c(Brasil_w, China_w, EEUU_w, Japon_w, Euro_w),
+      na.rm = TRUE
+    )
+  ) %>%
+  ungroup() %>%
+  select(qdate, crec_socios)
+
+## 11.6 Incorporar a la base de trabajo db_trimestral
+
+## 11.6 Incorporar a la base de trabajo db_trimestral
+##      Versión robusta: evita crec_socios.x / crec_socios.y
+db_trimestral <- db_trimestral %>%
+  select(-any_of(c("crec_socios", "crec_socios.x", "crec_socios.y"))) %>%
+  left_join(crec_socios_q, by = "qdate")
+
+## ==========================================================
+## 12. Tasa de interés neutral (trimestral, exógena)
+## ==========================================================
+
+neutral_tasa <- c(
+  11.28,11.28,11.28,11.28,
+  10.78,10.78,10.78,10.78,
+  9.48,9.48,9.48,9.48,9.48,9.48,9.48,9.48,
+  7.975809301,7.975809301,7.975809301,7.975809301,
+  6.875809301,6.875809301,6.875809301,6.875809301,
+  6.775809301,6.760430612,6.729110464,6.705899764,
+  6.637164171,6.572974387,6.513849139,6.453233698,
+  6.383019091,6.312301123,6.234315921,6.155649579,
+  6.075487386,5.999559504,5.934271913,5.889056988,
+  5.832947015,5.781618111,5.72484036,5.666299316,
+  5.61382171,5.566079215,5.515150028,5.460804473,
+  5.403933258,5.397445265,5.334603295,5.272762846,
+  5.200955153,5.132113355,5.073345733,5.01761075,
+  4.953592894,4.884268815,4.817111043,4.753078287,
+  4.737693487,4.723272639,4.708267417,4.689081635,
+  4.664991132,4.643504814,4.619886668,4.597524624,
+  4.528924484,4.505835266,4.484136786,4.459364931,
+  4.330026375,4.298391361,4.263984397,4.232140463,
+  4.157281877,4.136226743,4.117373532,4.100566327,
+  4.03394286,4.022219562,4.00991416,4.006175602,
+  3.985299774,3.964389242,3.95154463,3.940609752,
+  3.920946713,3.890004355,3.853422902,3.813295213,
+  3.7666602,3.714025148,3.660615309,3.625646885,
+  3.597222222,3.577777778,3.558333333,3.538888889,
+  3.519444444,3.5,3.541666667,3.583333333,
+  3.625,3.666666667,3.708333333,3.75,
+  3.8125,3.875,3.9375,4,4,4,4,4,4,4,4,4
+)
+
+
+# Índices de las filas de db_trimestral a partir de 2000Q1
+idx_neutral <- which(db_trimestral$year >= 1996)
+idx_neutral <- idx_neutral[order(db_trimestral$qdate[idx_neutral])]
+
+n_neutral <- length(neutral_tasa)
+n_idx     <- length(idx_neutral)
+n_assign  <- min(n_neutral, n_idx)
+
+# Creamos la columna y asignamos los valores en orden
+db_trimestral <- db_trimestral %>%
+  mutate(tasa_neutral = NA_real_)
+
+db_trimestral$tasa_neutral[idx_neutral[1:n_assign]] <- neutral_tasa[1:n_assign]
+i_last <- nrow(db_trimestral)-1
+
+if ((is.na(db_trimestral$pib_no_minero[i_last]))) {
+  db_trimestral$pib_no_minero[i_last] <- 50878.65069
+}
+
+```
+
+```{r}
+## ==========================================================
+## 13B. Muestra aumentada con pseudo-observaciones IPoM
+##      (reemplaza desde tu bloque q_start_fcast/proy_inputs)
+## ==========================================================
+
+library(dplyr)
+library(zoo)
+library(mFilter)
+library(AER)          # ivreg
+library(modelsummary)
+
+## ----------------------------------------------------------
+## 13B.1 Parámetros de ponderación del pseudo-período
+## ----------------------------------------------------------
+w_hist <- 1.0
+w_ipom <- 0.50   # súbelo a 1.0 si quieres dar el mismo peso que a la historia
+
+## ----------------------------------------------------------
+## 13B.2 Horizonte IPoM
+## ----------------------------------------------------------
+q_start_fcast  <- as.yearqtr("2026 Q1")
+horiz_quarters <- 9L
+q_fcast        <- seq(q_start_fcast, by = 0.25, length.out = horiz_quarters)
+
+## ----------------------------------------------------------
+## 13B.3 Inputs IPoM / pseudo-muestra
+## ----------------------------------------------------------
+gdp_yoy_ipom <- c(
+  0.9933, 1.9491, 2.3467, 2.2434, 2.5342,
+  2.5019, 2.0290, 1.9463, 2.2209
+)
+
+ltcr_fcast <- c(
+  464.9187, 463.9572, 463.4729,
+  463.1690396, 462.7420795, 462.4973,
+  462, 462, 462
+)
+
+## Como no me diste crec_socios ni eee_ipc12 en este último mensaje,
+## dejo una trayectoria operativa para no perder observaciones en IS/Phillips.
+
+## proxy operativa para expectativas: puedes cambiarla si tienes una senda mejor
+eee_ipc12_fcast <- c(3.3607, 3.2656, 3.2539, 3.2801, 3.2725, 3.0006, 3.0089, 3.0404, 3)
+eee_ipcsv12_fcast <- c(3.9768, 3.9203, 4.0426, 3.9937, 2.7491, 2.5619, 2.8021, 3.0003, 3)
+
+proy_inputs <- tibble(
+  qdate              = q_fcast,
+  cpi_yoy_fcast      = c(2.5903, 3.9768, 3.9203, 4.0426, 3.9937, 2.7491, 2.5619, 2.8021, 3.0003),
+  cpixfe_yoy_fcast   = c(3.3819, 3.3607, 3.2656, 3.2539, 3.2801, 3.2725, 3.0006, 3.0089, 3.0404),
+  year_fcast   = c(2026, 2026, 2026, 2026, 2027, 2027, 2027, 2027, 2028),
+  tpm_fcast   = c(4.50,4.53,4.75,4.56,4.32,4.25,4.25,4.25,4.25),
+  tasa_coloc_fcast   = c( 4.2, 4.2, 4.2, 4.2, 4.1, 4.1, 4.1, 4.1, 4),
+  gdp_yoy_fcast      = gdp_yoy_ipom,
+  gap_pib_tgt_fcast  = c(-0.385, -0.361, -0.439, -0.498, -0.516, -0.482, -0.425, -0.373, -0.300),
+
+  cobre_nom_fcast    = c(5.2098, 5.4386, 5.5144, 5.4373,  5.1871,  5.1124, 5.0627,  5.0378,  5.0249),
+  lcobre_real_fcast  = c(142.115844692486, 145.628540581732, 146.517592677686, 144.614503149265, 139.408653468953, 137.463006499084, 135.991038471652, 135.002926891677, 134.251468649289),
+
+  petroleo_nom_fcast   = c(82.5, 88.6, 87.5, 85.6, 78.0, 75.2,73.3, 72.4, 71.9),
+  lpetroleo_real_fcast = c(418.341527295298, 424.689558862263, 422.945186755112, 420.25477005112, 410.462058722905, 406.311233467121, 403.257105578398, 401.5266089459, 400.338539797028),
+
+  alimentos_fcast   = c(127.8000, 127.7600, 127.4433, 125.4000, 120.7267, 118.1767, 117.2633, 117.0333, 117.7600),
+  energia_fcast   = c(-0.499, 14.963, 12.230, 11.790, 9.864, -3.155, -2.249, 0.951, 3.052),
+
+  
+    ffr_fcast          = c(3.6, 3.6, 3.6, 3.6, 3.4, 3.4, 3.4, 3.4, 3.1),
+  ltcr_fcast         = ltcr_fcast,
+  vix_fcast          = c(24, 22, 21, 19, 18.5, 18, 17.25, 17, 17),   # completé el 9º valor
+  us10y_fcast        = c(4.25, 4.50, 4.55, 4.65, 4.63, 4.55, 4.37, 4.20, 4.00),
+  tasa_neutral_fcast = c(4, 4, 4, 4, 4, 4, 4, 4, 4),
+
+  crec_socios_fcast  = c(2.7, 2.7, 2.7, 2.7, 2.9, 2.9, 2.9, 2.9, 2.9),
+  eee_ipc12_fcast    = eee_ipc12_fcast,
+  eee_ipcsv12_fcast    = eee_ipcsv12_fcast
+
+
+  ## Si luego tienes senda explícita de TPM del BCCh, agrégala acá:
+  ## tpm_fcast = c(...)
+)
+
+stopifnot(nrow(proy_inputs) == horiz_quarters)
+
+## ----------------------------------------------------------
+## 13B.4 Helpers
+## ----------------------------------------------------------
+fill_log_from_yoy <- function(log_var, yoy_perc, qdate_vec) {
+  out <- log_var
+  for (i in seq_along(out)) {
+    if (is.na(out[i]) && !is.na(yoy_perc[i])) {
+      prev_qdate <- qdate_vec[i] - 1
+      j <- which(qdate_vec == prev_qdate)
+      if (length(j) == 1 && !is.na(out[j])) {
+        d4_log <- 100 * log(1 + yoy_perc[i] / 100)
+        out[i] <- out[j] + d4_log
+      }
+    }
+  }
+  out
+}
+
+make_matlab_vec <- function(db, var, name, q_from, q_to, digits = 12) {
+  sub <- db %>%
+    filter(qdate >= q_from, qdate <= q_to) %>%
+    arrange(qdate)
+
+  vals <- sub[[var]]
+  if (any(is.na(vals))) {
+    warning(sprintf("La variable %s tiene NA en el rango de proyección.", var))
+  }
+
+  txt <- paste0(
+    name, "(startfcast:startfcast+", length(vals) - 1, ") = [",
+    paste0(round(vals, digits), collapse = ", "),
+    "];"
+  )
+  cat(txt, "\n")
+}
+
+## ----------------------------------------------------------
+## 13B.5 Base histórica compacta
+## ----------------------------------------------------------
+db_hist <- db_trimestral %>%
+  arrange(qdate) %>%
+  select(
+    qdate, year, quarter,
+    pib_no_minero, lpib_no_minero,
+    pib_pot_bcch, gap_pib_bcch,
+    ipc, lipc,
+    ipc_sin_vol, lipc_sin_vol,
+    cpi_us,
+    cobre, lcobre_real,
+    petroleo, lpetroleo_real, alimentos, energiav12,
+    tcr, ltcr,
+    tpm, tasa_neutral, tasa_coloc,
+    crec_socios, ffr, us10y, vix,
+    eee_ipc12,
+    eee_ipcsv12
+  ) %>%
+  mutate(
+    sample = "hist",
+    w      = w_hist
+  )
+
+## ----------------------------------------------------------
+## 13B.6 Unir historia + pseudo-muestra
+## ----------------------------------------------------------
+db_model <- db_hist %>%
+  full_join(proy_inputs, by = "qdate") %>%
+  arrange(qdate) %>%
+  mutate(
+    year    = year(as.Date(qdate)),
+    quarter = quarter(as.Date(qdate)),
+    sample  = if_else(qdate < q_start_fcast, "hist", "ipom"),
+    w       = if_else(sample == "hist", w_hist, w_ipom)
+  )
+
+## ----------------------------------------------------------
+## 13B.7 Completar series futuras observables/exógenas
+## ----------------------------------------------------------
+db_model <- db_model %>%
+  mutate(
+        year         = if_else(sample == "ipom", year_fcast, year),
+
+    ltcr         = if_else(sample == "ipom", ltcr_fcast, ltcr),
+    tcr          = if_else(sample == "ipom", exp(ltcr / 100), tcr),
+
+    cobre        = if_else(sample == "ipom", cobre_nom_fcast, cobre),
+    lcobre_real  = if_else(sample == "ipom", lcobre_real_fcast, lcobre_real),
+
+    petroleo        = if_else(sample == "ipom", petroleo_nom_fcast, petroleo),
+    lpetroleo_real  = if_else(sample == "ipom", lpetroleo_real_fcast, lpetroleo_real),
+
+    alimentos = if_else(sample == "ipom", alimentos_fcast, alimentos),
+    energia = if_else(sample == "ipom", energia_fcast, energiav12),
+    
+    ffr          = if_else(sample == "ipom", ffr_fcast, ffr),
+    us10y        = if_else(sample == "ipom", us10y_fcast, us10y),
+    vix          = if_else(sample == "ipom", vix_fcast, vix),
+    tasa_neutral = if_else(sample == "ipom", tasa_neutral_fcast, tasa_neutral),
+    tasa_coloc = if_else(sample == "ipom", tasa_coloc_fcast, tasa_coloc),
+   tpm          = if_else(sample == "ipom", tpm_fcast, tpm),
+
+    crec_socios  = if_else(sample == "ipom", crec_socios_fcast, crec_socios),
+    eee_ipc12    = if_else(sample == "ipom", eee_ipc12_fcast, eee_ipc12),
+       eee_ipcsv12    = if_else(sample == "ipom", eee_ipcsv12_fcast, eee_ipcsv12)
+
+  )
+
+## ----------------------------------------------------------
+## 13B.8 Extender CPI US para poder convivir con precios reales
+## ----------------------------------------------------------
+last_hist_cpi_idx <- max(which(!is.na(db_model$cpi_us) & db_model$qdate < q_start_fcast))
+g_us_annual  <- 0.02
+g_us_quarter <- (1 + g_us_annual)^(1/4) - 1
+
+if (last_hist_cpi_idx < nrow(db_model)) {
+  for (i in (last_hist_cpi_idx + 1):nrow(db_model)) {
+    if (is.na(db_model$cpi_us[i])) {
+      db_model$cpi_us[i] <- db_model$cpi_us[i - 1] * (1 + g_us_quarter)
+    }
+  }
+}
+
+## ----------------------------------------------------------
+## 13B.9 Reconstruir L_CPI y L_CPIXFE desde yoy
+## ----------------------------------------------------------
+db_model <- db_model %>%
+  mutate(
+    lipc         = if_else(sample == "ipom", NA_real_, lipc),
+    lipc_sin_vol = if_else(sample == "ipom", NA_real_, lipc_sin_vol)
+  )
+
+db_model$lipc         <- fill_log_from_yoy(db_model$lipc,         db_model$cpi_yoy_fcast,    db_model$qdate)
+db_model$lipc_sin_vol <- fill_log_from_yoy(db_model$lipc_sin_vol, db_model$cpixfe_yoy_fcast, db_model$qdate)
+
+db_model <- db_model %>%
+  mutate(
+    ipc         = exp(lipc / 100),
+    ipc_sin_vol = exp(lipc_sin_vol / 100)
+  )
+
+## ----------------------------------------------------------
+## 13B.10 Reconstruir L_GDP y L_GDP_BAR desde yoy + gap objetivo
+## ----------------------------------------------------------
+db_model <- db_model %>%
+  mutate(
+    lpib_no_minero = if_else(sample == "ipom", NA_real_, lpib_no_minero)
+  )
+
+for (i in seq_along(db_model$qdate)) {
+  if (!is.na(db_model$gdp_yoy_fcast[i]) && db_model$qdate[i] >= q_start_fcast) {
+    prev_qdate <- db_model$qdate[i] - 1
+    j_prev <- which(db_model$qdate == prev_qdate)
+
+    if (length(j_prev) == 1 && !is.na(db_model$lpib_no_minero[j_prev])) {
+      d4_log <- 100 * log(1 + db_model$gdp_yoy_fcast[i] / 100)
+      db_model$lpib_no_minero[i] <- db_model$lpib_no_minero[j_prev] + d4_log
+    }
+  }
+}
+
+db_model <- db_model %>%
+  mutate(
+    pib_no_minero = exp(lpib_no_minero / 100),
+    gap_pib_bcch  = if_else(sample == "ipom", gap_pib_tgt_fcast, gap_pib_bcch),
+    pib_pot_bcch  = if_else(sample == "ipom", lpib_no_minero - gap_pib_bcch, pib_pot_bcch)
+  )
+
+## ----------------------------------------------------------
+## 13B.11 Variables del modelo sobre muestra aumentada
+## ----------------------------------------------------------
+ss_TPMN1 <- 4.0
+ss_L_Z   <- 100 * log(100)
+ss_CRECSC <- 3.0
+ss_T_COLOC <- 4.0
+ss_FFR   <- 3.5
+ss_VIX   <- 17
+ss_UST10 <- 4.0
+ss_L_PCU <- 100 * log(3.4)
+ss_L_WTI <- 100 * log(59)
+
+db_model <- db_model %>%
+  arrange(qdate) %>%
+  mutate(
+    GAP       = gap_pib_bcch,
+    GAP_lag1  = dplyr::lag(GAP, 1),
+
+    TPM       = tpm,
+    TPM_lag1  = dplyr::lag(TPM, 1),
+    TPMN1     = tasa_neutral,
+
+    TPM_dev   = tpm - ss_TPMN1,
+    TPM_dev_N = tpm - tasa_neutral,
+
+    CRECSC    = crec_socios,
+    FFR       = ffr,
+    VIX       = vix,
+    UST10     = us10y,
+
+    L_PCU     = lcobre_real,
+    L_WTI     = lpetroleo_real,
+    T_COLOC   = tasa_coloc,
+    
+    Log_Food= log(alimentos),
+    L_Food= 100*(Log_Food - lag(Log_Food, 4)),
+    CRECSC_dev = CRECSC - ss_CRECSC,
+    FFR_dev    = FFR - ss_FFR,
+    VIX_dev    = VIX - ss_VIX,
+    UST10_dev  = UST10 - ss_UST10,
+    L_PCU_dev  = L_PCU - ss_L_PCU,
+    L_WTI_dev  = L_WTI - ss_L_WTI,
+    T_COLOC_dev = T_COLOC - ss_T_COLOC,
+    L_Z_dev    = ltcr - ss_L_Z,
+
+    dummy_19Q4 = if_else(year == 2019 & quarter == 4, 1, 0),
+    dummy_20Q2 = if_else(year == 2020 & quarter == 2, 1, 0),
+    dummy_20Q4 = if_else(year == 2020 & quarter == 4, 1, 0),
+    dummy_08Q3 = if_else(year == 2008 & quarter == 3, 1, 0),
+    dummy_98Q3 = if_else(year == 1998 & quarter == 3, 1, 0),
+    dummy_2008Q1_2008Q4 = if_else(year == 2008 & quarter >= 1 & quarter <= 4, 1, 0),
+
+    DLA_CPIXFE      = 4 * (lipc_sin_vol - dplyr::lag(lipc_sin_vol, 1)),
+    DLA_CPIXFE_lag1 = dplyr::lag(DLA_CPIXFE, 1),
+
+    D4L_CPI      = lipc - dplyr::lag(lipc, 4),
+    D1L_CPI      = lipc - dplyr::lag(lipc, 1),
+    DLA_CPI      = 4*(lipc - dplyr::lag(lipc, 1)),
+    lead_D4L_CPI = dplyr::lead(D4L_CPI, 1),
+    lead_D4_4L_CPI = dplyr::lead(D4L_CPI, 4),
+    lead_D1L_CPI = dplyr::lead(D1L_CPI, 1),
+    lag_D4L_CPI  = dplyr::lag(D4L_CPI, 1),
+    lag_D4L_CPI_4 = dplyr::lag(D4L_CPI, 4),
+
+    L_GDP_GAP      = gap_pib_bcch,
+    L_GDP_GAP_lag1 = dplyr::lag(L_GDP_GAP, 1),
+
+    Trimestre = factor(quarter),
+    dummy_2021Q4_2023Q1 = if_else(
+      (year == 2021 & quarter == 4) |
+        (year == 2022) |
+        (year == 2023 & quarter == 1),
+      1, 0
+    )
+  )
+
+## ----------------------------------------------------------
+## Tendencia one-sided del ltcr en la muestra aumentada
+## ----------------------------------------------------------
+db_model$hp_ltcr <- hp_onesided(db_model$ltcr, lambda = 1600, min_obs = 20)
+
+db_model <- db_model %>%
+  mutate(
+    L_Z_GAP     = ltcr - ss_L_Z,
+    lag_L_Z_GAP = dplyr::lag(L_Z_GAP, 1),
+
+    L_Z_GAP_Hp     = ltcr - hp_ltcr,
+    lag_L_Z_GAP_Hp = dplyr::lag(L_Z_GAP_Hp, 1),
+
+    DLA_CPIRES      = D1L_CPI - DLA_CPIXFE,
+    DLA_CPIRES_lag1 = dplyr::lag(DLA_CPIRES, 1)
+  )
+aux_wti <- lm(L_WTI_dev ~ CRECSC_dev + FFR_dev + VIX_dev + UST10_dev + L_PCU_dev, data = db_model)
+db_model$WTI_puro <- resid(aux_wti)
+
+
+datos_IS_directo <- db_model %>%
+  arrange(qdate) %>%
+  mutate(
+    GAP_lag1_calc = dplyr::lag(GAP, 1),
+    VIX_dev_lag1  = dplyr::lag(VIX_dev, 1),
+    T_COLOC_dev   = T_COLOC - 4
+  ) %>%
+  select(
+    qdate,
+    GAP,
+    GAP_lag1_calc,
+    TPM_dev,
+    CRECSC_dev,
+    FFR_dev,
+    VIX_dev_lag1,
+    UST10_dev,
+    L_PCU_dev,
+    L_WTI_dev,
+    L_Z_GAP,
+    T_COLOC_dev,
+    dummy_19Q4,
+    dummy_20Q2,
+    dummy_20Q4,
+    dummy_08Q3,
+    dummy_2008Q1_2008Q4,
+    w,
+    sample
+  ) %>%
+  na.omit()
+
+modelo_IS_directo <- lm(
+  GAP ~ 0 +
+    GAP_lag1_calc +
+    TPM_dev +
+    T_COLOC_dev +
+    CRECSC_dev +
+    FFR_dev +
+    UST10_dev +
+    VIX_dev_lag1 +
+    L_PCU_dev +
+    L_WTI_dev +
+    L_Z_GAP +
+    dummy_19Q4 +
+    dummy_20Q2 +
+    dummy_20Q4,
+  data = datos_IS_directo
+)
+
+summary(modelo_IS_directo)
+b <- coef(modelo_IS_directo)
+
+datos_IS_mci_estimado <- datos_IS_directo %>%
+  mutate(
+    contrib_TPM    = b["TPM_dev"]      * TPM_dev,
+    contrib_TCOLOC = b["T_COLOC_dev"]  * T_COLOC_dev,
+    contrib_FFR    = b["FFR_dev"]      * FFR_dev,
+    contrib_UST10  = b["UST10_dev"]    * UST10_dev,
+    contrib_VIX    = b["VIX_dev_lag1"] * VIX_dev_lag1,
+
+    # Contribución total de condiciones financieras/cambiarias sobre el GAP
+    contrib_MCI_expandido =
+      contrib_TPM +
+      contrib_TCOLOC +
+      contrib_FFR +
+      contrib_UST10 +
+      contrib_VIX,
+
+    # Definimos MCI de forma que MCI alto = más restrictivo.
+    # Por eso le cambiamos el signo a la contribución expansiva.
+    MCI_estimado = -contrib_MCI_expandido
+  )
+modelo_IS_mci_estimado <- lm(
+  GAP ~ 0 +
+    GAP_lag1_calc +
+    lag(TPM_dev,4)+
+     L_PCU_dev  +
+    lag(L_WTI_dev)    ,
+  data = datos_IS_mci_estimado
+)
+
+summary(modelo_IS_mci_estimado)
+
+
+## ----------------------------------------------------------
+## 14B. Estimación IS ponderada (historia + pseudo-IPoM)
+## ----------------------------------------------------------
+datos_IS_aug <- db_model %>%
+  select(
+    GAP, GAP_lag1, TPM, TPM_dev_N, TPM_dev, CRECSC_dev, FFR_dev, VIX_dev, UST10_dev,
+    L_Z_GAP_Hp, L_Z_GAP, L_PCU_dev, L_WTI_dev, T_COLOC, WTI_puro,
+    dummy_19Q4, dummy_20Q2, dummy_20Q4, dummy_08Q3, dummy_2008Q1_2008Q4,
+    w, sample, qdate
+  ) 
+
+modelo_IS_aug <- lm(
+  GAP ~ 0 + GAP_lag1 + lag(TPM_dev_N) + CRECSC_dev +FFR_dev+T_COLOC
+     + UST10_dev + lag(L_PCU_dev) + lag(L_WTI_dev,3)+ L_WTI_dev  +
+    dummy_19Q4 + dummy_20Q2 + dummy_20Q4 + L_Z_GAP + lag(VIX_dev,1),
+  data = datos_IS_aug
+)
+
+summary(modelo_IS_aug)
+
+
+
+bloque_fci <- db_model %>%
+  arrange(qdate) %>%
+  select(FFR_dev, VIX_dev, UST10_dev)
+
+idx_fci <- complete.cases(bloque_fci)
+
+pca_fci <- prcomp(bloque_fci[idx_fci, ], scale. = TRUE)
+
+db_model$FCI_global <- NA_real_
+db_model$FCI_global[idx_fci] <- pca_fci$x[, 1]
+
+## Normalizar signo:
+## queremos que un FCI más alto = condiciones más restrictivas
+if (cor(db_model$FCI_global[idx_fci],
+        db_model$VIX_dev[idx_fci],
+        use = "complete.obs") < 0) {
+  db_model$FCI_global <- -db_model$FCI_global
+}
+
+## ==========================================================
+## 2. Construir base IS con las variables necesarias
+## ==========================================================
+
+db_is <- db_model %>%
+  arrange(qdate) %>%
+  mutate(
+    GAP_lag1 = lag(GAP, 1),
+    GAP_lag2 = lag(GAP, 2),
+
+    ## brecha de tasa real ex-ante
+    RPGAP = (TPM ),
+    RPGAP_lag1 = lag(RPGAP, 1),
+
+    ## spread crediticio local
+    CRED = T_COLOC - TPM,
+    CRED_lag1 = lag(CRED, 1),
+
+    ## demanda externa rezagada
+    CRECSC_dev_lag1 = lag(CRECSC_dev, 1),
+
+    ## factor financiero global rezagado
+    FCI_global_lag1 = lag(FCI_global, 1),
+
+    ## cobre en cambio trimestral anualizado
+    dL_PCU = 4 * (L_PCU - lag(L_PCU, 1)),
+    dL_PCU_lag1 = lag(dL_PCU, 1),
+    dL_WTI = 4 * (L_WTI - lag(L_WTI, 1)),
+    dL_WTI_lag1 = lag(dL_WTI, 1),
+    
+    
+    ## gap de TCR one-sided rezagado
+    ## uso tu variable ya construida con HP one-sided
+    L_Z_GAP_os_lag1 = lag(L_Z_GAP_Hp, 1),
+
+    dummy_19Q4 = if_else(year == 2019 & quarter == 4, 1, 0),
+    dummy_20Q2 = if_else(year == 2020 & quarter == 2, 1, 0),
+    dummy_20Q3 = if_else(year == 2020 & quarter == 3, 1, 0)
+  )
+
+aux_pcu <- lm(dL_PCU ~ CRECSC_dev + FFR_dev + VIX_dev + UST10_dev, data = db_is)
+db_is$PCU_puro <- NA_real_
+db_is$PCU_puro[as.numeric(rownames(model.frame(aux_pcu)))] <- resid(aux_pcu)
+db_is$PCU_puro_lag1 <- lag(db_is$PCU_puro, 1)
+
+    aux_wti <- lm(dL_WTI ~  CRECSC_dev + FFR_dev + VIX_dev + UST10_dev, data = db_is)
+db_is$WTI_puro <- NA_real_
+db_is$WTI_puro[as.numeric(rownames(model.frame(aux_wti)))] <- resid(aux_wti)
+db_is$WTI_puro_lag1 <- lag(db_is$WTI_puro, 3) * db_is$FCI_global_lag1
+## ==========================================================
+## 3. Estimar curva IS
+## ==========================================================
+
+datos_IS <- db_is %>%
+  select(qdate,
+    GAP, GAP_lag1, GAP_lag2, TPM, TPM_dev, RPGAP, RPGAP_lag1, CRED_lag1, PCU_puro, PCU_puro_lag1,WTI_puro, WTI_puro_lag1, T_COLOC_dev, Trimestre, 
+    CRECSC_dev_lag1, CRECSC_dev, FCI_global_lag1, dL_PCU_lag1, dL_WTI_lag1,  FFR_dev, VIX_dev, UST10_dev, L_PCU_dev, L_WTI_dev, L_Z_GAP_Hp,
+    L_Z_GAP_os_lag1, dummy_19Q4, dummy_20Q2, dummy_20Q3
+  ) %>% filter(qdate >= as.yearqtr("2018 Q1"))
+
+contrasts(datos_IS$Trimestre) <- contr.sum(4)
+
+modelo_IS_aug <- lm(
+  GAP ~ 0 + GAP_lag1 +  lag(TPM_dev, 1)+  lag(TPM_dev, 4) + (CRECSC_dev) +L_PCU_dev+ lag(L_WTI_dev) +  lag(FFR_dev) +  lag(VIX_dev) + UST10_dev +L_Z_GAP_Hp ,
+  data = datos_IS
+)
+
+summary(modelo_IS_aug)
+
+
+
+## ----------------------------------------------------------
+## 15B. Phillips ponderada con restricción beta_lag + beta_exp = 1
+##      Reparametrización:
+##      y - exp = a + b*(lag-exp) + ...
+## ----------------------------------------------------------
+datos_IPC_aug <- db_model %>%
+  mutate(
+    y_ph  = DLA_CPIXFE - eee_ipcsv12,
+    x_ph  = DLA_CPIXFE_lag1 - eee_ipcsv12
+  )%>%
+  select(
+     L_GDP_GAP_lag1, L_GDP_GAP, L_Z_GAP_Hp, L_Food, Trimestre, DLA_CPIXFE, eee_ipc12 , DLA_CPI,
+    dummy_2021Q4_2023Q1, w, sample, qdate
+  )
+
+contrasts(datos_IPC_aug$Trimestre) <- contr.sum(4)
+
+modelo_IPC_aug <- lm(
+  DLA_CPIXFE ~ lag(DLA_CPIXFE)  +lag(DLA_CPIXFE,4)  + eee_ipc12 + L_Z_GAP_Hp+  lag(L_GDP_GAP) +lag(L_Food)  + Trimestre + dummy_2021Q4_2023Q1,
+  data = datos_IPC_aug
+)
+
+summary(modelo_IPC_aug)
+
+beta_lag_ipc <- coef(modelo_IPC_aug)[["lag(DLA_CPIXFE)"]]
+beta_exp_ipc <- 1 - beta_lag_ipc
+
+cat("\n--- Phillips reparametrizada ---\n")
+cat("beta_lag =", round(beta_lag_ipc, 6), "\n")
+cat("beta_exp =", round(beta_exp_ipc, 6), "\n")
+
+library(dplyr)
+library(zoo)
+library(systemfit)
+
+datos_IPC_iv <- db_model %>%
+  arrange(qdate) %>%
+  mutate(
+    DLA_CPIXFE_lead1 = dplyr::lead(DLA_CPIXFE, 1),
+     DLA_CPIXFE_lead4 = dplyr::lead(DLA_CPIXFE, 4),
+     DLA_CPI_lag1 = dplyr::lag(DLA_CPI, 1),
+      DLA_CPI_lead1 = dplyr::lead(DLA_CPI, 1),
+    DLA_CPIXFE_lag4 = dplyr::lag(DLA_CPIXFE, 4),
+    L_Food_lag1     = dplyr::lag(L_Food, 1),
+    L_Z_GAP_Hp_lag1 = dplyr::lag(L_Z_GAP_Hp, 1)
+  ) %>%
+  select(
+    qdate,
+    DLA_CPI,
+    DLA_CPI_lag1,
+    DLA_CPIXFE,
+    DLA_CPIXFE_lag1,
+    DLA_CPIXFE_lag4,
+    DLA_CPIXFE_lead1,
+    DLA_CPIXFE_lead4,
+    eee_ipc12,
+    L_GDP_GAP,
+    L_GDP_GAP_lag1,
+    L_Z_GAP_Hp,
+    L_Z_GAP_Hp_lag1,
+    Trimestre,
+    L_Food,
+    L_Food_lag1,
+    dummy_2021Q4_2023Q1
+  ) 
+
+eq_IPC_iv <- DLA_CPIXFE ~ 0+DLA_CPIXFE_lag1 + DLA_CPIXFE_lag4  + DLA_CPIXFE_lead1  + L_GDP_GAP + lag(L_Z_GAP_Hp) + lag(L_Food) + Trimestre  + dummy_2021Q4_2023Q1 
+
+sistema_IPC_iv <- list(eq1 = eq_IPC_iv)
+
+instrumentos_IPC <- ~ DLA_CPIXFE_lag1 + DLA_CPIXFE_lag4 + DLA_CPI_lag1 + eee_ipc12 + lag(eee_ipc12) +L_GDP_GAP + lag(L_GDP_GAP) + lag(L_Z_GAP_Hp) + lag(L_Food) + Trimestre + dummy_2021Q4_2023Q1 
+
+restriction_IPC_iv <- c(
+  " eq1_DLA_CPIXFE_lag1 +  eq1_DLA_CPIXFE_lag4 +  eq1_DLA_CPIXFE_lead1 = 1"
+)
+
+modelo_iv_restringido_IPC <- systemfit(
+  sistema_IPC_iv,
+  data = datos_IPC_iv,
+  method = "2SLS",
+  inst = instrumentos_IPC,
+  restrict.matrix = restriction_IPC_iv
+)
+
+summary(modelo_iv_restringido_IPC)
+
+## ----------------------------------------------------------
+## 15C. IPC no core ponderada
+## ----------------------------------------------------------
+datos_IPCnoCore_aug <- db_model %>%
+  select(
+    D1L_CPI, DLA_CPIXFE, DLA_CPIRES_lag1, cpi_us, lag_L_Z_GAP, L_Z_GAP_Hp, L_Z_GAP, L_Food, CRECSC_dev,
+    lpetroleo_real, lcobre_real, cobre,L_PCU_dev, L_WTI_dev, petroleo, GAP,Trimestre,
+    w, sample,dummy_2021Q4_2023Q1, qdate
+  ) %>%
+  mutate(desvL_WTI= (lpetroleo_real-lag(lpetroleo_real,1)),
+        DLA4_CPI  = (4*D1L_CPI),
+    DLA_CPIRES  = DLA4_CPI-DLA_CPIXFE,
+  )  %>%   filter(qdate >= as.yearqtr("2020 Q1"))
+
+contrasts(datos_IPCnoCore_aug$Trimestre) <- contr.sum(4)
+
+reg_cpires_aug <- lm(
+  DLA_CPIRES ~ lag(DLA_CPIRES,1) +lag(DLA_CPIRES,4) + CRECSC_dev+ L_Z_GAP_Hp + lag(L_Food)+
+    lag(desvL_WTI) + lag(L_WTI_dev,4)+ Trimestre + dummy_2021Q4_2023Q1,
+  data = datos_IPCnoCore_aug
+)
+
+summary(reg_cpires_aug)
+
+## ----------------------------------------------------------
+## 16B. Taylor con restricción beta_lag + beta_neutral = 1
+##      Reparametrización:
+##      TPM - TPMN1 = b*(TPM_lag1 - TPMN1) + ...
+##
+## OJO: si no pones senda futura de TPM, la parte IPoM no entra
+## en esta ecuación y Taylor queda esencialmente histórica.
+## ----------------------------------------------------------
+datos_Taylor_aug <- db_model %>%
+  mutate(
+    y_tay = TPM - TPMN1,
+    x_tay = TPM_lag1 - TPMN1
+  ) %>%
+  select(
+    TPM, TPMN1, y_tay, x_tay, lead_D4L_CPI, lead_D4_4L_CPI, L_GDP_GAP,GAP_lag1, DLA_CPIXFE,
+    eee_ipc12, lag_D4L_CPI_4, lag_D4L_CPI,
+    w, sample, qdate, dummy_2021Q4_2023Q1
+  ) %>% filter(qdate >= as.yearqtr("2010 Q1"))
+
+
+modelo_Taylor_aug <- AER::ivreg(
+  TPM ~ x_tay + lead_D4L_CPI + L_GDP_GAP |
+    x_tay  + lag(eee_ipc12,4)+ eee_ipc12+ L_GDP_GAP  + lag(DLA_CPIXFE)+ lag_D4L_CPI, 
+  data = datos_Taylor_aug
+)
+
+summary(modelo_Taylor_aug)
+
+beta_lag_taylor     <- coef(modelo_Taylor_aug)[["x_tay"]]
+beta_neutral_taylor <- 1 - beta_lag_taylor
+
+cat("\n--- Taylor reparametrizada ---\n")
+cat("beta_lag_TPM =", round(beta_lag_taylor, 6), "\n")
+cat("beta_TPMN1   =", round(beta_neutral_taylor, 6), "\n")
+
+
+## ==========================================================
+## 16. Regla de Taylor (2SLS con restricción) - estilo original
+##    pero usando db_model
+## ==========================================================
+
+library(systemfit)
+
+datos_Taylor <- db_model %>%
+  select(qdate,
+    TPM, TPM_lag1, TPMN1,
+    lead_D4L_CPI, lead_D1L_CPI,
+    L_GDP_GAP, lag_L_Z_GAP,
+    D4L_CPI, eee_ipc12,
+    lag_D4L_CPI, lag_D4L_CPI_4, dummy_2021Q4_2023Q1
+  ) %>% filter(qdate >= as.yearqtr("2005 Q1"))
+
+eq_Taylor <- TPM ~ TPM_lag1 + TPMN1 +
+  lead_D4L_CPI + L_GDP_GAP + dummy_2021Q4_2023Q1
+
+sistema_Taylor <- list(eq1 = eq_Taylor)
+
+# Restricción: coef_TPM_lag1 + coef_TPMN1 = 1
+restriction_Taylor <- c("eq1_TPM_lag1 + eq1_TPMN1 = 1")
+
+# Instrumentos para 2SLS
+instrumentos_Taylor <- ~ TPM_lag1 +TPMN1  + lag(eee_ipc12,1) + lag(eee_ipc12,4)+ L_GDP_GAP+ lag(L_GDP_GAP) +
+  lag_D4L_CPI + D4L_CPI + dummy_2021Q4_2023Q1
+
+modelo_restringido_Taylor <- systemfit(
+  sistema_Taylor,
+  data = datos_Taylor,
+  method = "2SLS",
+  inst = instrumentos_Taylor,
+  restrict.matrix = restriction_Taylor
+)
+
+summary(modelo_restringido_Taylor)
+
+
+## ----------------------------------------------------------
+## 17B. Comparación rápida: histórico vs aumentado
+## ----------------------------------------------------------
+datos_IS_hist <- db_model %>%
+  filter(sample == "hist") %>%
+  select(
+    GAP, GAP_lag1, TPM_dev_N, CRECSC_dev, FFR_dev, VIX_dev, UST10_dev,
+    L_Z_GAP_Hp, L_PCU_dev, L_WTI_dev, T_COLOC,
+    dummy_19Q4, dummy_20Q2, dummy_20Q4, dummy_08Q3, dummy_2008Q1_2008Q4
+  ) %>%
+  na.omit()
+
+modelo_IS_hist <- lm(
+  GAP ~ 0 + GAP_lag1 + TPM_dev_N + CRECSC_dev + FFR_dev +
+    VIX_dev + UST10_dev + L_PCU_dev + L_WTI_dev + T_COLOC +
+    dummy_19Q4 + dummy_20Q2 + dummy_20Q4 + L_Z_GAP_Hp,
+  data = datos_IS_hist
+)
+
+summary(modelo_IS_hist)
+modelsummary(
+  list(
+    "IS histórica" = modelo_IS_hist,
+    "IS aumentada" = modelo_IS_aug
+  ),
+  stars = TRUE,
+  fmt = 3
+)
+
+## ----------------------------------------------------------
+## 18B. Exportación a IRIS desde la base aumentada
+## ----------------------------------------------------------
+q_from <- q_start_fcast
+q_to   <- tail(q_fcast, 1)
+
+cat("\n%% === Copiar y pegar en Matlab (IRIS) ===\n")
+
+make_matlab_vec(db_model, "lpib_no_minero", "h.L_GDP",     q_from, q_to)
+make_matlab_vec(db_model, "pib_pot_bcch",   "h.L_GDP_BAR", q_from, q_to)
+make_matlab_vec(db_model, "lipc",           "h.L_CPI",     q_from, q_to)
+make_matlab_vec(db_model, "lipc_sin_vol",   "h.L_CPIXFE",  q_from, q_to)
+make_matlab_vec(db_model, "lcobre_real",    "h.L_PCU",     q_from, q_to)
+make_matlab_vec(db_model, "lpetroleo_real", "h.L_WTI",     q_from, q_to)
+
+make_matlab_vec(db_model, "crec_socios",    "h.CRECSC",    q_from, q_to)
+make_matlab_vec(db_model, "ffr",            "h.FFR",       q_from, q_to)
+make_matlab_vec(db_model, "us10y",          "h.UST10",     q_from, q_to)
+make_matlab_vec(db_model, "vix",            "h.VIX",       q_from, q_to)
+make_matlab_vec(db_model, "ltcr",           "h.L_Z",       q_from, q_to)
+make_matlab_vec(db_model, "tasa_neutral",   "h.TPMN1",     q_from, q_to)
+
+## si en algún momento agregas tpm_fcast:
+## make_matlab_vec(db_model, "tpm", "h.TPM", q_from, q_to)
+
+## ----------------------------------------------------------
+## 19B. Checks
+## ----------------------------------------------------------
+check_cpi <- db_model %>%
+  mutate(
+    cpi_level     = exp(lipc / 100),
+    cpi_yoy_check = (cpi_level / dplyr::lag(cpi_level, 4) - 1) * 100,
+    d4l_cpi_check = lipc - dplyr::lag(lipc, 4)
+  ) %>%
+  filter(qdate >= q_start_fcast) %>%
+  select(qdate, cpi_yoy_fcast, cpi_yoy_check, d4l_cpi_check)
+
+print(check_cpi)
+
+check_cpixfe <- db_model %>%
+  mutate(
+    cpixfe_level       = exp(lipc_sin_vol / 100),
+    cpixfe_yoy_check   = (cpixfe_level / dplyr::lag(cpixfe_level, 4) - 1) * 100,
+    d4l_cpixfe_check   = lipc_sin_vol - dplyr::lag(lipc_sin_vol, 4)
+  ) %>%
+  filter(qdate >= q_start_fcast) %>%
+  select(qdate, cpixfe_yoy_fcast, cpixfe_yoy_check, d4l_cpixfe_check)
+
+print(check_cpixfe)
+
+## ==========================================================
+## Diagnóstico: comparar HP two-sided vs one-sided
+## ==========================================================
+
+## LTCR
+hp_ltcr_twosided <- rep(NA_real_, nrow(db_model))
+idx_tcr_full <- which(!is.na(db_model$ltcr))
+hp_ltcr_twosided[idx_tcr_full] <- as.numeric(
+  mFilter::hpfilter(db_model$ltcr[idx_tcr_full], freq = 1600)$trend
+)
+
+df_plot_ltcr_hp <- db_model %>%
+  mutate(
+    hp_ltcr_twosided = hp_ltcr_twosided
+  ) %>%
+  filter(!is.na(ltcr))
+
+ggplot(df_plot_ltcr_hp, aes(x = qdate)) +
+  geom_line(aes(y = ltcr, colour = "LTCR observado"), linewidth = 0.8) +
+  geom_line(aes(y = hp_ltcr_twosided, colour = "HP two-sided"), linewidth = 0.8, linetype = "dashed") +
+  geom_line(aes(y = hp_ltcr, colour = "HP one-sided"), linewidth = 0.8, linetype = "dotdash") +
+  labs(
+    x = "Fecha",
+    y = "ltcr",
+    colour = ""
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+## PIB histórico en log
+hp_pib_twosided_hist <- rep(NA_real_, nrow(db_trimestral))
+hp_pib_twosided_hist[idx_hist] <- as.numeric(
+  mFilter::hpfilter(db_trimestral$lpib_no_minero[idx_hist], freq = 1600)$trend
+)
+
+df_plot_pib_hp <- db_trimestral %>%
+  mutate(
+    hp_pib_twosided = hp_pib_twosided_hist
+  ) %>%
+  filter(year < 2021, !is.na(lpib_no_minero))
+
+ggplot(df_plot_pib_hp, aes(x = qdate)) +
+  geom_line(aes(y = lpib_no_minero, colour = "PIB observado"), linewidth = 0.8) +
+  geom_line(aes(y = hp_pib_twosided, colour = "HP two-sided"), linewidth = 0.8, linetype = "dashed") +
+  geom_line(aes(y = pib_pot, colour = "HP one-sided"), linewidth = 0.8, linetype = "dotdash") +
+  labs(
+    x = "Fecha",
+    y = "log*100",
+    colour = ""
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+## ==========================================================
+## 18. Proyecciones para IRIS: construcción automática de L_*
+## ==========================================================
+library(dplyr)
+library(zoo)
+
+## ==========================================================
+## 18. Proyecciones para IRIS: construcción automática de L_*
+## ==========================================================
+
+## ---- 18.1 Horizonte de proyección (mismo que en IRIS) ----
+
+q_start_fcast   <- as.yearqtr("2025 Q4")  # debe coincidir con startfcast = qq(2025,4)
+horiz_quarters  <- 9L                     # startfcast : startfcast+8  ->  9 trimestres
+q_fcast         <- seq(q_start_fcast, by = 0.25, length.out = horiz_quarters)
+
+## ---- 18.2 Proyecciones insumo (las que tú defines) --------
+## cpi_yoy      : IPC total variación 12m en %, NO log
+## cpixfe_yoy   : IPC subyacente variación 12m en %, NO log
+## gdp_yoy      : crecimiento anual PIB en %, NO log
+## gap_pib_tgt  : brecha de producto objetivo (misma métrica que gap_pib: ln*100 aprox %)
+## cobre_nom    : precio del cobre nominal (USD/libra, por ejemplo)
+## petroleo_nom : precio del petróleo nominal (USD/barril)
+
+
+
+proy_inputs <- tibble(
+  qdate        = q_fcast,
+  cpi_yoy      = c(3.49,
+2.77,
+2.80,
+2.79,
+3.20,
+3.34,
+3.27,
+3.03,
+2.96
+
+),
+  cpixfe_yoy   = c(
+3.429,
+3.432,
+3.43,
+2.95,
+2.98,
+3.07,
+3.14,
+3.09,
+3.04
+
+
+),
+  gdp_yoy      = c(
+1.3,
+0.7,
+0.5,
+0.4,
+-0.1,
+-0.9,
+-1.3,
+-1.7,
+-2.0
+),
+  gap_pib_tgt  = c(
+0.038,
+0.05,
+0.274,
+0.336,
+0.358,
+0.260,
+0.120,
+0.002,
+-0.061
+
+),
+#cobre_nom    = c(5.001779552, 4.7, 4.7, 4.7, 4.7, 4.6, 4.6, 4.6, 4.6),
+   cobre_nom    =  c(5.2098, 5.4386, 5.5144, 5.4373,  5.1871,  5.1124, 5.0627,  5.0378,  5.0249),
+#  petroleo_nom = c(58.93333333, 59.9238927, 59.9238927, 59.9238927, 59.9238927, 60.9160, 60.9160, 60.9160, 60.9160)
+
+ petroleo_nom = c(82.5, 88.6, 87.5, 85.6, 78.0, 75.2,73.3, 72.4, 71.9),
+#  L_Z_index_nom = c(99.21159, 104, 103, 101.5, 101)
+
+)
+
+## Verifica que cada vector tenga longitud = horiz_quarters
+stopifnot(nrow(proy_inputs) == horiz_quarters)
+
+## ---- 18.3 Combinar historia + proyección -------------------
+
+db_all <- db_trimestral %>%
+  select(
+    qdate, year, quarter,
+    lpib_no_minero, pib_pot_bcch,
+    lipc, lipc_sin_vol,
+    cobre, petroleo,
+    cpi_us,                # <--- NECESARIO PARA DEFLACTAR
+    tpm, tasa_neutral,
+    tasa_coloc, crec_socios,
+    ffr, us10y, vix, ltcr
+  ) %>%
+
+  full_join(proy_inputs, by = "qdate") %>%
+  arrange(qdate)
+
+## ---- 18.4 Helper: de % a/a -> log(nivel)*100 ---------------
+fill_log_from_yoy <- function(log_var, yoy_perc, qdate_vec) {
+  out <- log_var
+  for (i in seq_along(out)) {
+    if (is.na(out[i]) && !is.na(yoy_perc[i])) {
+      prev_qdate <- qdate_vec[i] - 1
+      j <- which(qdate_vec == prev_qdate)
+      if (length(j) == 1 && !is.na(out[j])) {
+        # INTERPRETAMOS yoy_perc COMO D4L DIRECTO
+        d4_log <- yoy_perc[i]          # NO log(1 + yoy_perc/100)
+        out[i] <- out[j] + d4_log
+      }
+    }
+  }
+  out
+}
+
+db_all <- db_all %>%
+  mutate(
+    lipc         = if_else(qdate >= q_start_fcast, NA_real_, lipc),
+    lipc_sin_vol = if_else(qdate >= q_start_fcast, NA_real_, lipc_sin_vol)
+  ) %>%
+  mutate(
+    lipc         = fill_log_from_yoy(lipc,         cpi_yoy,    qdate),
+    lipc_sin_vol = fill_log_from_yoy(lipc_sin_vol, cpixfe_yoy, qdate)
+  )
+
+
+
+
+## ---- 18.5 PIB real y potencial a partir de gdp_yoy y gap --- 
+## Aquí sí respondemos a tus 2 condiciones:
+## 1) L_GDP respeta tu crecimiento anual proyectado
+## 2) L_GDP_BAR se calcula para que el gap = gap_pib_tgt
+
+# 18.5.1 Construir L_GDP (lpib_no_minero) para q >= q_start_fcast
+for (i in seq_along(db_all$qdate)) {
+  if (!is.na(db_all$gdp_yoy[i]) && db_all$qdate[i] >= q_start_fcast) {
+    prev_qdate <- db_all$qdate[i] - 1        # t-4 (un año atrás)
+    j_prev <- which(db_all$qdate == prev_qdate)
+    if (length(j_prev) == 1 && !is.na(db_all$lpib_no_minero[j_prev])) {
+      d4_log <- 100 * log(1 + db_all$gdp_yoy[i] / 100)
+      db_all$lpib_no_minero[i] <- db_all$lpib_no_minero[j_prev] + d4_log
+    } else {
+      warning(paste(
+        "No se pudo calcular L_GDP para", as.character(db_all$qdate[i]),
+        "por falta de dato en t-4."
+      ))
+    }
+  }
+}
+
+# 18.5.2 Construir PIB potencial como residual: L_GDP_BAR = L_GDP - gap_tgt
+db_all <- db_all %>%
+  mutate(
+    pib_pot_bcch = if_else(
+      !is.na(gap_pib_tgt) & !is.na(lpib_no_minero) & qdate >= q_start_fcast,
+      lpib_no_minero - gap_pib_tgt,
+      pib_pot_bcch   # se mantiene el histórico tal cual
+    )
+  )
+
+## ---- 18.6 L_PCU y L_WTI en precios REALES (deflactados por CPI US) ----
+
+# 1) Extender CPI US hacia adelante con una hipótesis de inflación anual
+#    (aquí supongo 2% anual a partir del último dato observado)
+
+last_cpi_idx <- max(which(!is.na(db_all$cpi_us)))
+g_us_annual  <- 0.02                          # 2% anual -> cambia esto si quieres otra hipótesis
+g_us_quarter <- (1 + g_us_annual)^(1/4) - 1   # crecimiento trimestral constante
+
+if (last_cpi_idx < nrow(db_all)) {
+  for (i in (last_cpi_idx + 1):nrow(db_all)) {
+    db_all$cpi_us[i] <- db_all$cpi_us[i - 1] * (1 + g_us_quarter)
+  }
+}
+
+# 2) Elegir precio nominal "a usar": histórico (cobre, petroleo) o proyección (cobre_nom, petroleo_nom)
+
+db_all <- db_all %>%
+  mutate(
+    cobre_nom_use    = if_else(!is.na(cobre_nom),    cobre_nom,    cobre),
+    petroleo_nom_use = if_else(!is.na(petroleo_nom), petroleo_nom, petroleo)
+  )
+
+# 3) Deflactar a dólares de 2020Q1 usando el mismo cpi_us_ref de la sección 10
+#    cobre_real_t = cobre_nom_t * (cpi_us_ref / cpi_us_t)
+
+db_all <- db_all %>%
+  mutate(
+    cobre_real_all = if_else(
+      !is.na(cobre_nom_use) & !is.na(cpi_us) & cobre_nom_use > 0 & cpi_us > 0,
+      cobre_nom_use * cpi_us_ref / cpi_us,
+      NA_real_
+    ),
+    petroleo_real_all = if_else(
+      !is.na(petroleo_nom_use) & !is.na(cpi_us) & petroleo_nom_use > 0 & cpi_us > 0,
+      petroleo_nom_use * cpi_us_ref / cpi_us,
+      NA_real_
+    ),
+    
+    # 4) Logaritmo natural de los precios reales * 100
+    L_PCU = if_else(
+      !is.na(cobre_real_all) & cobre_real_all > 0,
+      log(cobre_real_all) * 100,
+      NA_real_
+    ),
+    L_WTI = if_else(
+      !is.na(petroleo_real_all) & petroleo_real_all > 0,
+      log(petroleo_real_all) * 100,
+      NA_real_
+    )
+  )
+
+
+db_trimestral <- db_trimestral %>%
+  arrange(qdate) %>%
+  mutate(
+    # Nominales en log*100
+    L_PCU_NOM = if_else(!is.na(cobre) & cobre > 0,
+                        log(cobre) * 100, NA_real_),
+    L_WTI_NOM = if_else(!is.na(petroleo) & petroleo > 0,
+                        log(petroleo) * 100, NA_real_),
+
+    # CPI US en log*100
+    L_CPI_US = if_else(!is.na(cpi_us) & cpi_us > 0,
+                       log(cpi_us) * 100, NA_real_),
+
+    # Inflación US
+    D4L_CPI_US = L_CPI_US - dplyr::lag(L_CPI_US, 4),
+    DLA_CPI_US = 4 * (L_CPI_US - dplyr::lag(L_CPI_US, 1))
+  )
+cpi_us_ref_2020q1 <- db_trimestral %>%
+  filter(qdate == as.yearqtr("2020 Q1")) %>%
+  pull(cpi_us)
+
+db_trimestral <- db_trimestral %>%
+  mutate(
+    cpi_us_2020q1 = if_else(!is.na(cpi_us) & !is.na(cpi_us_ref_2020q1),
+                            100 * cpi_us / cpi_us_ref_2020q1,
+                            NA_real_)
+  )
+
+## ==========================================================
+## 19. Generar vectores Matlab listos para IRIS
+## ==========================================================
+
+make_matlab_vec <- function(db, var, name, q_from, q_to, digits = 12) {
+  sub <- db %>%
+    filter(qdate >= q_from, qdate <= q_to) %>%
+    arrange(qdate)
+  vals <- sub[[var]]
+  if (any(is.na(vals))) {
+    warning(paste("La variable", var, "tiene NA en el rango de proyección."))
+  }
+  txt <- paste0(
+    name, "(startfcast:startfcast+", length(vals) - 1, ") = [",
+    paste0(round(vals, digits), collapse = ", "),
+    "];"
+  )
+  cat(txt, "\n")
+}
+
+q_from <- q_start_fcast
+q_to   <- tail(q_fcast, 1)
+
+cat("%% === Copiar y pegar en Matlab (IRIS) ===\n")
+
+make_matlab_vec(db_all, "lpib_no_minero", "h.L_GDP",     q_from, q_to)
+make_matlab_vec(db_all, "pib_pot_bcch",   "h.L_GDP_BAR", q_from, q_to)
+make_matlab_vec(db_all, "lipc",           "h.L_CPI",     q_from, q_to)
+make_matlab_vec(db_all, "lipc_sin_vol",   "h.L_CPIXFE",  q_from, q_to)
+make_matlab_vec(db_all, "L_PCU",          "h.L_PCU",     q_from, q_to)
+make_matlab_vec(db_all, "L_WTI",          "h.L_WTI",     q_from, q_to)
+ 
+
+check_cpi <- db_all %>%
+  mutate(
+    cpi_level     = exp(lipc/100),
+    cpi_yoy_check = (cpi_level / dplyr::lag(cpi_level, 4) - 1) * 100,
+    d4l_cpi_check = lipc - dplyr::lag(lipc, 4)
+  ) %>%
+  select(qdate, cpi_yoy, cpi_yoy_check, d4l_cpi_check) %>%
+  filter(qdate >= q_start_fcast)
+
+print(check_cpi)
+
+
+ check_cpixfe <- db_all %>%
+  mutate(
+    cpixfe_level       = exp(lipc_sin_vol/100),
+    cpixfe_yoy_check   = (cpixfe_level / dplyr::lag(cpixfe_level, 4) - 1) * 100,
+    d4l_cpixfe_check   = lipc_sin_vol - dplyr::lag(lipc_sin_vol, 4)
+  ) %>%
+  select(qdate, cpixfe_yoy, cpixfe_yoy_check, d4l_cpixfe_check) %>%
+  filter(qdate >= q_start_fcast)
+
+print(check_cpixfe)
+
+## Si quieres también CRECSC, FFR, UST10, VIX, TPM, TPMN1, etc.:
+## make_matlab_vec(db_all, "crec_socios",   "h.CRECSC",  q_from, q_to)
+## make_matlab_vec(db_all, "ffr",           "h.FFR",     q_from, q_to)
+## make_matlab_vec(db_all, "us10y",         "h.UST10",   q_from, q_to)
+## make_matlab_vec(db_all, "vix",           "h.VIX",     q_from, q_to)
+## make_matlab_vec(db_all, "tpm",           "h.TPM",     q_from, q_to)
+## make_matlab_vec(db_all, "tasa_neutral",  "h.TPMN1",   q_from, q_to)
+## make_matlab_vec(db_all, "tasa_coloc",    "h.T_COLOC", q_from, q_to)
+
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+## ==========================================================
+## 20. Exportar Data.csv para IRIS desde db_model
+## ==========================================================
+
+library(dplyr)
+library(zoo)
+library(lubridate)
+
+## ----------------------------------------------------------
+## 20.1. Elegir si el CSV incluye o no la pseudo-muestra IPoM
+## ----------------------------------------------------------
+include_ipom_in_history <- TRUE
+
+start_q <- as.yearqtr("2000 Q1")
+end_q   <- if (include_ipom_in_history) tail(q_fcast, 1) else as.yearqtr("2025 Q4")
+
+## ----------------------------------------------------------
+## 20.2. Construir extras nominales / USA sobre db_model
+## ----------------------------------------------------------
+cpi_us_ref_2020q1_model <- db_model %>%
+  filter(qdate == as.yearqtr("2020 Q1")) %>%
+  pull(cpi_us)
+
+db_export_iris <- db_model %>%
+  arrange(qdate) %>%
+  mutate(
+    quarter_num = quarter(as.Date(qdate)),
+
+    ## Variables nominales en log*100
+    L_PCU_NOM = if_else(!is.na(cobre) & cobre > 0,
+                        log(cobre) * 100, NA_real_),
+    L_WTI_NOM = if_else(!is.na(petroleo) & petroleo > 0,
+                        log(petroleo) * 100, NA_real_),
+
+    ## CPI US
+    CPI_US_2020 = if_else(!is.na(cpi_us) & !is.na(cpi_us_ref_2020q1_model),
+                          100 * cpi_us / cpi_us_ref_2020q1_model,
+                          NA_real_),
+    L_CPI_US = if_else(!is.na(cpi_us) & cpi_us > 0,
+                       log(cpi_us) * 100, NA_real_),
+    D4L_CPI_US = L_CPI_US - dplyr::lag(L_CPI_US, 4),
+    DLA_CPI_US = 4 * (L_CPI_US - dplyr::lag(L_CPI_US, 1)),
+
+    ## Gap cambiario consistente con tu calibración actual
+    L_Z_GAP = ltcr - ss_L_Z
+  )
+
+## ----------------------------------------------------------
+## 20.3. Exportar el rango que quieras a Data.csv
+## ----------------------------------------------------------
+history_iris <- db_export_iris %>%
+  filter(qdate >= start_q, qdate <= end_q) %>%
+  arrange(qdate) %>%
+  transmute(
+    period    = format(qdate, "%YQ%q"),
+
+    ## Variables del modelo
+    L_GDP     = lpib_no_minero,
+    L_GDP_BAR = pib_pot_bcch,
+    L_GDP_GAP = gap_pib_bcch,
+    L_CPI     = lipc,
+    L_CPIXFE  = lipc_sin_vol,
+    TPM       = tpm,
+    TPMN1     = tasa_neutral,
+    T_COLOC   = tasa_coloc,
+    L_Z       = ltcr,
+    CRECSC    = crec_socios,
+    L_PCU     = lcobre_real,
+    L_WTI     = lpetroleo_real,
+    FFR       = ffr,
+    UST10     = us10y,
+    VIX       = vix,
+
+    ## Dummies trimestrales
+    Q1        = as.integer(quarter_num == 1),
+    Q2        = as.integer(quarter_num == 2),
+    Q3        = as.integer(quarter_num == 3),
+    Q4        = as.integer(quarter_num == 4),
+
+    ## Extra útil
+    L_Z_GAP   = L_Z_GAP,
+
+    L_Food   = L_Food,
+
+    ## Extras nominales / USA
+    PCU_NOM    = cobre,
+    WTI_NOM    = petroleo,
+    L_PCU_NOM  = L_PCU_NOM,
+    L_WTI_NOM  = L_WTI_NOM,
+    CPI_US     = cpi_us,
+    CPI_US_2020 = CPI_US_2020,
+    L_CPI_US   = L_CPI_US,
+    D4L_CPI_US = D4L_CPI_US,
+    DLA_CPI_US = DLA_CPI_US
+  )
+
+## Dejar primera columna sin nombre, como antes
+history_iris <- as.data.frame(history_iris)
+names(history_iris)[1] <- ""
+
+## Guardar CSV
+write.csv(
+  history_iris,
+  file = file.path("..", "..", "data", "raw", "Data.csv"),
+  row.names = FALSE,
+  na = ""
+)
+
+```
+
+
+```{r}
+
+```
+

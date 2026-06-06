@@ -1,13 +1,25 @@
 scenario_id,scenario,variable,label,unit,promedio,minimo,maximo,ultimo
-escenario_alternativo,Escenario alternativo,CRECSC,Crecimiento socios comerciales,% anual,0,0,0,0
-escenario_alternativo,Escenario alternativo,D4L_CPI,Inflación total,% anual,0.035663993333333255,-0.14790738000000037,0.2784939300000002,-0.042697449999999915
-escenario_alternativo,Escenario alternativo,D4L_CPIXFE,Inflación subyacente sin volátiles,% anual,-0.007390525000000037,-0.016420259999999853,0,-0.007990500000000011
-escenario_alternativo,Escenario alternativo,D4L_CPI_GAP_XFE,Brecha inflación total-subyacente,pp,0.04305451891666666,-0.13587855,0.2902191759999999,-0.03470695899999998
-escenario_alternativo,Escenario alternativo,FFR,Federal Funds Rate,% anual,0,0,0,0
-escenario_alternativo,Escenario alternativo,L_GDP_GAP,Brecha de actividad,%,-0.039857505333333335,-0.139,0,-0.005812570999999989
-escenario_alternativo,Escenario alternativo,L_PCU_NOM,Cobre nominal,nivel aproximado,0,0,0,0
-escenario_alternativo,Escenario alternativo,L_WTI_NOM,WTI nominal,nivel aproximado,5.55148165,-9.999999406318238e-8,12.2406838,12.2406838
-escenario_alternativo,Escenario alternativo,L_Z_INDEX,Tipo de cambio real índice,índice,0,0,0,0
-escenario_alternativo,Escenario alternativo,TPM,Tasa de Política Monetaria,% anual,-0.011163896666666728,-0.0365371699999999,0.004460810000000315,-0.014154559999999705
-escenario_alternativo,Escenario alternativo,UST10,Treasury 10 años,% anual,0,0,0,0
-escenario_alternativo,Escenario alternativo,VIX,VIX,índice,0,0,0,0
+petroleo_gap,Escenario petróleo/brecha,CRECSC,Crecimiento socios comerciales,% anual,0.006639333333333368,-0.01672999999999991,0.10082199999999997,0.0
+petroleo_gap,Escenario petróleo/brecha,D4L_CPI,Inflación total,% anual,0.06963034333333336,-0.11629368000000007,0.34188364000000027,-0.046878500000000045
+petroleo_gap,Escenario petróleo/brecha,D4L_CPIXFE,Inflación subyacente sin volátiles,% anual,0.0058089466666666105,-0.003583970000000214,0.020824600000000082,-0.0028052500000002034
+petroleo_gap,Escenario petróleo/brecha,D4L_CPI_GAP_XFE,Brecha inflación total-subyacente,pp,0.06382139466666667,-0.11270971099999999,0.32158515899999995,-0.044073257000000005
+petroleo_gap,Escenario petróleo/brecha,FFR,Federal Funds Rate,% anual,0.0,0.0,0.0,0.0
+petroleo_gap,Escenario petróleo/brecha,L_GDP_GAP,Brecha de actividad,%,-0.04499081400000001,-0.139,0.0,-0.019152373
+petroleo_gap,Escenario petróleo/brecha,L_PCU_NOM,Cobre nominal,nivel aproximado,-0.024900787500000094,-0.0447877400000003,0.0,-0.0409168400000004
+petroleo_gap,Escenario petróleo/brecha,L_WTI_NOM,WTI nominal,nivel aproximado,5.172050608333333,-9.999999406318238e-08,11.652653599999994,11.652653599999994
+petroleo_gap,Escenario petróleo/brecha,L_Z_INDEX,Tipo de cambio real índice,índice,0.0002722499999994928,0.0,0.0028700000000014825,0.0
+petroleo_gap,Escenario petróleo/brecha,TPM,Tasa de Política Monetaria,% anual,-0.002381134166666632,-0.021990520000000124,0.021583979999999947,-0.009453749999999594
+petroleo_gap,Escenario petróleo/brecha,UST10,Treasury 10 años,% anual,0.0,0.0,0.0,0.0
+petroleo_gap,Escenario petróleo/brecha,VIX,VIX,índice,0.0,0.0,0.0,0.0
+tpm45_2026,"TPM 4,5% durante 2026 y retorno a IPoM desde 2027",CRECSC,Crecimiento socios comerciales,% anual,0.0,0.0,0.0,0.0
+tpm45_2026,"TPM 4,5% durante 2026 y retorno a IPoM desde 2027",D4L_CPI,Inflación total,% anual,0.08256454166666667,-0.0974239800000003,0.36475180000000007,-0.03387236000000016
+tpm45_2026,"TPM 4,5% durante 2026 y retorno a IPoM desde 2027",D4L_CPIXFE,Inflación subyacente sin volátiles,% anual,0.013470104166666644,0.0,0.0361902999999999,0.0045061899999998545
+tpm45_2026,"TPM 4,5% durante 2026 y retorno a IPoM desde 2027",D4L_CPI_GAP_XFE,Brecha inflación total-subyacente,pp,0.06909443608333334,-0.10324827900000005,0.3297314819999999,-0.03837855499999998
+tpm45_2026,"TPM 4,5% durante 2026 y retorno a IPoM desde 2027",FFR,Federal Funds Rate,% anual,0.0,0.0,0.0,0.0
+tpm45_2026,"TPM 4,5% durante 2026 y retorno a IPoM desde 2027",L_GDP_GAP,Brecha de actividad,%,-0.004871151166666661,-0.139,0.104431991,0.104431991
+tpm45_2026,"TPM 4,5% durante 2026 y retorno a IPoM desde 2027",L_PCU_NOM,Cobre nominal,nivel aproximado,0.0,0.0,0.0,0.0
+tpm45_2026,"TPM 4,5% durante 2026 y retorno a IPoM desde 2027",L_WTI_NOM,WTI nominal,nivel aproximado,5.172050608333333,-9.999999406318238e-08,11.652653599999994,11.652653599999994
+tpm45_2026,"TPM 4,5% durante 2026 y retorno a IPoM desde 2027",L_Z_INDEX,Tipo de cambio real índice,índice,0.0,0.0,0.0,0.0
+tpm45_2026,"TPM 4,5% durante 2026 y retorno a IPoM desde 2027",TPM,Tasa de Política Monetaria,% anual,-0.02833333333333332,-0.25,0.0,0.0
+tpm45_2026,"TPM 4,5% durante 2026 y retorno a IPoM desde 2027",UST10,Treasury 10 años,% anual,0.0,0.0,0.0,0.0
+tpm45_2026,"TPM 4,5% durante 2026 y retorno a IPoM desde 2027",VIX,VIX,índice,0.0,0.0,0.0,0.0

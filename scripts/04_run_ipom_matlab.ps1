@@ -4,21 +4,30 @@
 # Uso desde PowerShell, en la raíz del repositorio:
 # .\scripts\04_run_ipom_matlab.ps1
 #
-# Requisitos:
-# - Matlab disponible en PATH como `matlab`
-# - IRIS Toolbox instalado y agregado al path de Matlab
-# - CSV de entrada en matlab/ipom/outputs o la ruta que uses localmente
+# Opciones:
+# .\scripts\04_run_ipom_matlab.ps1 -RebuildHistory
+# .\scripts\04_run_ipom_matlab.ps1 -PdfReports
+
+param(
+  [switch]$RebuildHistory,
+  [switch]$PdfReports
+)
 
 $ErrorActionPreference = "Stop"
 
 $repo = Split-Path -Parent $PSScriptRoot
-$src = Join-Path $repo "matlab\ipom\src"
+$ipom = Join-Path $repo "matlab\ipom"
 
 Write-Host "Repositorio: $repo"
-Write-Host "Carpeta Matlab: $src"
+Write-Host "Carpeta Matlab/IPoM: $ipom"
 
-# Este comando llama un wrapper preparado para ejecución local.
-# Si quieres usar tus scripts originales, edita run_ipom_pipeline.m.
-matlab -batch "cd('$src'); run_ipom_pipeline"
+$cmds = @()
+$cmds += "cd('$($ipom -replace '\\','/')')"
+if ($RebuildHistory) { $cmds += "IPOM_REBUILD_HISTORY = true" }
+if ($PdfReports) { $cmds += "IPOM_RUN_REPORT = true" }
+$cmds += "run_tpm45_2026"
+$batch = ($cmds -join "; ")
+
+matlab -batch $batch
 
 Write-Host "Matlab/IRIS finalizó. Ahora corre: Rscript scripts/03_build_ipom_outputs.R"

@@ -1,0 +1,193 @@
+% General Model %
+% Modelo Mini-MEP Adaptado %
+% No hay canal cambiario de la PM %
+
+!transition_variables
+
+'Real GDP (100*log)' 								L_GDP
+'Trend in Real GDP (100*log)' 						L_GDP_BAR
+'Output Gap (in %)' 								L_GDP_GAP
+'Quarterly Growth in Real GDP(in % pa)' 			DLA_GDP
+'Real GDP Growth YoY (in %)' 						D4L_GDP
+'Real GDP Trend Growth QoQ @ar (in %)' 				DLA_GDP_BAR
+
+'CPI (level, 100*log)' 								L_CPI
+'QoQ Inflation (in % @ar)' 							DLA_CPI
+'YoY Inflation (in %)' 								D4L_CPI
+
+'Core CPI (level, 100*log)' 					    L_CPIXFE
+'QoQ Core Inflation (in % @ar)' 				  	DLA_CPIXFE
+'YoY Core Inflation (in %)' 					  	D4L_CPIXFE
+
+'QoQ Residual Inflation (in % @ar)' 			    DLA_CPIRES
+
+
+'Nominal Policy Interest Rate (in % pa)' 			TPM
+'Neutral Interest Rate (in % pa)' 				    TPMN1
+'Tasa de interes de las colocaciones en UF (%)'     T_COLOC
+
+'Real Exchange Rate (level, 100*log)' 				L_Z
+'Real Exchange Rate Gap (in %)' 					L_Z_GAP
+
+'Foreign Output growth (in %)' 						CRECSC
+
+'Federal Fund Rate (%)'                             FFR
+'VIX (index)'                                       VIX
+'T-Bill 10 years (%)'                               UST10
+'Copper Price (USD per lb, 100*log)' 			    L_PCU
+'Oil Price (WTI, USD per barreñ, 100*log)' 		L_WTI
+'YoY Inflation Food (in %)'                         L_Food
+'Quarter 1'                                         Q1
+'Quarter 2'                                         Q2
+'Quarter 3'                                         Q3
+'Quarter 4'                                         Q4
+
+
+% ------------------------------------------------------------------------------- %
+!transition_shocks
+SHK_L_GDP_GAP, SHK_DLA_CPIXFE, SHK_DLA_CPI, SHK_TPM, SHK_CRECSC, SHK_TPMN1, 
+SHK_L_Z, SHK_DLA_CPIRES, SHK_DLA_GDP_BAR, SHK_T_COLOC,
+SHK_FFR, SHK_VIX, SHK_UST10, SHK_L_PCU, SHK_L_WTI, SHK_L_Food,
+% ------------------------------------------------------------------------------- %	%
+!parameters
+b1, b2, b3, b4, b5, b6, b7, b8, b8_b, b9, b10
+a1, a2, a3, a4, a5, a6, a7, a8
+g1, g2, g2b, g3
+
+rho_L_Z
+rho_TPMN1
+rho_DLA_GDP_BAR
+rho_DLA_CPIRES
+rho_CRECSC
+rho_FFR, rho_VIX, rho_UST10, rho_L_PCU, rho_L_WTI, rho_Coloc, rho_L_Food,
+
+ss_D4L_CPI_TAR, ss_TPMN1, ss_L_Z, ss_DLA_GDP_BAR, ss_CRECSC,
+ss_FFR, ss_VIX, ss_UST10, ss_L_PCU, ss_L_WTI, ss_T_COLOC, ss_L_Food,
+
+
+% ------------------------------------------------------------------------------- %
+!transition_equations
+% 1
+'Aggregate demand'
+L_GDP_GAP = b1*L_GDP_GAP{-1} - b2*(TPM{-1}-TPMN1) + b3*(CRECSC-ss_CRECSC) + b4*(FFR-ss_FFR)  +...
+            b5*(VIX{-1}-ss_VIX) + b6*(UST10-ss_UST10) + b7*(L_PCU{-1} -ss_L_PCU) + ...
+            b8*(L_WTI{-3}-ss_L_WTI)+b8_b*0.835*(L_WTI-ss_L_WTI) + b9*(T_COLOC-ss_T_COLOC) + b10*(L_Z_GAP) + SHK_L_GDP_GAP;
+    
+% 2
+'Tasa de colocaciones' 
+T_COLOC = 0.925* T_COLOC{-1} + (1-0.925)*(TPM{+2} - (0.2*D4L_CPI+0.3*D4L_CPI{+1}+0.5*D4L_CPI{+4})+3) + SHK_T_COLOC;
+
+% 3
+'Core Inflation --'
+DLA_CPIXFE =0.324 *DLA_CPIXFE{-1} + 0.144*DLA_CPIXFE{-4} +(1-0.468)*(1/3*DLA_CPIXFE{1}+1/3*DLA_CPIXFE{2}+1/3*DLA_CPIXFE{4}) + 0.056*L_GDP_GAP{-1} +0.084*(L_Z_GAP)  + 0.021*(L_Food{-1}-L_Food{-5})+(a4*Q1 + a5*Q2 + a6*Q3 + a7*Q4) + SHK_DLA_CPIXFE;
+
+% 4
+'Headline inflation'
+DLA_CPI = DLA_CPIXFE + DLA_CPIRES + SHK_DLA_CPI;
+
+% 5
+'Monetary policy reaction function'
+TPM = g1*TPM{-1} + (1 - g1)*(TPMN1 + (g2)*(0.15*(D4L_CPIXFE{+1})+0.67*(D4L_CPIXFE{+3})+0.18 *(DLA_CPI{-1}) - ss_D4L_CPI_TAR) + g3*L_GDP_GAP) + SHK_TPM;
+
+'Inflations/Growth Rates'
+%6
+DLA_CPIXFE = 4*(L_CPIXFE - L_CPIXFE{-1});
+%7
+DLA_CPI    = 4*(L_CPI - L_CPI{-1});
+%8
+DLA_GDP    = 4*(L_GDP - L_GDP{-1});
+%9
+DLA_GDP_BAR = 4*(L_GDP_BAR - L_GDP_BAR{-1});
+
+%10
+D4L_CPI    = L_CPI - L_CPI{-4};
+%11
+D4L_CPIXFE = L_CPIXFE - L_CPIXFE{-4};
+%12
+D4L_GDP    = L_GDP - L_GDP{-4};
+
+'Definitions/Identities'
+%13
+L_Z_GAP = L_Z - ss_L_Z;
+%14
+L_GDP_GAP = L_GDP - L_GDP_BAR;
+
+%15
+CRECSC = (1-rho_CRECSC)*ss_CRECSC + rho_CRECSC*CRECSC{-1} + SHK_CRECSC;
+
+%16
+TPMN1 = rho_TPMN1*TPMN1{-1} + (1-rho_TPMN1)*ss_TPMN1 + SHK_TPMN1;
+%17
+L_Z = (1-rho_L_Z)*ss_L_Z + rho_L_Z*L_Z{-1} + SHK_L_Z;
+%18
+DLA_CPIRES = 0.241524 -0.113049*DLA_CPIRES{-4} -0.290459*DLA_CPIRES{-1} +0.246513*L_Z_GAP + 0.151584*(CRECSC-ss_CRECSC)-0.021602*(L_Food-L_Food{-4}) + 0.0725*(L_WTI{-1}-L_WTI{-2})-0.009035*(L_WTI{-3}-ss_L_WTI)+(-0.749401*Q1 + -1.062624*Q2 + 0.425757*Q3 + 1.3863*Q4)+ SHK_DLA_CPIRES;
+
+%19
+DLA_GDP_BAR = rho_DLA_GDP_BAR*DLA_GDP_BAR{-1} + (1-rho_DLA_GDP_BAR)*ss_DLA_GDP_BAR + SHK_DLA_GDP_BAR;
+
+% 20
+FFR = (1-rho_FFR)*ss_FFR + rho_FFR*FFR{-1} + SHK_FFR;
+
+% 21
+VIX = (1-rho_VIX)*ss_VIX + rho_VIX*VIX{-1} + SHK_VIX;
+
+% 22
+UST10 = (1-rho_UST10)*ss_UST10 + rho_UST10*UST10{-1} + SHK_UST10;
+
+%23
+L_PCU = (1-rho_L_PCU)*ss_L_PCU + rho_L_PCU*L_PCU{-1} + SHK_L_PCU;
+
+%23.b
+L_Food = (1-rho_L_Food)*ss_L_Food + rho_L_Food*L_Food{-1} + SHK_L_Food;
+
+%24
+L_WTI = (1-rho_L_WTI)*ss_L_WTI + rho_L_WTI*L_WTI{-1} + SHK_L_WTI;
+
+%25
+Q1 = Q1{-4};
+%26
+Q2 = Q2{-4};
+%27
+Q3 = Q3{-4};
+%28
+Q4 = Q4{-4};
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+!if filter == true
+
+!measurement_variables
+OBS_L_GDP 
+OBS_L_CPI
+OBS_TPM
+OBS_L_CPIXFE
+OBS_L_GDP_RW_GAP
+OBS_L_GDP_BAR
+OBS_L_Z
+OBS_TPMN1
+
+!measurement_equations
+OBS_L_GDP        = L_GDP;
+OBS_L_CPI        = L_CPI;
+OBS_TPM          = TPM;
+OBS_L_CPIXFE     = L_CPIXFE;
+OBS_L_GDP_RW_GAP = L_GDP_RW_GAP;
+OBS_L_GDP_BAR    = L_GDP_BAR;
+OBS_L_Z          = L_Z;
+OBS_TPMN1        = TPMN1;
+
+!else
+!end
+
+Legend
+L_CPI          log of price level
+TPM     	   nominal interest rate (unconstrained by the zero bound)
+L_Z            log of real exchange rate
+L_GDP          log of gdp
+_GAP           cyclical deviation from a trend
+_BAR           trend (equilibrium)
+ss_            steady-state value  
+DLA_           q-o-q change
+D4L_           y-o-y change  
+_RW_           foreign variable
+SHK_           shock
+OBS_           measurement variables

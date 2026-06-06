@@ -1,6 +1,6 @@
 ---
-title: "Escenarios macroeconómicos de referencia"
-subtitle: "Ejercicio académico/aplicado en IRIS/Matlab para simulación condicional de inflación, TPM y brecha de actividad"
+title: "Escenario IPoM/IRIS: TPM 4,5% durante 2026"
+subtitle: "Simulación condicional en Matlab/IRIS con retorno a la trayectoria IPoM desde 2027"
 execute:
   echo: false
   message: false
@@ -9,7 +9,7 @@ format:
   html:
     toc: true
     page-layout: article
-description: "Ejercicio académico/aplicado de escenarios macroeconómicos con Matlab/IRIS, supuestos externos y visualización de resultados."
+description: "Proyecto aplicado de escenarios macroeconómicos en Matlab/IRIS para inflación, TPM y brecha de actividad en Chile."
 image: "../assets/img/og/portfolio-og.png"
 ---
 
@@ -63,10 +63,7 @@ external_file <- path_project("data", "processed", "ipom", "ipom_external_assump
 scenario_meta_file <- path_project("data", "processed", "ipom", "ipom_scenario_metadata.csv")
 
 if (!file.exists(long_file)) {
-  stop(
-    "No existe data/processed/ipom/ipom_scenarios_long.csv. ",
-    "Los resultados estarán disponibles cuando existan los archivos procesados del escenario."
-  )
+  stop("No existe data/processed/ipom/ipom_scenarios_long.csv. Ejecuta Rscript scripts/03_build_ipom_outputs.R.")
 }
 
 ipom_long <- read_csv(long_file, show_col_types = FALSE) |>
@@ -78,55 +75,47 @@ ipom_diff <- read_csv(diff_file, show_col_types = FALSE) |>
 ipom_diff_summary <- read_csv(diff_summary_file, show_col_types = FALSE)
 ipom_external <- read_csv(external_file, show_col_types = FALSE) |>
   mutate(date = as.Date(date))
-ipom_scenario_meta <- read_csv(scenario_meta_file, show_col_types = FALSE)
+ipom_scenario_meta <- read_csv(scenario_meta_file, show_col_types = FALSE) |>
+  mutate(main_public = as.character(main_public) %in% c("TRUE", "True", "true", "1"))
 
-main_scenarios <- ipom_scenario_meta$scenario_id
+main_scenarios <- ipom_scenario_meta |>
+  filter(main_public) |>
+  arrange(scenario_order) |>
+  pull(scenario_id)
 
+alt_scenarios <- setdiff(main_scenarios, "baseline_ipom")
 forecast_start <- "2025Q1"
-plot_start <- "2018Q1"
+plot_start <- "2023Q1"
 ```
 
 ::: {.callout-note}
-## Estado del proyecto
+## Estado del ejercicio
 
-Proyecto aplicado avanzado. El modelo y los escenarios se ejecutan en **Matlab/IRIS**, y los resultados se presentan como una nota de simulación macroeconómica. La versión pública no pretende replicar el modelo oficial del Banco Central de Chile; es un ejercicio académico/aplicado de escenarios.
+El proyecto ejecuta una simulación condicional en **Matlab/IRIS**. La corrida principal mantiene la TPM en **4,5% durante 2026** y fuerza el retorno a la trayectoria base/IPoM desde **2027T1**. No es una proyección institucional ni una réplica del modelo oficial del Banco Central.
 :::
 
 ## Pregunta económica
 
-El objetivo es evaluar cómo cambian las trayectorias de inflación, tasa de política monetaria y brecha de actividad cuando se reemplazan algunos supuestos externos del escenario base por una trayectoria alternativa.
+El ejercicio pregunta cómo cambian las trayectorias de inflación, TPM y brecha de actividad cuando se impone una trayectoria de política monetaria más baja durante 2026, manteniendo el resto de la estructura del modelo y retornando al escenario base desde 2027.
 
-En términos prácticos, el ejercicio responde:
+## Escenarios
 
-> ¿Qué pasa con inflación, TPM y actividad si el escenario externo cambia respecto de un escenario base basado en IPoM, manteniendo constante el resto de la estructura doméstica del ejercicio?
-
-## Arquitectura del proyecto
-
-::: {.mu-grid}
-
-::: {.mu-card}
-### 1. Motor macroeconómico
-
-Modelo semi-estructural en IRIS/Matlab con bloque de demanda, curva de Phillips, regla de política monetaria, bloque externo y shocks estructurales.
-:::
-
-::: {.mu-card}
-### 2. Escenario base y alternativa
-
-Se trabaja con un escenario base basado en IPoM y un escenario alternativo construido sobre supuestos externos distintos. La comparación debe leerse como ejercicio aplicado de simulación, no como réplica oficial ni como proyección institucional.
-:::
-
-::: {.mu-card}
-### 3. Presentación de resultados
-
-Matlab exporta bases `fcast_*.csv`; R las convierte a formato largo y genera gráficos, tablas y diagnóstico comparado.
-:::
-
-:::
+```{r escenarios}
+ipom_scenario_meta |>
+  filter(scenario_id %in% main_scenarios) |>
+  transmute(
+    Escenario = scenario,
+    Archivo = source_file,
+    Lectura = case_when(
+      scenario_id == "baseline_ipom" ~ "Trayectoria de referencia identificada sobre el escenario IPoM.",
+      scenario_id == "tpm45_2026" ~ "TPM fijada en 4,5% durante 2026 y retorno a la trayectoria base desde 2027.",
+      TRUE ~ "Escenario alternativo."
+    )
+  ) |>
+  ipom_kable(caption = "Escenarios usados en la comparación pública.")
+```
 
 ## Estructura conceptual del modelo
-
-El ejercicio se organiza como un modelo macroeconómico semi-estructural: una ecuación de demanda agregada para la brecha de actividad, una curva de Phillips para inflación subyacente, un bloque de inflación residual/total y una regla de política monetaria. La notación siguiente resume la lógica económica del sistema; los nombres internos y coeficientes específicos se mantienen en los archivos IRIS/Matlab del proyecto.
 
 ::: {.mu-equation-panel}
 ### Brecha de actividad
@@ -141,7 +130,7 @@ $$
 + \varepsilon^y_t
 $$
 
-La brecha de actividad depende de su propia persistencia, de la posición de la tasa de política frente a una referencia neutral, de condiciones externas, del tipo de cambio real y de condiciones financieras domésticas.
+La brecha depende de persistencia, posición monetaria, condiciones externas, tipo de cambio real y condiciones financieras.
 :::
 
 ::: {.mu-equation-panel}
@@ -158,42 +147,14 @@ $$
 + s_t
 + \varepsilon^\pi_t
 $$
-
-La inflación subyacente combina inercia, expectativas, holguras de actividad, traspaso cambiario real, presiones de alimentos y estacionalidad.
 :::
 
 ::: {.mu-equation-panel}
-### Inflación total y componente residual
-
-La inflación total se obtiene sumando el bloque subyacente y un componente residual que recoge presiones cambiarias, externas, de alimentos, petróleo y estacionalidad:
+### Inflación total y regla monetaria
 
 $$
 \pi_t = \pi^{core}_t + \pi^{res}_t
 $$
-
-$$
-\pi^{res}_t =
-\alpha_0
-+ \alpha_1 \, \pi^{res}_{t-4}
-+ \alpha_2 \, \pi^{res}_{t-1}
-+ \alpha_3 \, \tilde z_t
-+ \alpha_4 \, (g^{ext}_t - \bar g^{ext})
-+ \alpha_5 \, (p^{food}_t - p^{food}_{t-4})
-+ \alpha_6 \, (p^{oil}_{t-1} - p^{oil}_{t-2})
-+ \alpha_7 \, (p^{oil}_{t-3} - \bar p^{oil})
-+ s_t
-+ \varepsilon^{res}_t
-$$
-
-$$
-s_t = \delta_1 Q_{1,t} + \delta_2 Q_{2,t} + \delta_3 Q_{3,t} + \delta_4 Q_{4,t}
-$$
-
-En esta representación, $\tilde z_t$ corresponde a la brecha del tipo de cambio real, $g^{ext}_t$ al crecimiento externo y $p^{food}_t$, $p^{oil}_t$ a los componentes relevantes de alimentos y petróleo en logaritmos. La idea es mostrar la lógica económica del bloque residual sin sobrecargar la página con la parametrización numérica completa del modelo.
-:::
-
-::: {.mu-equation-panel}
-### Regla de política monetaria
 
 $$
 i_t =
@@ -207,28 +168,23 @@ i_t =
 + \varepsilon^i_t
 $$
 
-La TPM responde gradualmente a la desviación esperada de inflación respecto de la meta y a la brecha de actividad, con suavizamiento de tasas.
+La trayectoria alternativa se implementa exogenizando la TPM en 2026 y dejando que el modelo endogenice los shocks requeridos para cumplir esa condición.
 :::
-
-## Escenarios incluidos
-
-La versión pública mantiene solo dos trayectorias para evitar confusión: un escenario base y un escenario alternativo. Otros experimentos pueden agregarse más adelante, pero no se declaran en la página si no existe su archivo de resultados correspondiente.
-
-```{r escenarios}
-ipom_scenario_meta |>
-  transmute(
-    Escenario = scenario,
-    Lectura = dplyr::case_when(
-      scenario_order == 1 ~ "Trayectoria de referencia para comparación",
-      TRUE ~ "Trayectoria alternativa bajo supuestos externos distintos"
-    )
-  ) |>
-  ipom_kable(caption = "Escenarios presentados en la versión pública del proyecto.")
-```
 
 ## Resultado principal
 
-El gráfico compara el **escenario base basado en IPoM** con el **escenario alternativo** disponible en la versión actual. La página queda preparada para incorporar más escenarios en el futuro, pero la versión pública se concentra deliberadamente en esta comparación binaria para mantener una lectura limpia.
+### Tasa de Política Monetaria
+
+```{r plot-tpm}
+ipom_plot_var(
+  ipom_long,
+  "TPM",
+  title = "TPM: trayectoria base vs escenario 4,5% en 2026",
+  subtitle = "El escenario alternativo vuelve a la trayectoria base desde 2027T1",
+  start_period = plot_start,
+  scenarios = main_scenarios
+)
+```
 
 ### Inflación total
 
@@ -236,7 +192,7 @@ El gráfico compara el **escenario base basado en IPoM** con el **escenario alte
 ipom_plot_var(
   ipom_long,
   "D4L_CPI",
-  title = "Inflación total: escenario base vs alternativo",
+  title = "Inflación total",
   subtitle = "Variación anual del IPC",
   start_period = plot_start,
   scenarios = main_scenarios
@@ -256,19 +212,6 @@ ipom_plot_var(
 )
 ```
 
-### Tasa de Política Monetaria
-
-```{r plot-tpm}
-ipom_plot_var(
-  ipom_long,
-  "TPM",
-  title = "Tasa de Política Monetaria",
-  subtitle = "Trayectoria de política bajo cada escenario",
-  start_period = plot_start,
-  scenarios = main_scenarios
-)
-```
-
 ### Brecha de actividad
 
 ```{r plot-gap}
@@ -282,92 +225,52 @@ ipom_plot_var(
 )
 ```
 
-## Bloque internacional
+## Diferencias frente al escenario base
 
-Además de las variables macro domésticas, el ejercicio depende de los supuestos externos que alimentan el modelo. Esta sección muestra las trayectorias de petróleo, cobre, crecimiento internacional y volatilidad financiera usadas en el escenario base y en los escenarios alternativos.
+### TPM
 
-### Precio del petróleo WTI nominal
-
-```{r plot-wti-nominal}
-ipom_plot_var(
-  ipom_long,
-  "L_WTI_NOM",
-  title = "Precio del petróleo WTI nominal",
-  subtitle = "Nivel aproximado usado como supuesto externo",
+```{r diff-tpm}
+ipom_plot_diff(
+  ipom_diff,
+  "TPM",
+  title = "TPM: diferencia respecto del escenario base",
   start_period = forecast_start,
-  scenarios = main_scenarios
+  scenarios = alt_scenarios
 )
 ```
 
-### Precio del cobre nominal
+### Inflación total
 
-```{r plot-cobre-nominal}
-ipom_plot_var(
-  ipom_long,
-  "L_PCU_NOM",
-  title = "Precio del cobre nominal",
-  subtitle = "Nivel aproximado usado como supuesto externo",
+```{r diff-inflacion-total}
+ipom_plot_diff(
+  ipom_diff,
+  "D4L_CPI",
+  title = "Inflación total: diferencia respecto del escenario base",
   start_period = forecast_start,
-  scenarios = main_scenarios
+  scenarios = alt_scenarios
 )
 ```
 
-### Crecimiento internacional
+### Brecha de actividad
 
-```{r plot-crecimiento-internacional}
-ipom_plot_var(
-  ipom_long,
-  "CRECSC",
-  title = "Crecimiento de socios comerciales",
-  subtitle = "Crecimiento externo relevante para la economía chilena",
+```{r diff-gap}
+ipom_plot_diff(
+  ipom_diff,
+  "L_GDP_GAP",
+  title = "Brecha de actividad: diferencia respecto del escenario base",
   start_period = forecast_start,
-  scenarios = main_scenarios
+  scenarios = alt_scenarios
 )
 ```
 
-### VIX
+## Bloque externo
 
-```{r plot-vix}
-ipom_plot_var(
-  ipom_long,
-  "VIX",
-  title = "VIX",
-  subtitle = "Indicador de volatilidad financiera internacional",
-  start_period = forecast_start,
-  scenarios = main_scenarios
-)
-```
-
-### Desvíos externos frente al escenario base
-
-```{r external-diff-table}
-ipom_external |>
-  filter(
-    scenario_id %in% setdiff(main_scenarios, "baseline_ipom"),
-    variable %in% c("L_WTI_NOM", "L_PCU_NOM", "CRECSC", "VIX")
-  ) |>
-  group_by(scenario, label, unit) |>
-  summarise(
-    `Promedio escenario` = mean(value, na.rm = TRUE),
-    `Desvío promedio vs base` = mean(difference_vs_baseline, na.rm = TRUE),
-    `Desvío máximo vs base` = max(difference_vs_baseline, na.rm = TRUE),
-    `Desvío mínimo vs base` = min(difference_vs_baseline, na.rm = TRUE),
-    .groups = "drop"
-  ) |>
-  arrange(scenario, label) |>
-  rename(Escenario = scenario, Variable = label, Unidad = unit) |>
-  ipom_kable(caption = "Supuestos externos principales: niveles promedio y desvíos frente al escenario base.")
-```
-
-## Supuestos externos
-
-La tabla resume los supuestos externos procesados para el período 2025-2027. Las diferencias se calculan contra el escenario base.
+Las trayectorias externas se muestran para verificar que la comparación principal no está mezclando cambios de política con shocks externos no deseados.
 
 ```{r external-table}
 ipom_external |>
   filter(
-    scenario_id %in% main_scenarios,
-    scenario_id != "baseline_ipom",
+    scenario_id %in% alt_scenarios,
     variable %in% c("L_WTI_NOM", "L_PCU_NOM", "VIX", "FFR", "UST10", "CRECSC", "L_Z_INDEX")
   ) |>
   group_by(scenario, label, unit) |>
@@ -383,41 +286,29 @@ ipom_external |>
   ipom_kable(caption = "Supuestos externos: promedio 2025-2027 y desvíos frente al escenario base.")
 ```
 
-## Desvíos frente al escenario base
+### Petróleo WTI nominal
 
-### Inflación total: diferencia respecto del escenario base
-
-```{r diff-inflacion-total}
-ipom_plot_diff(
-  ipom_diff,
-  "D4L_CPI",
-  title = "Inflación total: diferencia respecto del escenario base",
+```{r plot-wti-nominal}
+ipom_plot_var(
+  ipom_long,
+  "L_WTI_NOM",
+  title = "Precio del petróleo WTI nominal",
+  subtitle = "Nivel usado como supuesto externo",
   start_period = forecast_start,
-  scenarios = setdiff(main_scenarios, "baseline_ipom")
+  scenarios = main_scenarios
 )
 ```
 
-### TPM: diferencia respecto del escenario base
+### Tipo de cambio real índice
 
-```{r diff-tpm}
-ipom_plot_diff(
-  ipom_diff,
-  "TPM",
-  title = "TPM: diferencia respecto del escenario base",
+```{r plot-tcr}
+ipom_plot_var(
+  ipom_long,
+  "L_Z_INDEX",
+  title = "Tipo de cambio real",
+  subtitle = "Índice derivado del bloque externo del modelo",
   start_period = forecast_start,
-  scenarios = setdiff(main_scenarios, "baseline_ipom")
-)
-```
-
-### Brecha de actividad: diferencia respecto del escenario base
-
-```{r diff-gap}
-ipom_plot_diff(
-  ipom_diff,
-  "L_GDP_GAP",
-  title = "Brecha de actividad: diferencia respecto del escenario base",
-  start_period = forecast_start,
-  scenarios = setdiff(main_scenarios, "baseline_ipom")
+  scenarios = main_scenarios
 )
 ```
 
@@ -426,8 +317,8 @@ ipom_plot_diff(
 ```{r diff-summary}
 ipom_diff_summary |>
   filter(
-    scenario_id %in% setdiff(main_scenarios, "baseline_ipom"),
-    variable %in% c("D4L_CPI", "D4L_CPIXFE", "TPM", "L_GDP_GAP", "VIX", "FFR", "UST10", "CRECSC")
+    scenario_id %in% alt_scenarios,
+    variable %in% c("D4L_CPI", "D4L_CPIXFE", "TPM", "L_GDP_GAP", "L_Z_INDEX", "VIX", "FFR", "UST10", "CRECSC")
   ) |>
   select(
     Escenario = scenario,
@@ -442,27 +333,17 @@ ipom_diff_summary |>
   ipom_kable(caption = "Desvíos frente al escenario base en 2025-2027.")
 ```
 
-## Lectura metodológica
+## Archivos descargables
 
-El flujo está separado en dos niveles:
-
-1. **Matlab/IRIS** resuelve el modelo, impone trayectorias exógenas y endogeniza los shocks necesarios para cumplir los supuestos del escenario.
-2. **R** lee los resultados, estandariza nombres, calcula diferencias contra el escenario base y prepara las tablas y gráficos.
-
-Esta separación ordena el trabajo en dos etapas: simulación del escenario y lectura económica de los resultados.
-
-
+::: {.mu-download-grid}
+[Reporte escenario TPM 4,5%](../assets/files/ipom/Escenario_TPM45_2026.pdf){.mu-button .mu-button-secondary}
+[Baseline identificado](../assets/files/ipom/Baseline_IPOM_Identificado.pdf){.mu-button .mu-button-secondary}
+[Nota de supuestos](../assets/files/ipom/Nota_supuestos.pdf){.mu-button .mu-button-secondary}
+[CSV IRIS crudos](../assets/files/ipom/ipom_raw_outputs.zip){.mu-button .mu-button-secondary}
+:::
 
 ## Limitaciones
 
 ::: {.callout-warning}
-Este ejercicio no es una réplica del modelo oficial del Banco Central de Chile. La interpretación debe hacerse como simulación condicional de escenarios bajo una estructura semi-estructural propia, calibrada y adaptada para análisis aplicado.
+Este ejercicio es una simulación condicional bajo una estructura propia en IRIS/Matlab. La lectura correcta es comparativa: cuánto cambia el escenario alternativo frente a la trayectoria base bajo los supuestos impuestos.
 :::
-
-## Próximos pasos
-
-- Consolidar documentación técnica de la estructura del modelo y del flujo de exogenización/endogenización en IRIS.
-- Documentar formalmente qué variables se exogenizan y qué shocks se endogenizan en cada escenario.
-- Agregar descomposición de shocks y contribuciones por bloque.
-- Construir una tabla de supuestos externos editable desde CSV o YAML.
-- Agregar una nota técnica descargable cuando la metodología esté cerrada.

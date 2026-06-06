@@ -1,66 +1,81 @@
-# Subproyecto IPoM / IRIS Matlab
+# Proyecto IPOM/IRIS-MATLAB ordenado
 
-Esta carpeta deja ordenado el trabajo IPoM dentro del mismo repositorio Quarto. La lógica es separar tres capas:
+Versión auditada del proyecto. El objetivo es preservar el modelo/forecast final y separar claramente el pipeline activo del material histórico.
 
-1. **Motor IRIS/Matlab**: resuelve el modelo y genera `fcast_*.csv`.
-2. **Outputs limpios para Quarto**: R transforma los CSV crudos de IRIS a formato tidy.
-3. **Página Quarto**: `proyectos/ipom-iris.qmd` solo lee resultados procesados y grafica.
+## Ejecutar pipeline final
+
+En MATLAB, abre esta carpeta como directorio de trabajo y ejecuta:
+
+```matlab
+run_project
+```
+
+Esto usa el `history.csv` ya incluido y genera/actualiza:
+
+- `output/raw/fcast_ipom_exact.csv`
+- `output/raw/fcast_ipom_with_shocks.csv`
+- `output/raw/fcast_alt_petroleo_gap.csv`
+- `output/raw/fcast_alt_escenario.csv`
+
+## Si actualizaste Data.csv desde R
+
+```matlab
+IPOM_REBUILD_HISTORY = true;
+run_project
+```
+
+Eso equivale a correr el `makedata` moderno antes del forecast.
+
+También puedes correr solo la etapa de historia:
+
+```matlab
+run_build_history
+```
+
+## Reportes PDF IRIS
+
+Por defecto no se generan PDFs para mantener el pipeline liviano. Para generarlos:
+
+```matlab
+IPOM_RUN_REPORT = true;
+run_project
+```
 
 ## Estructura
 
 ```text
-matlab/ipom/
-├─ model/
-│  └─ minimep0.model              # ecuaciones del modelo, preservadas
-├─ src/
-│  ├─ config_ipom.m               # configuración central del subproyecto
-│  ├─ setup_ipom_project.m         # prepara paths y carpetas
-│  ├─ run_all_ipom.m               # wrapper principal Matlab/IRIS
-│  ├─ readmodel_alternativo.m      # calibración/modelo usado actualmente
-│  ├─ identificar_shocks_ipom.m    # identifica shocks para baseline tipo IPoM
-│  ├─ fcast_alt_ipom.m             # escenario alternativo editable
-│  └─ exportar_outputs_quarto.m    # helper para guardar outputs IRIS
-├─ inputs/
-│  ├─ history.csv                  # historia base IRIS
-│  └─ Data.csv                     # input histórico para makedata, si se requiere
-├─ outputs/
-│  ├─ raw_iris/                    # CSV crudos exportados por IRIS/Matlab
-│  └─ quarto/                      # espejo de data/processed/ipom/*.csv
-├─ legacy_original/
-│  ├─ m_files/                     # scripts originales completos como respaldo
-│  └─ reports_pdf/                 # PDFs antiguos útiles solo como referencia
-└─ runtime/                        # legacy/respaldo; el flujo nuevo no depende de esto
+config_ipom.m                 rutas centralizadas
+startup_ipom.m                inicialización de path
+run_project.m                 pipeline principal
+run_build_history.m           reconstruye history.csv desde Data.csv
+src/matlab/model/             modelo IRIS activo
+src/matlab/scripts/           pasos activos del pipeline
+src/r/                         Rmd principal de estimaciones/datos
+src/r/archive_exploratory/     Rmd exploratorio antiguo
+data/raw/                      Data.csv y ponderadores
+data/processed/                history.csv para IRIS
+output/raw/                    CSV finales del modelo
+output/reports/                PDFs IRIS si se generan
+archive_legacy/                scripts y salidas anteriores fuera del path activo
+docs/                          auditoría y explicación de dependencias
 ```
 
-## Regla de oro
+## Qué versión usar
 
-- **No tocar `model/minimep0.model`** salvo cambios deliberados de ecuaciones.
-- Editar escenarios en `src/fcast_alt_ipom.m`.
-- Editar rutas/opciones generales en `src/config_ipom.m`.
-- Quarto debe leer solo `data/processed/ipom/`.
+Usa esta versión auditada. La versión `clean_fixed` solo corregía el error de `cfg`; esta además reubica correctamente `makedata`, documenta dependencias y saca el pipeline viejo del área activa.
 
-## Flujo recomendado
 
-Desde la raíz del repositorio:
+## Actualizar datos desde R
+
+Copia `.Renviron.example` como `.Renviron`, completa tus credenciales y ejecuta desde R/RStudio:
+
+```r
+source("run_update_data_from_r.R")
+```
+
+Luego, en MATLAB, si quieres reconstruir `history.csv` desde el nuevo `Data.csv`:
 
 ```matlab
-% Desde MATLAB
-cd('D:\Users\mullo\Documents\GitHub\Economics\matlab\ipom\src')
-run_all_ipom
+IPOM_REBUILD_HISTORY = true;
+run_tpm45_2026
 ```
-
-Luego, desde la raiz del repositorio:
-
-```powershell
-Rscript scripts/03_build_ipom_outputs.R
-quarto render
-```
-
-Para una primera prueba sin recalcular IRIS, basta con:
-
-```powershell
-Rscript scripts/03_build_ipom_outputs.R
-quarto render
-```
-
-porque ya se dejaron CSV crudos en `outputs/raw_iris/` y CSV limpios en `data/processed/ipom/`.

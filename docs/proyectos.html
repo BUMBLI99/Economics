@@ -221,7 +221,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <section id="escenarios-ipom" class="level3">
 <h3 class="anchored" data-anchor-id="escenarios-ipom">Escenarios macroeconómicos inspirados en IPoM</h3>
-<p>Comparación entre un escenario base basado en IPoM y un escenario alternativo usando supuestos externos, inflación, brecha de actividad, tipo de cambio real y tasa de política monetaria. El foco público está en una comparación limpia y prudente, no en una réplica institucional.</p>
+<p>Simulación condicional en Matlab/IRIS: escenario base IPoM identificado y alternativa con TPM en 4,5% durante 2026, retornando a la trayectoria base desde 2027.</p>
 <div class="mu-meta">
 <p><strong>Estado:</strong> proyecto aplicado avanzado.<br>
 <strong>Herramientas:</strong> Matlab, IRIS Toolbox y R.</p>
@@ -253,19 +253,22 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <div class="mu-card">
 <div class="mu-card-thumb">
-<div class="exchange-thumb-card">
-<p><strong>FX · 10Y · LatAm</strong> <span>residuos interactivos</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/img/exchange/fx_residuals_zscores_from2018.jpg" class="img-fluid figure-img"></p>
+<figcaption>Stress macrofinanciero LatAm</figcaption>
+</figure>
 </div>
 </div>
 <div class="mu-card-kicker">
 <p>Macrofinanzas regionales</p>
 </div>
-<section id="tipo-de-cambio-tasas-largas-y-riesgo-soberano-en-latam" class="level3">
-<h3 class="anchored" data-anchor-id="tipo-de-cambio-tasas-largas-y-riesgo-soberano-en-latam">Tipo de cambio, tasas largas y riesgo soberano en LatAm</h3>
-<p>Modelos diarios para CLP, BRL, MXN, PEN y COP que comparan movimientos del tipo de cambio y tasas soberanas 10Y frente a fundamentos externos y riesgo soberano medido con EMBIG país.</p>
+<section id="tipo-de-cambio-tasas-largas-y-stress-macrofinanciero-en-latam" class="level3">
+<h3 class="anchored" data-anchor-id="tipo-de-cambio-tasas-largas-y-stress-macrofinanciero-en-latam">Tipo de cambio, tasas largas y stress macrofinanciero en LatAm</h3>
+<p>Modelos diarios para CLP, BRL, MXN, PEN y COP que comparan movimientos del tipo de cambio y tasas soberanas 10Y respecto de fundamentos externos observables.</p>
 <div class="mu-meta">
-<p><strong>Estado:</strong> proyecto aplicado integrado al sitio, con dashboard interactivo desde datos procesados.<br>
-<strong>Herramientas:</strong> R, tidyverse, plotly, BIS, FRED, BCCh y BCRPData.</p>
+<p><strong>Estado:</strong> proyecto aplicado con resultados gráficos y reporte PDF.<br>
+<strong>Herramientas:</strong> R, tidyverse, ggplot2, modelsummary, BIS, FRED y BCCh.</p>
 </div>
 <p><a href="./proyectos/exchange.html" class="mu-card-link">Abrir proyecto</a></p>
 </section>
@@ -315,6 +318,32 @@ ul.task-list li input[type="checkbox"] {
 </section>
 
 </main> <!-- /main -->
+(function () {
+  function resizePlotly() {
+    if (!window.Plotly) return;
+    document.querySelectorAll('.js-plotly-plot').forEach(function(el) {
+      try { window.Plotly.Plots.resize(el); } catch (e) {}
+    });
+  }
+
+  window.addEventListener('load', function() {
+    setTimeout(resizePlotly, 100);
+    setTimeout(resizePlotly, 500);
+    setTimeout(resizePlotly, 1200);
+  });
+  window.addEventListener('resize', function() {
+    setTimeout(resizePlotly, 50);
+  });
+  document.addEventListener('shown.bs.tab', function() {
+    setTimeout(resizePlotly, 50);
+    setTimeout(resizePlotly, 250);
+    setTimeout(resizePlotly, 700);
+  });
+  document.addEventListener('shown.bs.collapse', function() {
+    setTimeout(resizePlotly, 50);
+    setTimeout(resizePlotly, 250);
+  });
+})();
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

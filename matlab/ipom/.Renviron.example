@@ -1,0 +1,7 @@
+# Copia este archivo como .Renviron en la raíz del proyecto
+# y reemplaza los valores por tus credenciales reales.
+# No subas .Renviron a GitHub.
+
+BDE_USER=tu_usuario_bde
+BDE_PASS=tu_password_bde
+FRED_API_KEY=tu_fred_api_key

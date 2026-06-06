@@ -24,9 +24,10 @@ D4L_PCU,Cobre: variación anual,% anual,Bloque externo
 VIX,VIX,índice,Bloque externo
 FFR,Federal Funds Rate,% anual,Bloque externo
 UST10,Treasury 10 años,% anual,Bloque externo
+SHK_CRECSC,Shock socios comerciales,desvío,Shocks
 SHK_DLA_CPI,Shock inflación total,desvío,Shocks
-SHK_DLA_CPIXFE,Shock inflación subyacente,desvío,Shocks
 SHK_DLA_CPIRES,Shock inflación residual,desvío,Shocks
+SHK_DLA_CPIXFE,Shock inflación subyacente,desvío,Shocks
 SHK_L_GDP_GAP,Shock brecha de actividad,desvío,Shocks
 SHK_TPM,Shock TPM,desvío,Shocks
 SHK_L_WTI,Shock WTI,desvío,Shocks
@@ -34,5 +35,4 @@ SHK_L_PCU,Shock cobre,desvío,Shocks
 SHK_VIX,Shock VIX,desvío,Shocks
 SHK_FFR,Shock FFR,desvío,Shocks
 SHK_UST10,Shock UST10,desvío,Shocks
-SHK_CRECSC,Shock socios comerciales,desvío,Shocks
 SHK_L_Z,Shock TCR,desvío,Shocks

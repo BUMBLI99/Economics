@@ -1,8 +1,6 @@
 # ============================================================
-# Configuración del proyecto de escenarios macroeconómicos en IRIS
+# Configuración del proyecto IPoM / IRIS-Matlab
 # ============================================================
-# Este archivo centraliza nombres de variables, etiquetas y rutas
-# usadas por la página Quarto y por los scripts de actualización.
 
 ipom_variables <- tibble::tribble(
   ~variable,              ~label,                                      ~unit,                 ~block,
@@ -31,9 +29,10 @@ ipom_variables <- tibble::tribble(
   "VIX",                  "VIX",                                      "índice",              "Bloque externo",
   "FFR",                  "Federal Funds Rate",                       "% anual",             "Bloque externo",
   "UST10",                "Treasury 10 años",                         "% anual",             "Bloque externo",
+  "SHK_CRECSC",           "Shock socios comerciales",                 "desvío",              "Shocks",
   "SHK_DLA_CPI",          "Shock inflación total",                    "desvío",              "Shocks",
-  "SHK_DLA_CPIXFE",       "Shock inflación subyacente",               "desvío",              "Shocks",
   "SHK_DLA_CPIRES",       "Shock inflación residual",                 "desvío",              "Shocks",
+  "SHK_DLA_CPIXFE",       "Shock inflación subyacente",               "desvío",              "Shocks",
   "SHK_L_GDP_GAP",        "Shock brecha de actividad",                "desvío",              "Shocks",
   "SHK_TPM",              "Shock TPM",                                "desvío",              "Shocks",
   "SHK_L_WTI",            "Shock WTI",                                "desvío",              "Shocks",
@@ -41,14 +40,14 @@ ipom_variables <- tibble::tribble(
   "SHK_VIX",              "Shock VIX",                                "desvío",              "Shocks",
   "SHK_FFR",              "Shock FFR",                                "desvío",              "Shocks",
   "SHK_UST10",            "Shock UST10",                              "desvío",              "Shocks",
-  "SHK_CRECSC",           "Shock socios comerciales",                 "desvío",              "Shocks",
   "SHK_L_Z",              "Shock TCR",                                "desvío",              "Shocks"
 )
 
 ipom_scenarios <- tibble::tribble(
-  ~source_file,               ~scenario_id,              ~scenario,                         ~scenario_order,
-  "fcast_ipom_exact.csv",     "baseline_ipom",           "Escenario base basado en IPoM",    1,
-  "fcast_alt_escenario.csv",  "escenario_alternativo",   "Escenario alternativo",            2
+  ~source_file,                  ~scenario_id,      ~scenario,                                                   ~scenario_order, ~main_public,
+  "fcast_ipom_exact.csv",        "baseline_ipom",   "Escenario base IPoM identificado",                         1, TRUE,
+  "fcast_alt_tpm45_2026.csv",    "tpm45_2026",      "TPM 4,5% durante 2026 y retorno a IPoM desde 2027",        2, TRUE,
+  "fcast_alt_petroleo_gap.csv",  "petroleo_gap",    "Escenario petróleo/brecha",                                3, FALSE
 )
 
 ipom_core_variables <- c(

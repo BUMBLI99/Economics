@@ -44,7 +44,7 @@ Escenarios
 :::
 ### Escenarios macroeconómicos inspirados en IPoM {#escenarios-ipom}
 
-Comparación entre un escenario base basado en IPoM y un escenario alternativo usando supuestos externos, inflación, brecha de actividad, tipo de cambio real y tasa de política monetaria. El foco público está en una comparación limpia y prudente, no en una réplica institucional.
+Simulación condicional en Matlab/IRIS: escenario base IPoM identificado y alternativa con TPM en 4,5% durante 2026, retornando a la trayectoria base desde 2027.
 
 ::: {.mu-meta}
 **Estado:** proyecto aplicado avanzado.  
@@ -75,21 +75,18 @@ Análisis visual y econométrico del traspaso de movimientos de la Tasa de Polí
 
 ::: {.mu-card}
 ::: {.mu-card-thumb}
-::: {.exchange-thumb-card}
-<strong>FX · 10Y · LatAm</strong>
-<span>residuos interactivos</span>
-::: 
+![Stress macrofinanciero LatAm](assets/img/exchange/fx_residuals_zscores_from2018.jpg)
 :::
 ::: {.mu-card-kicker}
 Macrofinanzas regionales
 :::
-### Tipo de cambio, tasas largas y riesgo soberano en LatAm
+### Tipo de cambio, tasas largas y stress macrofinanciero en LatAm
 
-Modelos diarios para CLP, BRL, MXN, PEN y COP que comparan movimientos del tipo de cambio y tasas soberanas 10Y frente a fundamentos externos y riesgo soberano medido con EMBIG país.
+Modelos diarios para CLP, BRL, MXN, PEN y COP que comparan movimientos del tipo de cambio y tasas soberanas 10Y respecto de fundamentos externos observables.
 
 ::: {.mu-meta}
-**Estado:** proyecto aplicado integrado al sitio, con dashboard interactivo desde datos procesados.  
-**Herramientas:** R, tidyverse, plotly, BIS, FRED, BCCh y BCRPData.
+**Estado:** proyecto aplicado con resultados gráficos y reporte PDF.  
+**Herramientas:** R, tidyverse, ggplot2, modelsummary, BIS, FRED y BCCh.
 :::
 
 [Abrir proyecto](proyectos/exchange.qmd){.mu-card-link}

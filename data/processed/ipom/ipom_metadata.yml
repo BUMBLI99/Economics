@@ -1,8 +1,5 @@
-project: ipom_iris
-created_from: Trabajo Macro IPOM- copia.zip / Iris outputs
-created_at: 2026-05-05
-note: >
-  Archivos procesados para la página Quarto. Los escenarios provienen de outputs IRIS/Matlab ya generados.
-  Para actualizar, reemplaza los CSV en matlab/ipom/outputs y ejecuta scripts/03_build_ipom_outputs.R.
-forecast_window_public: 2025Q1-2027Q4
-baseline: Baseline IPoM identificado
+source_project: IPOM_IRIS_MATLAB_tpm45_2026_return_ipom_gapfix
+baseline_file: fcast_ipom_exact.csv
+main_alternative_file: fcast_alt_tpm45_2026.csv
+main_alternative: TPM 4.5 during 2026 with return to IPoM path from 2027Q1
+notes: Processed from uploaded IPOM/IRIS MATLAB zip; output/raw copied into matlab/ipom/output/raw.

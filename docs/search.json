@@ -312,7 +312,7 @@
     "href": "proyectos.html#proyectos-principales",
     "title": "Proyectos",
     "section": "Proyectos principales",
-    "text": "Proyectos principales\n\nHerramientas y análisis con estructura metodológica más desarrollada, orientados a seguimiento macroeconómico, proyecciones, simulación de escenarios y discusión de política económica.\n\n\n\n\n\n\n\nNowcasting IMACEC\n\n\n\n\nActividad\n\n\nNowcasting de actividad económica en Chile\nModelo mensual en R para anticipar la evolución del IMACEC total y no minero usando indicadores sectoriales, variables calendario, rezagos macroeconómicos y evaluación de ajuste.\n\nEstado: proyecto aplicado en desarrollo continuo.\nHerramientas: R, tidyverse, ggplot2, plotly, series de tiempo.\n\nAbrir proyecto\n\n\n\n\n\n\n\nEscenarios macroeconómicos\n\n\n\n\nEscenarios\n\n\nEscenarios macroeconómicos inspirados en IPoM\nComparación entre un escenario base basado en IPoM y un escenario alternativo usando supuestos externos, inflación, brecha de actividad, tipo de cambio real y tasa de política monetaria. El foco público está en una comparación limpia y prudente, no en una réplica institucional.\n\nEstado: proyecto aplicado avanzado.\nHerramientas: Matlab, IRIS Toolbox y R.\n\nVer proyecto ↗\n\n\n\n\n\n\n\nPass-through acumulado de TPM\n\n\n\n\nPolítica monetaria\n\n\nTransmisión de la TPM a tasas de mercado\nAnálisis visual y econométrico del traspaso de movimientos de la Tasa de Política Monetaria a distintas tasas de mercado en Chile, distinguiendo horizontes, episodios y tipos de tasa.\n\nEstado: nota técnica en desarrollo.\nSalida esperada: pass-through por horizonte, modelos de rezagos distribuidos y lectura macroeconómica prudente.\n\nAbrir proyecto\n\n\n\n\n\nFX · 10Y · LatAm residuos interactivos\n\n\n\nMacrofinanzas regionales\n\n\nTipo de cambio, tasas largas y riesgo soberano en LatAm\nModelos diarios para CLP, BRL, MXN, PEN y COP que comparan movimientos del tipo de cambio y tasas soberanas 10Y frente a fundamentos externos y riesgo soberano medido con EMBIG país.\n\nEstado: proyecto aplicado integrado al sitio, con dashboard interactivo desde datos procesados.\nHerramientas: R, tidyverse, plotly, BIS, FRED, BCCh y BCRPData.\n\nAbrir proyecto"
+    "text": "Proyectos principales\n\nHerramientas y análisis con estructura metodológica más desarrollada, orientados a seguimiento macroeconómico, proyecciones, simulación de escenarios y discusión de política económica.\n\n\n\n\n\n\n\nNowcasting IMACEC\n\n\n\n\nActividad\n\n\nNowcasting de actividad económica en Chile\nModelo mensual en R para anticipar la evolución del IMACEC total y no minero usando indicadores sectoriales, variables calendario, rezagos macroeconómicos y evaluación de ajuste.\n\nEstado: proyecto aplicado en desarrollo continuo.\nHerramientas: R, tidyverse, ggplot2, plotly, series de tiempo.\n\nAbrir proyecto\n\n\n\n\n\n\n\nEscenarios macroeconómicos\n\n\n\n\nEscenarios\n\n\nEscenarios macroeconómicos inspirados en IPoM\nSimulación condicional en Matlab/IRIS: escenario base IPoM identificado y alternativa con TPM en 4,5% durante 2026, retornando a la trayectoria base desde 2027.\n\nEstado: proyecto aplicado avanzado.\nHerramientas: Matlab, IRIS Toolbox y R.\n\nVer proyecto ↗\n\n\n\n\n\n\n\nPass-through acumulado de TPM\n\n\n\n\nPolítica monetaria\n\n\nTransmisión de la TPM a tasas de mercado\nAnálisis visual y econométrico del traspaso de movimientos de la Tasa de Política Monetaria a distintas tasas de mercado en Chile, distinguiendo horizontes, episodios y tipos de tasa.\n\nEstado: nota técnica en desarrollo.\nSalida esperada: pass-through por horizonte, modelos de rezagos distribuidos y lectura macroeconómica prudente.\n\nAbrir proyecto\n\n\n\n\n\n\n\nStress macrofinanciero LatAm\n\n\n\n\nMacrofinanzas regionales\n\n\nTipo de cambio, tasas largas y stress macrofinanciero en LatAm\nModelos diarios para CLP, BRL, MXN, PEN y COP que comparan movimientos del tipo de cambio y tasas soberanas 10Y respecto de fundamentos externos observables.\n\nEstado: proyecto aplicado con resultados gráficos y reporte PDF.\nHerramientas: R, tidyverse, ggplot2, modelsummary, BIS, FRED y BCCh.\n\nAbrir proyecto"
   },
   {
     "objectID": "proyectos.html#prototipos-y-líneas-en-desarrollo",
@@ -338,16 +338,16 @@
   {
     "objectID": "proyectos/ipom-iris.html",
     "href": "proyectos/ipom-iris.html",
-    "title": "Escenarios macroeconómicos de referencia",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
     "section": "",
-    "text": "NotaEstado del proyecto\n\n\n\nProyecto aplicado avanzado. El modelo y los escenarios se ejecutan en Matlab/IRIS, y los resultados se presentan como una nota de simulación macroeconómica. La versión pública no pretende replicar el modelo oficial del Banco Central de Chile; es un ejercicio académico/aplicado de escenarios."
+    "text": "NotaEstado del ejercicio\n\n\n\nEl proyecto ejecuta una simulación condicional en Matlab/IRIS. La corrida principal mantiene la TPM en 4,5% durante 2026 y fuerza el retorno a la trayectoria base/IPoM desde 2027T1. No es una proyección institucional ni una réplica del modelo oficial del Banco Central."
   },
   {
     "objectID": "proyectos/ipom-iris.html#pregunta-económica",
     "href": "proyectos/ipom-iris.html#pregunta-económica",
-    "title": "Escenarios macroeconómicos de referencia",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
     "section": "Pregunta económica",
-    "text": "Pregunta económica\nEl objetivo es evaluar cómo cambian las trayectorias de inflación, tasa de política monetaria y brecha de actividad cuando se reemplazan algunos supuestos externos del escenario base por una trayectoria alternativa.\nEn términos prácticos, el ejercicio responde:\n\n¿Qué pasa con inflación, TPM y actividad si el escenario externo cambia respecto de un escenario base basado en IPoM, manteniendo constante el resto de la estructura doméstica del ejercicio?"
+    "text": "Pregunta económica\nEl ejercicio pregunta cómo cambian las trayectorias de inflación, TPM y brecha de actividad cuando se impone una trayectoria de política monetaria más baja durante 2026, manteniendo el resto de la estructura del modelo y retornando al escenario base desde 2027."
   },
   {
     "objectID": "proyectos/ipom-iris.html#arquitectura-del-proyecto",
@@ -359,9 +359,9 @@
   {
     "objectID": "proyectos/ipom-iris.html#estructura-conceptual-del-modelo",
     "href": "proyectos/ipom-iris.html#estructura-conceptual-del-modelo",
-    "title": "Escenarios macroeconómicos de referencia",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
     "section": "Estructura conceptual del modelo",
-    "text": "Estructura conceptual del modelo\nEl ejercicio se organiza como un modelo macroeconómico semi-estructural: una ecuación de demanda agregada para la brecha de actividad, una curva de Phillips para inflación subyacente, un bloque de inflación residual/total y una regla de política monetaria. La notación siguiente resume la lógica económica del sistema; los nombres internos y coeficientes específicos se mantienen en los archivos IRIS/Matlab del proyecto.\n\nBrecha de actividad\n\\[\n\\tilde y_t =\n\\rho_y \\tilde y_{t-1}\n- \\phi_r (i_{t-1} - i^n_t)\n+ \\phi_x x_t\n+ \\phi_z \\tilde z_t\n+ \\phi_c c_t\n+ \\varepsilon^y_t\n\\]\nLa brecha de actividad depende de su propia persistencia, de la posición de la tasa de política frente a una referencia neutral, de condiciones externas, del tipo de cambio real y de condiciones financieras domésticas.\n\n\nInflación subyacente\n\\[\n\\pi^{core}_t =\n\\alpha_1 \\pi^{core}_{t-1}\n+ \\alpha_4 \\pi^{core}_{t-4}\n+ (1-\\alpha_1-\\alpha_4)E_t\\pi^{core}_{t+h}\n+ \\kappa_y \\tilde y_t\n+ \\kappa_z \\tilde z_t\n+ \\kappa_f \\Delta p^{food}_t\n+ s_t\n+ \\varepsilon^\\pi_t\n\\]\nLa inflación subyacente combina inercia, expectativas, holguras de actividad, traspaso cambiario real, presiones de alimentos y estacionalidad.\n\n\nInflación total y componente residual\nLa inflación total se obtiene sumando el bloque subyacente y un componente residual que recoge presiones cambiarias, externas, de alimentos, petróleo y estacionalidad:\n\\[\n\\pi_t = \\pi^{core}_t + \\pi^{res}_t\n\\]\n\\[\n\\pi^{res}_t =\n\\alpha_0\n+ \\alpha_1 \\, \\pi^{res}_{t-4}\n+ \\alpha_2 \\, \\pi^{res}_{t-1}\n+ \\alpha_3 \\, \\tilde z_t\n+ \\alpha_4 \\, (g^{ext}_t - \\bar g^{ext})\n+ \\alpha_5 \\, (p^{food}_t - p^{food}_{t-4})\n+ \\alpha_6 \\, (p^{oil}_{t-1} - p^{oil}_{t-2})\n+ \\alpha_7 \\, (p^{oil}_{t-3} - \\bar p^{oil})\n+ s_t\n+ \\varepsilon^{res}_t\n\\]\n\\[\ns_t = \\delta_1 Q_{1,t} + \\delta_2 Q_{2,t} + \\delta_3 Q_{3,t} + \\delta_4 Q_{4,t}\n\\]\nEn esta representación, \\(\\tilde z_t\\) corresponde a la brecha del tipo de cambio real, \\(g^{ext}_t\\) al crecimiento externo y \\(p^{food}_t\\), \\(p^{oil}_t\\) a los componentes relevantes de alimentos y petróleo en logaritmos. La idea es mostrar la lógica económica del bloque residual sin sobrecargar la página con la parametrización numérica completa del modelo.\n\n\nRegla de política monetaria\n\\[\ni_t =\n\\rho_i i_{t-1}\n+ (1-\\rho_i)\n\\left[\n  i^n_t\n  + \\phi_\\pi (E_t\\pi^{core}_{t+h}-\\pi^*)\n  + \\phi_y \\tilde y_t\n\\right]\n+ \\varepsilon^i_t\n\\]\nLa TPM responde gradualmente a la desviación esperada de inflación respecto de la meta y a la brecha de actividad, con suavizamiento de tasas."
+    "text": "Estructura conceptual del modelo\n\nBrecha de actividad\n\\[\n\\tilde y_t =\n\\rho_y \\tilde y_{t-1}\n- \\phi_r (i_{t-1} - i^n_t)\n+ \\phi_x x_t\n+ \\phi_z \\tilde z_t\n+ \\phi_c c_t\n+ \\varepsilon^y_t\n\\]\nLa brecha depende de persistencia, posición monetaria, condiciones externas, tipo de cambio real y condiciones financieras.\n\n\nInflación subyacente\n\\[\n\\pi^{core}_t =\n\\alpha_1 \\pi^{core}_{t-1}\n+ \\alpha_4 \\pi^{core}_{t-4}\n+ (1-\\alpha_1-\\alpha_4)E_t\\pi^{core}_{t+h}\n+ \\kappa_y \\tilde y_t\n+ \\kappa_z \\tilde z_t\n+ \\kappa_f \\Delta p^{food}_t\n+ s_t\n+ \\varepsilon^\\pi_t\n\\]\n\n\nInflación total y regla monetaria\n\\[\n\\pi_t = \\pi^{core}_t + \\pi^{res}_t\n\\]\n\\[\ni_t =\n\\rho_i i_{t-1}\n+ (1-\\rho_i)\n\\left[\n  i^n_t\n  + \\phi_\\pi (E_t\\pi^{core}_{t+h}-\\pi^*)\n  + \\phi_y \\tilde y_t\n\\right]\n+ \\varepsilon^i_t\n\\]\nLa trayectoria alternativa se implementa exogenizando la TPM en 2026 y dejando que el modelo endogenice los shocks requeridos para cumplir esa condición."
   },
   {
     "objectID": "proyectos/ipom-iris.html#escenarios-incluidos",
@@ -373,9 +373,9 @@
   {
     "objectID": "proyectos/ipom-iris.html#resultado-principal",
     "href": "proyectos/ipom-iris.html#resultado-principal",
-    "title": "Escenarios macroeconómicos de referencia",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
     "section": "Resultado principal",
-    "text": "Resultado principal\nEl gráfico compara el escenario base basado en IPoM con el escenario alternativo disponible en la versión actual. La página queda preparada para incorporar más escenarios en el futuro, pero la versión pública se concentra deliberadamente en esta comparación binaria para mantener una lectura limpia.\n\nInflación total\n\n\n\n\n\n\n\n\nInflación subyacente\n\n\n\n\n\n\n\n\nTasa de Política Monetaria\n\n\n\n\n\n\n\n\nBrecha de actividad"
+    "text": "Resultado principal\n\nTasa de Política Monetaria\n\n\n\n\n\n\n\n\nInflación total\n\n\n\n\n\n\n\n\nInflación subyacente\n\n\n\n\n\n\n\n\nBrecha de actividad"
   },
   {
     "objectID": "proyectos/ipom-iris.html#bloque-internacional",
@@ -401,9 +401,9 @@
   {
     "objectID": "proyectos/ipom-iris.html#tabla-resumen-de-impactos",
     "href": "proyectos/ipom-iris.html#tabla-resumen-de-impactos",
-    "title": "Escenarios macroeconómicos de referencia",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
     "section": "Tabla resumen de impactos",
-    "text": "Tabla resumen de impactos\n\n\n\nDesvíos frente al escenario base en 2025-2027.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio\nMínimo\nMáximo\nÚltimo\n\n\n\n\nEscenario alternativo\nBrecha de actividad\n%\n-0,04\n-0,14\n0,00\n-0,01\n\n\nEscenario alternativo\nCrecimiento socios comerciales\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nEscenario alternativo\nFederal Funds Rate\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nEscenario alternativo\nInflación subyacente sin volátiles\n% anual\n-0,01\n-0,02\n0,00\n-0,01\n\n\nEscenario alternativo\nInflación total\n% anual\n0,04\n-0,15\n0,28\n-0,04\n\n\nEscenario alternativo\nTasa de Política Monetaria\n% anual\n-0,01\n-0,04\n0,00\n-0,01\n\n\nEscenario alternativo\nTreasury 10 años\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nEscenario alternativo\nVIX\níndice\n0,00\n0,00\n0,00\n0,00"
+    "text": "Tabla resumen de impactos\n\n\n\nDesvíos frente al escenario base en 2025-2027.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio\nMínimo\nMáximo\nÚltimo\n\n\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nBrecha de actividad\n%\n0,00\n-0,14\n0,10\n0,10\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nCrecimiento socios comerciales\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nFederal Funds Rate\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nInflación subyacente sin volátiles\n% anual\n0,01\n0,00\n0,04\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nInflación total\n% anual\n0,08\n-0,10\n0,36\n-0,03\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTasa de Política Monetaria\n% anual\n-0,03\n-0,25\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTipo de cambio real índice\níndice\n0,00\n0,00\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTreasury 10 años\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nVIX\níndice\n0,00\n0,00\n0,00\n0,00"
   },
   {
     "objectID": "proyectos/ipom-iris.html#lectura-metodológica",
@@ -415,9 +415,9 @@
   {
     "objectID": "proyectos/ipom-iris.html#limitaciones",
     "href": "proyectos/ipom-iris.html#limitaciones",
-    "title": "Escenarios macroeconómicos de referencia",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
     "section": "Limitaciones",
-    "text": "Limitaciones\n\n\n\n\n\n\nAdvertencia\n\n\n\nEste ejercicio no es una réplica del modelo oficial del Banco Central de Chile. La interpretación debe hacerse como simulación condicional de escenarios bajo una estructura semi-estructural propia, calibrada y adaptada para análisis aplicado."
+    "text": "Limitaciones\n\n\n\n\n\n\nAdvertencia\n\n\n\nEste ejercicio es una simulación condicional bajo una estructura propia en IRIS/Matlab. La lectura correcta es comparativa: cuánto cambia el escenario alternativo frente a la trayectoria base bajo los supuestos impuestos."
   },
   {
     "objectID": "proyectos/ipom-iris.html#próximos-pasos",
@@ -453,5 +453,33 @@
     "title": "Curva de rendimiento chilena interactiva — en desarrollo",
     "section": "Próximas mejoras",
     "text": "Próximas mejoras\n\nIncorporar curva nominal y curva real/UF.\nCalcular pendiente 10y-2y.\nMostrar breakeven inflation aproximado, con advertencia sobre primas de riesgo y liquidez.\nMarcar fechas de episodios macrofinancieros relevantes."
+  },
+  {
+    "objectID": "proyectos/ipom-iris.html#escenarios",
+    "href": "proyectos/ipom-iris.html#escenarios",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Escenarios",
+    "text": "Escenarios\n\n\n\nEscenarios usados en la comparación pública.\n\n\n\n\n\n\n\nEscenario\nArchivo\nLectura\n\n\n\n\nEscenario base IPoM identificado\nfcast_ipom_exact.csv\nTrayectoria de referencia identificada sobre el escenario IPoM.\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nfcast_alt_tpm45_2026.csv\nTPM fijada en 4,5% durante 2026 y retorno a la trayectoria base desde 2027."
+  },
+  {
+    "objectID": "proyectos/ipom-iris.html#diferencias-frente-al-escenario-base",
+    "href": "proyectos/ipom-iris.html#diferencias-frente-al-escenario-base",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Diferencias frente al escenario base",
+    "text": "Diferencias frente al escenario base\n\nTPM\n\n\n\n\n\n\n\n\nInflación total\n\n\n\n\n\n\n\n\nBrecha de actividad"
+  },
+  {
+    "objectID": "proyectos/ipom-iris.html#bloque-externo",
+    "href": "proyectos/ipom-iris.html#bloque-externo",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Bloque externo",
+    "text": "Bloque externo\nLas trayectorias externas se muestran para verificar que la comparación principal no está mezclando cambios de política con shocks externos no deseados.\n\n\n\nSupuestos externos: promedio 2025-2027 y desvíos frente al escenario base.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio escenario\nDiferencia promedio vs base\nDiferencia máxima vs base\nDiferencia mínima vs base\n\n\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nCobre nominal\nnivel aproximado\n5,05\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nCrecimiento socios comerciales\n% anual\n2,91\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nFederal Funds Rate\n% anual\n3,74\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTipo de cambio real índice\níndice\n103,22\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTreasury 10 años\n% anual\n4,41\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nVIX\níndice\n19,38\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nWTI nominal\nnivel aproximado\n81,25\n5,17\n11,65\n0\n\n\n\n\n\n\nPetróleo WTI nominal\n\n\n\n\n\n\n\n\nTipo de cambio real índice"
+  },
+  {
+    "objectID": "proyectos/ipom-iris.html#archivos-descargables",
+    "href": "proyectos/ipom-iris.html#archivos-descargables",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Archivos descargables",
+    "text": "Archivos descargables\n\nReporte escenario TPM 4,5% Baseline identificado Nota de supuestos CSV IRIS crudos"
   }
 ]
