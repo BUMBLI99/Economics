@@ -308,32 +308,51 @@ ul.task-list li input[type="checkbox"] {
 
 
 </main> <!-- /main -->
+<script>
 (function () {
+  function isVisible(el) {
+    return !!(el && (el.offsetWidth || el.offsetHeight || el.getClientRects().length));
+  }
+
   function resizePlotly() {
     if (!window.Plotly) return;
-    document.querySelectorAll('.js-plotly-plot').forEach(function(el) {
-      try { window.Plotly.Plots.resize(el); } catch (e) {}
+    document.querySelectorAll('.js-plotly-plot').forEach(function (el) {
+      if (!isVisible(el)) return;
+      try {
+        window.Plotly.Plots.resize(el);
+        window.Plotly.relayout(el, { autosize: true });
+      } catch (e) {}
     });
   }
 
-  window.addEventListener('load', function() {
-    setTimeout(resizePlotly, 100);
-    setTimeout(resizePlotly, 500);
-    setTimeout(resizePlotly, 1200);
-  });
-  window.addEventListener('resize', function() {
-    setTimeout(resizePlotly, 50);
-  });
-  document.addEventListener('shown.bs.tab', function() {
-    setTimeout(resizePlotly, 50);
-    setTimeout(resizePlotly, 250);
-    setTimeout(resizePlotly, 700);
-  });
-  document.addEventListener('shown.bs.collapse', function() {
-    setTimeout(resizePlotly, 50);
-    setTimeout(resizePlotly, 250);
-  });
+  function scheduleResize() {
+    if (window.requestAnimationFrame) {
+      window.requestAnimationFrame(resizePlotly);
+    }
+    [0, 80, 220, 500, 900, 1400].forEach(function (delay) {
+      window.setTimeout(resizePlotly, delay);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', scheduleResize);
+  window.addEventListener('load', scheduleResize);
+  window.addEventListener('resize', scheduleResize);
+  document.addEventListener('shown.bs.tab', scheduleResize, true);
+  document.addEventListener('shown.bs.collapse', scheduleResize, true);
+  document.addEventListener('click', function (ev) {
+    if (ev.target && ev.target.closest && ev.target.closest('.nav-link, [data-bs-toggle="tab"], [data-bs-toggle="collapse"]')) {
+      scheduleResize();
+    }
+  }, true);
+
+  if ('ResizeObserver' in window) {
+    var observer = new ResizeObserver(scheduleResize);
+    document.querySelectorAll('main, .tab-content, .tab-pane, .panel-tabset, .cell-output-display').forEach(function (el) {
+      try { observer.observe(el); } catch (e) {}
+    });
+  }
 })();
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

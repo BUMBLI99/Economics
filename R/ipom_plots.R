@@ -43,6 +43,8 @@ ipom_plot_var <- function(
   if (is.null(title)) title <- var_label
   if (is.null(ylab)) ylab <- var_unit
   
+  x_range <- range(plot_data$date, na.rm = TRUE)
+  
   baseline_data <- plot_data |>
     dplyr::filter(.data$scenario_id == baseline_id)
   
@@ -143,7 +145,8 @@ ipom_plot_var <- function(
       xaxis = list(
         automargin = TRUE,
         nticks = x_nticks,
-        tickangle = 0
+        tickangle = 0,
+        range = as.character(x_range)
       ),
       yaxis = list(
         automargin = TRUE,
@@ -188,6 +191,8 @@ ipom_plot_diff <- function(
   
   var_label <- plot_data$label[which(!is.na(plot_data$label))[1]]
   if (is.null(title)) title <- paste0(var_label, ": desvío frente al escenario base")
+  
+  x_range <- range(plot_data$date, na.rm = TRUE)
   
   color_values <- rep(scenario_color, length(unique(plot_data$scenario)))
   names(color_values) <- unique(plot_data$scenario)
@@ -237,7 +242,8 @@ ipom_plot_diff <- function(
       xaxis = list(
         automargin = TRUE,
         nticks = x_nticks,
-        tickangle = 0
+        tickangle = 0,
+        range = as.character(x_range)
       ),
       yaxis = list(
         automargin = TRUE,

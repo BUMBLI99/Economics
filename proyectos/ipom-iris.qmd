@@ -75,8 +75,7 @@ ipom_diff <- read_csv(diff_file, show_col_types = FALSE) |>
 ipom_diff_summary <- read_csv(diff_summary_file, show_col_types = FALSE)
 ipom_external <- read_csv(external_file, show_col_types = FALSE) |>
   mutate(date = as.Date(date))
-ipom_scenario_meta <- read_csv(scenario_meta_file, show_col_types = FALSE) |>
-  mutate(main_public = as.character(main_public) %in% c("TRUE", "True", "true", "1"))
+ipom_scenario_meta <- read_csv(scenario_meta_file, show_col_types = FALSE)
 
 main_scenarios <- ipom_scenario_meta |>
   filter(main_public) |>
@@ -85,7 +84,8 @@ main_scenarios <- ipom_scenario_meta |>
 
 alt_scenarios <- setdiff(main_scenarios, "baseline_ipom")
 forecast_start <- "2025Q1"
-plot_start <- "2023Q1"
+plot_start <- "2025Q1"
+plot_end <- "2028Q4"
 ```
 
 ::: {.callout-note}
@@ -182,6 +182,7 @@ ipom_plot_var(
   title = "TPM: trayectoria base vs escenario 4,5% en 2026",
   subtitle = "El escenario alternativo vuelve a la trayectoria base desde 2027T1",
   start_period = plot_start,
+  end_period = plot_end,
   scenarios = main_scenarios
 )
 ```
@@ -195,6 +196,7 @@ ipom_plot_var(
   title = "Inflación total",
   subtitle = "Variación anual del IPC",
   start_period = plot_start,
+  end_period = plot_end,
   scenarios = main_scenarios
 )
 ```
@@ -208,6 +210,7 @@ ipom_plot_var(
   title = "Inflación subyacente sin volátiles",
   subtitle = "Variación anual del IPC sin volátiles",
   start_period = plot_start,
+  end_period = plot_end,
   scenarios = main_scenarios
 )
 ```
@@ -221,6 +224,7 @@ ipom_plot_var(
   title = "Brecha de actividad",
   subtitle = "Desvío porcentual respecto del producto tendencial",
   start_period = plot_start,
+  end_period = plot_end,
   scenarios = main_scenarios
 )
 ```
@@ -235,6 +239,7 @@ ipom_plot_diff(
   "TPM",
   title = "TPM: diferencia respecto del escenario base",
   start_period = forecast_start,
+  end_period = plot_end,
   scenarios = alt_scenarios
 )
 ```
@@ -247,6 +252,7 @@ ipom_plot_diff(
   "D4L_CPI",
   title = "Inflación total: diferencia respecto del escenario base",
   start_period = forecast_start,
+  end_period = plot_end,
   scenarios = alt_scenarios
 )
 ```
@@ -259,6 +265,7 @@ ipom_plot_diff(
   "L_GDP_GAP",
   title = "Brecha de actividad: diferencia respecto del escenario base",
   start_period = forecast_start,
+  end_period = plot_end,
   scenarios = alt_scenarios
 )
 ```
@@ -283,7 +290,7 @@ ipom_external |>
   ) |>
   arrange(scenario, label) |>
   rename(Escenario = scenario, Variable = label, Unidad = unit) |>
-  ipom_kable(caption = "Supuestos externos: promedio 2025-2027 y desvíos frente al escenario base.")
+  ipom_kable(caption = "Supuestos externos: promedio 2025-2028 y desvíos frente al escenario base.")
 ```
 
 ### Petróleo WTI nominal
@@ -295,6 +302,7 @@ ipom_plot_var(
   title = "Precio del petróleo WTI nominal",
   subtitle = "Nivel usado como supuesto externo",
   start_period = forecast_start,
+  end_period = plot_end,
   scenarios = main_scenarios
 )
 ```
@@ -308,6 +316,7 @@ ipom_plot_var(
   title = "Tipo de cambio real",
   subtitle = "Índice derivado del bloque externo del modelo",
   start_period = forecast_start,
+  end_period = plot_end,
   scenarios = main_scenarios
 )
 ```
@@ -330,7 +339,7 @@ ipom_diff_summary |>
     Último = ultimo
   ) |>
   arrange(Escenario, Variable) |>
-  ipom_kable(caption = "Desvíos frente al escenario base en 2025-2027.")
+  ipom_kable(caption = "Desvíos frente al escenario base en 2025-2028.")
 ```
 
 ## Archivos descargables

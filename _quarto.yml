@@ -60,7 +60,7 @@ format:
     fig-align: center
     df-print: paged
     include-after-body:
-      - assets/js/plotly-resize.js
+      - assets/js/plotly-resize.html
 
 execute:
   freeze: auto
