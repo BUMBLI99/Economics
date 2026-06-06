@@ -381,18 +381,18 @@ bcrp_get_many_series_safe <- function(code_map,
   purrr::reduce(series_list, full_join, by = "date") %>% arrange(date)
 }
 
-# Relleno prudente de frecuencia diaria:
-# - series financieras: interpolación solo para huecos cortos internos;
-# - series tipo TPM/EMBI: arrastre solo para huecos cortos;
-# - nunca se extiende indefinidamente una serie si la fuente deja de actualizar.
-interp_daily <- function(x, maxgap = 5L) {
+# Relleno de frecuencia diaria equivalente al script original:
+# - series financieras: interpolación lineal de huecos internos;
+# - series tipo TPM/EMBI: último dato observado hacia adelante.
+# na.approx(..., na.rm = FALSE) no extrapola fuera del rango observado.
+interp_daily <- function(x) {
   if (all(is.na(x))) return(x)
-  zoo::na.approx(x, na.rm = FALSE, maxgap = maxgap)
+  zoo::na.approx(x, na.rm = FALSE)
 }
 
-locf_daily <- function(x, maxgap = 5L) {
+locf_daily <- function(x) {
   if (all(is.na(x))) return(x)
-  zoo::na.locf(x, na.rm = FALSE, maxgap = maxgap)
+  zoo::na.locf(x, na.rm = FALSE)
 }
 
 rmse <- function(x) sqrt(mean(x^2, na.rm = TRUE))
@@ -756,9 +756,21 @@ second_stage_summary <- imap_dfr(second_stage_models, function(mod, cc) {
 # ------------------------------------------------------------
 # Outputs para Quarto
 # ------------------------------------------------------------
+# Para los gráficos comparativos se usa la muestra común FX-10Y por país.
+# Así los paneles regionales y los dashboards no muestran colas de un mercado
+# que no tienen contraparte en el otro residuo del mismo país.
+residuals_common_all <- fx_residuals_all %>%
+  select(date, country, z_fx = z_res_fx, res_fx) %>%
+  inner_join(
+    yield_residuals_all %>%
+      select(date, country, z_y10 = z_res_y10, res_y10),
+    by = c("date", "country")
+  ) %>%
+  arrange(country, date)
+
 residuals_long <- bind_rows(
-  fx_residuals_all %>% transmute(date, country, market = "FX", z_score = z_res_fx, residual = res_fx),
-  yield_residuals_all %>% transmute(date, country, market = "10Y", z_score = z_res_y10, residual = res_y10)
+  residuals_common_all %>% transmute(date, country, market = "FX",  z_score = z_fx,  residual = res_fx),
+  residuals_common_all %>% transmute(date, country, market = "10Y", z_score = z_y10, residual = res_y10)
 ) %>% arrange(market, country, date)
 
 latest_date <- max(residuals_long$date, na.rm = TRUE)
@@ -883,15 +895,96 @@ latest_obs_table <- db_daily %>%
   pivot_longer(everything(), names_to = "variable", values_to = "last_non_missing_obs") %>%
   arrange(variable)
 
+# Datos exactos de gráficos para auditoría en Excel.
+graph_normalized_fx <- residuals_common_all %>%
+  filter(date >= as.Date("2022-01-01")) %>%
+  transmute(date, country, serie = "FX", z_score = z_fx) %>%
+  arrange(country, date)
+
+graph_normalized_y10 <- residuals_common_all %>%
+  filter(date >= as.Date("2022-01-01")) %>%
+  transmute(date, country, serie = "Tasa 10Y", z_score = z_y10) %>%
+  arrange(country, date)
+
+graph_stress_fx_y10 <- residuals_common_all %>%
+  select(date, country, FX = z_fx, `Tasa 10Y` = z_y10) %>%
+  pivot_longer(c(FX, `Tasa 10Y`), names_to = "serie", values_to = "z_score") %>%
+  arrange(country, serie, date)
+
+graph_second_stage <- second_stage_all %>%
+  transmute(date, country, y10_spread, z_fx, z_fx_hat, res_2nd) %>%
+  arrange(country, date)
+
+graph_dashboard <- purrr::map_dfr(seq_len(nrow(country_dashboard_specs)), function(i) {
+  spec <- country_dashboard_specs[i, ]
+  cc <- spec$country
+  y10_var <- spec$y10_var
+  tpm_var <- spec$tpm_var
+  fx_z_var <- paste0("z_res_fx_", cc)
+  y10_z_var <- paste0("z_res_y10_", cc)
+
+  last_model_cc <- db_daily %>%
+    filter(!is.na(.data[[fx_z_var]]), !is.na(.data[[y10_z_var]])) %>%
+    summarise(last_date = max(date, na.rm = TRUE)) %>%
+    pull(last_date)
+
+  if (!is.finite(as.numeric(last_model_cc))) {
+    return(tibble(date = as.Date(character()), country = character(), TPM = numeric(), Y10 = numeric(), FX_residual_z = numeric(), Y10_residual_z = numeric()))
+  }
+
+  db_daily %>%
+    filter(date >= from_export, date <= last_model_cc) %>%
+    transmute(
+      date,
+      country = cc,
+      TPM = .data[[tpm_var]],
+      Y10 = .data[[y10_var]],
+      FX_residual_z = .data[[fx_z_var]],
+      Y10_residual_z = .data[[y10_z_var]]
+    )
+}) %>% arrange(country, date)
+
+model_fx_data_excel <- fx_model_data_all %>% arrange(country, date)
+model_y10_data_excel <- yield_model_data_all %>% arrange(country, date)
+
+graph_last_obs_summary <- bind_rows(
+  graph_normalized_fx %>% group_by(country) %>% summarise(bloque = "Normalized FX residuals", first_obs = min(date, na.rm = TRUE), last_obs = max(date, na.rm = TRUE), n_obs = n(), .groups = "drop"),
+  graph_normalized_y10 %>% group_by(country) %>% summarise(bloque = "Normalized 10Y residuals", first_obs = min(date, na.rm = TRUE), last_obs = max(date, na.rm = TRUE), n_obs = n(), .groups = "drop"),
+  graph_stress_fx_y10 %>% group_by(country) %>% summarise(bloque = "Stress FX and 10Y", first_obs = min(date, na.rm = TRUE), last_obs = max(date, na.rm = TRUE), n_obs = n(), .groups = "drop"),
+  graph_second_stage %>% group_by(country) %>% summarise(bloque = "Second stage FX vs 10Y spread", first_obs = min(date, na.rm = TRUE), last_obs = max(date, na.rm = TRUE), n_obs = n(), .groups = "drop"),
+  graph_dashboard %>% group_by(country) %>% summarise(bloque = "Dashboard TPM 10Y zscores", first_obs = min(date, na.rm = TRUE), last_obs = max(date, na.rm = TRUE), n_obs = n(), .groups = "drop")
+) %>% arrange(bloque, country)
+
 wb <- openxlsx::createWorkbook()
-openxlsx::addWorksheet(wb, "z_scores_2025"); openxlsx::writeData(wb, "z_scores_2025", z_scores_2025)
-openxlsx::addWorksheet(wb, "rates_embi_2025"); openxlsx::writeData(wb, "rates_embi_2025", rates_2025)
-openxlsx::addWorksheet(wb, "fx_model_data_2025"); openxlsx::writeData(wb, "fx_model_data_2025", fx_model_data_2025)
-openxlsx::addWorksheet(wb, "fx_model_data_used"); openxlsx::writeData(wb, "fx_model_data_used", fx_model_data_all)
-openxlsx::addWorksheet(wb, "yield_model_data_used"); openxlsx::writeData(wb, "yield_model_data_used", yield_model_data_all)
-openxlsx::addWorksheet(wb, "model_samples"); openxlsx::writeData(wb, "model_samples", model_sample_table)
-openxlsx::addWorksheet(wb, "latest_obs"); openxlsx::writeData(wb, "latest_obs", latest_obs_table)
+write_sheet <- function(wb, sheet_name, data) {
+  openxlsx::addWorksheet(wb, sheet_name)
+  openxlsx::writeData(wb, sheet_name, data)
+}
+
+write_sheet(wb, "z_scores_2025", z_scores_2025)
+write_sheet(wb, "rates_embi_2025", rates_2025)
+write_sheet(wb, "fx_model_data_2025", fx_model_data_2025)
+write_sheet(wb, "fx_model_data_used", fx_model_data_all)
+write_sheet(wb, "yield_model_data_used", yield_model_data_all)
+write_sheet(wb, "model_samples", model_sample_table)
+write_sheet(wb, "latest_obs", latest_obs_table)
+write_sheet(wb, "graph_normalized_fx", graph_normalized_fx)
+write_sheet(wb, "graph_normalized_y10", graph_normalized_y10)
+write_sheet(wb, "graph_stress_fx_y10", graph_stress_fx_y10)
+write_sheet(wb, "graph_second_stage", graph_second_stage)
+write_sheet(wb, "graph_dashboard", graph_dashboard)
+write_sheet(wb, "model_fx_data", model_fx_data_excel)
+write_sheet(wb, "model_y10_data", model_y10_data_excel)
+write_sheet(wb, "graph_last_obs", graph_last_obs_summary)
+
 openxlsx::saveWorkbook(wb, file = file.path(out_file, "exchange_model_outputs_2025.xlsx"), overwrite = TRUE)
+
+# También se guardan CSV auxiliares de los gráficos para la página o revisión rápida.
+readr::write_csv(graph_normalized_fx, file.path(out_data, "graph_normalized_fx.csv"))
+readr::write_csv(graph_normalized_y10, file.path(out_data, "graph_normalized_y10.csv"))
+readr::write_csv(graph_stress_fx_y10, file.path(out_data, "graph_stress_fx_y10.csv"))
+readr::write_csv(graph_second_stage, file.path(out_data, "graph_second_stage.csv"))
+readr::write_csv(graph_dashboard, file.path(out_data, "graph_dashboard.csv"))
 
 
 # ------------------------------------------------------------

@@ -1529,3 +1529,30 @@ main.content {
     height: 780px !important;
   }
 }
+
+/* ==========================================================
+   ExchangeReg tab/Plotly stability fixes
+   ========================================================== */
+.exchange-chart-card .html-widget,
+.exchange-chart-card .plotly,
+.exchange-chart-card .js-plotly-plot {
+  visibility: visible !important;
+}
+
+.exchange-chart-card:not(.exchange-policy-tabs .exchange-chart-card) .html-widget,
+.exchange-chart-card:not(.exchange-policy-tabs .exchange-chart-card) .plotly,
+.exchange-chart-card:not(.exchange-policy-tabs .exchange-chart-card) .js-plotly-plot,
+.exchange-chart-card:not(.exchange-policy-tabs .exchange-chart-card) .plot-container,
+.exchange-chart-card:not(.exchange-policy-tabs .exchange-chart-card) .svg-container {
+  min-height: 520px;
+}
+
+.exchange-estimation-tabs + .exchange-wide-block,
+.exchange-wide-block {
+  clear: both;
+}
+
+.exchange-estimation-tabs .tab-content,
+.exchange-estimation-tabs .tab-pane {
+  overflow: visible !important;
+}

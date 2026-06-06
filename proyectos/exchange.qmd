@@ -91,6 +91,30 @@ if (data_ready) {
       market = factor(market, levels = c("FX", "10Y"))
     ) %>%
     arrange(market, country, date)
+
+  # Muestra común FX-10Y por país para todos los gráficos comparativos.
+  # Evita que el panel regional muestre colas de 10Y sin contraparte FX.
+  residuals_common_wide <- residuals_long %>%
+    select(date, country, market, z_score, residual) %>%
+    tidyr::pivot_wider(
+      names_from = market,
+      values_from = c(z_score, residual),
+      names_sep = "_"
+    ) %>%
+    filter(!is.na(z_score_FX), !is.na(z_score_10Y)) %>%
+    arrange(country, date)
+
+  residuals_long_plot <- bind_rows(
+    residuals_common_wide %>% transmute(date, country, market = "FX",  z_score = z_score_FX,  residual = residual_FX),
+    residuals_common_wide %>% transmute(date, country, market = "10Y", z_score = z_score_10Y, residual = residual_10Y)
+  ) %>%
+    mutate(
+      country = factor(country, levels = country_order),
+      country_label = country_label[as.character(country)],
+      market = factor(market, levels = c("FX", "10Y"))
+    ) %>%
+    arrange(market, country, date)
+
   second_stage_data <- second_stage_data %>%
     mutate(
       date = as.Date(date),
@@ -98,6 +122,8 @@ if (data_ready) {
       country_label = country_label[as.character(country)]
     ) %>%
     arrange(country, date)
+} else {
+  residuals_long_plot <- NULL
 }
 
 if (!is.null(dashboard_data)) {
@@ -112,8 +138,8 @@ if (!is.null(dashboard_data)) {
     arrange(country, panel, series, date)
 }
 
-latest_model_date <- if (data_ready) max(residuals_long$date, na.rm = TRUE) else NA
-sample_start <- if (data_ready) min(residuals_long$date, na.rm = TRUE) else NA
+latest_model_date <- if (data_ready) max(residuals_long_plot$date, na.rm = TRUE) else NA
+sample_start <- if (data_ready) min(residuals_long_plot$date, na.rm = TRUE) else NA
 
 plot_missing <- function(msg = "No se encontraron los datos procesados del modelo.") {
   if (has_htmltools) {
@@ -139,7 +165,7 @@ plotly_config <- function(p) {
 
 plot_global_residuals <- function(market_name, from_date = as.Date("2022-01-01")) {
   if (!data_ready || !has_plotly) return(plot_missing("No se encontraron los datos del modelo."))
-  dfp <- residuals_long %>%
+  dfp <- residuals_long_plot %>%
     filter(market == market_name, date >= from_date, !is.na(z_score)) %>%
     mutate(country_chr = as.character(country))
   title <- if (market_name == "FX") "Residuos normalizados del tipo de cambio" else "Residuos normalizados de tasas soberanas 10Y"
@@ -177,7 +203,7 @@ plot_global_residuals <- function(market_name, from_date = as.Date("2022-01-01")
 
 plot_country_stress <- function(cc, from_date = as.Date("2022-01-01")) {
   if (!data_ready || !has_plotly) return(plot_missing("No se encontraron los datos del modelo."))
-  dfp <- residuals_long %>%
+  dfp <- residuals_long_plot %>%
     filter(country == cc, date >= from_date, !is.na(z_score)) %>%
     mutate(market_chr = as.character(market))
   p <- plotly::plot_ly(
@@ -657,14 +683,46 @@ plot_country_second_stage("COP")
 
 ```{=html}
 <script>
-document.addEventListener('shown.bs.tab', function () {
-  window.dispatchEvent(new Event('resize'));
-  if (window.Plotly) {
-    document.querySelectorAll('.js-plotly-plot').forEach(function(el) {
-      try { window.Plotly.Plots.resize(el); } catch(e) {}
+(function () {
+  function visible(el) {
+    return !!(el && (el.offsetWidth || el.offsetHeight || el.getClientRects().length));
+  }
+
+  function resizeExchangePlots() {
+    if (!window.Plotly) return;
+    document.querySelectorAll('.exchange-chart-card .js-plotly-plot, .js-plotly-plot').forEach(function (el) {
+      if (!visible(el)) return;
+      try {
+        window.Plotly.Plots.resize(el);
+        window.Plotly.relayout(el, { autosize: true });
+      } catch (e) {}
     });
   }
-});
+
+  function scheduleResize() {
+    window.dispatchEvent(new Event('resize'));
+    if (window.requestAnimationFrame) window.requestAnimationFrame(resizeExchangePlots);
+    [0, 80, 220, 500, 900].forEach(function (delay) {
+      window.setTimeout(resizeExchangePlots, delay);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', scheduleResize);
+  document.addEventListener('shown.bs.tab', scheduleResize, true);
+  document.addEventListener('click', function (ev) {
+    if (ev.target && ev.target.closest && ev.target.closest('.nav-link, [data-bs-toggle="tab"]')) {
+      scheduleResize();
+    }
+  }, true);
+  window.addEventListener('resize', scheduleResize);
+
+  if ('ResizeObserver' in window) {
+    var ro = new ResizeObserver(scheduleResize);
+    document.querySelectorAll('.exchange-chart-card, .tab-content, .tab-pane, main').forEach(function (el) {
+      try { ro.observe(el); } catch (e) {}
+    });
+  }
+})();
 </script>
 ```
 
