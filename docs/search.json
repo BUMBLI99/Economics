@@ -350,11 +350,11 @@
     "text": "Pregunta económica\nEl ejercicio pregunta cómo cambian las trayectorias de inflación, TPM y brecha de actividad cuando se impone una trayectoria de política monetaria más baja durante 2026, manteniendo el resto de la estructura del modelo y retornando al escenario base desde 2027."
   },
   {
-    "objectID": "proyectos/ipom-iris.html#arquitectura-del-proyecto",
-    "href": "proyectos/ipom-iris.html#arquitectura-del-proyecto",
-    "title": "Escenarios macroeconómicos de referencia",
-    "section": "Arquitectura del proyecto",
-    "text": "Arquitectura del proyecto\n\n\n1. Motor macroeconómico\nModelo semi-estructural en IRIS/Matlab con bloque de demanda, curva de Phillips, regla de política monetaria, bloque externo y shocks estructurales.\n\n\n2. Escenario base y alternativa\nSe trabaja con un escenario base basado en IPoM y un escenario alternativo construido sobre supuestos externos distintos. La comparación debe leerse como ejercicio aplicado de simulación, no como réplica oficial ni como proyección institucional.\n\n\n3. Presentación de resultados\nMatlab exporta bases fcast_*.csv; R las convierte a formato largo y genera gráficos, tablas y diagnóstico comparado."
+    "objectID": "proyectos/ipom-iris.html#escenarios",
+    "href": "proyectos/ipom-iris.html#escenarios",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Escenarios",
+    "text": "Escenarios\n\n\n\nEscenarios usados en la comparación pública.\n\n\n\n\n\n\n\nEscenario\nArchivo\nLectura\n\n\n\n\nEscenario base IPoM identificado\nfcast_ipom_exact.csv\nTrayectoria de referencia identificada sobre el escenario IPoM.\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nfcast_alt_tpm45_2026.csv\nTPM fijada en 4,5% durante 2026 y retorno a la trayectoria base desde 2027."
   },
   {
     "objectID": "proyectos/ipom-iris.html#estructura-conceptual-del-modelo",
@@ -364,13 +364,6 @@
     "text": "Estructura conceptual del modelo\n\nBrecha de actividad\n\\[\n\\tilde y_t =\n\\rho_y \\tilde y_{t-1}\n- \\phi_r (i_{t-1} - i^n_t)\n+ \\phi_x x_t\n+ \\phi_z \\tilde z_t\n+ \\phi_c c_t\n+ \\varepsilon^y_t\n\\]\nLa brecha depende de persistencia, posición monetaria, condiciones externas, tipo de cambio real y condiciones financieras.\n\n\nInflación subyacente\n\\[\n\\pi^{core}_t =\n\\alpha_1 \\pi^{core}_{t-1}\n+ \\alpha_4 \\pi^{core}_{t-4}\n+ (1-\\alpha_1-\\alpha_4)E_t\\pi^{core}_{t+h}\n+ \\kappa_y \\tilde y_t\n+ \\kappa_z \\tilde z_t\n+ \\kappa_f \\Delta p^{food}_t\n+ s_t\n+ \\varepsilon^\\pi_t\n\\]\n\n\nInflación total y regla monetaria\n\\[\n\\pi_t = \\pi^{core}_t + \\pi^{res}_t\n\\]\n\\[\ni_t =\n\\rho_i i_{t-1}\n+ (1-\\rho_i)\n\\left[\n  i^n_t\n  + \\phi_\\pi (E_t\\pi^{core}_{t+h}-\\pi^*)\n  + \\phi_y \\tilde y_t\n\\right]\n+ \\varepsilon^i_t\n\\]\nLa trayectoria alternativa se implementa exogenizando la TPM en 2026 y dejando que el modelo endogenice los shocks requeridos para cumplir esa condición."
   },
   {
-    "objectID": "proyectos/ipom-iris.html#escenarios-incluidos",
-    "href": "proyectos/ipom-iris.html#escenarios-incluidos",
-    "title": "Escenarios macroeconómicos de referencia",
-    "section": "Escenarios incluidos",
-    "text": "Escenarios incluidos\nLa versión pública mantiene solo dos trayectorias para evitar confusión: un escenario base y un escenario alternativo. Otros experimentos pueden agregarse más adelante, pero no se declaran en la página si no existe su archivo de resultados correspondiente.\n\n\n\nEscenarios presentados en la versión pública del proyecto.\n\n\n\n\n\n\nEscenario\nLectura\n\n\n\n\nEscenario base basado en IPoM\nTrayectoria de referencia para comparación\n\n\nEscenario alternativo\nTrayectoria alternativa bajo supuestos externos distintos"
-  },
-  {
     "objectID": "proyectos/ipom-iris.html#resultado-principal",
     "href": "proyectos/ipom-iris.html#resultado-principal",
     "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
@@ -378,25 +371,18 @@
     "text": "Resultado principal\n\nTasa de Política Monetaria\n\n\n\n\n\n\n\n\nInflación total\n\n\n\n\n\n\n\n\nInflación subyacente\n\n\n\n\n\n\n\n\nBrecha de actividad"
   },
   {
-    "objectID": "proyectos/ipom-iris.html#bloque-internacional",
-    "href": "proyectos/ipom-iris.html#bloque-internacional",
-    "title": "Escenarios macroeconómicos de referencia",
-    "section": "Bloque internacional",
-    "text": "Bloque internacional\nAdemás de las variables macro domésticas, el ejercicio depende de los supuestos externos que alimentan el modelo. Esta sección muestra las trayectorias de petróleo, cobre, crecimiento internacional y volatilidad financiera usadas en el escenario base y en los escenarios alternativos.\n\nPrecio del petróleo WTI nominal\n\n\n\n\n\n\n\n\nPrecio del cobre nominal\n\n\n\n\n\n\n\n\nCrecimiento internacional\n\n\n\n\n\n\n\n\nVIX\n\n\n\n\n\n\n\n\nDesvíos externos frente al escenario base\n\n\n\nSupuestos externos principales: niveles promedio y desvíos frente al escenario base.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio escenario\nDesvío promedio vs base\nDesvío máximo vs base\nDesvío mínimo vs base\n\n\n\n\nEscenario alternativo\nCobre nominal\nnivel aproximado\n5,02\n0,00\n0,00\n0\n\n\nEscenario alternativo\nCrecimiento socios comerciales\n% anual\n2,92\n0,00\n0,00\n0\n\n\nEscenario alternativo\nVIX\níndice\n19,38\n0,00\n0,00\n0\n\n\nEscenario alternativo\nWTI nominal\nnivel aproximado\n81,25\n5,55\n12,24\n0"
+    "objectID": "proyectos/ipom-iris.html#diferencias-frente-al-escenario-base",
+    "href": "proyectos/ipom-iris.html#diferencias-frente-al-escenario-base",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Diferencias frente al escenario base",
+    "text": "Diferencias frente al escenario base\n\nTPM\n\n\n\n\n\n\n\n\nInflación total\n\n\n\n\n\n\n\n\nBrecha de actividad"
   },
   {
-    "objectID": "proyectos/ipom-iris.html#supuestos-externos",
-    "href": "proyectos/ipom-iris.html#supuestos-externos",
-    "title": "Escenarios macroeconómicos de referencia",
-    "section": "Supuestos externos",
-    "text": "Supuestos externos\nLa tabla resume los supuestos externos procesados para el período 2025-2027. Las diferencias se calculan contra el escenario base.\n\n\n\nSupuestos externos: promedio 2025-2027 y desvíos frente al escenario base.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio escenario\nDiferencia promedio vs base\nDiferencia máxima vs base\nDiferencia mínima vs base\n\n\n\n\nEscenario alternativo\nCobre nominal\nnivel aproximado\n5,02\n0,00\n0,00\n0\n\n\nEscenario alternativo\nCrecimiento socios comerciales\n% anual\n2,92\n0,00\n0,00\n0\n\n\nEscenario alternativo\nFederal Funds Rate\n% anual\n3,74\n0,00\n0,00\n0\n\n\nEscenario alternativo\nTipo de cambio real índice\níndice\n103,22\n0,00\n0,00\n0\n\n\nEscenario alternativo\nTreasury 10 años\n% anual\n4,41\n0,00\n0,00\n0\n\n\nEscenario alternativo\nVIX\níndice\n19,38\n0,00\n0,00\n0\n\n\nEscenario alternativo\nWTI nominal\nnivel aproximado\n81,25\n5,55\n12,24\n0"
-  },
-  {
-    "objectID": "proyectos/ipom-iris.html#desvíos-frente-al-escenario-base",
-    "href": "proyectos/ipom-iris.html#desvíos-frente-al-escenario-base",
-    "title": "Escenarios macroeconómicos de referencia",
-    "section": "Desvíos frente al escenario base",
-    "text": "Desvíos frente al escenario base\n\nInflación total: diferencia respecto del escenario base\n\n\n\n\n\n\n\n\nTPM: diferencia respecto del escenario base\n\n\n\n\n\n\n\n\nBrecha de actividad: diferencia respecto del escenario base"
+    "objectID": "proyectos/ipom-iris.html#bloque-externo",
+    "href": "proyectos/ipom-iris.html#bloque-externo",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Bloque externo",
+    "text": "Bloque externo\nLas trayectorias externas se muestran para verificar que la comparación principal no está mezclando cambios de política con shocks externos no deseados.\n\n\n\nSupuestos externos: promedio 2025-2028 y desvíos frente al escenario base.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio escenario\nDiferencia promedio vs base\nDiferencia máxima vs base\nDiferencia mínima vs base\n\n\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nCobre nominal\nnivel aproximado\n5,05\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nCrecimiento socios comerciales\n% anual\n2,91\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nFederal Funds Rate\n% anual\n3,74\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTipo de cambio real índice\níndice\n103,22\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTreasury 10 años\n% anual\n4,41\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nVIX\níndice\n19,38\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nWTI nominal\nnivel aproximado\n81,25\n5,17\n11,65\n0\n\n\n\n\n\n\nPetróleo WTI nominal\n\n\n\n\n\n\n\n\nTipo de cambio real índice"
   },
   {
     "objectID": "proyectos/ipom-iris.html#tabla-resumen-de-impactos",
@@ -406,11 +392,11 @@
     "text": "Tabla resumen de impactos\n\n\n\nDesvíos frente al escenario base en 2025-2028.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio\nMínimo\nMáximo\nÚltimo\n\n\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nBrecha de actividad\n%\n0,00\n-0,14\n0,10\n0,10\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nCrecimiento socios comerciales\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nFederal Funds Rate\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nInflación subyacente sin volátiles\n% anual\n0,01\n0,00\n0,04\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nInflación total\n% anual\n0,08\n-0,10\n0,36\n-0,03\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTasa de Política Monetaria\n% anual\n-0,03\n-0,25\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTipo de cambio real índice\níndice\n0,00\n0,00\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTreasury 10 años\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nVIX\níndice\n0,00\n0,00\n0,00\n0,00"
   },
   {
-    "objectID": "proyectos/ipom-iris.html#lectura-metodológica",
-    "href": "proyectos/ipom-iris.html#lectura-metodológica",
-    "title": "Escenarios macroeconómicos de referencia",
-    "section": "Lectura metodológica",
-    "text": "Lectura metodológica\nEl flujo está separado en dos niveles:\n\nMatlab/IRIS resuelve el modelo, impone trayectorias exógenas y endogeniza los shocks necesarios para cumplir los supuestos del escenario.\nR lee los resultados, estandariza nombres, calcula diferencias contra el escenario base y prepara las tablas y gráficos.\n\nEsta separación ordena el trabajo en dos etapas: simulación del escenario y lectura económica de los resultados."
+    "objectID": "proyectos/ipom-iris.html#archivos-descargables",
+    "href": "proyectos/ipom-iris.html#archivos-descargables",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Archivos descargables",
+    "text": "Archivos descargables\n\nReporte escenario TPM 4,5% Baseline identificado Nota de supuestos CSV IRIS crudos"
   },
   {
     "objectID": "proyectos/ipom-iris.html#limitaciones",
@@ -418,13 +404,6 @@
     "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
     "section": "Limitaciones",
     "text": "Limitaciones\n\n\n\n\n\n\nAdvertencia\n\n\n\nEste ejercicio es una simulación condicional bajo una estructura propia en IRIS/Matlab. La lectura correcta es comparativa: cuánto cambia el escenario alternativo frente a la trayectoria base bajo los supuestos impuestos."
-  },
-  {
-    "objectID": "proyectos/ipom-iris.html#próximos-pasos",
-    "href": "proyectos/ipom-iris.html#próximos-pasos",
-    "title": "Escenarios macroeconómicos de referencia",
-    "section": "Próximos pasos",
-    "text": "Próximos pasos\n\nConsolidar documentación técnica de la estructura del modelo y del flujo de exogenización/endogenización en IRIS.\nDocumentar formalmente qué variables se exogenizan y qué shocks se endogenizan en cada escenario.\nAgregar descomposición de shocks y contribuciones por bloque.\nConstruir una tabla de supuestos externos editable desde CSV o YAML.\nAgregar una nota técnica descargable cuando la metodología esté cerrada."
   },
   {
     "objectID": "proyectos/curva-rendimiento.html",
@@ -453,33 +432,5 @@
     "title": "Curva de rendimiento chilena interactiva — en desarrollo",
     "section": "Próximas mejoras",
     "text": "Próximas mejoras\n\nIncorporar curva nominal y curva real/UF.\nCalcular pendiente 10y-2y.\nMostrar breakeven inflation aproximado, con advertencia sobre primas de riesgo y liquidez.\nMarcar fechas de episodios macrofinancieros relevantes."
-  },
-  {
-    "objectID": "proyectos/ipom-iris.html#escenarios",
-    "href": "proyectos/ipom-iris.html#escenarios",
-    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
-    "section": "Escenarios",
-    "text": "Escenarios\n\n\n\nEscenarios usados en la comparación pública.\n\n\n\n\n\n\n\nEscenario\nArchivo\nLectura\n\n\n\n\nEscenario base IPoM identificado\nfcast_ipom_exact.csv\nTrayectoria de referencia identificada sobre el escenario IPoM.\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nfcast_alt_tpm45_2026.csv\nTPM fijada en 4,5% durante 2026 y retorno a la trayectoria base desde 2027."
-  },
-  {
-    "objectID": "proyectos/ipom-iris.html#diferencias-frente-al-escenario-base",
-    "href": "proyectos/ipom-iris.html#diferencias-frente-al-escenario-base",
-    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
-    "section": "Diferencias frente al escenario base",
-    "text": "Diferencias frente al escenario base\n\nTPM\n\n\n\n\n\n\n\n\nInflación total\n\n\n\n\n\n\n\n\nBrecha de actividad"
-  },
-  {
-    "objectID": "proyectos/ipom-iris.html#bloque-externo",
-    "href": "proyectos/ipom-iris.html#bloque-externo",
-    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
-    "section": "Bloque externo",
-    "text": "Bloque externo\nLas trayectorias externas se muestran para verificar que la comparación principal no está mezclando cambios de política con shocks externos no deseados.\n\n\n\nSupuestos externos: promedio 2025-2028 y desvíos frente al escenario base.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio escenario\nDiferencia promedio vs base\nDiferencia máxima vs base\nDiferencia mínima vs base\n\n\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nCobre nominal\nnivel aproximado\n5,05\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nCrecimiento socios comerciales\n% anual\n2,91\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nFederal Funds Rate\n% anual\n3,74\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTipo de cambio real índice\níndice\n103,22\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTreasury 10 años\n% anual\n4,41\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nVIX\níndice\n19,38\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nWTI nominal\nnivel aproximado\n81,25\n5,17\n11,65\n0\n\n\n\n\n\n\nPetróleo WTI nominal\n\n\n\n\n\n\n\n\nTipo de cambio real índice"
-  },
-  {
-    "objectID": "proyectos/ipom-iris.html#archivos-descargables",
-    "href": "proyectos/ipom-iris.html#archivos-descargables",
-    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
-    "section": "Archivos descargables",
-    "text": "Archivos descargables\n\nReporte escenario TPM 4,5% Baseline identificado Nota de supuestos CSV IRIS crudos"
   }
 ]
