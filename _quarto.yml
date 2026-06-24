@@ -63,6 +63,6 @@ format:
       - assets/js/plotly-resize.html
 
 execute:
-  freeze: auto
+  freeze: false
   warning: false
   message: false

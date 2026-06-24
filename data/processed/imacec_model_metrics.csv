@@ -1,3 +1,3 @@
 variable,n,rmse,mae,nota
-IMACEC total,88,1.37,1.04,Métricas in-sample; no interpretar como evaluación fuera de muestra.
-IMACEC no minero,88,1.71,1.22,Métricas in-sample; no interpretar como evaluación fuera de muestra.
+IMACEC total,88,1.21,0.94,Métricas in-sample; no interpretar como evaluación fuera de muestra.
+IMACEC no minero,88,1.18,0.91,Métricas in-sample; no interpretar como evaluación fuera de muestra.

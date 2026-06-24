@@ -1,7 +1,7 @@
 variable,valor_asumido,criterio,periodo_objetivo
-monto_credito,6.300587812202559,Promedio últimos 3 datos disponibles,2026-05-01
-cantidad_credito,5.502117913592571,Promedio últimos 3 datos disponibles,2026-05-01
-venta_minorista,1.5372700970442332,Promedio últimos 3 datos disponibles,2026-05-01
+monto_credito,5.872296248592408,Promedio últimos 3 datos disponibles,2026-05-01
+cantidad_credito,5.471855809207045,Promedio últimos 3 datos disponibles,2026-05-01
+venta_minorista,1.5662844269798333,Promedio últimos 3 datos disponibles,2026-05-01
 uf,2.688942585106909,Promedio últimos 3 datos disponibles,2026-05-01
 mineria,-4.253871906390816,Promedio últimos 3 datos disponibles,2026-05-01
 manufactura,-3.5902397057136786,Promedio últimos 3 datos disponibles,2026-05-01

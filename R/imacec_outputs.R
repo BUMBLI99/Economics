@@ -36,6 +36,98 @@ make_summary_table <- function(resultado) {
   dplyr::bind_rows(ultimos_obs, fila_proj)
 }
 
+
+validate_imacec_exports <- function(resultado, output_dir = "data/processed") {
+  # Evita publicar una mezcla de archivos viejos y nuevos.
+  target <- as.Date(resultado$proyeccion$Periodo[1])
+  update_date <- as.Date(resultado$proyeccion$fecha_actualizacion[1])
+  expected_type <- ifelse(
+    resultado$proyeccion$ciclo_estado[1] == "official_review",
+    "Estimación previa",
+    "Nowcast vigente"
+  )
+
+  required <- c(
+    "imacec_nowcast_history.csv",
+    "imacec_nowcast_summary.csv",
+    "imacec_model_metrics.csv",
+    "imacec_oos_metrics.csv",
+    "imacec_projection.csv",
+    "imacec_update_status.csv",
+    "imacec_assumptions.csv",
+    "imacec_projection_archive.csv",
+    "imacec_projection_evaluation.csv"
+  )
+
+  missing <- required[!file.exists(file.path(output_dir, required))]
+  if (length(missing) > 0) {
+    stop("Exportación IMACEC incompleta. Faltan archivos: ", paste(missing, collapse = ", "), call. = FALSE)
+  }
+
+  projection <- readr::read_csv(file.path(output_dir, "imacec_projection.csv"), show_col_types = FALSE) |>
+    dplyr::mutate(
+      Periodo = as.Date(Periodo),
+      fecha_actualizacion = as.Date(fecha_actualizacion)
+    )
+
+  summary_tbl <- readr::read_csv(file.path(output_dir, "imacec_nowcast_summary.csv"), show_col_types = FALSE) |>
+    dplyr::mutate(Periodo = as.Date(Periodo))
+
+  history <- readr::read_csv(file.path(output_dir, "imacec_nowcast_history.csv"), show_col_types = FALSE) |>
+    dplyr::mutate(Periodo = as.Date(Periodo))
+
+  status <- readr::read_csv(file.path(output_dir, "imacec_update_status.csv"), show_col_types = FALSE) |>
+    dplyr::mutate(
+      fecha_actualizacion = as.Date(fecha_actualizacion),
+      periodo_objetivo = as.Date(periodo_objetivo)
+    )
+
+  if (nrow(projection) != 1 || projection$Periodo[1] != target) {
+    stop("imacec_projection.csv no coincide con el período objetivo esperado: ", format(target, "%Y-%m"), call. = FALSE)
+  }
+
+  if (projection$fecha_actualizacion[1] != update_date) {
+    stop("imacec_projection.csv tiene una fecha de actualización inconsistente.", call. = FALSE)
+  }
+
+  summary_target <- summary_tbl |>
+    dplyr::filter(Periodo == target, Tipo == expected_type)
+
+  if (nrow(summary_target) != 1) {
+    stop(
+      "imacec_nowcast_summary.csv no contiene exactamente una fila de proyección para ",
+      format(target, "%Y-%m"), " con Tipo='", expected_type, "'. ",
+      "Esto suele indicar que se mezclaron outputs viejos y nuevos.",
+      call. = FALSE
+    )
+  }
+
+  history_target <- history |>
+    dplyr::filter(Periodo == target, tipo == "Nowcast")
+
+  if (nrow(history_target) != 1) {
+    stop(
+      "imacec_nowcast_history.csv no contiene exactamente una fila tipo Nowcast para ",
+      format(target, "%Y-%m"), ".",
+      call. = FALSE
+    )
+  }
+
+  if (!isTRUE(all.equal(
+    round(history_target$imacec_fit[1], 8),
+    round(projection$imacec_predicho[1], 8),
+    tolerance = 1e-8
+  ))) {
+    stop("El nowcast de history no coincide con imacec_projection.csv.", call. = FALSE)
+  }
+
+  if (nrow(status) != 1 || status$periodo_objetivo[1] != target) {
+    stop("imacec_update_status.csv no coincide con el período objetivo exportado.", call. = FALSE)
+  }
+
+  invisible(TRUE)
+}
+
 make_history_table <- function(resultado) {
   proy <- resultado$proyeccion
 
@@ -413,6 +505,8 @@ export_imacec_outputs <- function(resultado,
 
   ggplot2::ggsave(file.path(fig_dir, "imacec_total_nowcast.png"), g_total, width = 10, height = 6, dpi = 320)
   ggplot2::ggsave(file.path(fig_dir, "imacec_no_minero_nowcast.png"), g_nm, width = 10, height = 6, dpi = 320)
+
+  validate_imacec_exports(resultado, output_dir = output_dir)
 
   invisible(list(
     history = history,
