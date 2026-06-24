@@ -1,3 +1,5 @@
-variable,n,rmse,mae,nota
-IMACEC total,88,1.75,1.28,Métricas in-sample; no interpretar como evaluación fuera de muestra.
-IMACEC no minero,88,1.71,1.22,Métricas in-sample; no interpretar como evaluación fuera de muestra.
+variable,modelo,n,rmse,mae,nota
+IMACEC total,Modelo con estadísticas experimentales,88,1.75295213006389,1.2791128823053266,Ajuste interno; no interpretar como desempeño predictivo fuera de muestra.
+IMACEC no minero,Modelo con estadísticas experimentales,88,1.7070243739721098,1.2225134980768242,Ajuste interno; no interpretar como desempeño predictivo fuera de muestra.
+IMACEC total,Modelo con indicadores sectoriales INE,88,1.2710043759404697,0.9968661245930379,Ajuste interno; no interpretar como desempeño predictivo fuera de muestra.
+IMACEC no minero,Modelo con indicadores sectoriales INE,88,1.3176175476670562,0.9866714217765146,Ajuste interno; no interpretar como desempeño predictivo fuera de muestra.

@@ -1,0 +1,11 @@
+variable,modelo,N,RMSE,MAE,Periodo,eval_start,nota
+IMACEC no minero,Promedio móvil 3m,52,2.1801990284684933,1.742035561867676,2022-01 a 2026-04,2022-01-01,"Pseudo-OOS recursivo; usa información final disponible, no vintages en tiempo real."
+IMACEC no minero,Benchmark AR(1),52,2.2741212073642223,1.8479693916551836,2022-01 a 2026-04,2022-01-01,"Pseudo-OOS recursivo; usa información final disponible, no vintages en tiempo real."
+IMACEC no minero,Modelo con indicadores sectoriales INE,52,2.2965644171319592,1.7196465781191057,2022-01 a 2026-04,2022-01-01,"Pseudo-OOS recursivo; usa información final disponible, no vintages en tiempo real."
+IMACEC no minero,Modelo con estadísticas experimentales,52,2.314142462299943,1.7009166022957463,2022-01 a 2026-04,2022-01-01,"Pseudo-OOS recursivo; usa información final disponible, no vintages en tiempo real."
+IMACEC no minero,Naive estacional t-12,52,8.07517911958161,5.74658826208013,2022-01 a 2026-04,2022-01-01,"Pseudo-OOS recursivo; usa información final disponible, no vintages en tiempo real."
+IMACEC total,Modelo con indicadores sectoriales INE,52,2.0471653744787406,1.5640305092356097,2022-01 a 2026-04,2022-01-01,"Pseudo-OOS recursivo; usa información final disponible, no vintages en tiempo real."
+IMACEC total,Benchmark AR(1),52,2.102189061063957,1.6913838145028195,2022-01 a 2026-04,2022-01-01,"Pseudo-OOS recursivo; usa información final disponible, no vintages en tiempo real."
+IMACEC total,Promedio móvil 3m,52,2.181738989719983,1.6915125200701788,2022-01 a 2026-04,2022-01-01,"Pseudo-OOS recursivo; usa información final disponible, no vintages en tiempo real."
+IMACEC total,Modelo con estadísticas experimentales,52,2.449279102878077,1.864706219533904,2022-01 a 2026-04,2022-01-01,"Pseudo-OOS recursivo; usa información final disponible, no vintages en tiempo real."
+IMACEC total,Naive estacional t-12,52,7.218348674691113,5.255246264943999,2022-01 a 2026-04,2022-01-01,"Pseudo-OOS recursivo; usa información final disponible, no vintages en tiempo real."

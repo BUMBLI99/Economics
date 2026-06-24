@@ -1,7 +1,7 @@
-Periodo,IMACEC,IMACEC_no_minero,Proyeccion_EEE,Tipo
-2025-12-01,1.27,2.64,1.8,Observado
-2026-01-01,-0.93,-0.81,1.9,Observado
-2026-02-01,-0.31,-0.21,1.8,Observado
-2026-03-01,-0.2,0.95,0.7,Observado
-2026-04-01,-1.18,0.42,0.1,Observado
-2026-05-01,-0.9,0.79,0.2,Nowcast vigente
+Periodo,IMACEC,IMACEC_no_minero,Tipo,Modelo
+2025-12-01,1.27,2.64,Observado,NA
+2026-01-01,-0.93,-0.81,Observado,NA
+2026-02-01,-0.31,-0.21,Observado,NA
+2026-03-01,-0.2,0.95,Observado,NA
+2026-04-01,-1.18,0.42,Observado,NA
+2026-05-01,-3.16,-1.44,Nowcast,Modelo con indicadores sectoriales INE

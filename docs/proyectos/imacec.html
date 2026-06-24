@@ -6,7 +6,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Modelo mensual de nowcasting del IMACEC total y no minero con EEE, indicadores experimentales, series sectoriales INE y evaluación de vintages.">
 
 <title>Nowcasting de actividad económica en Chile – Mauricio Ulloa</title>
 <style>
@@ -23,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -97,17 +131,11 @@ ul.task-list li input[type="checkbox"] {
 
 <link rel="stylesheet" href="../assets/css/styles.css">
 <meta property="og:title" content="Nowcasting de actividad económica en Chile – Mauricio Ulloa">
-<meta property="og:description" content="Modelo mensual de nowcasting del IMACEC total y no minero con EEE, indicadores experimentales, series sectoriales INE y evaluación de vintages.">
-<meta property="og:image" content="https://mulloav3007.github.io/Economics/assets/img/og/portfolio-og.png">
+<meta property="og:description" content="Modelo mensual en R para seguimiento coyuntural del IMACEC total y no minero">
 <meta property="og:site_name" content="Mauricio Ulloa">
-<meta property="og:image:height" content="630">
-<meta property="og:image:width" content="1200">
 <meta name="twitter:title" content="Nowcasting de actividad económica en Chile – Mauricio Ulloa">
-<meta name="twitter:description" content="Modelo mensual de nowcasting del IMACEC total y no minero con EEE, indicadores experimentales, series sectoriales INE y evaluación de vintages.">
-<meta name="twitter:image" content="https://mulloav3007.github.io/Economics/assets/img/og/portfolio-og.png">
-<meta name="twitter:image-height" content="630">
-<meta name="twitter:image-width" content="1200">
-<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:description" content="Modelo mensual en R para seguimiento coyuntural del IMACEC total y no minero">
+<meta name="twitter:card" content="summary">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -161,24 +189,28 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#pregunta-económica" id="toc-pregunta-económica" class="nav-link active" data-scroll-target="#pregunta-económica">Pregunta económica</a></li>
+  <li><a href="#resultado-principal" id="toc-resultado-principal" class="nav-link" data-scroll-target="#resultado-principal">Resultado principal</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
+<main class="content column-page-left" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">Nowcasting de actividad económica en Chile</h1>
-<p class="subtitle lead">Seguimiento mensual del IMACEC total y no minero según el vintage de información disponible</p>
-</div>
-
-<div>
-  <div class="description">
-    Modelo mensual de nowcasting del IMACEC total y no minero con EEE, indicadores experimentales, series sectoriales INE y evaluación de vintages.
-  </div>
+<p class="subtitle lead">Modelo mensual en R para seguimiento coyuntural del IMACEC total y no minero</p>
 </div>
 
 
-<div class="quarto-title-meta column-page">
+
+<div class="quarto-title-meta column-page-left">
 
     
   
@@ -200,101 +232,53 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Proyecto aplicado en desarrollo continuo.</strong> La metodología está organizada para actualizarse mensualmente a medida que aparecen nuevos vintages de información: primero la EEE, luego indicadores experimentales/BCCh, después los indicadores sectoriales INE y finalmente el IMACEC oficial.</p>
+<p><strong>Proyecto aplicado en desarrollo continuo.</strong> La metodología base está implementada para actualizarse mensualmente con nueva información. La página está pensada como una vitrina técnica: muestra la motivación, la estructura del modelo, los resultados principales y el pipeline reproducible.</p>
 </div>
 </div>
-<section id="lectura-rápida" class="level2">
-<h2 class="anchored" data-anchor-id="lectura-rápida">Lectura rápida</h2>
-<div class="mu-grid mu-grid-areas">
-<div class="mu-area">
-<h3 class="anchored">
-Última actualización
-</h3>
-<p class="mu-kpi-value">
-2026-06-24
-</p>
-<p>
-Hora local registrada: 2026-06-24 00:55:55
-</p>
-</div>
-<div class="mu-area">
-<h3 class="anchored">
-Último dato oficial
-</h3>
-<p class="mu-kpi-value">
-2026-04
-</p>
-<p>
-Último mes con IMACEC publicado en la base procesada.
-</p>
-</div>
-<div class="mu-area">
-<h3 class="anchored">
-Mes proyectado
-</h3>
-<p class="mu-kpi-value">
-2026-05
-</p>
-<p>
-Mes sin IMACEC oficial para el cual está activo el nowcast.
-</p>
-</div>
-<div class="mu-area">
-<h3 class="anchored">
-Estado del ciclo
-</h3>
-<p class="mu-kpi-value">
-Nowcast activo para mes sin dato oficial
-</p>
-<p>
-La EEE del siguiente mes ya está disponible; el ciclo de nowcast está abierto.
-</p>
-</div>
-<div class="mu-area">
-<h3 class="anchored">
-Siguiente mes potencial
-</h3>
-<p class="mu-kpi-value">
-2026-05
-</p>
-<p>
-El modelo solo abre este ciclo cuando existe EEE para ese mes.
-</p>
-</div>
-</div>
-</section>
 <section id="pregunta-económica" class="level2">
 <h2 class="anchored" data-anchor-id="pregunta-económica">Pregunta económica</h2>
 <p>El IMACEC es una de las señales principales para evaluar la coyuntura económica chilena. Este proyecto busca responder una pregunta práctica:</p>
 <blockquote class="blockquote">
-<p>¿Cuánto se puede anticipar el IMACEC total y no minero antes de la publicación oficial, usando la información que aparece durante el mes?</p>
+<p>¿Es posible anticipar la evolución reciente del IMACEC total y no minero usando información mensual disponible antes de la publicación oficial?</p>
 </blockquote>
-<p>La idea no es producir una proyección oficial, sino construir una herramienta reproducible de seguimiento coyuntural. La gracia del ejercicio está en respetar el calendario de publicación: el modelo temprano no debería usar variables que aún no están disponibles, y el modelo con indicadores sectoriales INE solo debería entrar cuando esas series ya fueron publicadas.</p>
-</section>
-<section id="flujo-de-vintages" class="level2">
-<h2 class="anchored" data-anchor-id="flujo-de-vintages">Flujo de vintages</h2>
-<p>La página sigue el ciclo efectivo de publicación de información:</p>
-<ol type="1">
-<li><strong>Dato oficial recién publicado:</strong> cuando aparece el IMACEC efectivo de un mes, la página conserva ese ciclo cerrado. En el gráfico se muestran el dato observado, la estimación propia que habría estado disponible con el último vintage y la EEE si existía para ese mes.</li>
-<li><strong>EEE del siguiente mes:</strong> cuando se publica la encuesta para el IMACEC de un mes atrás, se abre el nuevo ciclo de nowcast. En esta etapa se usa la EEE para el IMACEC total y supuestos simples para variables contemporáneas todavía no publicadas.</li>
-<li><strong>Indicadores experimentales/BCCh:</strong> cuando aparecen ventas, crédito u otras señales mensuales, se actualiza la estimación propia con esa información. La EEE se mantiene en el gráfico como punto de comparación, no desaparece.</li>
-<li><strong>Indicadores sectoriales INE:</strong> cuando se publican minería, manufactura, comercio, electricidad y mercado laboral, se usa el vintage más informado. La página conserva simultáneamente la estimación propia y la EEE.</li>
-<li><strong>Nuevo dato oficial:</strong> al publicarse el IMACEC efectivo, se agrega el punto observado y se mantiene la comparación hasta que la EEE del siguiente mes abra el nuevo ciclo.</li>
-</ol>
+<p>El objetivo no es producir una proyección oficial, sino construir una herramienta reproducible de seguimiento coyuntural que combine datos macroeconómicos, variables calendario, indicadores sectoriales y modelos econométricos simples.</p>
 </section>
 <section id="resultado-principal" class="level2">
 <h2 class="anchored" data-anchor-id="resultado-principal">Resultado principal</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>## Modelo actualmente publicado</p>
+<ul>
+<li><strong>Mes proyectado:</strong> 2026-05</li>
+<li><strong>Modelo activo:</strong> Modelo con indicadores sectoriales INE</li>
+<li><strong>Última actualización:</strong> 20628 :::</li>
+</ul>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
-<caption>Últimas observaciones, nowcast vigente y expectativa EEE disponible</caption>
+<caption>Últimas observaciones y nowcast mensual</caption>
+<colgroup>
+<col style="width: 9%">
+<col style="width: 14%">
+<col style="width: 19%">
+<col style="width: 11%">
+<col style="width: 44%">
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Período</th>
 <th style="text-align: right;">IMACEC total</th>
 <th style="text-align: right;">IMACEC no minero</th>
-<th style="text-align: right;">EEE total</th>
 <th style="text-align: left;">Tipo</th>
+<th style="text-align: left;">Modelo</th>
 </tr>
 </thead>
 <tbody>
@@ -302,209 +286,71 @@ El modelo solo abre este ciclo cuando existe EEE para ese mes.
 <td style="text-align: left;">2025-12</td>
 <td style="text-align: right;">1.27</td>
 <td style="text-align: right;">2.64</td>
-<td style="text-align: right;">1.8</td>
 <td style="text-align: left;">Observado</td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">2026-01</td>
 <td style="text-align: right;">-0.93</td>
 <td style="text-align: right;">-0.81</td>
-<td style="text-align: right;">1.9</td>
 <td style="text-align: left;">Observado</td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">2026-02</td>
 <td style="text-align: right;">-0.31</td>
 <td style="text-align: right;">-0.21</td>
-<td style="text-align: right;">1.8</td>
 <td style="text-align: left;">Observado</td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">2026-03</td>
 <td style="text-align: right;">-0.20</td>
 <td style="text-align: right;">0.95</td>
-<td style="text-align: right;">0.7</td>
 <td style="text-align: left;">Observado</td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">2026-04</td>
 <td style="text-align: right;">-1.18</td>
 <td style="text-align: right;">0.42</td>
-<td style="text-align: right;">0.1</td>
 <td style="text-align: left;">Observado</td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">2026-05</td>
-<td style="text-align: right;">-0.90</td>
-<td style="text-align: right;">0.79</td>
-<td style="text-align: right;">0.2</td>
-<td style="text-align: left;">Nowcast vigente</td>
+<td style="text-align: right;">-3.16</td>
+<td style="text-align: right;">-1.44</td>
+<td style="text-align: left;">Nowcast</td>
+<td style="text-align: left;">Modelo con indicadores sectoriales INE</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-</section>
-<section id="imacec-total-observado-ajuste-y-proyección" class="level2">
-<h2 class="anchored" data-anchor-id="imacec-total-observado-ajuste-y-proyección">IMACEC total: observado, ajuste y proyección</h2>
-<div class="mu-plot-section">
+<section id="imacec-total-observado-versus-ajustenowcast" class="level2">
+<h2 class="anchored" data-anchor-id="imacec-total-observado-versus-ajustenowcast">IMACEC total: observado versus ajuste/nowcast</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-6939d907a721eaed9961" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-6939d907a721eaed9961">{"x":{"data":[{"x":[17538.450000000001,20718.549999999999],"y":[0,0],"text":"yintercept: 0","type":"scatter","mode":"lines","line":{"width":0.94488188976377963,"color":"rgba(179,179,179,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[17683,17713,17744,17775,17805,17836,17866,17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231,18262,18293,18322,18353,18383,18414,18444,18475,18506,18536,18567,18597,18628,18659,18687,18718,18748,18779,18809,18840,18871,18901,18932,18962,18993,19024,19052,19083,19113,19144,19174,19205,19236,19266,19297,19327,19358,19389,19417,19448,19478,19509,19539,19570,19601,19631,19662,19692,19723,19754,19783,19814,19844,19875,19905,19936,19967,19997,20028,20058,20089,20120,20148,20179,20209,20240,20270,20301,20332,20362,20393,20423,20454,20485,20513,20544,20574,20574],"y":[4.3344292780467919,3.0855508129466358,2.4190192678751998,1.687050323351369,4.4564663470747279,3.3849552357023915,3.1025496802767227,1.9659919484973587,0.40244101830062551,1.3470424730241071,1.7820940125048199,1.8589031828119664,0.88031380916664403,2.7653306128001987,3.1909427561596093,2.7842901635932278,-4.5344365030988376,-4.9886690546651291,0.92588497011725224,0.93005210109131642,2.7210597729153907,-4.3497248551857322,-15.088301570672291,-15.977117678924269,-13.962357751796306,-11.717591602160716,-11.011337841146728,-4.9506576054560885,-1.3585290872647038,1.012732990849563,0.56899222846849007,-3.4287687132994904,-2.1666510508181247,6.6327425250128025,15.285035960989358,19.551829417289813,20.382431879961494,17.424903932091951,17.966595780594965,13.463442930231295,13.261557495479682,13.332037299205069,8.7511618722738262,7.2095966976083892,5.0054386870161949,5.6696550278821478,5.9048563004459709,5.5885918184796379,2.7970632563766307,-0.43808421788794621,0.63490712253850834,0.17856372039597446,-1.8790917978623425,-2.866486420366976,-1.2635246838221923,1.3591262378233271,0.16342433643201648,-1.4905514158231823,-0.49711935165788201,-0.59935949482103901,0.027461043060261758,2.9153413219749291,0.41833633692369698,0.90236184963745636,2.3886867770460896,2.281348596189936,0.54210593169743415,3.7449616098753191,5.8365278260969156,1.184659965776258,3.8954766293294303,0.32789354512452462,-0.71295404126577866,4.4914944309488281,2.2341186703822347,0.50889256205040034,2.8939198553175061,2.431240856349004,6.7900414272429543,3.3277451570978167,0.31195371691388196,4.9278836062160769,3.8776905480138346,3.9330468127183549,3.3756014789840361,1.5968501075468655,0.2696093831863422,3.2961209339912534,2.0572659006846905,1.3711953861016202,1.2666989233431902,-0.93052994395590438,-0.30968774441596514,-0.20042612820599937,-1.1780728266267859,null,null],"text":["Periodo: 2018-06-01<br />imacec:   4.33442928<br />colour: Observado","Periodo: 2018-07-01<br />imacec:   3.08555081<br />colour: Observado","Periodo: 2018-08-01<br />imacec:   2.41901927<br />colour: Observado","Periodo: 2018-09-01<br />imacec:   1.68705032<br />colour: Observado","Periodo: 2018-10-01<br />imacec:   4.45646635<br />colour: Observado","Periodo: 2018-11-01<br />imacec:   3.38495524<br />colour: Observado","Periodo: 2018-12-01<br />imacec:   3.10254968<br />colour: Observado","Periodo: 2019-01-01<br />imacec:   1.96599195<br />colour: Observado","Periodo: 2019-02-01<br />imacec:   0.40244102<br />colour: Observado","Periodo: 2019-03-01<br />imacec:   1.34704247<br />colour: Observado","Periodo: 2019-04-01<br />imacec:   1.78209401<br />colour: Observado","Periodo: 2019-05-01<br />imacec:   1.85890318<br />colour: Observado","Periodo: 2019-06-01<br />imacec:   0.88031381<br />colour: Observado","Periodo: 2019-07-01<br />imacec:   2.76533061<br />colour: Observado","Periodo: 2019-08-01<br />imacec:   3.19094276<br />colour: Observado","Periodo: 2019-09-01<br />imacec:   2.78429016<br />colour: Observado","Periodo: 2019-10-01<br />imacec:  -4.53443650<br />colour: Observado","Periodo: 2019-11-01<br />imacec:  -4.98866905<br />colour: Observado","Periodo: 2019-12-01<br />imacec:   0.92588497<br />colour: Observado","Periodo: 2020-01-01<br />imacec:   0.93005210<br />colour: Observado","Periodo: 2020-02-01<br />imacec:   2.72105977<br />colour: Observado","Periodo: 2020-03-01<br />imacec:  -4.34972486<br />colour: Observado","Periodo: 2020-04-01<br />imacec: -15.08830157<br />colour: Observado","Periodo: 2020-05-01<br />imacec: -15.97711768<br />colour: Observado","Periodo: 2020-06-01<br />imacec: -13.96235775<br />colour: Observado","Periodo: 2020-07-01<br />imacec: -11.71759160<br />colour: Observado","Periodo: 2020-08-01<br />imacec: -11.01133784<br />colour: Observado","Periodo: 2020-09-01<br />imacec:  -4.95065761<br />colour: Observado","Periodo: 2020-10-01<br />imacec:  -1.35852909<br />colour: Observado","Periodo: 2020-11-01<br />imacec:   1.01273299<br />colour: Observado","Periodo: 2020-12-01<br />imacec:   0.56899223<br />colour: Observado","Periodo: 2021-01-01<br />imacec:  -3.42876871<br />colour: Observado","Periodo: 2021-02-01<br />imacec:  -2.16665105<br />colour: Observado","Periodo: 2021-03-01<br />imacec:   6.63274253<br />colour: Observado","Periodo: 2021-04-01<br />imacec:  15.28503596<br />colour: Observado","Periodo: 2021-05-01<br />imacec:  19.55182942<br />colour: Observado","Periodo: 2021-06-01<br />imacec:  20.38243188<br />colour: Observado","Periodo: 2021-07-01<br />imacec:  17.42490393<br />colour: Observado","Periodo: 2021-08-01<br />imacec:  17.96659578<br />colour: Observado","Periodo: 2021-09-01<br />imacec:  13.46344293<br />colour: Observado","Periodo: 2021-10-01<br />imacec:  13.26155750<br />colour: Observado","Periodo: 2021-11-01<br />imacec:  13.33203730<br />colour: Observado","Periodo: 2021-12-01<br />imacec:   8.75116187<br />colour: Observado","Periodo: 2022-01-01<br />imacec:   7.20959670<br />colour: Observado","Periodo: 2022-02-01<br />imacec:   5.00543869<br />colour: Observado","Periodo: 2022-03-01<br />imacec:   5.66965503<br />colour: Observado","Periodo: 2022-04-01<br />imacec:   5.90485630<br />colour: Observado","Periodo: 2022-05-01<br />imacec:   5.58859182<br />colour: Observado","Periodo: 2022-06-01<br />imacec:   2.79706326<br />colour: Observado","Periodo: 2022-07-01<br />imacec:  -0.43808422<br />colour: Observado","Periodo: 2022-08-01<br />imacec:   0.63490712<br />colour: Observado","Periodo: 2022-09-01<br />imacec:   0.17856372<br />colour: Observado","Periodo: 2022-10-01<br />imacec:  -1.87909180<br />colour: Observado","Periodo: 2022-11-01<br />imacec:  -2.86648642<br />colour: Observado","Periodo: 2022-12-01<br />imacec:  -1.26352468<br />colour: Observado","Periodo: 2023-01-01<br />imacec:   1.35912624<br />colour: Observado","Periodo: 2023-02-01<br />imacec:   0.16342434<br />colour: Observado","Periodo: 2023-03-01<br />imacec:  -1.49055142<br />colour: Observado","Periodo: 2023-04-01<br />imacec:  -0.49711935<br />colour: Observado","Periodo: 2023-05-01<br />imacec:  -0.59935949<br />colour: Observado","Periodo: 2023-06-01<br />imacec:   0.02746104<br />colour: Observado","Periodo: 2023-07-01<br />imacec:   2.91534132<br />colour: Observado","Periodo: 2023-08-01<br />imacec:   0.41833634<br />colour: Observado","Periodo: 2023-09-01<br />imacec:   0.90236185<br />colour: Observado","Periodo: 2023-10-01<br />imacec:   2.38868678<br />colour: Observado","Periodo: 2023-11-01<br />imacec:   2.28134860<br />colour: Observado","Periodo: 2023-12-01<br />imacec:   0.54210593<br />colour: Observado","Periodo: 2024-01-01<br />imacec:   3.74496161<br />colour: Observado","Periodo: 2024-02-01<br />imacec:   5.83652783<br />colour: Observado","Periodo: 2024-03-01<br />imacec:   1.18465997<br />colour: Observado","Periodo: 2024-04-01<br />imacec:   3.89547663<br />colour: Observado","Periodo: 2024-05-01<br />imacec:   0.32789355<br />colour: Observado","Periodo: 2024-06-01<br />imacec:  -0.71295404<br />colour: Observado","Periodo: 2024-07-01<br />imacec:   4.49149443<br />colour: Observado","Periodo: 2024-08-01<br />imacec:   2.23411867<br />colour: Observado","Periodo: 2024-09-01<br />imacec:   0.50889256<br />colour: Observado","Periodo: 2024-10-01<br />imacec:   2.89391986<br />colour: Observado","Periodo: 2024-11-01<br />imacec:   2.43124086<br />colour: Observado","Periodo: 2024-12-01<br />imacec:   6.79004143<br />colour: Observado","Periodo: 2025-01-01<br />imacec:   3.32774516<br />colour: Observado","Periodo: 2025-02-01<br />imacec:   0.31195372<br />colour: Observado","Periodo: 2025-03-01<br />imacec:   4.92788361<br />colour: Observado","Periodo: 2025-04-01<br />imacec:   3.87769055<br />colour: Observado","Periodo: 2025-05-01<br />imacec:   3.93304681<br />colour: Observado","Periodo: 2025-06-01<br />imacec:   3.37560148<br />colour: Observado","Periodo: 2025-07-01<br />imacec:   1.59685011<br />colour: Observado","Periodo: 2025-08-01<br />imacec:   0.26960938<br />colour: Observado","Periodo: 2025-09-01<br />imacec:   3.29612093<br />colour: Observado","Periodo: 2025-10-01<br />imacec:   2.05726590<br />colour: Observado","Periodo: 2025-11-01<br />imacec:   1.37119539<br />colour: Observado","Periodo: 2025-12-01<br />imacec:   1.26669892<br />colour: Observado","Periodo: 2026-01-01<br />imacec:  -0.93052994<br />colour: Observado","Periodo: 2026-02-01<br />imacec:  -0.30968774<br />colour: Observado","Periodo: 2026-03-01<br />imacec:  -0.20042613<br />colour: Observado","Periodo: 2026-04-01<br />imacec:  -1.17807283<br />colour: Observado","Periodo: 2026-05-01<br />imacec:           NA<br />colour: Observado","Periodo: 2026-05-01<br />imacec:           NA<br />colour: Observado"],"type":"scatter","mode":"lines","line":{"width":2.8346456692913389,"color":"rgba(31,78,121,1)","dash":"solid"},"hoveron":"points","name":"Observado","legendgroup":"Observado","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[17683,17713,17744,17775,17805,17836,17866,17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231,18262,18293,18322,18353,18383,18414,18444,18475,18506,18536,18567,18597,18628,18659,18687,18718,18748,18779,18809,18840,18871,18901,18932,18962,18993,19024,19052,19083,19113,19144,19174,19205,19236,19266,19297,19327,19358,19389,19417,19448,19478,19509,19539,19570,19601,19631,19662,19692,19723,19754,19783,19814,19844,19875,19905,19936,19967,19997,20028,20058,20089,20120,20148,20179,20209,20240,20270,20301,20332,20362,20393,20423,20454,20485,20513,20544,20574,20574],"y":[null,null,null,null,null,null,null,1.1531077495843118,-0.052969097755861887,0.066470873533830577,1.5634513631166038,1.4136375017405829,-0.3621561666015749,2.6224599457886302,1.2113076763956241,3.0109313070731472,-0.11219129190842451,-3.4763327851384491,-0.4508851327087533,0.42673507545871397,2.847234055292323,0.85454266888173913,-15.08830157067232,-15.977117678924335,-10.39466185007727,-9.8190551565007524,-7.8752298470220436,-4.4968571004970634,-2.1774773985773184,1.9198070932524864,0.84782671179530666,-1.0214495001541291,-2.4844846227328676,3.2388191692887216,12.317735539386373,19.762216231506848,19.142354112130004,20.392398166177649,17.409544408909063,15.716880846975972,11.254168422164904,11.885876110489557,13.283125034605836,10.139612328631216,7.5072757435214141,6.3511087779417963,5.9048563004459682,5.1933791940908201,1.7403765199924688,0.84728364356896579,-1.2585677960982558,-0.48818738808788953,-1.2104860098678478,-1.7894296943113654,-1.4437870813049529,-0.18604574070182012,0.86033738496024936,0.32516226968830209,-0.40918508814684063,-0.06782431917377818,-0.65161881848093572,0.58905405035431591,1.7668902951153815,-0.39683084685329728,1.9127398940877736,2.2090596327129051,0.95886376072822554,0.30534916280819102,5.710353543720009,0.4468837219544346,4.4524696897296119,1.9116986048723179,-0.69353785218692243,0.26456361754739494,2.0532949496730417,-0.34106467231595672,0.78257182160284877,0.62185966689311767,3.8616051812371808,4.0570521039124383,-1.0677069847165952,1.8122786341821495,3.8591026793142111,2.4477980685663301,4.006803729711093,2.1415403183776949,0.3959325216656267,3.1781424081484344,2.3800472028000472,1.202559629764699,0.52461219496791045,-0.69618608480141697,-1.3555334598479412,0.62601508322528243,1.381530789152718,null,-0.90315534113662477],"text":["Periodo: 2018-06-01<br />imacec_fit:           NA<br />colour: Ajuste del modelo","Periodo: 2018-07-01<br />imacec_fit:           NA<br />colour: Ajuste del modelo","Periodo: 2018-08-01<br />imacec_fit:           NA<br />colour: Ajuste del modelo","Periodo: 2018-09-01<br />imacec_fit:           NA<br />colour: Ajuste del modelo","Periodo: 2018-10-01<br />imacec_fit:           NA<br />colour: Ajuste del modelo","Periodo: 2018-11-01<br />imacec_fit:           NA<br />colour: Ajuste del modelo","Periodo: 2018-12-01<br />imacec_fit:           NA<br />colour: Ajuste del modelo","Periodo: 2019-01-01<br />imacec_fit:   1.15310775<br />colour: Ajuste del modelo","Periodo: 2019-02-01<br />imacec_fit:  -0.05296910<br />colour: Ajuste del modelo","Periodo: 2019-03-01<br />imacec_fit:   0.06647087<br />colour: Ajuste del modelo","Periodo: 2019-04-01<br />imacec_fit:   1.56345136<br />colour: Ajuste del modelo","Periodo: 2019-05-01<br />imacec_fit:   1.41363750<br />colour: Ajuste del modelo","Periodo: 2019-06-01<br />imacec_fit:  -0.36215617<br />colour: Ajuste del modelo","Periodo: 2019-07-01<br />imacec_fit:   2.62245995<br />colour: Ajuste del modelo","Periodo: 2019-08-01<br />imacec_fit:   1.21130768<br />colour: Ajuste del modelo","Periodo: 2019-09-01<br />imacec_fit:   3.01093131<br />colour: Ajuste del modelo","Periodo: 2019-10-01<br />imacec_fit:  -0.11219129<br />colour: Ajuste del modelo","Periodo: 2019-11-01<br />imacec_fit:  -3.47633279<br />colour: Ajuste del modelo","Periodo: 2019-12-01<br />imacec_fit:  -0.45088513<br />colour: Ajuste del modelo","Periodo: 2020-01-01<br />imacec_fit:   0.42673508<br />colour: Ajuste del modelo","Periodo: 2020-02-01<br />imacec_fit:   2.84723406<br />colour: Ajuste del modelo","Periodo: 2020-03-01<br />imacec_fit:   0.85454267<br />colour: Ajuste del modelo","Periodo: 2020-04-01<br />imacec_fit: -15.08830157<br />colour: Ajuste del modelo","Periodo: 2020-05-01<br />imacec_fit: -15.97711768<br />colour: Ajuste del modelo","Periodo: 2020-06-01<br />imacec_fit: -10.39466185<br />colour: Ajuste del modelo","Periodo: 2020-07-01<br />imacec_fit:  -9.81905516<br />colour: Ajuste del modelo","Periodo: 2020-08-01<br />imacec_fit:  -7.87522985<br />colour: Ajuste del modelo","Periodo: 2020-09-01<br />imacec_fit:  -4.49685710<br />colour: Ajuste del modelo","Periodo: 2020-10-01<br />imacec_fit:  -2.17747740<br />colour: Ajuste del modelo","Periodo: 2020-11-01<br />imacec_fit:   1.91980709<br />colour: Ajuste del modelo","Periodo: 2020-12-01<br />imacec_fit:   0.84782671<br />colour: Ajuste del modelo","Periodo: 2021-01-01<br />imacec_fit:  -1.02144950<br />colour: Ajuste del modelo","Periodo: 2021-02-01<br />imacec_fit:  -2.48448462<br />colour: Ajuste del modelo","Periodo: 2021-03-01<br />imacec_fit:   3.23881917<br />colour: Ajuste del modelo","Periodo: 2021-04-01<br />imacec_fit:  12.31773554<br />colour: Ajuste del modelo","Periodo: 2021-05-01<br />imacec_fit:  19.76221623<br />colour: Ajuste del modelo","Periodo: 2021-06-01<br />imacec_fit:  19.14235411<br />colour: Ajuste del modelo","Periodo: 2021-07-01<br />imacec_fit:  20.39239817<br />colour: Ajuste del modelo","Periodo: 2021-08-01<br />imacec_fit:  17.40954441<br />colour: Ajuste del modelo","Periodo: 2021-09-01<br />imacec_fit:  15.71688085<br />colour: Ajuste del modelo","Periodo: 2021-10-01<br />imacec_fit:  11.25416842<br />colour: Ajuste del modelo","Periodo: 2021-11-01<br />imacec_fit:  11.88587611<br />colour: Ajuste del modelo","Periodo: 2021-12-01<br />imacec_fit:  13.28312503<br />colour: Ajuste del modelo","Periodo: 2022-01-01<br />imacec_fit:  10.13961233<br />colour: Ajuste del modelo","Periodo: 2022-02-01<br />imacec_fit:   7.50727574<br />colour: Ajuste del modelo","Periodo: 2022-03-01<br />imacec_fit:   6.35110878<br />colour: Ajuste del modelo","Periodo: 2022-04-01<br />imacec_fit:   5.90485630<br />colour: Ajuste del modelo","Periodo: 2022-05-01<br />imacec_fit:   5.19337919<br />colour: Ajuste del modelo","Periodo: 2022-06-01<br />imacec_fit:   1.74037652<br />colour: Ajuste del modelo","Periodo: 2022-07-01<br />imacec_fit:   0.84728364<br />colour: Ajuste del modelo","Periodo: 2022-08-01<br />imacec_fit:  -1.25856780<br />colour: Ajuste del modelo","Periodo: 2022-09-01<br />imacec_fit:  -0.48818739<br />colour: Ajuste del modelo","Periodo: 2022-10-01<br />imacec_fit:  -1.21048601<br />colour: Ajuste del modelo","Periodo: 2022-11-01<br />imacec_fit:  -1.78942969<br />colour: Ajuste del modelo","Periodo: 2022-12-01<br />imacec_fit:  -1.44378708<br />colour: Ajuste del modelo","Periodo: 2023-01-01<br />imacec_fit:  -0.18604574<br />colour: Ajuste del modelo","Periodo: 2023-02-01<br />imacec_fit:   0.86033738<br />colour: Ajuste del modelo","Periodo: 2023-03-01<br />imacec_fit:   0.32516227<br />colour: Ajuste del modelo","Periodo: 2023-04-01<br />imacec_fit:  -0.40918509<br />colour: Ajuste del modelo","Periodo: 2023-05-01<br />imacec_fit:  -0.06782432<br />colour: Ajuste del modelo","Periodo: 2023-06-01<br />imacec_fit:  -0.65161882<br />colour: Ajuste del modelo","Periodo: 2023-07-01<br />imacec_fit:   0.58905405<br />colour: Ajuste del modelo","Periodo: 2023-08-01<br />imacec_fit:   1.76689030<br />colour: Ajuste del modelo","Periodo: 2023-09-01<br />imacec_fit:  -0.39683085<br />colour: Ajuste del modelo","Periodo: 2023-10-01<br />imacec_fit:   1.91273989<br />colour: Ajuste del modelo","Periodo: 2023-11-01<br />imacec_fit:   2.20905963<br />colour: Ajuste del modelo","Periodo: 2023-12-01<br />imacec_fit:   0.95886376<br />colour: Ajuste del modelo","Periodo: 2024-01-01<br />imacec_fit:   0.30534916<br />colour: Ajuste del modelo","Periodo: 2024-02-01<br />imacec_fit:   5.71035354<br />colour: Ajuste del modelo","Periodo: 2024-03-01<br />imacec_fit:   0.44688372<br />colour: Ajuste del modelo","Periodo: 2024-04-01<br />imacec_fit:   4.45246969<br />colour: Ajuste del modelo","Periodo: 2024-05-01<br />imacec_fit:   1.91169860<br />colour: Ajuste del modelo","Periodo: 2024-06-01<br />imacec_fit:  -0.69353785<br />colour: Ajuste del modelo","Periodo: 2024-07-01<br />imacec_fit:   0.26456362<br />colour: Ajuste del modelo","Periodo: 2024-08-01<br />imacec_fit:   2.05329495<br />colour: Ajuste del modelo","Periodo: 2024-09-01<br />imacec_fit:  -0.34106467<br />colour: Ajuste del modelo","Periodo: 2024-10-01<br />imacec_fit:   0.78257182<br />colour: Ajuste del modelo","Periodo: 2024-11-01<br />imacec_fit:   0.62185967<br />colour: Ajuste del modelo","Periodo: 2024-12-01<br />imacec_fit:   3.86160518<br />colour: Ajuste del modelo","Periodo: 2025-01-01<br />imacec_fit:   4.05705210<br />colour: Ajuste del modelo","Periodo: 2025-02-01<br />imacec_fit:  -1.06770698<br />colour: Ajuste del modelo","Periodo: 2025-03-01<br />imacec_fit:   1.81227863<br />colour: Ajuste del modelo","Periodo: 2025-04-01<br />imacec_fit:   3.85910268<br />colour: Ajuste del modelo","Periodo: 2025-05-01<br />imacec_fit:   2.44779807<br />colour: Ajuste del modelo","Periodo: 2025-06-01<br />imacec_fit:   4.00680373<br />colour: Ajuste del modelo","Periodo: 2025-07-01<br />imacec_fit:   2.14154032<br />colour: Ajuste del modelo","Periodo: 2025-08-01<br />imacec_fit:   0.39593252<br />colour: Ajuste del modelo","Periodo: 2025-09-01<br />imacec_fit:   3.17814241<br />colour: Ajuste del modelo","Periodo: 2025-10-01<br />imacec_fit:   2.38004720<br />colour: Ajuste del modelo","Periodo: 2025-11-01<br />imacec_fit:   1.20255963<br />colour: Ajuste del modelo","Periodo: 2025-12-01<br />imacec_fit:   0.52461219<br />colour: Ajuste del modelo","Periodo: 2026-01-01<br />imacec_fit:  -0.69618608<br />colour: Ajuste del modelo","Periodo: 2026-02-01<br />imacec_fit:  -1.35553346<br />colour: Ajuste del modelo","Periodo: 2026-03-01<br />imacec_fit:   0.62601508<br />colour: Ajuste del modelo","Periodo: 2026-04-01<br />imacec_fit:   1.38153079<br />colour: Ajuste del modelo","Periodo: 2026-05-01<br />imacec_fit:           NA<br />colour: Ajuste del modelo","Periodo: 2026-05-01<br />imacec_fit:  -0.90315534<br />colour: Ajuste del modelo"],"type":"scatter","mode":"lines","line":{"width":2.8346456692913389,"color":"rgba(176,58,46,1)","dash":"dash"},"hoveron":"points","name":"Ajuste del modelo","legendgroup":"Ajuste del modelo","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[20574],"y":[-0.90315534113662477],"text":"Periodo: 2026-05-01<br />imacec_fit: -0.9031553<br />colour: Estimación propia","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(127,29,29,1)","opacity":1,"size":10.204724409448822,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(127,29,29,1)"}},"hoveron":"points","name":"Estimación propia","legendgroup":"Estimación propia","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[20574],"y":[0.20000000000000001],"text":"Periodo: 2026-05-01<br />eee_imacec: 0.2<br />colour: EEE","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(122,81,149,1)","opacity":1,"size":10.960629921259843,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(122,81,149,1)"}},"hoveron":"points","name":"EEE","legendgroup":"EEE","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":90,"r":40,"b":105,"l":70},"font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243},"title":{"text":"<b> IMACEC total: observado, ajuste y proyección <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[17538.450000000001,20718.549999999999],"tickmode":"array","ticktext":["2020","2022","2024","2026"],"tickvals":[18262,18993,19723,20454],"categoryorder":"array","categoryarray":["2020","2022","2024","2026"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-17.795593471179433,22.210873958432749],"tickmode":"array","ticktext":["-10","0","10","20"],"tickvals":[-10,0,9.9999999999999964,19.999999999999996],"categoryorder":"array","categoryarray":["-10","0","10","20"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"x","title":{"text":"Var. 12m (%)","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":12.7521793275218},"orientation":"h","x":0.5,"y":-0.17999999999999999,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":null,"family":null,"size":0}}},"hovermode":"closest","barmode":"relative","autosize":true,"height":620},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false,"displayModeBar":false,"responsive":true},"source":"A","attrs":{"4e0c8f6bba":{"yintercept":{},"type":"scatter"},"4e0c4de27abc":{"x":{},"y":{},"colour":{}},"4e0c622b4a1a":{"x":{},"y":{},"colour":{}},"4e0c3f0c3aa":{"x":{},"y":{},"colour":{}},"4e0ce635baa":{"x":{},"y":{},"colour":{}}},"cur_data":"4e0c8f6bba","visdat":{"4e0c8f6bba":["function (y) ","x"],"4e0c4de27abc":["function (y) ","x"],"4e0c622b4a1a":["function (y) ","x"],"4e0c3f0c3aa":["function (y) ","x"],"4e0ce635baa":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-</div>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-3ce75a86ebec07079477" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-3ce75a86ebec07079477">{"x":{"data":[{"x":[17763.150000000001,20707.849999999999],"y":[0,0],"text":"","type":"scatter","mode":"lines","line":{"width":0.94488188976377963,"color":"rgba(179,179,179,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231,18262,18293,18322,18353,18383,18414,18444,18475,18506,18536,18567,18597,18628,18659,18687,18718,18748,18779,18809,18840,18871,18901,18932,18962,18993,19024,19052,19083,19113,19144,19174,19205,19236,19266,19297,19327,19358,19389,19417,19448,19478,19509,19539,19570,19601,19631,19662,19692,19723,19754,19783,19814,19844,19875,19905,19936,19967,19997,20028,20058,20089,20120,20148,20179,20209,20240,20270,20301,20332,20362,20393,20423,20454,20485,20513,20544,20574],"y":[1.9659919484973587,0.40244101830062551,1.3470424730241071,1.7820940125048199,1.8589031828119664,0.88031380916664403,2.7653306128001987,3.1909427561596093,2.7842901635932278,-4.5344365030988376,-4.9886690546651291,0.92588497011725224,0.93005210109131642,2.7210597729153907,-4.3497248551857322,-15.088301570672291,-15.977117678924269,-13.962357751796306,-11.717591602160716,-11.011337841146728,-4.9506576054560885,-1.3585290872647038,1.012732990849563,0.56899222846849007,-3.4287687132994904,-2.1666510508181247,6.6327425250128025,15.285035960989358,19.551829417289813,20.382431879961494,17.424903932091951,17.966595780594965,13.463442930231295,13.261557495479682,13.332037299205069,8.7511618722738262,7.2095966976083892,5.0054386870161949,5.6696550278821478,5.9048563004459709,5.5885918184796379,2.7970632563766307,-0.43808421788794621,0.63490712253850834,0.17856372039597446,-1.8790917978623425,-2.866486420366976,-1.2635246838221923,1.3591262378233271,0.16342433643201648,-1.4905514158231823,-0.49711935165788201,-0.59935949482103901,0.027461043060261758,2.9153413219749291,0.41833633692369698,0.90236184963745636,2.3886867770460896,2.281348596189936,0.54210593169743415,3.7449616098753191,5.8365278260969156,1.184659965776258,3.8954766293294303,0.32789354512452462,-0.71295404126577866,4.4914944309488281,2.2341186703822347,0.50889256205040034,2.8939198553175061,2.431240856349004,6.7900414272429543,3.3277451570978167,0.31195371691388196,4.9278836062160769,3.8776905480138346,3.9330468127183549,3.3756014789840361,1.5968501075468655,0.2696093831863422,3.2961209339912534,2.0572659006846905,1.3711953861016202,1.2666989233431902,-0.93052994395590438,-0.30968774441596514,-0.20042612820599937,-1.1780728266267859,null],"text":["Periodo: 2019-01-01<br />imacec:   1.96599195<br />colour: Observado","Periodo: 2019-02-01<br />imacec:   0.40244102<br />colour: Observado","Periodo: 2019-03-01<br />imacec:   1.34704247<br />colour: Observado","Periodo: 2019-04-01<br />imacec:   1.78209401<br />colour: Observado","Periodo: 2019-05-01<br />imacec:   1.85890318<br />colour: Observado","Periodo: 2019-06-01<br />imacec:   0.88031381<br />colour: Observado","Periodo: 2019-07-01<br />imacec:   2.76533061<br />colour: Observado","Periodo: 2019-08-01<br />imacec:   3.19094276<br />colour: Observado","Periodo: 2019-09-01<br />imacec:   2.78429016<br />colour: Observado","Periodo: 2019-10-01<br />imacec:  -4.53443650<br />colour: Observado","Periodo: 2019-11-01<br />imacec:  -4.98866905<br />colour: Observado","Periodo: 2019-12-01<br />imacec:   0.92588497<br />colour: Observado","Periodo: 2020-01-01<br />imacec:   0.93005210<br />colour: Observado","Periodo: 2020-02-01<br />imacec:   2.72105977<br />colour: Observado","Periodo: 2020-03-01<br />imacec:  -4.34972486<br />colour: Observado","Periodo: 2020-04-01<br />imacec: -15.08830157<br />colour: Observado","Periodo: 2020-05-01<br />imacec: -15.97711768<br />colour: Observado","Periodo: 2020-06-01<br />imacec: -13.96235775<br />colour: Observado","Periodo: 2020-07-01<br />imacec: -11.71759160<br />colour: Observado","Periodo: 2020-08-01<br />imacec: -11.01133784<br />colour: Observado","Periodo: 2020-09-01<br />imacec:  -4.95065761<br />colour: Observado","Periodo: 2020-10-01<br />imacec:  -1.35852909<br />colour: Observado","Periodo: 2020-11-01<br />imacec:   1.01273299<br />colour: Observado","Periodo: 2020-12-01<br />imacec:   0.56899223<br />colour: Observado","Periodo: 2021-01-01<br />imacec:  -3.42876871<br />colour: Observado","Periodo: 2021-02-01<br />imacec:  -2.16665105<br />colour: Observado","Periodo: 2021-03-01<br />imacec:   6.63274253<br />colour: Observado","Periodo: 2021-04-01<br />imacec:  15.28503596<br />colour: Observado","Periodo: 2021-05-01<br />imacec:  19.55182942<br />colour: Observado","Periodo: 2021-06-01<br />imacec:  20.38243188<br />colour: Observado","Periodo: 2021-07-01<br />imacec:  17.42490393<br />colour: Observado","Periodo: 2021-08-01<br />imacec:  17.96659578<br />colour: Observado","Periodo: 2021-09-01<br />imacec:  13.46344293<br />colour: Observado","Periodo: 2021-10-01<br />imacec:  13.26155750<br />colour: Observado","Periodo: 2021-11-01<br />imacec:  13.33203730<br />colour: Observado","Periodo: 2021-12-01<br />imacec:   8.75116187<br />colour: Observado","Periodo: 2022-01-01<br />imacec:   7.20959670<br />colour: Observado","Periodo: 2022-02-01<br />imacec:   5.00543869<br />colour: Observado","Periodo: 2022-03-01<br />imacec:   5.66965503<br />colour: Observado","Periodo: 2022-04-01<br />imacec:   5.90485630<br />colour: Observado","Periodo: 2022-05-01<br />imacec:   5.58859182<br />colour: Observado","Periodo: 2022-06-01<br />imacec:   2.79706326<br />colour: Observado","Periodo: 2022-07-01<br />imacec:  -0.43808422<br />colour: Observado","Periodo: 2022-08-01<br />imacec:   0.63490712<br />colour: Observado","Periodo: 2022-09-01<br />imacec:   0.17856372<br />colour: Observado","Periodo: 2022-10-01<br />imacec:  -1.87909180<br />colour: Observado","Periodo: 2022-11-01<br />imacec:  -2.86648642<br />colour: Observado","Periodo: 2022-12-01<br />imacec:  -1.26352468<br />colour: Observado","Periodo: 2023-01-01<br />imacec:   1.35912624<br />colour: Observado","Periodo: 2023-02-01<br />imacec:   0.16342434<br />colour: Observado","Periodo: 2023-03-01<br />imacec:  -1.49055142<br />colour: Observado","Periodo: 2023-04-01<br />imacec:  -0.49711935<br />colour: Observado","Periodo: 2023-05-01<br />imacec:  -0.59935949<br />colour: Observado","Periodo: 2023-06-01<br />imacec:   0.02746104<br />colour: Observado","Periodo: 2023-07-01<br />imacec:   2.91534132<br />colour: Observado","Periodo: 2023-08-01<br />imacec:   0.41833634<br />colour: Observado","Periodo: 2023-09-01<br />imacec:   0.90236185<br />colour: Observado","Periodo: 2023-10-01<br />imacec:   2.38868678<br />colour: Observado","Periodo: 2023-11-01<br />imacec:   2.28134860<br />colour: Observado","Periodo: 2023-12-01<br />imacec:   0.54210593<br />colour: Observado","Periodo: 2024-01-01<br />imacec:   3.74496161<br />colour: Observado","Periodo: 2024-02-01<br />imacec:   5.83652783<br />colour: Observado","Periodo: 2024-03-01<br />imacec:   1.18465997<br />colour: Observado","Periodo: 2024-04-01<br />imacec:   3.89547663<br />colour: Observado","Periodo: 2024-05-01<br />imacec:   0.32789355<br />colour: Observado","Periodo: 2024-06-01<br />imacec:  -0.71295404<br />colour: Observado","Periodo: 2024-07-01<br />imacec:   4.49149443<br />colour: Observado","Periodo: 2024-08-01<br />imacec:   2.23411867<br />colour: Observado","Periodo: 2024-09-01<br />imacec:   0.50889256<br />colour: Observado","Periodo: 2024-10-01<br />imacec:   2.89391986<br />colour: Observado","Periodo: 2024-11-01<br />imacec:   2.43124086<br />colour: Observado","Periodo: 2024-12-01<br />imacec:   6.79004143<br />colour: Observado","Periodo: 2025-01-01<br />imacec:   3.32774516<br />colour: Observado","Periodo: 2025-02-01<br />imacec:   0.31195372<br />colour: Observado","Periodo: 2025-03-01<br />imacec:   4.92788361<br />colour: Observado","Periodo: 2025-04-01<br />imacec:   3.87769055<br />colour: Observado","Periodo: 2025-05-01<br />imacec:   3.93304681<br />colour: Observado","Periodo: 2025-06-01<br />imacec:   3.37560148<br />colour: Observado","Periodo: 2025-07-01<br />imacec:   1.59685011<br />colour: Observado","Periodo: 2025-08-01<br />imacec:   0.26960938<br />colour: Observado","Periodo: 2025-09-01<br />imacec:   3.29612093<br />colour: Observado","Periodo: 2025-10-01<br />imacec:   2.05726590<br />colour: Observado","Periodo: 2025-11-01<br />imacec:   1.37119539<br />colour: Observado","Periodo: 2025-12-01<br />imacec:   1.26669892<br />colour: Observado","Periodo: 2026-01-01<br />imacec:  -0.93052994<br />colour: Observado","Periodo: 2026-02-01<br />imacec:  -0.30968774<br />colour: Observado","Periodo: 2026-03-01<br />imacec:  -0.20042613<br />colour: Observado","Periodo: 2026-04-01<br />imacec:  -1.17807283<br />colour: Observado","Periodo: 2026-05-01<br />imacec:           NA<br />colour: Observado"],"type":"scatter","mode":"lines","line":{"width":3.2125984251968505,"color":"rgba(31,78,121,1)","dash":"solid"},"hoveron":"points","name":"Observado","legendgroup":"Observado","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231,18262,18293,18322,18353,18383,18414,18444,18475,18506,18536,18567,18597,18628,18659,18687,18718,18748,18779,18809,18840,18871,18901,18932,18962,18993,19024,19052,19083,19113,19144,19174,19205,19236,19266,19297,19327,19358,19389,19417,19448,19478,19509,19539,19570,19601,19631,19662,19692,19723,19754,19783,19814,19844,19875,19905,19936,19967,19997,20028,20058,20089,20120,20148,20179,20209,20240,20270,20301,20332,20362,20393,20423,20454,20485,20513,20544,20574],"y":[2.6232115798329403,-0.28620273772403948,0.59836797057839297,3.3076006288678084,1.5158869404069819,-0.16346417220558429,3.6250265534931589,1.9552891861122179,2.9150327472604225,-3.522262927260329,-4.2116950091227157,-0.16853258127618076,-0.15553515019203701,3.3394014160563756,-1.6584762654874381,-15.088301570672323,-15.977117678924328,-13.408620172751432,-12.957024137824517,-9.6397834293347913,-2.8173095870012084,1.3282764047108342,1.4784611597651089,-1.4868619271885697,-2.0562490020793405,-2.5047935295655179,4.7189892448591726,12.087901382827672,18.145112592324789,20.519943462829552,20.035314611803685,17.581050639806669,13.3428322566732,10.820691341270162,12.077572776640258,12.169349070761358,7.4765625641258566,4.9062602069125205,6.3474011690556287,5.9048563004459247,5.9102605215228818,2.1808158449481372,0.27139306097889632,-1.1399138494550485,-1.1947834984615362,-2.0386153092847512,-2.2148305465038707,-0.075922746864661828,0.67103984170424269,0.74294722133311097,-0.024226649413507821,0.78179831282286294,-0.69791870346223983,-0.72347340459953635,0.52245409870129045,0.017126725250385472,0.0057265572025606499,1.7905343063548,1.6681639031870272,-0.9722262358709618,1.463890190462962,5.2181861829556624,-0.16214139436580532,3.6832796043717249,1.7104022920251325,-0.71295404126583617,1.8075350857048296,4.0123981983637336,0.50190089496024015,1.7297305028358207,1.7578277664068107,6.4763280943328008,4.2267550567982539,1.4969726506807604,4.3433957356557604,5.0099713544199087,4.0771616387853085,5.0953121575311915,3.7335453124561178,0.91700473789480719,3.4296151838093145,2.7210183216750745,2.0178996032899388,1.6392269954267684,-0.071499985915863817,-0.94826484820873702,-0.44202861218634959,-1.705446310757603,-3.1638532716240393],"text":["Periodo: 2019-01-01<br />imacec_fit:   2.623211580<br />colour: Ajuste / nowcast","Periodo: 2019-02-01<br />imacec_fit:  -0.286202738<br />colour: Ajuste / nowcast","Periodo: 2019-03-01<br />imacec_fit:   0.598367971<br />colour: Ajuste / nowcast","Periodo: 2019-04-01<br />imacec_fit:   3.307600629<br />colour: Ajuste / nowcast","Periodo: 2019-05-01<br />imacec_fit:   1.515886940<br />colour: Ajuste / nowcast","Periodo: 2019-06-01<br />imacec_fit:  -0.163464172<br />colour: Ajuste / nowcast","Periodo: 2019-07-01<br />imacec_fit:   3.625026553<br />colour: Ajuste / nowcast","Periodo: 2019-08-01<br />imacec_fit:   1.955289186<br />colour: Ajuste / nowcast","Periodo: 2019-09-01<br />imacec_fit:   2.915032747<br />colour: Ajuste / nowcast","Periodo: 2019-10-01<br />imacec_fit:  -3.522262927<br />colour: Ajuste / nowcast","Periodo: 2019-11-01<br />imacec_fit:  -4.211695009<br />colour: Ajuste / nowcast","Periodo: 2019-12-01<br />imacec_fit:  -0.168532581<br />colour: Ajuste / nowcast","Periodo: 2020-01-01<br />imacec_fit:  -0.155535150<br />colour: Ajuste / nowcast","Periodo: 2020-02-01<br />imacec_fit:   3.339401416<br />colour: Ajuste / nowcast","Periodo: 2020-03-01<br />imacec_fit:  -1.658476265<br />colour: Ajuste / nowcast","Periodo: 2020-04-01<br />imacec_fit: -15.088301571<br />colour: Ajuste / nowcast","Periodo: 2020-05-01<br />imacec_fit: -15.977117679<br />colour: Ajuste / nowcast","Periodo: 2020-06-01<br />imacec_fit: -13.408620173<br />colour: Ajuste / nowcast","Periodo: 2020-07-01<br />imacec_fit: -12.957024138<br />colour: Ajuste / nowcast","Periodo: 2020-08-01<br />imacec_fit:  -9.639783429<br />colour: Ajuste / nowcast","Periodo: 2020-09-01<br />imacec_fit:  -2.817309587<br />colour: Ajuste / nowcast","Periodo: 2020-10-01<br />imacec_fit:   1.328276405<br />colour: Ajuste / nowcast","Periodo: 2020-11-01<br />imacec_fit:   1.478461160<br />colour: Ajuste / nowcast","Periodo: 2020-12-01<br />imacec_fit:  -1.486861927<br />colour: Ajuste / nowcast","Periodo: 2021-01-01<br />imacec_fit:  -2.056249002<br />colour: Ajuste / nowcast","Periodo: 2021-02-01<br />imacec_fit:  -2.504793530<br />colour: Ajuste / nowcast","Periodo: 2021-03-01<br />imacec_fit:   4.718989245<br />colour: Ajuste / nowcast","Periodo: 2021-04-01<br />imacec_fit:  12.087901383<br />colour: Ajuste / nowcast","Periodo: 2021-05-01<br />imacec_fit:  18.145112592<br />colour: Ajuste / nowcast","Periodo: 2021-06-01<br />imacec_fit:  20.519943463<br />colour: Ajuste / nowcast","Periodo: 2021-07-01<br />imacec_fit:  20.035314612<br />colour: Ajuste / nowcast","Periodo: 2021-08-01<br />imacec_fit:  17.581050640<br />colour: Ajuste / nowcast","Periodo: 2021-09-01<br />imacec_fit:  13.342832257<br />colour: Ajuste / nowcast","Periodo: 2021-10-01<br />imacec_fit:  10.820691341<br />colour: Ajuste / nowcast","Periodo: 2021-11-01<br />imacec_fit:  12.077572777<br />colour: Ajuste / nowcast","Periodo: 2021-12-01<br />imacec_fit:  12.169349071<br />colour: Ajuste / nowcast","Periodo: 2022-01-01<br />imacec_fit:   7.476562564<br />colour: Ajuste / nowcast","Periodo: 2022-02-01<br />imacec_fit:   4.906260207<br />colour: Ajuste / nowcast","Periodo: 2022-03-01<br />imacec_fit:   6.347401169<br />colour: Ajuste / nowcast","Periodo: 2022-04-01<br />imacec_fit:   5.904856300<br />colour: Ajuste / nowcast","Periodo: 2022-05-01<br />imacec_fit:   5.910260522<br />colour: Ajuste / nowcast","Periodo: 2022-06-01<br />imacec_fit:   2.180815845<br />colour: Ajuste / nowcast","Periodo: 2022-07-01<br />imacec_fit:   0.271393061<br />colour: Ajuste / nowcast","Periodo: 2022-08-01<br />imacec_fit:  -1.139913849<br />colour: Ajuste / nowcast","Periodo: 2022-09-01<br />imacec_fit:  -1.194783498<br />colour: Ajuste / nowcast","Periodo: 2022-10-01<br />imacec_fit:  -2.038615309<br />colour: Ajuste / nowcast","Periodo: 2022-11-01<br />imacec_fit:  -2.214830547<br />colour: Ajuste / nowcast","Periodo: 2022-12-01<br />imacec_fit:  -0.075922747<br />colour: Ajuste / nowcast","Periodo: 2023-01-01<br />imacec_fit:   0.671039842<br />colour: Ajuste / nowcast","Periodo: 2023-02-01<br />imacec_fit:   0.742947221<br />colour: Ajuste / nowcast","Periodo: 2023-03-01<br />imacec_fit:  -0.024226649<br />colour: Ajuste / nowcast","Periodo: 2023-04-01<br />imacec_fit:   0.781798313<br />colour: Ajuste / nowcast","Periodo: 2023-05-01<br />imacec_fit:  -0.697918703<br />colour: Ajuste / nowcast","Periodo: 2023-06-01<br />imacec_fit:  -0.723473405<br />colour: Ajuste / nowcast","Periodo: 2023-07-01<br />imacec_fit:   0.522454099<br />colour: Ajuste / nowcast","Periodo: 2023-08-01<br />imacec_fit:   0.017126725<br />colour: Ajuste / nowcast","Periodo: 2023-09-01<br />imacec_fit:   0.005726557<br />colour: Ajuste / nowcast","Periodo: 2023-10-01<br />imacec_fit:   1.790534306<br />colour: Ajuste / nowcast","Periodo: 2023-11-01<br />imacec_fit:   1.668163903<br />colour: Ajuste / nowcast","Periodo: 2023-12-01<br />imacec_fit:  -0.972226236<br />colour: Ajuste / nowcast","Periodo: 2024-01-01<br />imacec_fit:   1.463890190<br />colour: Ajuste / nowcast","Periodo: 2024-02-01<br />imacec_fit:   5.218186183<br />colour: Ajuste / nowcast","Periodo: 2024-03-01<br />imacec_fit:  -0.162141394<br />colour: Ajuste / nowcast","Periodo: 2024-04-01<br />imacec_fit:   3.683279604<br />colour: Ajuste / nowcast","Periodo: 2024-05-01<br />imacec_fit:   1.710402292<br />colour: Ajuste / nowcast","Periodo: 2024-06-01<br />imacec_fit:  -0.712954041<br />colour: Ajuste / nowcast","Periodo: 2024-07-01<br />imacec_fit:   1.807535086<br />colour: Ajuste / nowcast","Periodo: 2024-08-01<br />imacec_fit:   4.012398198<br />colour: Ajuste / nowcast","Periodo: 2024-09-01<br />imacec_fit:   0.501900895<br />colour: Ajuste / nowcast","Periodo: 2024-10-01<br />imacec_fit:   1.729730503<br />colour: Ajuste / nowcast","Periodo: 2024-11-01<br />imacec_fit:   1.757827766<br />colour: Ajuste / nowcast","Periodo: 2024-12-01<br />imacec_fit:   6.476328094<br />colour: Ajuste / nowcast","Periodo: 2025-01-01<br />imacec_fit:   4.226755057<br />colour: Ajuste / nowcast","Periodo: 2025-02-01<br />imacec_fit:   1.496972651<br />colour: Ajuste / nowcast","Periodo: 2025-03-01<br />imacec_fit:   4.343395736<br />colour: Ajuste / nowcast","Periodo: 2025-04-01<br />imacec_fit:   5.009971354<br />colour: Ajuste / nowcast","Periodo: 2025-05-01<br />imacec_fit:   4.077161639<br />colour: Ajuste / nowcast","Periodo: 2025-06-01<br />imacec_fit:   5.095312158<br />colour: Ajuste / nowcast","Periodo: 2025-07-01<br />imacec_fit:   3.733545312<br />colour: Ajuste / nowcast","Periodo: 2025-08-01<br />imacec_fit:   0.917004738<br />colour: Ajuste / nowcast","Periodo: 2025-09-01<br />imacec_fit:   3.429615184<br />colour: Ajuste / nowcast","Periodo: 2025-10-01<br />imacec_fit:   2.721018322<br />colour: Ajuste / nowcast","Periodo: 2025-11-01<br />imacec_fit:   2.017899603<br />colour: Ajuste / nowcast","Periodo: 2025-12-01<br />imacec_fit:   1.639226995<br />colour: Ajuste / nowcast","Periodo: 2026-01-01<br />imacec_fit:  -0.071499986<br />colour: Ajuste / nowcast","Periodo: 2026-02-01<br />imacec_fit:  -0.948264848<br />colour: Ajuste / nowcast","Periodo: 2026-03-01<br />imacec_fit:  -0.442028612<br />colour: Ajuste / nowcast","Periodo: 2026-04-01<br />imacec_fit:  -1.705446311<br />colour: Ajuste / nowcast","Periodo: 2026-05-01<br />imacec_fit:  -3.163853272<br />colour: Ajuste / nowcast"],"type":"scatter","mode":"lines","line":{"width":3.2125984251968505,"color":"rgba(176,58,46,1)","dash":"dash"},"hoveron":"points","name":"Ajuste / nowcast","legendgroup":"Ajuste / nowcast","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[20574],"y":[-3.1638532716240393],"text":"Periodo: 2026-05-01<br />imacec_fit: -3.163853<br />colour: Nowcast","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(127,29,29,1)","opacity":1,"size":10.58267716535433,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(127,29,29,1)"}},"hoveron":"points","name":"Nowcast","legendgroup":"Nowcast","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":90,"r":30,"b":115,"l":70},"font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243},"title":{"text":"<b> IMACEC total: observado versus ajuste/nowcast <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":false,"range":[17763.150000000001,20707.849999999999],"tickmode":"array","ticktext":["2020","2022","2024","2026"],"tickvals":[18262,18993,19723,20454],"categoryorder":"array","categoryarray":["2020","2022","2024","2026"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"y","title":"","hoverformat":".2f","rangeslider":{"visible":true,"thickness":0.059999999999999998}},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[-17.801970736012024,22.344796519917246],"tickmode":"array","ticktext":["-15","-10","-5","0","5","10","15","20"],"tickvals":[-15,-10,-4.9999999999999982,0,5,10,15,20],"categoryorder":"array","categoryarray":["-15","-10","-5","0","5","10","15","20"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":true,"anchor":"x","title":"Var. 12m (%)","hoverformat":".2f","dtick":5,"tick0":0,"zerolinecolor":"rgba(80,80,80,0.45)"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":12.7521793275218},"orientation":"h","x":0.5,"y":-0.27000000000000002,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":null,"family":null,"size":0}}},"hovermode":"closest","barmode":"relative","height":575,"dragmode":"zoom"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false,"displayModeBar":true,"scrollZoom":true,"responsive":true,"displaylogo":false},"source":"A","attrs":{"791c59f152cb":{"yintercept":{},"type":"scatter"},"791c13de3bae":{"x":{},"y":{},"colour":{}},"791c79577e82":{"x":{},"y":{},"colour":{}},"791c5c3f443f":{"x":{},"y":{},"colour":{}}},"cur_data":"791c59f152cb","visdat":{"791c59f152cb":["function (y) ","x"],"791c13de3bae":["function (y) ","x"],"791c79577e82":["function (y) ","x"],"791c5c3f443f":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":{"render":[{"code":"function(el, x) {\n  var gd = document.getElementById(el.id);\n  function toTime(v) { return new Date(v).getTime(); }\n  function relayoutY(eventdata) {\n    if (eventdata && eventdata['xaxis.autorange']) {\n      Plotly.relayout(gd, {'yaxis.autorange': true});\n      return;\n    }\n    var xr = null;\n    if (eventdata && eventdata['xaxis.range[0]'] && eventdata['xaxis.range[1]']) {\n      xr = [eventdata['xaxis.range[0]'], eventdata['xaxis.range[1]']];\n    } else if (gd.layout && gd.layout.xaxis && gd.layout.xaxis.range) {\n      xr = gd.layout.xaxis.range;\n    }\n    if (!xr) return;\n    var x0 = toTime(xr[0]);\n    var x1 = toTime(xr[1]);\n    if (!isFinite(x0) || !isFinite(x1)) return;\n    var ymin = Infinity;\n    var ymax = -Infinity;\n    gd.data.forEach(function(tr) {\n      if (tr.visible === false || tr.visible === 'legendonly') return;\n      if (!tr.x || !tr.y) return;\n      for (var i = 0; i < tr.x.length; i++) {\n        var tx = toTime(tr.x[i]);\n        var yy = Number(tr.y[i]);\n        if (isFinite(tx) && isFinite(yy) && tx >= x0 && tx <= x1) {\n          if (yy < ymin) ymin = yy;\n          if (yy > ymax) ymax = yy;\n        }\n      }\n    });\n    if (isFinite(ymin) && isFinite(ymax)) {\n      if (ymin === ymax) { ymin = ymin - 1; ymax = ymax + 1; }\n      var padding = Math.max((ymax - ymin) * 0.080000, 0.5);\n      Plotly.relayout(gd, {\n        'yaxis.range': [ymin - padding, ymax + padding],\n        'yaxis.autorange': false\n      });\n    }\n  }\n  gd.on('plotly_relayout', function(eventdata) {\n    if (eventdata['xaxis.range[0]'] || eventdata['xaxis.range[1]'] || eventdata['xaxis.autorange']) {\n      relayoutY(eventdata);\n    }\n  });\n}","data":null}]}}</script>
 </div>
 </div>
 </section>
-<section id="imacec-no-minero-observado-ajuste-y-proyección" class="level2">
-<h2 class="anchored" data-anchor-id="imacec-no-minero-observado-ajuste-y-proyección">IMACEC no minero: observado, ajuste y proyección</h2>
-<div class="mu-plot-section">
+<section id="imacec-no-minero-observado-versus-ajustenowcast" class="level2">
+<h2 class="anchored" data-anchor-id="imacec-no-minero-observado-versus-ajustenowcast">IMACEC no minero: observado versus ajuste/nowcast</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-29fc0298a647a4ce391c" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-29fc0298a647a4ce391c">{"x":{"data":[{"x":[17538.450000000001,20718.549999999999],"y":[0,0],"text":"yintercept: 0","type":"scatter","mode":"lines","line":{"width":0.94488188976377963,"color":"rgba(179,179,179,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[17683,17713,17744,17775,17805,17836,17866,17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231,18262,18293,18322,18353,18383,18414,18444,18475,18506,18536,18567,18597,18628,18659,18687,18718,18748,18779,18809,18840,18871,18901,18932,18962,18993,19024,19052,19083,19113,19144,19174,19205,19236,19266,19297,19327,19358,19389,19417,19448,19478,19509,19539,19570,19601,19631,19662,19692,19723,19754,19783,19814,19844,19875,19905,19936,19967,19997,20028,20058,20089,20120,20148,20179,20209,20240,20270,20301,20332,20362,20393,20423,20454,20485,20513,20544,20574,20574],"y":[4.3744060142004715,2.8529433761607548,3.0116561651896134,1.6794651330039434,5.3394884014789756,2.7680057626674026,2.8407550028888728,2.7341152560787396,1.6595585372416457,2.0466527540109025,1.854854981195575,2.3594432769310947,1.1635809008067488,3.6992104974363338,3.3679587482669859,3.4840511653275952,-4.7120593038551544,-4.3516750918910834,1.228133832481304,1.0520356730939318,2.3324931483860611,-4.6573727980858575,-16.253706219075205,-17.516632502667619,-15.455186965466339,-13.156314088362864,-12.018710106610374,-5.4415880935850485,-1.7617207822021139,1.0157142703611788,1.3347235420328785,-3.3502737699761531,-1.3854611211324586,7.6850785550572898,16.734270191563038,22.139752636304479,23.407318658335143,20.764639374807949,21.657203493350764,16.849040783117687,15.655913827209456,15.7452903795817,10.477766339800976,10.222225403294649,7.8089782077445991,7.9946921065515486,9.0852823503981384,7.1237301003593378,4.4049751339003906,1.2528044069725075,2.5916980923111455,1.1620904191933956,-2.3643191172496913,-2.5379060428925571,-1.3300179238098009,0.58459193288846745,0.57225158237921292,-0.061536353709357172,-0.62857886673882701,0.76582339487443196,-0.15502564733940183,2.3309883894251149,-0.48439612663464526,-0.95650111464098397,3.1360771459902459,2.1670973267984062,0.79385129137614641,4.1128471186122395,4.6284706228775674,-0.2650223798154494,4.2313298983302605,-0.21752102603829204,-1.2529263884246131,4.6495518840197425,1.5667466901213345,0.84772626150040331,2.9737865888798565,2.4453500701363322,5.8056759175583394,3.7667226031889318,1.2705337021299723,4.8806080019162756,2.692860351031956,2.506905661515213,4.9721635080541615,2.2407050743175061,1.3299898699509427,4.2575461544053228,2.8383270355107459,2.2056769858848746,2.6444701441954432,-0.80527227408873081,-0.20696452402412249,0.95321493411675284,0.41591873238264743,null,null],"text":["Periodo: 2018-06-01<br />imacec_nm:   4.37440601<br />colour: Observado","Periodo: 2018-07-01<br />imacec_nm:   2.85294338<br />colour: Observado","Periodo: 2018-08-01<br />imacec_nm:   3.01165617<br />colour: Observado","Periodo: 2018-09-01<br />imacec_nm:   1.67946513<br />colour: Observado","Periodo: 2018-10-01<br />imacec_nm:   5.33948840<br />colour: Observado","Periodo: 2018-11-01<br />imacec_nm:   2.76800576<br />colour: Observado","Periodo: 2018-12-01<br />imacec_nm:   2.84075500<br />colour: Observado","Periodo: 2019-01-01<br />imacec_nm:   2.73411526<br />colour: Observado","Periodo: 2019-02-01<br />imacec_nm:   1.65955854<br />colour: Observado","Periodo: 2019-03-01<br />imacec_nm:   2.04665275<br />colour: Observado","Periodo: 2019-04-01<br />imacec_nm:   1.85485498<br />colour: Observado","Periodo: 2019-05-01<br />imacec_nm:   2.35944328<br />colour: Observado","Periodo: 2019-06-01<br />imacec_nm:   1.16358090<br />colour: Observado","Periodo: 2019-07-01<br />imacec_nm:   3.69921050<br />colour: Observado","Periodo: 2019-08-01<br />imacec_nm:   3.36795875<br />colour: Observado","Periodo: 2019-09-01<br />imacec_nm:   3.48405117<br />colour: Observado","Periodo: 2019-10-01<br />imacec_nm:  -4.71205930<br />colour: Observado","Periodo: 2019-11-01<br />imacec_nm:  -4.35167509<br />colour: Observado","Periodo: 2019-12-01<br />imacec_nm:   1.22813383<br />colour: Observado","Periodo: 2020-01-01<br />imacec_nm:   1.05203567<br />colour: Observado","Periodo: 2020-02-01<br />imacec_nm:   2.33249315<br />colour: Observado","Periodo: 2020-03-01<br />imacec_nm:  -4.65737280<br />colour: Observado","Periodo: 2020-04-01<br />imacec_nm: -16.25370622<br />colour: Observado","Periodo: 2020-05-01<br />imacec_nm: -17.51663250<br />colour: Observado","Periodo: 2020-06-01<br />imacec_nm: -15.45518697<br />colour: Observado","Periodo: 2020-07-01<br />imacec_nm: -13.15631409<br />colour: Observado","Periodo: 2020-08-01<br />imacec_nm: -12.01871011<br />colour: Observado","Periodo: 2020-09-01<br />imacec_nm:  -5.44158809<br />colour: Observado","Periodo: 2020-10-01<br />imacec_nm:  -1.76172078<br />colour: Observado","Periodo: 2020-11-01<br />imacec_nm:   1.01571427<br />colour: Observado","Periodo: 2020-12-01<br />imacec_nm:   1.33472354<br />colour: Observado","Periodo: 2021-01-01<br />imacec_nm:  -3.35027377<br />colour: Observado","Periodo: 2021-02-01<br />imacec_nm:  -1.38546112<br />colour: Observado","Periodo: 2021-03-01<br />imacec_nm:   7.68507856<br />colour: Observado","Periodo: 2021-04-01<br />imacec_nm:  16.73427019<br />colour: Observado","Periodo: 2021-05-01<br />imacec_nm:  22.13975264<br />colour: Observado","Periodo: 2021-06-01<br />imacec_nm:  23.40731866<br />colour: Observado","Periodo: 2021-07-01<br />imacec_nm:  20.76463937<br />colour: Observado","Periodo: 2021-08-01<br />imacec_nm:  21.65720349<br />colour: Observado","Periodo: 2021-09-01<br />imacec_nm:  16.84904078<br />colour: Observado","Periodo: 2021-10-01<br />imacec_nm:  15.65591383<br />colour: Observado","Periodo: 2021-11-01<br />imacec_nm:  15.74529038<br />colour: Observado","Periodo: 2021-12-01<br />imacec_nm:  10.47776634<br />colour: Observado","Periodo: 2022-01-01<br />imacec_nm:  10.22222540<br />colour: Observado","Periodo: 2022-02-01<br />imacec_nm:   7.80897821<br />colour: Observado","Periodo: 2022-03-01<br />imacec_nm:   7.99469211<br />colour: Observado","Periodo: 2022-04-01<br />imacec_nm:   9.08528235<br />colour: Observado","Periodo: 2022-05-01<br />imacec_nm:   7.12373010<br />colour: Observado","Periodo: 2022-06-01<br />imacec_nm:   4.40497513<br />colour: Observado","Periodo: 2022-07-01<br />imacec_nm:   1.25280441<br />colour: Observado","Periodo: 2022-08-01<br />imacec_nm:   2.59169809<br />colour: Observado","Periodo: 2022-09-01<br />imacec_nm:   1.16209042<br />colour: Observado","Periodo: 2022-10-01<br />imacec_nm:  -2.36431912<br />colour: Observado","Periodo: 2022-11-01<br />imacec_nm:  -2.53790604<br />colour: Observado","Periodo: 2022-12-01<br />imacec_nm:  -1.33001792<br />colour: Observado","Periodo: 2023-01-01<br />imacec_nm:   0.58459193<br />colour: Observado","Periodo: 2023-02-01<br />imacec_nm:   0.57225158<br />colour: Observado","Periodo: 2023-03-01<br />imacec_nm:  -0.06153635<br />colour: Observado","Periodo: 2023-04-01<br />imacec_nm:  -0.62857887<br />colour: Observado","Periodo: 2023-05-01<br />imacec_nm:   0.76582339<br />colour: Observado","Periodo: 2023-06-01<br />imacec_nm:  -0.15502565<br />colour: Observado","Periodo: 2023-07-01<br />imacec_nm:   2.33098839<br />colour: Observado","Periodo: 2023-08-01<br />imacec_nm:  -0.48439613<br />colour: Observado","Periodo: 2023-09-01<br />imacec_nm:  -0.95650111<br />colour: Observado","Periodo: 2023-10-01<br />imacec_nm:   3.13607715<br />colour: Observado","Periodo: 2023-11-01<br />imacec_nm:   2.16709733<br />colour: Observado","Periodo: 2023-12-01<br />imacec_nm:   0.79385129<br />colour: Observado","Periodo: 2024-01-01<br />imacec_nm:   4.11284712<br />colour: Observado","Periodo: 2024-02-01<br />imacec_nm:   4.62847062<br />colour: Observado","Periodo: 2024-03-01<br />imacec_nm:  -0.26502238<br />colour: Observado","Periodo: 2024-04-01<br />imacec_nm:   4.23132990<br />colour: Observado","Periodo: 2024-05-01<br />imacec_nm:  -0.21752103<br />colour: Observado","Periodo: 2024-06-01<br />imacec_nm:  -1.25292639<br />colour: Observado","Periodo: 2024-07-01<br />imacec_nm:   4.64955188<br />colour: Observado","Periodo: 2024-08-01<br />imacec_nm:   1.56674669<br />colour: Observado","Periodo: 2024-09-01<br />imacec_nm:   0.84772626<br />colour: Observado","Periodo: 2024-10-01<br />imacec_nm:   2.97378659<br />colour: Observado","Periodo: 2024-11-01<br />imacec_nm:   2.44535007<br />colour: Observado","Periodo: 2024-12-01<br />imacec_nm:   5.80567592<br />colour: Observado","Periodo: 2025-01-01<br />imacec_nm:   3.76672260<br />colour: Observado","Periodo: 2025-02-01<br />imacec_nm:   1.27053370<br />colour: Observado","Periodo: 2025-03-01<br />imacec_nm:   4.88060800<br />colour: Observado","Periodo: 2025-04-01<br />imacec_nm:   2.69286035<br />colour: Observado","Periodo: 2025-05-01<br />imacec_nm:   2.50690566<br />colour: Observado","Periodo: 2025-06-01<br />imacec_nm:   4.97216351<br />colour: Observado","Periodo: 2025-07-01<br />imacec_nm:   2.24070507<br />colour: Observado","Periodo: 2025-08-01<br />imacec_nm:   1.32998987<br />colour: Observado","Periodo: 2025-09-01<br />imacec_nm:   4.25754615<br />colour: Observado","Periodo: 2025-10-01<br />imacec_nm:   2.83832704<br />colour: Observado","Periodo: 2025-11-01<br />imacec_nm:   2.20567699<br />colour: Observado","Periodo: 2025-12-01<br />imacec_nm:   2.64447014<br />colour: Observado","Periodo: 2026-01-01<br />imacec_nm:  -0.80527227<br />colour: Observado","Periodo: 2026-02-01<br />imacec_nm:  -0.20696452<br />colour: Observado","Periodo: 2026-03-01<br />imacec_nm:   0.95321493<br />colour: Observado","Periodo: 2026-04-01<br />imacec_nm:   0.41591873<br />colour: Observado","Periodo: 2026-05-01<br />imacec_nm:           NA<br />colour: Observado","Periodo: 2026-05-01<br />imacec_nm:           NA<br />colour: Observado"],"type":"scatter","mode":"lines","line":{"width":2.8346456692913389,"color":"rgba(31,78,121,1)","dash":"solid"},"hoveron":"points","name":"Observado","legendgroup":"Observado","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[17683,17713,17744,17775,17805,17836,17866,17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231,18262,18293,18322,18353,18383,18414,18444,18475,18506,18536,18567,18597,18628,18659,18687,18718,18748,18779,18809,18840,18871,18901,18932,18962,18993,19024,19052,19083,19113,19144,19174,19205,19236,19266,19297,19327,19358,19389,19417,19448,19478,19509,19539,19570,19601,19631,19662,19692,19723,19754,19783,19814,19844,19875,19905,19936,19967,19997,20028,20058,20089,20120,20148,20179,20209,20240,20270,20301,20332,20362,20393,20423,20454,20485,20513,20544,20574,20574],"y":[null,null,null,null,null,null,null,1.5957472961997397,1.1867982377519215,1.2627079470624747,1.8259362605546052,1.418202331824435,0.1468346520084749,3.352664687203402,1.5746186507692237,3.362348094006272,-0.24162124220702488,-2.7077490223959475,0.43189859214967757,0.069988068063336906,2.284369750693406,0.95758258868657498,-16.253706219075237,-17.516632502667637,-12.202781000208471,-11.513282664458051,-8.9861581530115835,-4.6118094346287206,-2.062806809978563,1.753643310531882,0.48296416063379727,-0.498123552579817,-1.4451067636693471,3.9474205434108898,13.396234993065097,22.089360555508598,23.055265230308635,24.01976436430737,21.734766591038291,18.319759210277869,13.331048628472288,14.177331251413593,14.916815572295279,12.611740611430376,10.003876777971932,8.5644383300022433,9.0852823503980993,7.8705422165300538,2.7169347807848565,1.78319237973052,-0.28784044412340948,0.034781657415589029,-0.71039335192967834,-1.2677169103072139,-1.1439471370671563,-0.20421988731763976,1.218262595400083,1.039970000813744,-0.056813411595360241,-0.35262081286930913,0.13374003309326832,0.48985096240630599,1.1593458139909596,-1.0246676579715124,1.7405955135603253,2.4711086120401462,0.98315925477296762,1.255063689948797,4.6765940205703052,-1.4553565758297848,4.6709269188730049,1.3661493743605877,-1.2357167812722798,0.62430224089190378,1.7222784357847982,-0.27828309869372603,1.0236593629522863,0.31822711530139303,3.9105345381076018,3.697124442543767,-0.25223186108565654,3.2437674367356046,3.0818136369173024,2.286500378591652,4.4706222851513857,3.0250935685346634,1.093479766307595,4.4002368049123337,2.6855232934134916,1.944703541394732,1.3731781627429518,-0.21032872519693976,-0.99270260203040761,1.0157845491601487,2.3825568899497962,null,0.78563146962542607],"text":["Periodo: 2018-06-01<br />imacec_nm_fit:           NA<br />colour: Ajuste del modelo","Periodo: 2018-07-01<br />imacec_nm_fit:           NA<br />colour: Ajuste del modelo","Periodo: 2018-08-01<br />imacec_nm_fit:           NA<br />colour: Ajuste del modelo","Periodo: 2018-09-01<br />imacec_nm_fit:           NA<br />colour: Ajuste del modelo","Periodo: 2018-10-01<br />imacec_nm_fit:           NA<br />colour: Ajuste del modelo","Periodo: 2018-11-01<br />imacec_nm_fit:           NA<br />colour: Ajuste del modelo","Periodo: 2018-12-01<br />imacec_nm_fit:           NA<br />colour: Ajuste del modelo","Periodo: 2019-01-01<br />imacec_nm_fit:   1.59574730<br />colour: Ajuste del modelo","Periodo: 2019-02-01<br />imacec_nm_fit:   1.18679824<br />colour: Ajuste del modelo","Periodo: 2019-03-01<br />imacec_nm_fit:   1.26270795<br />colour: Ajuste del modelo","Periodo: 2019-04-01<br />imacec_nm_fit:   1.82593626<br />colour: Ajuste del modelo","Periodo: 2019-05-01<br />imacec_nm_fit:   1.41820233<br />colour: Ajuste del modelo","Periodo: 2019-06-01<br />imacec_nm_fit:   0.14683465<br />colour: Ajuste del modelo","Periodo: 2019-07-01<br />imacec_nm_fit:   3.35266469<br />colour: Ajuste del modelo","Periodo: 2019-08-01<br />imacec_nm_fit:   1.57461865<br />colour: Ajuste del modelo","Periodo: 2019-09-01<br />imacec_nm_fit:   3.36234809<br />colour: Ajuste del modelo","Periodo: 2019-10-01<br />imacec_nm_fit:  -0.24162124<br />colour: Ajuste del modelo","Periodo: 2019-11-01<br />imacec_nm_fit:  -2.70774902<br />colour: Ajuste del modelo","Periodo: 2019-12-01<br />imacec_nm_fit:   0.43189859<br />colour: Ajuste del modelo","Periodo: 2020-01-01<br />imacec_nm_fit:   0.06998807<br />colour: Ajuste del modelo","Periodo: 2020-02-01<br />imacec_nm_fit:   2.28436975<br />colour: Ajuste del modelo","Periodo: 2020-03-01<br />imacec_nm_fit:   0.95758259<br />colour: Ajuste del modelo","Periodo: 2020-04-01<br />imacec_nm_fit: -16.25370622<br />colour: Ajuste del modelo","Periodo: 2020-05-01<br />imacec_nm_fit: -17.51663250<br />colour: Ajuste del modelo","Periodo: 2020-06-01<br />imacec_nm_fit: -12.20278100<br />colour: Ajuste del modelo","Periodo: 2020-07-01<br />imacec_nm_fit: -11.51328266<br />colour: Ajuste del modelo","Periodo: 2020-08-01<br />imacec_nm_fit:  -8.98615815<br />colour: Ajuste del modelo","Periodo: 2020-09-01<br />imacec_nm_fit:  -4.61180943<br />colour: Ajuste del modelo","Periodo: 2020-10-01<br />imacec_nm_fit:  -2.06280681<br />colour: Ajuste del modelo","Periodo: 2020-11-01<br />imacec_nm_fit:   1.75364331<br />colour: Ajuste del modelo","Periodo: 2020-12-01<br />imacec_nm_fit:   0.48296416<br />colour: Ajuste del modelo","Periodo: 2021-01-01<br />imacec_nm_fit:  -0.49812355<br />colour: Ajuste del modelo","Periodo: 2021-02-01<br />imacec_nm_fit:  -1.44510676<br />colour: Ajuste del modelo","Periodo: 2021-03-01<br />imacec_nm_fit:   3.94742054<br />colour: Ajuste del modelo","Periodo: 2021-04-01<br />imacec_nm_fit:  13.39623499<br />colour: Ajuste del modelo","Periodo: 2021-05-01<br />imacec_nm_fit:  22.08936056<br />colour: Ajuste del modelo","Periodo: 2021-06-01<br />imacec_nm_fit:  23.05526523<br />colour: Ajuste del modelo","Periodo: 2021-07-01<br />imacec_nm_fit:  24.01976436<br />colour: Ajuste del modelo","Periodo: 2021-08-01<br />imacec_nm_fit:  21.73476659<br />colour: Ajuste del modelo","Periodo: 2021-09-01<br />imacec_nm_fit:  18.31975921<br />colour: Ajuste del modelo","Periodo: 2021-10-01<br />imacec_nm_fit:  13.33104863<br />colour: Ajuste del modelo","Periodo: 2021-11-01<br />imacec_nm_fit:  14.17733125<br />colour: Ajuste del modelo","Periodo: 2021-12-01<br />imacec_nm_fit:  14.91681557<br />colour: Ajuste del modelo","Periodo: 2022-01-01<br />imacec_nm_fit:  12.61174061<br />colour: Ajuste del modelo","Periodo: 2022-02-01<br />imacec_nm_fit:  10.00387678<br />colour: Ajuste del modelo","Periodo: 2022-03-01<br />imacec_nm_fit:   8.56443833<br />colour: Ajuste del modelo","Periodo: 2022-04-01<br />imacec_nm_fit:   9.08528235<br />colour: Ajuste del modelo","Periodo: 2022-05-01<br />imacec_nm_fit:   7.87054222<br />colour: Ajuste del modelo","Periodo: 2022-06-01<br />imacec_nm_fit:   2.71693478<br />colour: Ajuste del modelo","Periodo: 2022-07-01<br />imacec_nm_fit:   1.78319238<br />colour: Ajuste del modelo","Periodo: 2022-08-01<br />imacec_nm_fit:  -0.28784044<br />colour: Ajuste del modelo","Periodo: 2022-09-01<br />imacec_nm_fit:   0.03478166<br />colour: Ajuste del modelo","Periodo: 2022-10-01<br />imacec_nm_fit:  -0.71039335<br />colour: Ajuste del modelo","Periodo: 2022-11-01<br />imacec_nm_fit:  -1.26771691<br />colour: Ajuste del modelo","Periodo: 2022-12-01<br />imacec_nm_fit:  -1.14394714<br />colour: Ajuste del modelo","Periodo: 2023-01-01<br />imacec_nm_fit:  -0.20421989<br />colour: Ajuste del modelo","Periodo: 2023-02-01<br />imacec_nm_fit:   1.21826260<br />colour: Ajuste del modelo","Periodo: 2023-03-01<br />imacec_nm_fit:   1.03997000<br />colour: Ajuste del modelo","Periodo: 2023-04-01<br />imacec_nm_fit:  -0.05681341<br />colour: Ajuste del modelo","Periodo: 2023-05-01<br />imacec_nm_fit:  -0.35262081<br />colour: Ajuste del modelo","Periodo: 2023-06-01<br />imacec_nm_fit:   0.13374003<br />colour: Ajuste del modelo","Periodo: 2023-07-01<br />imacec_nm_fit:   0.48985096<br />colour: Ajuste del modelo","Periodo: 2023-08-01<br />imacec_nm_fit:   1.15934581<br />colour: Ajuste del modelo","Periodo: 2023-09-01<br />imacec_nm_fit:  -1.02466766<br />colour: Ajuste del modelo","Periodo: 2023-10-01<br />imacec_nm_fit:   1.74059551<br />colour: Ajuste del modelo","Periodo: 2023-11-01<br />imacec_nm_fit:   2.47110861<br />colour: Ajuste del modelo","Periodo: 2023-12-01<br />imacec_nm_fit:   0.98315925<br />colour: Ajuste del modelo","Periodo: 2024-01-01<br />imacec_nm_fit:   1.25506369<br />colour: Ajuste del modelo","Periodo: 2024-02-01<br />imacec_nm_fit:   4.67659402<br />colour: Ajuste del modelo","Periodo: 2024-03-01<br />imacec_nm_fit:  -1.45535658<br />colour: Ajuste del modelo","Periodo: 2024-04-01<br />imacec_nm_fit:   4.67092692<br />colour: Ajuste del modelo","Periodo: 2024-05-01<br />imacec_nm_fit:   1.36614937<br />colour: Ajuste del modelo","Periodo: 2024-06-01<br />imacec_nm_fit:  -1.23571678<br />colour: Ajuste del modelo","Periodo: 2024-07-01<br />imacec_nm_fit:   0.62430224<br />colour: Ajuste del modelo","Periodo: 2024-08-01<br />imacec_nm_fit:   1.72227844<br />colour: Ajuste del modelo","Periodo: 2024-09-01<br />imacec_nm_fit:  -0.27828310<br />colour: Ajuste del modelo","Periodo: 2024-10-01<br />imacec_nm_fit:   1.02365936<br />colour: Ajuste del modelo","Periodo: 2024-11-01<br />imacec_nm_fit:   0.31822712<br />colour: Ajuste del modelo","Periodo: 2024-12-01<br />imacec_nm_fit:   3.91053454<br />colour: Ajuste del modelo","Periodo: 2025-01-01<br />imacec_nm_fit:   3.69712444<br />colour: Ajuste del modelo","Periodo: 2025-02-01<br />imacec_nm_fit:  -0.25223186<br />colour: Ajuste del modelo","Periodo: 2025-03-01<br />imacec_nm_fit:   3.24376744<br />colour: Ajuste del modelo","Periodo: 2025-04-01<br />imacec_nm_fit:   3.08181364<br />colour: Ajuste del modelo","Periodo: 2025-05-01<br />imacec_nm_fit:   2.28650038<br />colour: Ajuste del modelo","Periodo: 2025-06-01<br />imacec_nm_fit:   4.47062229<br />colour: Ajuste del modelo","Periodo: 2025-07-01<br />imacec_nm_fit:   3.02509357<br />colour: Ajuste del modelo","Periodo: 2025-08-01<br />imacec_nm_fit:   1.09347977<br />colour: Ajuste del modelo","Periodo: 2025-09-01<br />imacec_nm_fit:   4.40023680<br />colour: Ajuste del modelo","Periodo: 2025-10-01<br />imacec_nm_fit:   2.68552329<br />colour: Ajuste del modelo","Periodo: 2025-11-01<br />imacec_nm_fit:   1.94470354<br />colour: Ajuste del modelo","Periodo: 2025-12-01<br />imacec_nm_fit:   1.37317816<br />colour: Ajuste del modelo","Periodo: 2026-01-01<br />imacec_nm_fit:  -0.21032873<br />colour: Ajuste del modelo","Periodo: 2026-02-01<br />imacec_nm_fit:  -0.99270260<br />colour: Ajuste del modelo","Periodo: 2026-03-01<br />imacec_nm_fit:   1.01578455<br />colour: Ajuste del modelo","Periodo: 2026-04-01<br />imacec_nm_fit:   2.38255689<br />colour: Ajuste del modelo","Periodo: 2026-05-01<br />imacec_nm_fit:           NA<br />colour: Ajuste del modelo","Periodo: 2026-05-01<br />imacec_nm_fit:   0.78563147<br />colour: Ajuste del modelo"],"type":"scatter","mode":"lines","line":{"width":2.8346456692913389,"color":"rgba(176,58,46,1)","dash":"dash"},"hoveron":"points","name":"Ajuste del modelo","legendgroup":"Ajuste del modelo","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[20574],"y":[0.78563146962542607],"text":"Periodo: 2026-05-01<br />imacec_nm_fit: 0.7856315<br />colour: Estimación propia","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(127,29,29,1)","opacity":1,"size":10.204724409448822,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(127,29,29,1)"}},"hoveron":"points","name":"Estimación propia","legendgroup":"Estimación propia","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[20574],"y":[1],"text":"Periodo: 2026-05-01<br />eee_imacec_nm: 1<br />colour: EEE","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(122,81,149,1)","opacity":1,"size":10.960629921259843,"symbol":"triangle-up","line":{"width":1.8897637795275593,"color":"rgba(122,81,149,1)"}},"hoveron":"points","name":"EEE","legendgroup":"EEE","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":90,"r":40,"b":105,"l":70},"font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243},"title":{"text":"<b> IMACEC no minero: observado, ajuste y proyección <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[17538.450000000001,20718.549999999999],"tickmode":"array","ticktext":["2020","2022","2024","2026"],"tickvals":[18262,18993,19723,20454],"categoryorder":"array","categoryarray":["2020","2022","2024","2026"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-19.593452346016388,26.096584207656122],"tickmode":"array","ticktext":["-10","0","10","20"],"tickvals":[-10,0,10,20.000000000000004],"categoryorder":"array","categoryarray":["-10","0","10","20"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"x","title":{"text":"Var. 12m (%)","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":12.7521793275218},"orientation":"h","x":0.5,"y":-0.17999999999999999,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":null,"family":null,"size":0}}},"hovermode":"closest","barmode":"relative","autosize":true,"height":620},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false,"displayModeBar":false,"responsive":true},"source":"A","attrs":{"4e0c8841bbf":{"yintercept":{},"type":"scatter"},"4e0c21ea61fd":{"x":{},"y":{},"colour":{}},"4e0c337a2d94":{"x":{},"y":{},"colour":{}},"4e0c48861d22":{"x":{},"y":{},"colour":{}},"4e0c2b61271d":{"x":{},"y":{},"colour":{}}},"cur_data":"4e0c8841bbf","visdat":{"4e0c8841bbf":["function (y) ","x"],"4e0c21ea61fd":["function (y) ","x"],"4e0c337a2d94":["function (y) ","x"],"4e0c48861d22":["function (y) ","x"],"4e0c2b61271d":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-</div>
-</section>
-<section id="supuestos-usados-cuando-falta-información-contemporánea" class="level2">
-<h2 class="anchored" data-anchor-id="supuestos-usados-cuando-falta-información-contemporánea">Supuestos usados cuando falta información contemporánea</h2>
-<p>Cuando una variable del mes objetivo todavía no está publicada, se completa con un supuesto mecánico y transparente: promedio de los últimos tres datos disponibles para variables mensuales y último dato disponible para desempleo. Es un criterio deliberadamente simple para evitar sobreoptimizar una proyección temprana.</p>
-<div class="cell">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Supuestos vigentes para variables todavía no observadas</caption>
-<colgroup>
-<col style="width: 20%">
-<col style="width: 16%">
-<col style="width: 43%">
-<col style="width: 20%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Variable</th>
-<th style="text-align: right;">Valor asumido</th>
-<th style="text-align: left;">Criterio</th>
-<th style="text-align: left;">Período objetivo</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">monto_credito</td>
-<td style="text-align: right;">5.87</td>
-<td style="text-align: left;">Promedio últimos 3 datos disponibles</td>
-<td style="text-align: left;">2026-05</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">cantidad_credito</td>
-<td style="text-align: right;">5.47</td>
-<td style="text-align: left;">Promedio últimos 3 datos disponibles</td>
-<td style="text-align: left;">2026-05</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">venta_minorista</td>
-<td style="text-align: right;">1.57</td>
-<td style="text-align: left;">Promedio últimos 3 datos disponibles</td>
-<td style="text-align: left;">2026-05</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">uf</td>
-<td style="text-align: right;">2.69</td>
-<td style="text-align: left;">Promedio últimos 3 datos disponibles</td>
-<td style="text-align: left;">2026-05</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">mineria</td>
-<td style="text-align: right;">-4.25</td>
-<td style="text-align: left;">Promedio últimos 3 datos disponibles</td>
-<td style="text-align: left;">2026-05</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">manufactura</td>
-<td style="text-align: right;">-3.59</td>
-<td style="text-align: left;">Promedio últimos 3 datos disponibles</td>
-<td style="text-align: left;">2026-05</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">comercio</td>
-<td style="text-align: right;">4.92</td>
-<td style="text-align: left;">Promedio últimos 3 datos disponibles</td>
-<td style="text-align: left;">2026-05</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">electricidad</td>
-<td style="text-align: right;">0.79</td>
-<td style="text-align: left;">Promedio últimos 3 datos disponibles</td>
-<td style="text-align: left;">2026-05</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">desempleo</td>
-<td style="text-align: right;">9.11</td>
-<td style="text-align: left;">Último dato disponible</td>
-<td style="text-align: left;">2026-05</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section>
-<section id="evaluación-de-la-proyección-cuando-aparece-el-dato-efectivo" class="level2">
-<h2 class="anchored" data-anchor-id="evaluación-de-la-proyección-cuando-aparece-el-dato-efectivo">Evaluación de la proyección cuando aparece el dato efectivo</h2>
-<p>El proceso guarda un archivo de vintages con cada nowcast generado. Cuando el IMACEC oficial de un mes ya aparece en la base, la página puede comparar el dato efectivo contra la proyección propia y contra la EEE disponible.</p>
-<div class="cell">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Comparación entre dato efectivo y proyecciones archivadas</caption>
-<colgroup>
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 12%">
-<col style="width: 11%">
-<col style="width: 9%">
-<col style="width: 7%">
-<col style="width: 7%">
-<col style="width: 14%">
-<col style="width: 13%">
-<col style="width: 11%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Periodo</th>
-<th style="text-align: left;">vintage</th>
-<th style="text-align: right;">imacec_observado</th>
-<th style="text-align: right;">imacec_predicho</th>
-<th style="text-align: right;">error_imacec</th>
-<th style="text-align: right;">eee_imacec</th>
-<th style="text-align: right;">error_eee</th>
-<th style="text-align: right;">imacec_nm_observado</th>
-<th style="text-align: right;">imacec_nm_predicho</th>
-<th style="text-align: right;">error_imacec_nm</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">2026-04</td>
-<td style="text-align: left;">ine</td>
-<td style="text-align: right;">-1.18</td>
-<td style="text-align: right;">-1.88</td>
-<td style="text-align: right;">0.71</td>
-<td style="text-align: right;">0.1</td>
-<td style="text-align: right;">-1.28</td>
-<td style="text-align: right;">0.42</td>
-<td style="text-align: right;">0.34</td>
-<td style="text-align: right;">0.07</td>
-</tr>
-</tbody>
-</table>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-c0e11eb54858be01c271" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-c0e11eb54858be01c271">{"x":{"data":[{"x":[17763.150000000001,20707.849999999999],"y":[0,0],"text":"","type":"scatter","mode":"lines","line":{"width":0.94488188976377963,"color":"rgba(179,179,179,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231,18262,18293,18322,18353,18383,18414,18444,18475,18506,18536,18567,18597,18628,18659,18687,18718,18748,18779,18809,18840,18871,18901,18932,18962,18993,19024,19052,19083,19113,19144,19174,19205,19236,19266,19297,19327,19358,19389,19417,19448,19478,19509,19539,19570,19601,19631,19662,19692,19723,19754,19783,19814,19844,19875,19905,19936,19967,19997,20028,20058,20089,20120,20148,20179,20209,20240,20270,20301,20332,20362,20393,20423,20454,20485,20513,20544,20574],"y":[2.7341152560787396,1.6595585372416457,2.0466527540109025,1.854854981195575,2.3594432769310947,1.1635809008067488,3.6992104974363338,3.3679587482669859,3.4840511653275952,-4.7120593038551544,-4.3516750918910834,1.228133832481304,1.0520356730939318,2.3324931483860611,-4.6573727980858575,-16.253706219075205,-17.516632502667619,-15.455186965466339,-13.156314088362864,-12.018710106610374,-5.4415880935850485,-1.7617207822021139,1.0157142703611788,1.3347235420328785,-3.3502737699761531,-1.3854611211324586,7.6850785550572898,16.734270191563038,22.139752636304479,23.407318658335143,20.764639374807949,21.657203493350764,16.849040783117687,15.655913827209456,15.7452903795817,10.477766339800976,10.222225403294649,7.8089782077445991,7.9946921065515486,9.0852823503981384,7.1237301003593378,4.4049751339003906,1.2528044069725075,2.5916980923111455,1.1620904191933956,-2.3643191172496913,-2.5379060428925571,-1.3300179238098009,0.58459193288846745,0.57225158237921292,-0.061536353709357172,-0.62857886673882701,0.76582339487443196,-0.15502564733940183,2.3309883894251149,-0.48439612663464526,-0.95650111464098397,3.1360771459902459,2.1670973267984062,0.79385129137614641,4.1128471186122395,4.6284706228775674,-0.2650223798154494,4.2313298983302605,-0.21752102603829204,-1.2529263884246131,4.6495518840197425,1.5667466901213345,0.84772626150040331,2.9737865888798565,2.4453500701363322,5.8056759175583394,3.7667226031889318,1.2705337021299723,4.8806080019162756,2.692860351031956,2.506905661515213,4.9721635080541615,2.2407050743175061,1.3299898699509427,4.2575461544053228,2.8383270355107459,2.2056769858848746,2.6444701441954432,-0.80527227408873081,-0.20696452402412249,0.95321493411675284,0.41591873238264743,null],"text":["Periodo: 2019-01-01<br />imacec_nm:   2.73411526<br />colour: Observado","Periodo: 2019-02-01<br />imacec_nm:   1.65955854<br />colour: Observado","Periodo: 2019-03-01<br />imacec_nm:   2.04665275<br />colour: Observado","Periodo: 2019-04-01<br />imacec_nm:   1.85485498<br />colour: Observado","Periodo: 2019-05-01<br />imacec_nm:   2.35944328<br />colour: Observado","Periodo: 2019-06-01<br />imacec_nm:   1.16358090<br />colour: Observado","Periodo: 2019-07-01<br />imacec_nm:   3.69921050<br />colour: Observado","Periodo: 2019-08-01<br />imacec_nm:   3.36795875<br />colour: Observado","Periodo: 2019-09-01<br />imacec_nm:   3.48405117<br />colour: Observado","Periodo: 2019-10-01<br />imacec_nm:  -4.71205930<br />colour: Observado","Periodo: 2019-11-01<br />imacec_nm:  -4.35167509<br />colour: Observado","Periodo: 2019-12-01<br />imacec_nm:   1.22813383<br />colour: Observado","Periodo: 2020-01-01<br />imacec_nm:   1.05203567<br />colour: Observado","Periodo: 2020-02-01<br />imacec_nm:   2.33249315<br />colour: Observado","Periodo: 2020-03-01<br />imacec_nm:  -4.65737280<br />colour: Observado","Periodo: 2020-04-01<br />imacec_nm: -16.25370622<br />colour: Observado","Periodo: 2020-05-01<br />imacec_nm: -17.51663250<br />colour: Observado","Periodo: 2020-06-01<br />imacec_nm: -15.45518697<br />colour: Observado","Periodo: 2020-07-01<br />imacec_nm: -13.15631409<br />colour: Observado","Periodo: 2020-08-01<br />imacec_nm: -12.01871011<br />colour: Observado","Periodo: 2020-09-01<br />imacec_nm:  -5.44158809<br />colour: Observado","Periodo: 2020-10-01<br />imacec_nm:  -1.76172078<br />colour: Observado","Periodo: 2020-11-01<br />imacec_nm:   1.01571427<br />colour: Observado","Periodo: 2020-12-01<br />imacec_nm:   1.33472354<br />colour: Observado","Periodo: 2021-01-01<br />imacec_nm:  -3.35027377<br />colour: Observado","Periodo: 2021-02-01<br />imacec_nm:  -1.38546112<br />colour: Observado","Periodo: 2021-03-01<br />imacec_nm:   7.68507856<br />colour: Observado","Periodo: 2021-04-01<br />imacec_nm:  16.73427019<br />colour: Observado","Periodo: 2021-05-01<br />imacec_nm:  22.13975264<br />colour: Observado","Periodo: 2021-06-01<br />imacec_nm:  23.40731866<br />colour: Observado","Periodo: 2021-07-01<br />imacec_nm:  20.76463937<br />colour: Observado","Periodo: 2021-08-01<br />imacec_nm:  21.65720349<br />colour: Observado","Periodo: 2021-09-01<br />imacec_nm:  16.84904078<br />colour: Observado","Periodo: 2021-10-01<br />imacec_nm:  15.65591383<br />colour: Observado","Periodo: 2021-11-01<br />imacec_nm:  15.74529038<br />colour: Observado","Periodo: 2021-12-01<br />imacec_nm:  10.47776634<br />colour: Observado","Periodo: 2022-01-01<br />imacec_nm:  10.22222540<br />colour: Observado","Periodo: 2022-02-01<br />imacec_nm:   7.80897821<br />colour: Observado","Periodo: 2022-03-01<br />imacec_nm:   7.99469211<br />colour: Observado","Periodo: 2022-04-01<br />imacec_nm:   9.08528235<br />colour: Observado","Periodo: 2022-05-01<br />imacec_nm:   7.12373010<br />colour: Observado","Periodo: 2022-06-01<br />imacec_nm:   4.40497513<br />colour: Observado","Periodo: 2022-07-01<br />imacec_nm:   1.25280441<br />colour: Observado","Periodo: 2022-08-01<br />imacec_nm:   2.59169809<br />colour: Observado","Periodo: 2022-09-01<br />imacec_nm:   1.16209042<br />colour: Observado","Periodo: 2022-10-01<br />imacec_nm:  -2.36431912<br />colour: Observado","Periodo: 2022-11-01<br />imacec_nm:  -2.53790604<br />colour: Observado","Periodo: 2022-12-01<br />imacec_nm:  -1.33001792<br />colour: Observado","Periodo: 2023-01-01<br />imacec_nm:   0.58459193<br />colour: Observado","Periodo: 2023-02-01<br />imacec_nm:   0.57225158<br />colour: Observado","Periodo: 2023-03-01<br />imacec_nm:  -0.06153635<br />colour: Observado","Periodo: 2023-04-01<br />imacec_nm:  -0.62857887<br />colour: Observado","Periodo: 2023-05-01<br />imacec_nm:   0.76582339<br />colour: Observado","Periodo: 2023-06-01<br />imacec_nm:  -0.15502565<br />colour: Observado","Periodo: 2023-07-01<br />imacec_nm:   2.33098839<br />colour: Observado","Periodo: 2023-08-01<br />imacec_nm:  -0.48439613<br />colour: Observado","Periodo: 2023-09-01<br />imacec_nm:  -0.95650111<br />colour: Observado","Periodo: 2023-10-01<br />imacec_nm:   3.13607715<br />colour: Observado","Periodo: 2023-11-01<br />imacec_nm:   2.16709733<br />colour: Observado","Periodo: 2023-12-01<br />imacec_nm:   0.79385129<br />colour: Observado","Periodo: 2024-01-01<br />imacec_nm:   4.11284712<br />colour: Observado","Periodo: 2024-02-01<br />imacec_nm:   4.62847062<br />colour: Observado","Periodo: 2024-03-01<br />imacec_nm:  -0.26502238<br />colour: Observado","Periodo: 2024-04-01<br />imacec_nm:   4.23132990<br />colour: Observado","Periodo: 2024-05-01<br />imacec_nm:  -0.21752103<br />colour: Observado","Periodo: 2024-06-01<br />imacec_nm:  -1.25292639<br />colour: Observado","Periodo: 2024-07-01<br />imacec_nm:   4.64955188<br />colour: Observado","Periodo: 2024-08-01<br />imacec_nm:   1.56674669<br />colour: Observado","Periodo: 2024-09-01<br />imacec_nm:   0.84772626<br />colour: Observado","Periodo: 2024-10-01<br />imacec_nm:   2.97378659<br />colour: Observado","Periodo: 2024-11-01<br />imacec_nm:   2.44535007<br />colour: Observado","Periodo: 2024-12-01<br />imacec_nm:   5.80567592<br />colour: Observado","Periodo: 2025-01-01<br />imacec_nm:   3.76672260<br />colour: Observado","Periodo: 2025-02-01<br />imacec_nm:   1.27053370<br />colour: Observado","Periodo: 2025-03-01<br />imacec_nm:   4.88060800<br />colour: Observado","Periodo: 2025-04-01<br />imacec_nm:   2.69286035<br />colour: Observado","Periodo: 2025-05-01<br />imacec_nm:   2.50690566<br />colour: Observado","Periodo: 2025-06-01<br />imacec_nm:   4.97216351<br />colour: Observado","Periodo: 2025-07-01<br />imacec_nm:   2.24070507<br />colour: Observado","Periodo: 2025-08-01<br />imacec_nm:   1.32998987<br />colour: Observado","Periodo: 2025-09-01<br />imacec_nm:   4.25754615<br />colour: Observado","Periodo: 2025-10-01<br />imacec_nm:   2.83832704<br />colour: Observado","Periodo: 2025-11-01<br />imacec_nm:   2.20567699<br />colour: Observado","Periodo: 2025-12-01<br />imacec_nm:   2.64447014<br />colour: Observado","Periodo: 2026-01-01<br />imacec_nm:  -0.80527227<br />colour: Observado","Periodo: 2026-02-01<br />imacec_nm:  -0.20696452<br />colour: Observado","Periodo: 2026-03-01<br />imacec_nm:   0.95321493<br />colour: Observado","Periodo: 2026-04-01<br />imacec_nm:   0.41591873<br />colour: Observado","Periodo: 2026-05-01<br />imacec_nm:           NA<br />colour: Observado"],"type":"scatter","mode":"lines","line":{"width":3.2125984251968505,"color":"rgba(31,78,121,1)","dash":"solid"},"hoveron":"points","name":"Observado","legendgroup":"Observado","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231,18262,18293,18322,18353,18383,18414,18444,18475,18506,18536,18567,18597,18628,18659,18687,18718,18748,18779,18809,18840,18871,18901,18932,18962,18993,19024,19052,19083,19113,19144,19174,19205,19236,19266,19297,19327,19358,19389,19417,19448,19478,19509,19539,19570,19601,19631,19662,19692,19723,19754,19783,19814,19844,19875,19905,19936,19967,19997,20028,20058,20089,20120,20148,20179,20209,20240,20270,20301,20332,20362,20393,20423,20454,20485,20513,20544,20574],"y":[3.3244021881793913,1.7540171214997855,2.0433775702650308,3.7066954027525441,2.1029127798027689,0.55994649009626452,4.7122238465827815,2.0620266517909598,3.3167021260979772,-3.5989576690993061,-3.2353542322472748,0.36756016575257383,0.23208546927244811,2.390498255208712,-2.2469836466380486,-16.25370621907522,-17.516632502667665,-15.412594013353544,-15.070671396772047,-10.584985474848478,-3.1016102410150261,1.042732861089249,1.5713975943922236,-0.82015303724327793,-2.304681050600152,-2.2677079990343998,5.210201136348652,12.90422418250121,20.837159849706271,24.000693186661763,23.532510698394752,20.68067335738175,16.350072433703797,12.907502450732309,14.281182508473847,14.032552441941217,9.9965010500605889,7.8896385624286012,8.9363752208476885,9.0852823503980886,7.9501626263205951,3.6061124898474177,1.8159761816742952,0.76113006558056107,-0.3495661354620716,-1.7698068801158229,-2.0437585814613612,-0.33564988340707708,0.42240507618929257,0.67406485660823989,1.0429683442079436,0.7712591437762768,0.32025074479868898,-0.29561403895343252,0.02795173279773993,-0.72466159146354236,-1.4268485822373571,1.7630021792544996,1.4483644883969049,-0.86116732579286803,1.9573129035196783,4.5704655160547105,-1.3910008464600083,4.242388439480095,0.96667313633905838,-1.2529263884246569,2.058452286729485,3.4493976024172799,0.51283329723707771,1.8742928438573332,1.975459462731848,5.8070244337440986,4.2029919651331653,2.1121575096149172,4.5115698802396986,3.6042361514606824,2.5009749069786311,5.8792814739920072,4.7051421892090071,2.3669100498973723,4.900782676993698,3.5472396085648228,2.6922566576923685,2.7644363486403543,0.48597434133691308,-0.44327366677849511,0.46980716123072719,0.071851967793577387,-1.4409925084469064],"text":["Periodo: 2019-01-01<br />imacec_nm_fit:   3.32440219<br />colour: Ajuste / nowcast","Periodo: 2019-02-01<br />imacec_nm_fit:   1.75401712<br />colour: Ajuste / nowcast","Periodo: 2019-03-01<br />imacec_nm_fit:   2.04337757<br />colour: Ajuste / nowcast","Periodo: 2019-04-01<br />imacec_nm_fit:   3.70669540<br />colour: Ajuste / nowcast","Periodo: 2019-05-01<br />imacec_nm_fit:   2.10291278<br />colour: Ajuste / nowcast","Periodo: 2019-06-01<br />imacec_nm_fit:   0.55994649<br />colour: Ajuste / nowcast","Periodo: 2019-07-01<br />imacec_nm_fit:   4.71222385<br />colour: Ajuste / nowcast","Periodo: 2019-08-01<br />imacec_nm_fit:   2.06202665<br />colour: Ajuste / nowcast","Periodo: 2019-09-01<br />imacec_nm_fit:   3.31670213<br />colour: Ajuste / nowcast","Periodo: 2019-10-01<br />imacec_nm_fit:  -3.59895767<br />colour: Ajuste / nowcast","Periodo: 2019-11-01<br />imacec_nm_fit:  -3.23535423<br />colour: Ajuste / nowcast","Periodo: 2019-12-01<br />imacec_nm_fit:   0.36756017<br />colour: Ajuste / nowcast","Periodo: 2020-01-01<br />imacec_nm_fit:   0.23208547<br />colour: Ajuste / nowcast","Periodo: 2020-02-01<br />imacec_nm_fit:   2.39049826<br />colour: Ajuste / nowcast","Periodo: 2020-03-01<br />imacec_nm_fit:  -2.24698365<br />colour: Ajuste / nowcast","Periodo: 2020-04-01<br />imacec_nm_fit: -16.25370622<br />colour: Ajuste / nowcast","Periodo: 2020-05-01<br />imacec_nm_fit: -17.51663250<br />colour: Ajuste / nowcast","Periodo: 2020-06-01<br />imacec_nm_fit: -15.41259401<br />colour: Ajuste / nowcast","Periodo: 2020-07-01<br />imacec_nm_fit: -15.07067140<br />colour: Ajuste / nowcast","Periodo: 2020-08-01<br />imacec_nm_fit: -10.58498547<br />colour: Ajuste / nowcast","Periodo: 2020-09-01<br />imacec_nm_fit:  -3.10161024<br />colour: Ajuste / nowcast","Periodo: 2020-10-01<br />imacec_nm_fit:   1.04273286<br />colour: Ajuste / nowcast","Periodo: 2020-11-01<br />imacec_nm_fit:   1.57139759<br />colour: Ajuste / nowcast","Periodo: 2020-12-01<br />imacec_nm_fit:  -0.82015304<br />colour: Ajuste / nowcast","Periodo: 2021-01-01<br />imacec_nm_fit:  -2.30468105<br />colour: Ajuste / nowcast","Periodo: 2021-02-01<br />imacec_nm_fit:  -2.26770800<br />colour: Ajuste / nowcast","Periodo: 2021-03-01<br />imacec_nm_fit:   5.21020114<br />colour: Ajuste / nowcast","Periodo: 2021-04-01<br />imacec_nm_fit:  12.90422418<br />colour: Ajuste / nowcast","Periodo: 2021-05-01<br />imacec_nm_fit:  20.83715985<br />colour: Ajuste / nowcast","Periodo: 2021-06-01<br />imacec_nm_fit:  24.00069319<br />colour: Ajuste / nowcast","Periodo: 2021-07-01<br />imacec_nm_fit:  23.53251070<br />colour: Ajuste / nowcast","Periodo: 2021-08-01<br />imacec_nm_fit:  20.68067336<br />colour: Ajuste / nowcast","Periodo: 2021-09-01<br />imacec_nm_fit:  16.35007243<br />colour: Ajuste / nowcast","Periodo: 2021-10-01<br />imacec_nm_fit:  12.90750245<br />colour: Ajuste / nowcast","Periodo: 2021-11-01<br />imacec_nm_fit:  14.28118251<br />colour: Ajuste / nowcast","Periodo: 2021-12-01<br />imacec_nm_fit:  14.03255244<br />colour: Ajuste / nowcast","Periodo: 2022-01-01<br />imacec_nm_fit:   9.99650105<br />colour: Ajuste / nowcast","Periodo: 2022-02-01<br />imacec_nm_fit:   7.88963856<br />colour: Ajuste / nowcast","Periodo: 2022-03-01<br />imacec_nm_fit:   8.93637522<br />colour: Ajuste / nowcast","Periodo: 2022-04-01<br />imacec_nm_fit:   9.08528235<br />colour: Ajuste / nowcast","Periodo: 2022-05-01<br />imacec_nm_fit:   7.95016263<br />colour: Ajuste / nowcast","Periodo: 2022-06-01<br />imacec_nm_fit:   3.60611249<br />colour: Ajuste / nowcast","Periodo: 2022-07-01<br />imacec_nm_fit:   1.81597618<br />colour: Ajuste / nowcast","Periodo: 2022-08-01<br />imacec_nm_fit:   0.76113007<br />colour: Ajuste / nowcast","Periodo: 2022-09-01<br />imacec_nm_fit:  -0.34956614<br />colour: Ajuste / nowcast","Periodo: 2022-10-01<br />imacec_nm_fit:  -1.76980688<br />colour: Ajuste / nowcast","Periodo: 2022-11-01<br />imacec_nm_fit:  -2.04375858<br />colour: Ajuste / nowcast","Periodo: 2022-12-01<br />imacec_nm_fit:  -0.33564988<br />colour: Ajuste / nowcast","Periodo: 2023-01-01<br />imacec_nm_fit:   0.42240508<br />colour: Ajuste / nowcast","Periodo: 2023-02-01<br />imacec_nm_fit:   0.67406486<br />colour: Ajuste / nowcast","Periodo: 2023-03-01<br />imacec_nm_fit:   1.04296834<br />colour: Ajuste / nowcast","Periodo: 2023-04-01<br />imacec_nm_fit:   0.77125914<br />colour: Ajuste / nowcast","Periodo: 2023-05-01<br />imacec_nm_fit:   0.32025074<br />colour: Ajuste / nowcast","Periodo: 2023-06-01<br />imacec_nm_fit:  -0.29561404<br />colour: Ajuste / nowcast","Periodo: 2023-07-01<br />imacec_nm_fit:   0.02795173<br />colour: Ajuste / nowcast","Periodo: 2023-08-01<br />imacec_nm_fit:  -0.72466159<br />colour: Ajuste / nowcast","Periodo: 2023-09-01<br />imacec_nm_fit:  -1.42684858<br />colour: Ajuste / nowcast","Periodo: 2023-10-01<br />imacec_nm_fit:   1.76300218<br />colour: Ajuste / nowcast","Periodo: 2023-11-01<br />imacec_nm_fit:   1.44836449<br />colour: Ajuste / nowcast","Periodo: 2023-12-01<br />imacec_nm_fit:  -0.86116733<br />colour: Ajuste / nowcast","Periodo: 2024-01-01<br />imacec_nm_fit:   1.95731290<br />colour: Ajuste / nowcast","Periodo: 2024-02-01<br />imacec_nm_fit:   4.57046552<br />colour: Ajuste / nowcast","Periodo: 2024-03-01<br />imacec_nm_fit:  -1.39100085<br />colour: Ajuste / nowcast","Periodo: 2024-04-01<br />imacec_nm_fit:   4.24238844<br />colour: Ajuste / nowcast","Periodo: 2024-05-01<br />imacec_nm_fit:   0.96667314<br />colour: Ajuste / nowcast","Periodo: 2024-06-01<br />imacec_nm_fit:  -1.25292639<br />colour: Ajuste / nowcast","Periodo: 2024-07-01<br />imacec_nm_fit:   2.05845229<br />colour: Ajuste / nowcast","Periodo: 2024-08-01<br />imacec_nm_fit:   3.44939760<br />colour: Ajuste / nowcast","Periodo: 2024-09-01<br />imacec_nm_fit:   0.51283330<br />colour: Ajuste / nowcast","Periodo: 2024-10-01<br />imacec_nm_fit:   1.87429284<br />colour: Ajuste / nowcast","Periodo: 2024-11-01<br />imacec_nm_fit:   1.97545946<br />colour: Ajuste / nowcast","Periodo: 2024-12-01<br />imacec_nm_fit:   5.80702443<br />colour: Ajuste / nowcast","Periodo: 2025-01-01<br />imacec_nm_fit:   4.20299197<br />colour: Ajuste / nowcast","Periodo: 2025-02-01<br />imacec_nm_fit:   2.11215751<br />colour: Ajuste / nowcast","Periodo: 2025-03-01<br />imacec_nm_fit:   4.51156988<br />colour: Ajuste / nowcast","Periodo: 2025-04-01<br />imacec_nm_fit:   3.60423615<br />colour: Ajuste / nowcast","Periodo: 2025-05-01<br />imacec_nm_fit:   2.50097491<br />colour: Ajuste / nowcast","Periodo: 2025-06-01<br />imacec_nm_fit:   5.87928147<br />colour: Ajuste / nowcast","Periodo: 2025-07-01<br />imacec_nm_fit:   4.70514219<br />colour: Ajuste / nowcast","Periodo: 2025-08-01<br />imacec_nm_fit:   2.36691005<br />colour: Ajuste / nowcast","Periodo: 2025-09-01<br />imacec_nm_fit:   4.90078268<br />colour: Ajuste / nowcast","Periodo: 2025-10-01<br />imacec_nm_fit:   3.54723961<br />colour: Ajuste / nowcast","Periodo: 2025-11-01<br />imacec_nm_fit:   2.69225666<br />colour: Ajuste / nowcast","Periodo: 2025-12-01<br />imacec_nm_fit:   2.76443635<br />colour: Ajuste / nowcast","Periodo: 2026-01-01<br />imacec_nm_fit:   0.48597434<br />colour: Ajuste / nowcast","Periodo: 2026-02-01<br />imacec_nm_fit:  -0.44327367<br />colour: Ajuste / nowcast","Periodo: 2026-03-01<br />imacec_nm_fit:   0.46980716<br />colour: Ajuste / nowcast","Periodo: 2026-04-01<br />imacec_nm_fit:   0.07185197<br />colour: Ajuste / nowcast","Periodo: 2026-05-01<br />imacec_nm_fit:  -1.44099251<br />colour: Ajuste / nowcast"],"type":"scatter","mode":"lines","line":{"width":3.2125984251968505,"color":"rgba(176,58,46,1)","dash":"dash"},"hoveron":"points","name":"Ajuste / nowcast","legendgroup":"Ajuste / nowcast","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[20574],"y":[-1.4409925084469064],"text":"Periodo: 2026-05-01<br />imacec_nm_fit: -1.440993<br />colour: Nowcast","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(127,29,29,1)","opacity":1,"size":10.58267716535433,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(127,29,29,1)"}},"hoveron":"points","name":"Nowcast","legendgroup":"Nowcast","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":90,"r":30,"b":115,"l":70},"font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243},"title":{"text":"<b> IMACEC no minero: observado versus ajuste/nowcast <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":false,"range":[17763.150000000001,20707.849999999999],"tickmode":"array","ticktext":["2020","2022","2024","2026"],"tickvals":[18262,18993,19723,20454],"categoryorder":"array","categoryarray":["2020","2022","2024","2026"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"y","title":"","hoverformat":".2f","rangeslider":{"visible":true,"thickness":0.059999999999999998}},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[-19.592498787134137,26.076559471128235],"tickmode":"array","ticktext":["-15","-10","-5","0","5","10","15","20","25"],"tickvals":[-15,-10,-5,0,5,9.9999999999999964,14.999999999999996,19.999999999999996,24.999999999999996],"categoryorder":"array","categoryarray":["-15","-10","-5","0","5","10","15","20","25"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":true,"anchor":"x","title":"Var. 12m (%)","hoverformat":".2f","dtick":5,"tick0":0,"zerolinecolor":"rgba(80,80,80,0.45)"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":12.7521793275218},"orientation":"h","x":0.5,"y":-0.27000000000000002,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":null,"family":null,"size":0}}},"hovermode":"closest","barmode":"relative","height":575,"dragmode":"zoom"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false,"displayModeBar":true,"scrollZoom":true,"responsive":true,"displaylogo":false},"source":"A","attrs":{"791c11a35ced":{"yintercept":{},"type":"scatter"},"791c6e321d66":{"x":{},"y":{},"colour":{}},"791c71737046":{"x":{},"y":{},"colour":{}},"791c630d5c64":{"x":{},"y":{},"colour":{}}},"cur_data":"791c11a35ced","visdat":{"791c11a35ced":["function (y) ","x"],"791c6e321d66":["function (y) ","x"],"791c71737046":["function (y) ","x"],"791c630d5c64":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":{"render":[{"code":"function(el, x) {\n  var gd = document.getElementById(el.id);\n  function toTime(v) { return new Date(v).getTime(); }\n  function relayoutY(eventdata) {\n    if (eventdata && eventdata['xaxis.autorange']) {\n      Plotly.relayout(gd, {'yaxis.autorange': true});\n      return;\n    }\n    var xr = null;\n    if (eventdata && eventdata['xaxis.range[0]'] && eventdata['xaxis.range[1]']) {\n      xr = [eventdata['xaxis.range[0]'], eventdata['xaxis.range[1]']];\n    } else if (gd.layout && gd.layout.xaxis && gd.layout.xaxis.range) {\n      xr = gd.layout.xaxis.range;\n    }\n    if (!xr) return;\n    var x0 = toTime(xr[0]);\n    var x1 = toTime(xr[1]);\n    if (!isFinite(x0) || !isFinite(x1)) return;\n    var ymin = Infinity;\n    var ymax = -Infinity;\n    gd.data.forEach(function(tr) {\n      if (tr.visible === false || tr.visible === 'legendonly') return;\n      if (!tr.x || !tr.y) return;\n      for (var i = 0; i < tr.x.length; i++) {\n        var tx = toTime(tr.x[i]);\n        var yy = Number(tr.y[i]);\n        if (isFinite(tx) && isFinite(yy) && tx >= x0 && tx <= x1) {\n          if (yy < ymin) ymin = yy;\n          if (yy > ymax) ymax = yy;\n        }\n      }\n    });\n    if (isFinite(ymin) && isFinite(ymax)) {\n      if (ymin === ymax) { ymin = ymin - 1; ymax = ymax + 1; }\n      var padding = Math.max((ymax - ymin) * 0.080000, 0.5);\n      Plotly.relayout(gd, {\n        'yaxis.range': [ymin - padding, ymax + padding],\n        'yaxis.autorange': false\n      });\n    }\n  }\n  gd.on('plotly_relayout', function(eventdata) {\n    if (eventdata['xaxis.range[0]'] || eventdata['xaxis.range[1]'] || eventdata['xaxis.autorange']) {\n      relayoutY(eventdata);\n    }\n  });\n}","data":null}]}}</script>
 </div>
 </div>
 </section>
 <section id="datos-utilizados" class="level2">
 <h2 class="anchored" data-anchor-id="datos-utilizados">Datos utilizados</h2>
-<p>El proyecto integra información mensual de actividad, comercio, crédito, precios, mercado laboral e indicadores sectoriales. La versión actual considera:</p>
+<p>El pipeline integra información mensual de actividad, comercio, crédito, precios, mercado laboral e indicadores sectoriales. La versión actual considera:</p>
 <ul>
 <li>IMACEC total e IMACEC no minero.</li>
-<li>EEE de IMACEC total, alineada al mes proyectado.</li>
 <li>Ventas minoristas.</li>
 <li>Flujo y número de operaciones de crédito.</li>
 <li>UF e inflación implícita asociada.</li>
@@ -516,72 +362,18 @@ El modelo solo abre este ciclo cuando existe EEE para ese mes.
 </section>
 <section id="enfoque-metodológico" class="level2">
 <h2 class="anchored" data-anchor-id="enfoque-metodológico">Enfoque metodológico</h2>
-<p>El modelo no es único durante todo el mes. Cambia según el set de información disponible para el período objetivo:</p>
-<ul>
-<li>antes de contar con indicadores contemporáneos completos, la EEE entrega una señal directa para el IMACEC total;</li>
-<li>con indicadores experimentales y financieros ya publicados, el modelo actualiza la señal usando actividad, crédito, comercio, UF y calendario;</li>
-<li>tras la publicación de los indicadores sectoriales INE, se usa la especificación más informada, incorporando minería, manufactura, comercio, electricidad y desempleo rezagado.</li>
-</ul>
-<p>Esta organización replica mejor el problema real de nowcasting: no se trata solo de estimar una regresión, sino de actualizar la proyección cuando llega nueva información.</p>
+<p>La versión actual estima dos familias de modelos lineales de nowcasting:</p>
+<ol type="1">
+<li><strong>Modelo con estadísticas experimentales:</strong> usa rezagos de actividad, ventas minoristas, crédito, UF y controles calendario.</li>
+<li><strong>Modelo con indicadores sectoriales INE:</strong> agrega minería, manufactura, comercio, electricidad y desempleo, cuando esos datos están disponibles.</li>
+</ol>
+<p>El modelo publicado como nowcast activo es el de <strong>indicadores sectoriales INE</strong> cuando puede estimarse correctamente; en caso contrario, el pipeline puede usar la especificación de estadísticas experimentales. Para la evaluación, ambos aparecen como modelos separados frente a benchmarks simples.</p>
 </section>
-<section id="métricas-de-ajuste" class="level2">
-<h2 class="anchored" data-anchor-id="métricas-de-ajuste">Métricas de ajuste</h2>
-<div class="cell">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Métricas de ajuste del modelo</caption>
-<colgroup>
-<col style="width: 17%">
-<col style="width: 3%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 69%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Variable</th>
-<th style="text-align: right;">N</th>
-<th style="text-align: right;">RMSE</th>
-<th style="text-align: right;">MAE</th>
-<th style="text-align: left;">Nota</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">IMACEC total</td>
-<td style="text-align: right;">88</td>
-<td style="text-align: right;">1.75</td>
-<td style="text-align: right;">1.28</td>
-<td style="text-align: left;">Métricas in-sample; no interpretar como evaluación fuera de muestra.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">IMACEC no minero</td>
-<td style="text-align: right;">88</td>
-<td style="text-align: right;">1.71</td>
-<td style="text-align: right;">1.22</td>
-<td style="text-align: left;">Métricas in-sample; no interpretar como evaluación fuera de muestra.</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Importante</span>Lectura prudente
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Las métricas anteriores corresponden a ajuste interno del modelo. Sirven para verificar si el ajuste reproduce razonablemente la muestra histórica, pero no deben interpretarse como desempeño predictivo real. Por eso se agrega una evaluación pseudo out-of-sample contra benchmarks simples.</p>
-</div>
-</div>
-</section>
-<section id="evaluación-pseudo-out-of-sample-y-benchmarks-simples" class="level2">
-<h2 class="anchored" data-anchor-id="evaluación-pseudo-out-of-sample-y-benchmarks-simples">Evaluación pseudo out-of-sample y benchmarks simples</h2>
-<p>La evaluación fuera de muestra re-estima el modelo con una <strong>ventana expansiva</strong>: para cada fecha de evaluación, se usa solo información disponible hasta el mes anterior. La predicción se compara contra tres reglas simples:</p>
+<section id="evaluación-pseudo-out-of-sample-contra-benchmarks-simples" class="level2">
+<h2 class="anchored" data-anchor-id="evaluación-pseudo-out-of-sample-contra-benchmarks-simples">Evaluación pseudo out-of-sample contra benchmarks simples</h2>
+<p>La evaluación no usa una fecha arbitraria fija en el código de la página. Por defecto se calcula desde <strong>2022-01</strong>, pero el inicio puede cambiarse con la variable de entorno:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">IMACEC_EVAL_START_DATE</span><span class="op">=</span>2022-01-01</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Se comparan ambos modelos contra reglas simples:</p>
 <ul>
 <li><strong>Benchmark AR(1):</strong> modelo autoregresivo de un rezago sobre la variación anual del IMACEC.</li>
 <li><strong>Promedio móvil 3m:</strong> promedio de las últimas tres variaciones anuales observadas.</li>
@@ -592,12 +384,12 @@ El modelo solo abre este ciclo cuando existe EEE para ese mes.
 <table class="caption-top table table-sm table-striped small">
 <caption>Evaluación pseudo out-of-sample contra benchmarks simples</caption>
 <colgroup>
-<col style="width: 24%">
-<col style="width: 31%">
-<col style="width: 4%">
-<col style="width: 7%">
-<col style="width: 7%">
-<col style="width: 25%">
+<col style="width: 19%">
+<col style="width: 44%">
+<col style="width: 3%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -606,73 +398,89 @@ El modelo solo abre este ciclo cuando existe EEE para ese mes.
 <th style="text-align: right;">N</th>
 <th style="text-align: right;">RMSE</th>
 <th style="text-align: right;">MAE</th>
-<th style="text-align: left;">Período</th>
+<th style="text-align: left;">Periodo</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">IMACEC no minero</td>
 <td style="text-align: left;">Promedio móvil 3m</td>
-<td style="text-align: right;">36</td>
-<td style="text-align: right;">1.86</td>
-<td style="text-align: right;">1.51</td>
-<td style="text-align: left;">2023-05 a 2026-04</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">2.18</td>
+<td style="text-align: right;">1.74</td>
+<td style="text-align: left;">2022-01 a 2026-04</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">IMACEC no minero</td>
-<td style="text-align: left;">Modelo principal</td>
-<td style="text-align: right;">36</td>
-<td style="text-align: right;">2.28</td>
-<td style="text-align: right;">1.67</td>
-<td style="text-align: left;">2023-05 a 2026-04</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">IMACEC no minero</td>
 <td style="text-align: left;">Benchmark AR(1)</td>
-<td style="text-align: right;">36</td>
-<td style="text-align: right;">2.49</td>
-<td style="text-align: right;">2.05</td>
-<td style="text-align: left;">2023-05 a 2026-04</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">2.27</td>
+<td style="text-align: right;">1.85</td>
+<td style="text-align: left;">2022-01 a 2026-04</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">IMACEC no minero</td>
+<td style="text-align: left;">Modelo con indicadores sectoriales INE</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">2.30</td>
+<td style="text-align: right;">1.72</td>
+<td style="text-align: left;">2022-01 a 2026-04</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">IMACEC no minero</td>
-<td style="text-align: left;">Naive estacional t-12</td>
-<td style="text-align: right;">36</td>
-<td style="text-align: right;">3.26</td>
-<td style="text-align: right;">2.70</td>
-<td style="text-align: left;">2023-05 a 2026-04</td>
+<td style="text-align: left;">Modelo con estadísticas experimentales</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">2.31</td>
+<td style="text-align: right;">1.70</td>
+<td style="text-align: left;">2022-01 a 2026-04</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">IMACEC no minero</td>
+<td style="text-align: left;">Naive estacional t-12</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">8.08</td>
+<td style="text-align: right;">5.75</td>
+<td style="text-align: left;">2022-01 a 2026-04</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">IMACEC total</td>
+<td style="text-align: left;">Modelo con indicadores sectoriales INE</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">2.05</td>
+<td style="text-align: right;">1.56</td>
+<td style="text-align: left;">2022-01 a 2026-04</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">IMACEC total</td>
+<td style="text-align: left;">Benchmark AR(1)</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">2.10</td>
+<td style="text-align: right;">1.69</td>
+<td style="text-align: left;">2022-01 a 2026-04</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">IMACEC total</td>
 <td style="text-align: left;">Promedio móvil 3m</td>
-<td style="text-align: right;">36</td>
-<td style="text-align: right;">1.95</td>
-<td style="text-align: right;">1.53</td>
-<td style="text-align: left;">2023-05 a 2026-04</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">IMACEC total</td>
-<td style="text-align: left;">Benchmark AR(1)</td>
-<td style="text-align: right;">36</td>
-<td style="text-align: right;">2.28</td>
-<td style="text-align: right;">1.82</td>
-<td style="text-align: left;">2023-05 a 2026-04</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">2.18</td>
+<td style="text-align: right;">1.69</td>
+<td style="text-align: left;">2022-01 a 2026-04</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">IMACEC total</td>
-<td style="text-align: left;">Modelo principal</td>
-<td style="text-align: right;">36</td>
-<td style="text-align: right;">2.52</td>
-<td style="text-align: right;">1.85</td>
-<td style="text-align: left;">2023-05 a 2026-04</td>
+<td style="text-align: left;">Modelo con estadísticas experimentales</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">2.45</td>
+<td style="text-align: right;">1.86</td>
+<td style="text-align: left;">2022-01 a 2026-04</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">IMACEC total</td>
 <td style="text-align: left;">Naive estacional t-12</td>
-<td style="text-align: right;">36</td>
-<td style="text-align: right;">3.39</td>
-<td style="text-align: right;">2.76</td>
-<td style="text-align: left;">2023-05 a 2026-04</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">7.22</td>
+<td style="text-align: right;">5.26</td>
+<td style="text-align: left;">2022-01 a 2026-04</td>
 </tr>
 </tbody>
 </table>
@@ -688,21 +496,113 @@ El modelo solo abre este ciclo cuando existe EEE para ese mes.
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>La comparación relevante no es si el modelo tiene error bajo en términos absolutos, sino si reduce RMSE/MAE frente a reglas simples. Si el promedio móvil o el AR(1) dominan al modelo principal, eso es una señal útil: el modelo necesita simplificación, mejores predictores contemporáneos, mejor tratamiento de vintages o una ventana de estimación distinta.</p>
-<p>La ventana de evaluación todavía es corta; por lo tanto, estos resultados deben leerse como diagnóstico preliminar de desempeño predictivo, no como validación definitiva del modelo.</p>
+<p>La comparación relevante no es si el modelo tiene error bajo en términos absolutos, sino si reduce RMSE/MAE frente a reglas simples. Si el promedio móvil o el AR(1) dominan al modelo, eso sugiere que la persistencia reciente explica buena parte de la dinámica y que los indicadores adicionales deben ser revisados o usados con una especificación más parsimoniosa.</p>
+<p>Esta evaluación es <strong>pseudo out-of-sample recursiva con datos finales disponibles</strong>. No reemplaza una evaluación con vintages en tiempo real.</p>
+</div>
+</div>
+</section>
+<section id="métricas-de-ajuste-interno" class="level2">
+<h2 class="anchored" data-anchor-id="métricas-de-ajuste-interno">Métricas de ajuste interno</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Métricas de ajuste interno del modelo</caption>
+<colgroup>
+<col style="width: 11%">
+<col style="width: 27%">
+<col style="width: 2%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">Modelo</th>
+<th style="text-align: right;">N</th>
+<th style="text-align: right;">RMSE</th>
+<th style="text-align: right;">MAE</th>
+<th style="text-align: left;">Nota</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">IMACEC total</td>
+<td style="text-align: left;">Modelo con estadísticas experimentales</td>
+<td style="text-align: right;">88</td>
+<td style="text-align: right;">1.75</td>
+<td style="text-align: right;">1.28</td>
+<td style="text-align: left;">Ajuste interno; no interpretar como desempeño predictivo fuera de muestra.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">IMACEC no minero</td>
+<td style="text-align: left;">Modelo con estadísticas experimentales</td>
+<td style="text-align: right;">88</td>
+<td style="text-align: right;">1.71</td>
+<td style="text-align: right;">1.22</td>
+<td style="text-align: left;">Ajuste interno; no interpretar como desempeño predictivo fuera de muestra.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">IMACEC total</td>
+<td style="text-align: left;">Modelo con indicadores sectoriales INE</td>
+<td style="text-align: right;">88</td>
+<td style="text-align: right;">1.27</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">Ajuste interno; no interpretar como desempeño predictivo fuera de muestra.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">IMACEC no minero</td>
+<td style="text-align: left;">Modelo con indicadores sectoriales INE</td>
+<td style="text-align: right;">88</td>
+<td style="text-align: right;">1.32</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: left;">Ajuste interno; no interpretar como desempeño predictivo fuera de muestra.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>Lectura prudente
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Las métricas anteriores corresponden a ajuste interno del modelo. La evaluación pseudo out-of-sample es más informativa para juzgar desempeño predictivo, aunque todavía no representa una evaluación en tiempo real con vintages de publicación.</p>
 </div>
 </div>
 </section>
 <section id="próximos-pasos" class="level2">
 <h2 class="anchored" data-anchor-id="próximos-pasos">Próximos pasos</h2>
 <ul>
-<li>Separar formalmente los vintages de publicación usando calendarios efectivos de cada serie.</li>
-<li>Guardar y comparar proyecciones históricas con más de un corte mensual.</li>
-<li>Incorporar intervalos de predicción calibrados con errores fuera de muestra.</li>
-<li>Evaluar especificaciones más parsimoniosas frente a modelos con muchos predictores contemporáneos.</li>
+<li>Separar formalmente una versión de <strong>nowcast temprano</strong> y otra de <strong>nowcast con indicadores sectoriales completos</strong>.</li>
+<li>Incorporar fechas efectivas de publicación de cada indicador para una evaluación más realista en tiempo real.</li>
+<li>Probar especificaciones más parsimoniosas: AR(1) + calendario, AR(1) + sectores clave y combinaciones de modelos.</li>
+<li>Incorporar intervalos de predicción calibrados con errores pseudo out-of-sample.</li>
+<li>Automatizar actualización mensual con GitHub Actions.</li>
+</ul>
+</section>
+<section id="código" class="level2">
+<h2 class="anchored" data-anchor-id="código">Código</h2>
+<p>El código fuente del proyecto queda organizado en módulos dentro del repositorio:</p>
+<ul>
+<li><code>R/imacec_config.R</code></li>
+<li><code>R/imacec_utils.R</code></li>
+<li><code>R/imacec_calendar.R</code></li>
+<li><code>R/imacec_data.R</code></li>
+<li><code>R/imacec_models.R</code></li>
+<li><code>R/imacec_outputs.R</code></li>
+<li><code>scripts/01_update_imacec.R</code></li>
 </ul>
 
 
+</section>
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
