@@ -1024,3 +1024,68 @@ main.content {
 .proyectos-ipom-iris .plotly.html-widget {
   width: 100% !important;
 }
+
+/* --- IMACEC project cards and flow --- */
+.imacec-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.1rem 0 1.2rem 0;
+}
+
+.imacec-kpi-card {
+  border: 1px solid #d0d7de;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(27, 39, 53, 0.08);
+  padding: 1rem 1.05rem;
+  min-height: 95px;
+}
+
+.imacec-kpi-label {
+  display: block;
+  color: #667085;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin-bottom: 0.45rem;
+}
+
+.imacec-kpi-value {
+  display: block;
+  color: #243447;
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.imacec-flow {
+  border-left: 4px solid #2f6f9f;
+  background: #f7fbff;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin: 1rem 0 1.25rem 0;
+}
+
+.imacec-flow p {
+  margin-bottom: 0.7rem;
+}
+
+.gt_table {
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  box-shadow: 0 6px 18px rgba(27, 39, 53, 0.07) !important;
+}
+
+@media (max-width: 900px) {
+  .imacec-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .imacec-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}

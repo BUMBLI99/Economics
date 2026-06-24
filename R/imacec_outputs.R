@@ -31,13 +31,15 @@ make_summary_table <- function(resultado) {
 
 make_history_table <- function(resultado) {
   proy <- resultado$proyeccion
+  fit_label <- if (!is.null(resultado$fit_model_label)) resultado$fit_model_label else resultado$model_label
+  fit_key <- if (!is.null(resultado$fit_model_key)) resultado$fit_model_key else resultado$model_key
 
   hist <- resultado$Data |>
     dplyr::select(Periodo, imacec, imacec_nm, imacec_fit, imacec_nm_fit) |>
     dplyr::mutate(
       tipo = "Histórico",
-      modelo = resultado$model_label,
-      model_key = resultado$model_key
+      modelo = fit_label,
+      model_key = fit_key
     )
 
   proj_row <- tibble::tibble(
@@ -224,7 +226,7 @@ summarise_oos_predictions <- function(preds, eval_start_date) {
     dplyr::arrange(variable, RMSE)
 }
 
-compute_pseudo_oos_metrics <- function(eval_start_date = as.Date(Sys.getenv("IMACEC_EVAL_START_DATE", unset = "2022-01-01")), models = c("base", "ine")) {
+compute_pseudo_oos_metrics <- function(eval_start_date = as.Date(Sys.getenv("IMACEC_EVAL_START_DATE", unset = "2021-01-01")), models = c("base", "ine")) {
   eval_start_date <- as.Date(eval_start_date)
 
   model_preds <- purrr::map_dfr(models, function(m) {
@@ -303,7 +305,7 @@ export_imacec_outputs <- function(resultado,
                                   output_dir = "data/processed",
                                   fig_dir = "assets/img/imacec",
                                   ultimos_meses = 96,
-                                  eval_start_date = as.Date(Sys.getenv("IMACEC_EVAL_START_DATE", unset = "2022-01-01"))) {
+                                  eval_start_date = as.Date(Sys.getenv("IMACEC_EVAL_START_DATE", unset = "2021-01-01"))) {
   if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
   if (!dir.exists(fig_dir)) dir.create(fig_dir, recursive = TRUE)
 

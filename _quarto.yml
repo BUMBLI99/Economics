@@ -12,10 +12,6 @@ project:
     - proyectos/estres-externo.qmd
     - proyectos/curva-rendimiento.qmd
     - proyectos/exchange.qmd
-  resources:
-    - assets/**
-    - cv_mauricio_ulloa.pdf
-    - .nojekyll
 
 website:
   title: "Mauricio Ulloa"
@@ -45,8 +41,7 @@ format:
     toc: true
     page-layout: full
     css: assets/css/styles.css
-    code-fold: true
+    code-fold: false
     code-tools: false
-
 execute:
   freeze: false
