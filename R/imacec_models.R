@@ -147,14 +147,14 @@ fit_models_experimental <- function(Data) {
 
   modelo_imacec <- stats::lm(
     imacec ~ imacec_lag1 + imacec_lag2 + imacec_lag4 + imacec_lag12 +
-      venta_minorista + monto_credito + cantidad_credito + dias_habiles +
+      venta_minorista + monto_credito  + dias_habiles +
       feb + bisiesto + dias_mes + mes + uf + d_2022_04 + d_2020_04 + d_2020_05,
     data = Data_reg
   )
 
   modelo_imacec_nm <- stats::lm(
     imacec_nm ~ imacec_nm_lag1 + imacec_nm_lag2 + imacec_nm_lag4 + imacec_nm_lag12 +
-      venta_minorista + monto_credito + cantidad_credito + dias_habiles +
+      venta_minorista + monto_credito  + dias_habiles +
       feb + bisiesto + dias_mes + mes + uf + d_2022_04 + d_2020_04 + d_2020_05,
     data = Data_reg
   )
@@ -195,7 +195,7 @@ fit_models_eee <- function(Data) {
   )
 
   modelo_imacec_nm <- stats::lm(
-    imacec_nm ~ imacec_nm_lag1 + imacec_nm_lag2 + imacec_nm_lag4 + imacec_nm_lag12 +
+    imacec_nm ~  eee_imacec + imacec_nm_lag1 + imacec_nm_lag2 + imacec_nm_lag4 + imacec_nm_lag12 +
       venta_minorista + monto_credito + uf + dias_habiles + feb + bisiesto +
       dias_mes + mes + d_2022_04 + d_2020_04 + d_2020_05,
     data = Data_reg_nm
