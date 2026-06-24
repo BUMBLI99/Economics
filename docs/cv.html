@@ -28,6 +28,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
@@ -70,22 +71,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Buscar"
   }
 }</script>
-<style>html{ scroll-behavior: smooth; }</style>
 
 
 <link rel="stylesheet" href="assets/css/styles.css">
-<meta property="og:title" content="CV – Mauricio Ulloa">
-<meta property="og:description" content="Formación, herramientas y áreas de interés de Mauricio Andrés Ulloa Valdivia.">
-<meta property="og:image" content="https://mulloav3007.github.io/Economics/assets/img/og/portfolio-og.png">
-<meta property="og:site_name" content="Mauricio Ulloa">
-<meta property="og:image:height" content="630">
-<meta property="og:image:width" content="1200">
-<meta name="twitter:title" content="CV – Mauricio Ulloa">
-<meta name="twitter:description" content="Formación, herramientas y áreas de interés de Mauricio Andrés Ulloa Valdivia.">
-<meta name="twitter:image" content="https://mulloav3007.github.io/Economics/assets/img/og/portfolio-og.png">
-<meta name="twitter:image-height" content="630">
-<meta name="twitter:image-width" content="1200">
-<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -124,7 +112,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/mulloav3007/Economics"> <i class="bi bi-github" role="img" aria-label="Repositorio en GitHub">
+    <a class="nav-link" href="https://github.com/mulloav3007"> <i class="bi bi-github" role="img" aria-label="GitHub">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -217,51 +205,6 @@ Universidad de Chile</p>
 </section>
 
 </main> <!-- /main -->
-<script>
-(function () {
-  function isVisible(el) {
-    return !!(el && (el.offsetWidth || el.offsetHeight || el.getClientRects().length));
-  }
-
-  function resizePlotly() {
-    if (!window.Plotly) return;
-    document.querySelectorAll('.js-plotly-plot').forEach(function (el) {
-      if (!isVisible(el)) return;
-      try {
-        window.Plotly.Plots.resize(el);
-        window.Plotly.relayout(el, { autosize: true });
-      } catch (e) {}
-    });
-  }
-
-  function scheduleResize() {
-    if (window.requestAnimationFrame) {
-      window.requestAnimationFrame(resizePlotly);
-    }
-    [0, 80, 220, 500, 900, 1400].forEach(function (delay) {
-      window.setTimeout(resizePlotly, delay);
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', scheduleResize);
-  window.addEventListener('load', scheduleResize);
-  window.addEventListener('resize', scheduleResize);
-  document.addEventListener('shown.bs.tab', scheduleResize, true);
-  document.addEventListener('shown.bs.collapse', scheduleResize, true);
-  document.addEventListener('click', function (ev) {
-    if (ev.target && ev.target.closest && ev.target.closest('.nav-link, [data-bs-toggle="tab"], [data-bs-toggle="collapse"]')) {
-      scheduleResize();
-    }
-  }, true);
-
-  if ('ResizeObserver' in window) {
-    var observer = new ResizeObserver(scheduleResize);
-    document.querySelectorAll('main, .tab-content, .tab-pane, .panel-tabset, .cell-output-display').forEach(function (el) {
-      try { observer.observe(el); } catch (e) {}
-    });
-  }
-})();
-</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -349,13 +292,6 @@ Universidad de Chile</p>
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
-            // target, if specified
-            link.setAttribute("target", "_blank");
-            if (link.getAttribute("rel") === null) {
-              link.setAttribute("rel", "noopener");
-            }
-            // default icon
-            link.classList.add("external");
         }
       }
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
@@ -679,7 +615,7 @@ Universidad de Chile</p>
       &nbsp;
     </div>
     <div class="nav-footer-right">
-<p>Economía aplicada · Macroeconomía · Datos</p>
+<p>Sitio construido con Quarto y publicado en GitHub Pages</p>
 </div>
   </div>
 </footer>
@@ -687,5 +623,4 @@ Universidad de Chile</p>
 
 
 
-<script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

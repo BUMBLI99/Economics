@@ -9,22 +9,18 @@ project:
     - proyectos/imacec.qmd
     - proyectos/ipom-iris.qmd
     - proyectos/transmision-tpm.qmd
+    - proyectos/estres-externo.qmd
     - proyectos/curva-rendimiento.qmd
     - proyectos/exchange.qmd
   resources:
+    - assets/**
     - cv_mauricio_ulloa.pdf
     - .nojekyll
-    - assets/img/**
-    - assets/files/**
 
 website:
   title: "Mauricio Ulloa"
   site-url: "https://mulloav3007.github.io/Economics/"
-  description: "Portafolio técnico de economía aplicada, macroeconomía, política monetaria, proyecciones y visualización de datos."
-  open-graph: true
-  twitter-card: true
   navbar:
-    pinned: true
     left:
       - href: index.qmd
         text: Inicio
@@ -36,33 +32,21 @@ website:
         text: Contacto
     right:
       - icon: github
-        href: https://github.com/mulloav3007/Economics
-        aria-label: Repositorio en GitHub
+        href: https://github.com/mulloav3007
+        aria-label: GitHub
   page-footer:
     left: "© 2026 Mauricio Ulloa"
-    right: "Economía aplicada · Macroeconomía · Datos"
+    right: "Sitio construido con Quarto y publicado en GitHub Pages"
 
 format:
   html:
-    lang: es
     theme: cosmo
-    css: assets/css/styles.css
-    page-layout: full
+    lang: es
     toc: true
-    toc-title: "En esta página"
+    page-layout: full
+    css: assets/css/styles.css
     code-fold: true
-    code-summary: "Mostrar código"
     code-tools: false
-    smooth-scroll: true
-    link-external-icon: true
-    link-external-newwindow: true
-    anchor-sections: true
-    fig-align: center
-    df-print: paged
-    include-after-body:
-      - assets/js/plotly-resize.html
 
 execute:
   freeze: false
-  warning: false
-  message: false

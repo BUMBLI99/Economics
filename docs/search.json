@@ -56,6 +56,356 @@
     "text": "Lectura económica\nEl valor del ejercicio está en ordenar la discusión macrofinanciera regional. Un residuo extremo no prueba por sí solo un shock local; indica que, bajo una especificación común, el movimiento observado no queda bien explicado por los factores externos incluidos. Ese punto puede abrir una revisión de liquidez local, riesgo fiscal, eventos políticos, expectativas monetarias, controles de capital, regulación o shocks idiosincráticos.\n\n\nQué permite\nComparar países con una misma especificación, detectar episodios residuales extremos y separar visualmente presión cambiaria de presión en tasas largas.\n\n\nQué no permite\nNo identifica causalidad estructural ni separa perfectamente riesgo político, fiscal, liquidez, intervención cambiaria o errores de medición."
   },
   {
+    "objectID": "proyectos/estres-externo.html",
+    "href": "proyectos/estres-externo.html",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "",
+    "text": "Chile es una economía pequeña y abierta. El tipo de cambio, las tasas largas y las condiciones financieras locales reaccionan a movimientos del dólar global, tasas externas, apetito por riesgo, precios de commodities y mercados accionarios internacionales. Sin embargo, no todos los movimientos locales se explican completamente por esos fundamentos externos.\nEste proyecto construye un monitor de estrés financiero de mercado para Chile a partir de dos componentes:\n\nResiduo cambiario estandarizado: diferencia entre el USD/CLP observado y el valor ajustado por fundamentos externos.\nResiduo de tasa soberana 10Y estandarizado: diferencia entre la tasa chilena a 10 años observada y la tasa ajustada por condiciones financieras globales.\n\nLa lectura principal está en esos dos residuos. El índice agregado se usa después como una síntesis operativa, útil para seguimiento, pero no reemplaza el diagnóstico por componentes.\n\nEl indicador debe leerse como un índice de estrés financiero de mercado, no como una medida completa de estrés sistémico. No incluye directamente crédito bancario, liquidez del mercado monetario, spreads corporativos, morosidad ni balances financieros. Es una primera capa de seguimiento macrofinanciero."
+  },
+  {
+    "objectID": "proyectos/estres-externo.html#motivación",
+    "href": "proyectos/estres-externo.html#motivación",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "",
+    "text": "Chile es una economía pequeña y abierta. El tipo de cambio, las tasas largas y las condiciones financieras locales reaccionan a movimientos del dólar global, tasas externas, apetito por riesgo, precios de commodities y mercados accionarios internacionales. Sin embargo, no todos los movimientos locales se explican completamente por esos fundamentos externos.\nEste proyecto construye un monitor de estrés financiero de mercado para Chile a partir de dos componentes:\n\nResiduo cambiario estandarizado: diferencia entre el USD/CLP observado y el valor ajustado por fundamentos externos.\nResiduo de tasa soberana 10Y estandarizado: diferencia entre la tasa chilena a 10 años observada y la tasa ajustada por condiciones financieras globales.\n\nLa lectura principal está en esos dos residuos. El índice agregado se usa después como una síntesis operativa, útil para seguimiento, pero no reemplaza el diagnóstico por componentes.\n\nEl indicador debe leerse como un índice de estrés financiero de mercado, no como una medida completa de estrés sistémico. No incluye directamente crédito bancario, liquidez del mercado monetario, spreads corporativos, morosidad ni balances financieros. Es una primera capa de seguimiento macrofinanciero."
+  },
+  {
+    "objectID": "proyectos/estres-externo.html#lectura-rápida",
+    "href": "proyectos/estres-externo.html#lectura-rápida",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Lectura rápida",
+    "text": "Lectura rápida\n\n\nÚltima observación completa\n18-05-2026\nFecha más reciente con ambos componentes disponibles: residuo cambiario y residuo de tasa soberana 10Y.\n\n\nResiduo FX\n-0,84\nUn valor positivo indica un peso más depreciado que lo predicho por fundamentos externos.\n\n\nResiduo 10Y\n-1,48\nUn valor positivo indica una tasa larga local más alta que la predicha por condiciones financieras globales.\n\n\nÍndice 30 días\n-1,15\nPromedio simple de ambos componentes, suavizado con media móvil de 30 días.\n\n\nRégimen actual\nCondiciones benignas\nClasificación descriptiva basada en la media móvil de 30 días del índice sintético.\n\n\nFuente efectiva\nlive_bcch_fred_bis\nLa actualización usa datos en vivo cuando están disponibles y una base local de respaldo si alguna fuente falla."
+  },
+  {
+    "objectID": "proyectos/estres-externo.html#datos",
+    "href": "proyectos/estres-externo.html#datos",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Datos",
+    "text": "Datos\nLa base combina series de BCCh, FRED y BIS. Si alguna API falla y está habilitado el respaldo, el procedimiento usa una base local depurada del proyecto original ExchangeReg. La cobertura efectiva del modelo comienza cuando existe información simultánea para tipo de cambio, tasa chilena a 10 años, Treasury 10Y y los principales fundamentos externos.\n\n\n\nVariables locales\n\nUSD/CLP.\nTasa soberana chilena a 10 años.\n\n\n\nVariables externas\n\nTasa Treasury 10Y de Estados Unidos.\nVIX.\nDólar global multilateral.\nPrecio del cobre.\nWTI.\nYuan por dólar.\nNasdaq.\nÍndice accionario de China.\n\n\n\n\nResultados generados\n\nResiduos estandarizados de USD/CLP y tasa 10Y.\nÍndice sintético de presión financiera de mercado.\nMedia móvil de 30 días y régimen descriptivo.\nDiagnóstico de modelos y episodios históricos."
+  },
+  {
+    "objectID": "proyectos/estres-externo.html#metodología",
+    "href": "proyectos/estres-externo.html#metodología",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Metodología",
+    "text": "Metodología\nEl monitor se construye en cuatro pasos.\nPrimero, se estima un modelo de normalización para el tipo de cambio:\n\\[\n\\begin{aligned}\n\\log(USDCLP_t) =\\; & \\alpha + \\beta_1 t + \\beta_2 \\log(Cobre_t) + \\beta_3 \\log(WTI_t) \\\\\n& + \\beta_4 \\log(VIX_t) + \\beta_5 \\log(Dólar_t) + \\beta_6 \\log(CNY_t) \\\\\n& + \\beta_7 \\log(Nasdaq_t) + \\beta_8 \\log(ChinaEq_t) + \\varepsilon^{FX}_t\n\\end{aligned}\n\\]\nEl residuo estandarizado del modelo se interpreta como presión cambiaria local no explicada por esos fundamentos. Un residuo positivo indica que el peso está más depreciado que lo que predice el modelo.\nSegundo, se estima un modelo de normalización para la tasa soberana chilena a 10 años:\n\\[\n\\begin{aligned}\n10Y^{CLP}_t =\\; & \\alpha + \\gamma_1 t + \\gamma_2 10Y^{US}_t + \\gamma_3 \\log(VIX_t) \\\\\n& + \\gamma_4 \\log(Dólar_t) + \\gamma_5 \\log(CNY_t) + \\gamma_6 \\log(Nasdaq_t) + \\varepsilon^{10Y}_t\n\\end{aligned}\n\\]\nEl residuo estandarizado de este modelo se interpreta como presión en tasas largas locales no explicada por condiciones financieras globales. Un residuo positivo indica que la tasa local está más alta que la predicha por el modelo.\nTercero, ambos residuos se expresan como z-scores:\n\\[\nz^{j}_t = \\frac{\\varepsilon^{j}_t - \\bar{\\varepsilon}^{j}}{sd(\\varepsilon^{j})}, \\quad j \\in \\{FX, 10Y\\}\n\\]\nFinalmente, se construye una síntesis de mercado como promedio simple de ambos componentes:\n\\[\nStress_t = \\frac{z^{FX}_t + z^{10Y}_t}{2}\n\\]\nPara la lectura de régimen se usa una media móvil de 30 días. Los umbrales son descriptivos: sobre 0,75 se clasifica como estrés moderado y sobre 1,5 como estrés alto."
+  },
+  {
+    "objectID": "proyectos/estres-externo.html#componentes-principales-residuos-fx-y-tasa-10y",
+    "href": "proyectos/estres-externo.html#componentes-principales-residuos-fx-y-tasa-10y",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Componentes principales: residuos FX y tasa 10Y",
+    "text": "Componentes principales: residuos FX y tasa 10Y\nLa primera lectura del modelo debe hacerse sobre los dos residuos estandarizados por separado. Cuando ambos son positivos, la evidencia de presión financiera local es más clara. Cuando uno es positivo y el otro negativo, el índice agregado puede esconder diferencias relevantes entre mercado cambiario y tasas largas.\n\n\nWarning: plotly.js does not (yet) support horizontal legend items \nYou can track progress here: \nhttps://github.com/plotly/plotly.js/issues/53 \n\n\n\n\n\n\n\n\nFigura 1"
+  },
+  {
+    "objectID": "proyectos/estres-externo.html#índice-sintético",
+    "href": "proyectos/estres-externo.html#índice-sintético",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Índice sintético",
+    "text": "Índice sintético\nEl índice sintético resume ambos componentes en una sola serie. Tiene sentido como herramienta de monitoreo porque los dos residuos están normalizados y tienen la misma dirección económica: valores positivos indican presión local mayor a la explicada por fundamentos externos. Aun así, la lectura económica principal debe volver siempre a los componentes.\n\n\nWarning: plotly.js does not (yet) support horizontal legend items \nYou can track progress here: \nhttps://github.com/plotly/plotly.js/issues/53 \n\n\n\n\n\n\n\n\nFigura 2"
+  },
+  {
+    "objectID": "proyectos/estres-externo.html#media-móvil-de-30-días-y-régimen",
+    "href": "proyectos/estres-externo.html#media-móvil-de-30-días-y-régimen",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Media móvil de 30 días y régimen",
+    "text": "Media móvil de 30 días y régimen\nLa media móvil reduce ruido diario y es la referencia más estable para clasificar regímenes. La serie diaria sirve para detección temprana, pero puede sobrerreaccionar a movimientos transitorios.\n\n\nWarning: plotly.js does not (yet) support horizontal legend items \nYou can track progress here: \nhttps://github.com/plotly/plotly.js/issues/53 \n\n\n\n\n\n\n\n\nFigura 3"
+  },
+  {
+    "objectID": "proyectos/estres-externo.html#componentes-suavizados",
+    "href": "proyectos/estres-externo.html#componentes-suavizados",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Componentes suavizados",
+    "text": "Componentes suavizados\n\n\nWarning: plotly.js does not (yet) support horizontal legend items \nYou can track progress here: \nhttps://github.com/plotly/plotly.js/issues/53 \n\n\n\n\n\n\n\n\nFigura 4"
+  },
+  {
+    "objectID": "proyectos/estres-externo.html#tipo-de-cambio-observado-versus-ajustado",
+    "href": "proyectos/estres-externo.html#tipo-de-cambio-observado-versus-ajustado",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Tipo de cambio: observado versus ajustado",
+    "text": "Tipo de cambio: observado versus ajustado\n\n\nWarning: plotly.js does not (yet) support horizontal legend items \nYou can track progress here: \nhttps://github.com/plotly/plotly.js/issues/53 \n\n\n\n\n\n\n\n\nFigura 5"
+  },
+  {
+    "objectID": "proyectos/estres-externo.html#tasa-10y-observada-versus-ajustada",
+    "href": "proyectos/estres-externo.html#tasa-10y-observada-versus-ajustada",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Tasa 10Y: observada versus ajustada",
+    "text": "Tasa 10Y: observada versus ajustada\n\n\nWarning: plotly.js does not (yet) support horizontal legend items \nYou can track progress here: \nhttps://github.com/plotly/plotly.js/issues/53 \n\n\n\n\n\n\n\n\nFigura 6"
+  },
+  {
+    "objectID": "proyectos/estres-externo.html#episodios-de-mayor-estrés",
+    "href": "proyectos/estres-externo.html#episodios-de-mayor-estrés",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Episodios de mayor estrés",
+    "text": "Episodios de mayor estrés\nLa tabla muestra fechas locales del indicador suavizado. Para evitar seleccionar varios días del mismo episodio, se impone una distancia mínima de 30 días entre observaciones seleccionadas. La lectura debe mirar tanto el índice agregado como los dos componentes: un episodio puede estar dominado por presión cambiaria, por tasas largas o por ambos canales.\n\n\n\n\nTabla 1\n\n\n\n\n\n\nFecha\nÍndice 30d\nÍndice diario\nZ FX\nZ 10Y\nRégimen\n\n\n\n\n19-11-2012\n1,09\n1,22\n0,65\n1,79\nEstrés moderado\n\n\n19-12-2012\n1,18\n1,11\n0,43\n1,78\nEstrés moderado\n\n\n18-01-2013\n1,27\n1,53\n1,07\n1,99\nEstrés moderado\n\n\n19-02-2013\n1,44\n1,37\n0,81\n1,92\nEstrés moderado\n\n\n16-09-2021\n1,16\n1,13\n0,23\n2,02\nEstrés moderado\n\n\n20-10-2021\n1,72\n2,70\n2,01\n3,39\nEstrés alto\n\n\n19-11-2021\n2,18\n2,13\n1,12\n3,14\nEstrés alto\n\n\n20-12-2021\n1,62\n2,01\n1,35\n2,66\nEstrés alto\n\n\n19-01-2022\n1,89\n1,53\n0,92\n2,15\nEstrés alto\n\n\n18-02-2022\n1,11\n0,74\n0,24\n1,25\nEstrés moderado\n\n\n08-07-2022\n1,13\n1,78\n2,54\n1,02\nEstrés moderado\n\n\n08-08-2022\n1,81\n1,57\n0,81\n2,33\nEstrés alto\n\n\n07-09-2022\n1,36\n0,85\n-0,16\n1,86\nEstrés moderado\n\n\n04-11-2022\n1,46\n1,21\n1,62\n0,80\nEstrés moderado\n\n\n08-04-2024\n1,17\n0,97\n1,22\n0,73\nEstrés moderado"
+  },
+  {
+    "objectID": "proyectos/estres-externo.html#diagnóstico-de-modelos",
+    "href": "proyectos/estres-externo.html#diagnóstico-de-modelos",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Diagnóstico de modelos",
+    "text": "Diagnóstico de modelos\n\n\n\n\nTabla 2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nModelo\nVariable dependiente\nPredictores\nObservaciones\nR²\nR² ajustado\nInicio muestra\nFin muestra\nDesv. est. residuo\n\n\n\n\nTipo de cambio USD/CLP\nlog(USDCLP)\ntrend, l_cpi_rel_chl_us, l_pcu, l_wti, l_vix, l_dtw, l_cny, l_eq_nsq, l_eq_cny\n3385\n0,959\n0,959\n05-10-2012\n18-05-2026\n0,040\n\n\nTasa soberana 10Y CLP\n10YCLP\ntrend, y10_tsy, l_vix, l_dtw, l_cny, l_eq_nsq\n3386\n0,660\n0,659\n05-10-2012\n18-05-2026\n0,595"
+  },
+  {
+    "objectID": "proyectos/estres-externo.html#chequeo-pseudo-out-of-sample",
+    "href": "proyectos/estres-externo.html#chequeo-pseudo-out-of-sample",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Chequeo pseudo out-of-sample",
+    "text": "Chequeo pseudo out-of-sample\n\n\n\n\n\n\nAdvertenciaRiesgo de look-ahead bias\n\n\n\nLa versión principal usa modelos estimados en muestra completa. Eso es útil para una lectura histórica limpia, pero tiene una limitación importante: los residuos de años anteriores se calculan con parámetros estimados usando información posterior. Por lo tanto, esa serie no debe interpretarse como una señal estrictamente disponible en tiempo real.\n\n\nPara reducir ese problema, el proyecto incorpora un chequeo pseudo out-of-sample con ventana expansiva: cada predicción se estima usando solo datos anteriores a la fecha evaluada. Esta versión es más exigente y menos suave, pero se acerca mejor a la pregunta operacional: qué habría señalado el monitor con la información disponible en ese momento.\n\n\n\nÚltima lectura disponible del chequeo pseudo out-of-sample.\n\n\n\n\n\n\n\n\n\nFecha\nÍndice OOS 30d\nRégimen\nObs. entrenamiento FX\nObs. entrenamiento 10Y\n\n\n\n\n15-04-2020\n1,02\nEstrés moderado\n1870\n1870\n\n\n\n\n\n\n\nWarning: plotly.js does not (yet) support horizontal legend items \nYou can track progress here: \nhttps://github.com/plotly/plotly.js/issues/53"
+  },
+  {
+    "objectID": "proyectos/estres-externo.html#interpretación-económica",
+    "href": "proyectos/estres-externo.html#interpretación-económica",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Interpretación económica",
+    "text": "Interpretación económica\nUna lectura alta del índice puede venir por dos canales. El primero es cambiario: el peso se deprecia más que lo explicado por cobre, petróleo, dólar global, VIX, yuan y bolsas externas. El segundo es soberano: la tasa 10Y chilena sube más que lo que predicen el Treasury 10Y y otras variables financieras globales. Cuando ambos residuos se mueven en la misma dirección, el indicador agregado aumenta con más fuerza.\nLa ventaja de esta aproximación es que evita confundir todo movimiento del USD/CLP o de la tasa 10Y con estrés local. Si el dólar global sube, el cobre cae o el VIX aumenta, parte del movimiento chileno es esperable. El residuo intenta aislar la porción que queda fuera de esos fundamentos observables."
+  },
+  {
+    "objectID": "proyectos/estres-externo.html#limitaciones-y-extensiones",
+    "href": "proyectos/estres-externo.html#limitaciones-y-extensiones",
+    "title": "Monitor de estrés financiero de mercado para Chile",
+    "section": "Limitaciones y extensiones",
+    "text": "Limitaciones y extensiones\n\nEste índice no debe interpretarse como evidencia causal ni como estimación estructural del premio por riesgo chileno. Es una herramienta de seguimiento descriptivo basada en residuos de modelos lineales. La versión de muestra completa es útil para lectura histórica; la versión pseudo out-of-sample es la referencia más prudente para seguimiento operacional.\n\nLas principales extensiones naturales son: incorporar spreads corporativos, mercado monetario, IPSA/volatilidad local, CDS soberano, liquidez bancaria y variables de crédito. El bloque de retrocompra/retroventa de CMF del proyecto original puede agregarse como un segundo módulo de liquidez bancaria, pero conviene mantenerlo separado inicialmente porque la muestra es más corta y el concepto económico es distinto."
+  },
+  {
+    "objectID": "proyectos/ipom-iris.html",
+    "href": "proyectos/ipom-iris.html",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "",
+    "text": "NotaEstado del ejercicio\n\n\n\nEl proyecto ejecuta una simulación condicional en Matlab/IRIS. La corrida principal mantiene la TPM en 4,5% durante 2026 y fuerza el retorno a la trayectoria base/IPoM desde 2027T1. No es una proyección institucional ni una réplica del modelo oficial del Banco Central."
+  },
+  {
+    "objectID": "proyectos/ipom-iris.html#pregunta-económica",
+    "href": "proyectos/ipom-iris.html#pregunta-económica",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Pregunta económica",
+    "text": "Pregunta económica\nEl ejercicio pregunta cómo cambian las trayectorias de inflación, TPM y brecha de actividad cuando se impone una trayectoria de política monetaria más baja durante 2026, manteniendo el resto de la estructura del modelo y retornando al escenario base desde 2027."
+  },
+  {
+    "objectID": "proyectos/ipom-iris.html#escenarios",
+    "href": "proyectos/ipom-iris.html#escenarios",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Escenarios",
+    "text": "Escenarios\n\n\n\nEscenarios usados en la comparación pública.\n\n\n\n\n\n\n\nEscenario\nArchivo\nLectura\n\n\n\n\nEscenario base IPoM identificado\nfcast_ipom_exact.csv\nTrayectoria de referencia identificada sobre el escenario IPoM.\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nfcast_alt_tpm45_2026.csv\nTPM fijada en 4,5% durante 2026 y retorno a la trayectoria base desde 2027."
+  },
+  {
+    "objectID": "proyectos/ipom-iris.html#estructura-conceptual-del-modelo",
+    "href": "proyectos/ipom-iris.html#estructura-conceptual-del-modelo",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Estructura conceptual del modelo",
+    "text": "Estructura conceptual del modelo\n\nBrecha de actividad\n\\[\n\\tilde y_t =\n\\rho_y \\tilde y_{t-1}\n- \\phi_r (i_{t-1} - i^n_t)\n+ \\phi_x x_t\n+ \\phi_z \\tilde z_t\n+ \\phi_c c_t\n+ \\varepsilon^y_t\n\\]\nLa brecha depende de persistencia, posición monetaria, condiciones externas, tipo de cambio real y condiciones financieras.\n\n\nInflación subyacente\n\\[\n\\pi^{core}_t =\n\\alpha_1 \\pi^{core}_{t-1}\n+ \\alpha_4 \\pi^{core}_{t-4}\n+ (1-\\alpha_1-\\alpha_4)E_t\\pi^{core}_{t+h}\n+ \\kappa_y \\tilde y_t\n+ \\kappa_z \\tilde z_t\n+ \\kappa_f \\Delta p^{food}_t\n+ s_t\n+ \\varepsilon^\\pi_t\n\\]\n\n\nInflación total y regla monetaria\n\\[\n\\pi_t = \\pi^{core}_t + \\pi^{res}_t\n\\]\n\\[\ni_t =\n\\rho_i i_{t-1}\n+ (1-\\rho_i)\n\\left[\n  i^n_t\n  + \\phi_\\pi (E_t\\pi^{core}_{t+h}-\\pi^*)\n  + \\phi_y \\tilde y_t\n\\right]\n+ \\varepsilon^i_t\n\\]\nLa trayectoria alternativa se implementa exogenizando la TPM en 2026 y dejando que el modelo endogenice los shocks requeridos para cumplir esa condición."
+  },
+  {
+    "objectID": "proyectos/ipom-iris.html#resultado-principal",
+    "href": "proyectos/ipom-iris.html#resultado-principal",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Resultado principal",
+    "text": "Resultado principal\n\nTasa de Política Monetaria\n\n\n\n\n\n\n\n\nInflación total\n\n\n\n\n\n\n\n\nInflación subyacente\n\n\n\n\n\n\n\n\nBrecha de actividad"
+  },
+  {
+    "objectID": "proyectos/ipom-iris.html#diferencias-frente-al-escenario-base",
+    "href": "proyectos/ipom-iris.html#diferencias-frente-al-escenario-base",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Diferencias frente al escenario base",
+    "text": "Diferencias frente al escenario base\n\nTPM\n\n\n\n\n\n\n\n\nInflación total\n\n\n\n\n\n\n\n\nBrecha de actividad"
+  },
+  {
+    "objectID": "proyectos/ipom-iris.html#bloque-externo",
+    "href": "proyectos/ipom-iris.html#bloque-externo",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Bloque externo",
+    "text": "Bloque externo\nLas trayectorias externas se muestran para verificar que la comparación principal no está mezclando cambios de política con shocks externos no deseados.\n\n\n\nSupuestos externos: promedio 2025-2028 y desvíos frente al escenario base.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio escenario\nDiferencia promedio vs base\nDiferencia máxima vs base\nDiferencia mínima vs base\n\n\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nCobre nominal\nnivel aproximado\n5,05\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nCrecimiento socios comerciales\n% anual\n2,91\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nFederal Funds Rate\n% anual\n3,74\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTipo de cambio real índice\níndice\n103,22\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTreasury 10 años\n% anual\n4,41\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nVIX\níndice\n19,38\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nWTI nominal\nnivel aproximado\n81,25\n5,17\n11,65\n0\n\n\n\n\n\n\nPetróleo WTI nominal\n\n\n\n\n\n\n\n\nTipo de cambio real índice"
+  },
+  {
+    "objectID": "proyectos/ipom-iris.html#tabla-resumen-de-impactos",
+    "href": "proyectos/ipom-iris.html#tabla-resumen-de-impactos",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Tabla resumen de impactos",
+    "text": "Tabla resumen de impactos\n\n\n\nDesvíos frente al escenario base en 2025-2028.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio\nMínimo\nMáximo\nÚltimo\n\n\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nBrecha de actividad\n%\n0,00\n-0,14\n0,10\n0,10\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nCrecimiento socios comerciales\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nFederal Funds Rate\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nInflación subyacente sin volátiles\n% anual\n0,01\n0,00\n0,04\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nInflación total\n% anual\n0,08\n-0,10\n0,36\n-0,03\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTasa de Política Monetaria\n% anual\n-0,03\n-0,25\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTipo de cambio real índice\níndice\n0,00\n0,00\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTreasury 10 años\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nVIX\níndice\n0,00\n0,00\n0,00\n0,00"
+  },
+  {
+    "objectID": "proyectos/ipom-iris.html#archivos-descargables",
+    "href": "proyectos/ipom-iris.html#archivos-descargables",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Archivos descargables",
+    "text": "Archivos descargables\n\nReporte escenario TPM 4,5% Baseline identificado Nota de supuestos CSV IRIS crudos"
+  },
+  {
+    "objectID": "proyectos/ipom-iris.html#limitaciones",
+    "href": "proyectos/ipom-iris.html#limitaciones",
+    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
+    "section": "Limitaciones",
+    "text": "Limitaciones\n\n\n\n\n\n\nAdvertencia\n\n\n\nEste ejercicio es una simulación condicional bajo una estructura propia en IRIS/Matlab. La lectura correcta es comparativa: cuánto cambia el escenario alternativo frente a la trayectoria base bajo los supuestos impuestos."
+  },
+  {
+    "objectID": "contacto.html",
+    "href": "contacto.html",
+    "title": "Contacto",
+    "section": "",
+    "text": "Para comentarios, oportunidades de investigación o colaboración en proyectos de economía aplicada, puedes contactarme por los siguientes canales.\n\nEmail GitHub LinkedIn"
+  },
+  {
+    "objectID": "proyectos.html",
+    "href": "proyectos.html",
+    "title": "Proyectos",
+    "section": "",
+    "text": "Esta sección reúne proyectos aplicados, notas técnicas y líneas de investigación en macroeconomía, política monetaria, econometría de series de tiempo y visualización de datos. La prioridad es mantener una presentación sobria: pregunta económica clara, datos trazables, metodología explícita y resultados visuales legibles."
+  },
+  {
+    "objectID": "proyectos.html#proyectos-principales",
+    "href": "proyectos.html#proyectos-principales",
+    "title": "Proyectos",
+    "section": "Proyectos principales",
+    "text": "Proyectos principales\n\nHerramientas y análisis con estructura metodológica más desarrollada, orientados a seguimiento macroeconómico, proyecciones, simulación de escenarios y discusión de política económica.\n\n\n\n\n\n\n\nNowcasting IMACEC\n\n\n\n\nActividad\n\n\nNowcasting de actividad económica en Chile\nModelo mensual en R para anticipar la evolución del IMACEC total y no minero usando indicadores sectoriales, variables calendario, rezagos macroeconómicos y evaluación de ajuste.\n\nEstado: proyecto aplicado en desarrollo continuo.\nHerramientas: R, tidyverse, ggplot2, plotly, series de tiempo.\n\nAbrir proyecto\n\n\n\n\n\n\n\nEscenarios macroeconómicos\n\n\n\n\nEscenarios\n\n\nEscenarios macroeconómicos inspirados en IPoM\nSimulación condicional en Matlab/IRIS: escenario base IPoM identificado y alternativa con TPM en 4,5% durante 2026, retornando a la trayectoria base desde 2027.\n\nEstado: proyecto aplicado avanzado.\nHerramientas: Matlab, IRIS Toolbox y R.\n\nVer proyecto ↗\n\n\n\n\n\n\n\nPass-through acumulado de TPM\n\n\n\n\nPolítica monetaria\n\n\nTransmisión de la TPM a tasas de mercado\nAnálisis visual y econométrico del traspaso de movimientos de la Tasa de Política Monetaria a distintas tasas de mercado en Chile, distinguiendo horizontes, episodios y tipos de tasa.\n\nEstado: nota técnica en desarrollo.\nSalida esperada: pass-through por horizonte, modelos de rezagos distribuidos y lectura macroeconómica prudente.\n\nAbrir proyecto\n\n\n\n\n\n\n\nStress macrofinanciero LatAm\n\n\n\n\nMacrofinanzas regionales\n\n\nTipo de cambio, tasas largas y stress macrofinanciero en LatAm\nModelos diarios para CLP, BRL, MXN, PEN y COP que comparan movimientos del tipo de cambio y tasas soberanas 10Y respecto de fundamentos externos observables.\n\nEstado: proyecto aplicado con resultados gráficos y reporte PDF.\nHerramientas: R, tidyverse, ggplot2, modelsummary, BIS, FRED y BCCh.\n\nAbrir proyecto"
+  },
+  {
+    "objectID": "proyectos.html#prototipos-y-líneas-en-desarrollo",
+    "href": "proyectos.html#prototipos-y-líneas-en-desarrollo",
+    "title": "Proyectos",
+    "section": "Prototipos y líneas en desarrollo",
+    "text": "Prototipos y líneas en desarrollo\n\nIdeas metodológicas o visuales que todavía requieren consolidación de datos, validación empírica o mayor documentación antes de ser presentadas como proyectos aplicados principales.\n\n\n\n\nMercado de tasas\n\n\nCurva de rendimiento chilena interactiva\nVisualización interactiva de la curva nominal y real, pendiente de la curva y episodios macrofinancieros relevantes para interpretar expectativas, condiciones financieras y primas por plazo.\n\nEstado: prototipo visual en desarrollo.\nPróxima mejora: reemplazar la demo por curvas oficiales/mercado, agregar pendiente 10y-2y y separar curva nominal, real y compensación inflacionaria.\n\nAbrir prototipo"
+  },
+  {
+    "objectID": "proyectos.html#agenda-de-investigación",
+    "href": "proyectos.html#agenda-de-investigación",
+    "title": "Proyectos",
+    "section": "Agenda de investigación",
+    "text": "Agenda de investigación\n\n\nPolítica monetaria y heterogeneidad financiera\nAnálisis de la transmisión de la TPM hacia distintos segmentos del mercado financiero, evaluando si el pass-through cambia entre ciclos de alza, baja y normalización monetaria.\n\n\nProyección macroeconómica y escenarios\nConstrucción de escenarios alternativos con supuestos externos y juicio doméstico controlado, comparando impactos sobre inflación, TPM y brecha de actividad.\n\n\nVisualización para política pública\nDiseño de gráficos económicos que comuniquen resultados macroeconómicos sin sobrecargar la lectura ni esconder supuestos relevantes."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Macroeconomía aplicada, política monetaria y análisis de datos",
+    "section": "",
+    "text": "Portafolio técnico\n\n\n\nSoy economista formado en la Universidad de Chile, con foco en macroeconomía aplicada, política monetaria, proyecciones, econometría de series de tiempo y visualización de datos. Este sitio reúne proyectos aplicados orientados al seguimiento de indicadores, análisis de escenarios y discusión económica con base empírica.\nTrabajo principalmente con R, Matlab/IRIS, Python, Stata y GitHub, combinando construcción de bases, estimación econométrica, simulación macroeconómica y comunicación visual de resultados.\n\nVer proyectos Descargar CV Contacto\n\n\n\n\n\nFoco del portafolio\n\n\n\nSeguimiento macroeconómico y nowcasting.\nProyección de inflación, actividad y TPM.\nEscenarios tipo IPoM con supuestos externos.\nVisualización de datos para análisis económico.\n\n\n\nR Matlab/IRIS Python GitHub Pages\n\n\n\n\n\n\nUna selección de proyectos aplicados con metodología explícita, datos trazables y visualización orientada al seguimiento macroeconómico y la discusión de política económica.\n\n\n\n\nProyecto aplicado\n\n\n\nModelo mensual en R para anticipar la evolución del IMACEC total y no minero a partir de indicadores sectoriales, rezagos macroeconómicos, variables calendario y evaluación fuera de muestra.\n\nR Series de tiempo IMACEC Nowcasting\n\nAbrir proyecto\n\n\n\n\nSimulación macro\n\n\n\nModelo semi-estructural para construir un escenario de referencia tipo IPoM, simular escenarios alternativos con supuestos externos y comparar inflación, TPM y brecha de actividad.\n\nMatlab IRIS Inflación Escenarios\n\nAbrir proyecto\n\n\n\n\nNota técnica\n\n\n\nAnálisis del traspaso de la Tasa de Política Monetaria hacia tasas bancarias y financieras en Chile, con visualizaciones por horizonte, fase del ciclo monetario y tipo de tasa.\n\nR Política monetaria Pass-through Chile\n\nAbrir proyecto\n\n\n\n\nMacrofinanzas LatAm\n\n\n\nModelos diarios para CLP, BRL, MXN, PEN y COP que separan movimientos explicables por factores externos de residuos comparables en FX y tasas soberanas 10Y.\n\nR LatAm Tipo de cambio Tasas 10Y\n\nAbrir proyecto\n\n\n\n\n\n\n\n\n\nEl portafolio está organizado como una colección de herramientas y notas técnicas. Cada proyecto parte desde una pregunta económica específica, documenta la construcción de datos, explicita la estrategia metodológica y termina en gráficos o tablas que facilitan la interpretación.\nLa prioridad no es solo mostrar resultados, sino dejar trazabilidad: fuentes, transformaciones, supuestos, estimación, visualización y límites de interpretación.\n\n\n\n\nBases documentadas y scripts ejecutables.\nSeparación entre datos brutos, datos procesados y salidas.\nVisualizaciones sobrias, comparables y legibles.\nLectura económica prudente, sin sobrerreaccionar a correlaciones.\nDocumentación breve de supuestos, frecuencia y transformaciones.\n\n\n\n\n\n\n\n\n\nSeguimiento de actividad, inflación, brecha de producto, condiciones externas y escenarios de riesgo para economías pequeñas y abiertas.\n\n\n\nAnálisis de TPM, tasas de mercado, curva de rendimiento, expectativas, pass-through y condiciones financieras.\n\n\n\nProcesos de datos, tableros estáticos/interactivos, gráficos para informes y documentación técnica orientada a decisiones.\n\n\n\n\n\n\nR / tidyverse ggplot2 / plotly Matlab / IRIS Python Stata GitHub LaTeX"
+  },
+  {
+    "objectID": "index.html#proyectos-destacados",
+    "href": "index.html#proyectos-destacados",
+    "title": "Macroeconomía aplicada, política monetaria y análisis de datos",
+    "section": "",
+    "text": "Una selección de proyectos aplicados con metodología explícita, datos trazables y visualización orientada al seguimiento macroeconómico y la discusión de política económica.\n\n\n\n\nProyecto aplicado\n\n\n\nModelo mensual en R para anticipar la evolución del IMACEC total y no minero a partir de indicadores sectoriales, rezagos macroeconómicos, variables calendario y evaluación fuera de muestra.\n\nR Series de tiempo IMACEC Nowcasting\n\nAbrir proyecto\n\n\n\n\nSimulación macro\n\n\n\nModelo semi-estructural para construir un escenario de referencia tipo IPoM, simular escenarios alternativos con supuestos externos y comparar inflación, TPM y brecha de actividad.\n\nMatlab IRIS Inflación Escenarios\n\nAbrir proyecto\n\n\n\n\nNota técnica\n\n\n\nAnálisis del traspaso de la Tasa de Política Monetaria hacia tasas bancarias y financieras en Chile, con visualizaciones por horizonte, fase del ciclo monetario y tipo de tasa.\n\nR Política monetaria Pass-through Chile\n\nAbrir proyecto\n\n\n\n\nMacrofinanzas LatAm\n\n\n\nModelos diarios para CLP, BRL, MXN, PEN y COP que separan movimientos explicables por factores externos de residuos comparables en FX y tasas soberanas 10Y.\n\nR LatAm Tipo de cambio Tasas 10Y\n\nAbrir proyecto"
+  },
+  {
+    "objectID": "index.html#líneas-de-trabajo",
+    "href": "index.html#líneas-de-trabajo",
+    "title": "Macroeconomía aplicada, política monetaria y análisis de datos",
+    "section": "",
+    "text": "El portafolio está organizado como una colección de herramientas y notas técnicas. Cada proyecto parte desde una pregunta económica específica, documenta la construcción de datos, explicita la estrategia metodológica y termina en gráficos o tablas que facilitan la interpretación.\nLa prioridad no es solo mostrar resultados, sino dejar trazabilidad: fuentes, transformaciones, supuestos, estimación, visualización y límites de interpretación.\n\n\n\n\nBases documentadas y scripts ejecutables.\nSeparación entre datos brutos, datos procesados y salidas.\nVisualizaciones sobrias, comparables y legibles.\nLectura económica prudente, sin sobrerreaccionar a correlaciones.\nDocumentación breve de supuestos, frecuencia y transformaciones."
+  },
+  {
+    "objectID": "index.html#áreas-de-interés",
+    "href": "index.html#áreas-de-interés",
+    "title": "Macroeconomía aplicada, política monetaria y análisis de datos",
+    "section": "",
+    "text": "Seguimiento de actividad, inflación, brecha de producto, condiciones externas y escenarios de riesgo para economías pequeñas y abiertas.\n\n\n\nAnálisis de TPM, tasas de mercado, curva de rendimiento, expectativas, pass-through y condiciones financieras.\n\n\n\nProcesos de datos, tableros estáticos/interactivos, gráficos para informes y documentación técnica orientada a decisiones."
+  },
+  {
+    "objectID": "index.html#herramientas",
+    "href": "index.html#herramientas",
+    "title": "Macroeconomía aplicada, política monetaria y análisis de datos",
+    "section": "",
+    "text": "R / tidyverse ggplot2 / plotly Matlab / IRIS Python Stata GitHub LaTeX"
+  },
+  {
+    "objectID": "cv.html",
+    "href": "cv.html",
+    "title": "CV",
+    "section": "",
+    "text": "Magíster en Análisis Económico\nUniversidad de Chile\nIngeniería Comercial, mención Economía\nUniversidad de Chile\nDescargar CV\n\n\n\n\nR: tidyverse, ggplot2, lubridate, modelsummary, Quarto/RMarkdown.\nMatlab / IRIS Toolbox: simulación macroeconómica y modelos semiestructurales.\nPython: automatización, manejo de datos y extracción de información.\nStata: econometría aplicada.\nExcel, LaTeX y GitHub: documentación, reportes y control de versiones."
+  },
+  {
+    "objectID": "cv.html#formación",
+    "href": "cv.html#formación",
+    "title": "CV",
+    "section": "",
+    "text": "Magíster en Análisis Económico\nUniversidad de Chile\nIngeniería Comercial, mención Economía\nUniversidad de Chile\nDescargar CV"
+  },
+  {
+    "objectID": "cv.html#herramientas",
+    "href": "cv.html#herramientas",
+    "title": "CV",
+    "section": "",
+    "text": "R: tidyverse, ggplot2, lubridate, modelsummary, Quarto/RMarkdown.\nMatlab / IRIS Toolbox: simulación macroeconómica y modelos semiestructurales.\nPython: automatización, manejo de datos y extracción de información.\nStata: econometría aplicada.\nExcel, LaTeX y GitHub: documentación, reportes y control de versiones."
+  },
+  {
+    "objectID": "cv.html#áreas-de-interés",
+    "href": "cv.html#áreas-de-interés",
+    "title": "CV",
+    "section": "Áreas de interés",
+    "text": "Áreas de interés\n\n\nMacroeconomía aplicada\nActividad, inflación, brecha de producto, condiciones externas y escenarios de política.\n\n\nPolítica monetaria\nTPM, tasas de mercado, expectativas, pass-through y lectura macrofinanciera.\n\n\nEconometría y datos\nSeries de tiempo, nowcasting, construcción de bases y visualización reproducible."
+  },
+  {
+    "objectID": "proyectos/imacec.html",
+    "href": "proyectos/imacec.html",
+    "title": "Nowcasting de actividad económica en Chile",
+    "section": "",
+    "text": "NotaEstado del proyecto\n\n\n\nProyecto aplicado en desarrollo continuo. La metodología base está implementada para actualizarse mensualmente con nueva información. La página muestra el resultado publicado, la fuente activa del nowcast, la evaluación contra benchmarks simples y el pipeline reproducible."
+  },
+  {
+    "objectID": "proyectos/imacec.html#pregunta-económica",
+    "href": "proyectos/imacec.html#pregunta-económica",
+    "title": "Nowcasting de actividad económica en Chile",
+    "section": "Pregunta económica",
+    "text": "Pregunta económica\nEl IMACEC es una de las señales principales para evaluar la coyuntura económica chilena. Este proyecto busca responder una pregunta práctica:\n\n¿Es posible anticipar la evolución reciente del IMACEC total y no minero usando información mensual disponible antes de la publicación oficial?\n\nEl objetivo no es producir una proyección oficial, sino construir una herramienta reproducible de seguimiento coyuntural que combine datos macroeconómicos, variables calendario, indicadores sectoriales, expectativas y modelos econométricos simples."
+  },
+  {
+    "objectID": "proyectos/imacec.html#resultado-principal",
+    "href": "proyectos/imacec.html#resultado-principal",
+    "title": "Nowcasting de actividad económica en Chile",
+    "section": "Resultado principal",
+    "text": "Resultado principal\n\n\n\n\n\n\nMes proyectado: 2026-05\nFuente/modelo activo: Modelo con estadísticas experimentales\nÚltima actualización: 2026-06-24\nNowcast con estadísticas experimentales disponibles para el mes objetivo.\n\n\n\n\n\n\nÚltimas observaciones y nowcast mensual\n\n\n\n\n\n\n\n\n\nPeríodo\nIMACEC total\nIMACEC no minero\nTipo\nFuente/modelo\n\n\n\n\n2025-12\n1.27\n2.64\nObservado\n\n\n\n2026-01\n-0.93\n-0.81\nObservado\n\n\n\n2026-02\n-0.31\n-0.21\nObservado\n\n\n\n2026-03\n-0.20\n0.95\nObservado\n\n\n\n2026-04\n-1.18\n0.42\nObservado\n\n\n\n2026-05\n-0.90\n0.79\nNowcast\nModelo con estadísticas experimentales"
+  },
+  {
+    "objectID": "proyectos/imacec.html#imacec-total-observado-versus-ajustenowcast",
+    "href": "proyectos/imacec.html#imacec-total-observado-versus-ajustenowcast",
+    "title": "Nowcasting de actividad económica en Chile",
+    "section": "IMACEC total: observado versus ajuste/nowcast",
+    "text": "IMACEC total: observado versus ajuste/nowcast"
+  },
+  {
+    "objectID": "proyectos/imacec.html#imacec-no-minero-observado-versus-ajustenowcast",
+    "href": "proyectos/imacec.html#imacec-no-minero-observado-versus-ajustenowcast",
+    "title": "Nowcasting de actividad económica en Chile",
+    "section": "IMACEC no minero: observado versus ajuste/nowcast",
+    "text": "IMACEC no minero: observado versus ajuste/nowcast"
+  },
+  {
+    "objectID": "proyectos/imacec.html#datos-utilizados",
+    "href": "proyectos/imacec.html#datos-utilizados",
+    "title": "Nowcasting de actividad económica en Chile",
+    "section": "Datos utilizados",
+    "text": "Datos utilizados\nEl pipeline integra información mensual de actividad, comercio, crédito, precios, mercado laboral, expectativas y datos sectoriales. La versión actual distingue explícitamente tres niveles de información:\n\nEEE: fuente temprana para el mes objetivo cuando aún no existen indicadores sectoriales completos.\nEstadísticas experimentales: rezagos de actividad, ventas minoristas, crédito, UF y controles calendario.\nIndicadores sectoriales INE: minería, manufactura, comercio, electricidad y desempleo cuando ya están disponibles para el mes objetivo."
+  },
+  {
+    "objectID": "proyectos/imacec.html#enfoque-metodológico",
+    "href": "proyectos/imacec.html#enfoque-metodológico",
+    "title": "Nowcasting de actividad económica en Chile",
+    "section": "Enfoque metodológico",
+    "text": "Enfoque metodológico\nLa versión actual estima dos familias de modelos lineales de nowcasting:\n\nModelo con estadísticas experimentales: usa rezagos de actividad, ventas minoristas, crédito, UF y controles calendario.\nModelo con indicadores sectoriales INE: agrega minería, manufactura, comercio, electricidad y desempleo, pero solo se publica como nowcast activo cuando esos indicadores existen para el mes objetivo.\n\nLa regla de publicación es:\nIndicadores sectoriales INE completos → Modelo INE\nSi no están completos y existe EEE → EEE\nSi no existe EEE y hay estadísticas experimentales completas → Modelo experimental\nÚltimo recurso → modelo preliminar con supuestos de arrastre"
+  },
+  {
+    "objectID": "proyectos/imacec.html#evaluación-pseudo-out-of-sample-contra-benchmarks-simples",
+    "href": "proyectos/imacec.html#evaluación-pseudo-out-of-sample-contra-benchmarks-simples",
+    "title": "Nowcasting de actividad económica en Chile",
+    "section": "Evaluación pseudo out-of-sample contra benchmarks simples",
+    "text": "Evaluación pseudo out-of-sample contra benchmarks simples\nLa evaluación se calcula desde 2022-01 por defecto. Puede cambiarse con la variable de entorno IMACEC_EVAL_START_DATE antes de correr el script.\nSe comparan ambos modelos contra reglas simples:\n\nBenchmark AR(1): modelo autorregresivo de un rezago sobre la variación anual del IMACEC.\nPromedio móvil 3m: promedio de las últimas tres variaciones anuales observadas.\nNaive estacional t-12: se reutiliza la variación anual observada doce meses antes.\n\n\n\n\nEvaluación pseudo out-of-sample contra benchmarks simples\n\n\n\n\n\n\n\n\n\n\nVariable\nModelo\nN\nRMSE\nMAE\nPeríodo\n\n\n\n\nIMACEC no minero\nPromedio móvil 3m\n52\n2.18\n1.74\n2022-01 a 2026-04\n\n\nIMACEC no minero\nBenchmark AR(1)\n52\n2.27\n1.85\n2022-01 a 2026-04\n\n\nIMACEC no minero\nModelo con indicadores sectoriales INE\n52\n2.30\n1.72\n2022-01 a 2026-04\n\n\nIMACEC no minero\nModelo con estadísticas experimentales\n52\n2.31\n1.70\n2022-01 a 2026-04\n\n\nIMACEC no minero\nNaive estacional t-12\n52\n8.08\n5.75\n2022-01 a 2026-04\n\n\nIMACEC total\nModelo con indicadores sectoriales INE\n52\n2.05\n1.56\n2022-01 a 2026-04\n\n\nIMACEC total\nBenchmark AR(1)\n52\n2.10\n1.69\n2022-01 a 2026-04\n\n\nIMACEC total\nPromedio móvil 3m\n52\n2.18\n1.69\n2022-01 a 2026-04\n\n\nIMACEC total\nModelo con estadísticas experimentales\n52\n2.45\n1.86\n2022-01 a 2026-04\n\n\nIMACEC total\nNaive estacional t-12\n52\n7.22\n5.26\n2022-01 a 2026-04\n\n\n\n\n\n\n\n\n\n\n\nNotaCómo leer esta tabla\n\n\n\nLa comparación relevante no es si el modelo tiene error bajo en términos absolutos, sino si reduce RMSE/MAE frente a reglas simples. Si el promedio móvil o el AR(1) dominan al modelo, eso sugiere que la persistencia reciente explica buena parte de la dinámica y que los indicadores adicionales deben revisarse o usarse con una especificación más parsimoniosa.\nEsta evaluación es pseudo out-of-sample recursiva con datos finales disponibles. No reemplaza una evaluación con vintages en tiempo real."
+  },
+  {
+    "objectID": "proyectos/imacec.html#métricas-de-ajuste-interno",
+    "href": "proyectos/imacec.html#métricas-de-ajuste-interno",
+    "title": "Nowcasting de actividad económica en Chile",
+    "section": "Métricas de ajuste interno",
+    "text": "Métricas de ajuste interno\n\n\n\nMétricas de ajuste interno del modelo\n\n\n\n\n\n\n\n\n\n\nVariable\nModelo\nN\nRMSE\nMAE\nNota\n\n\n\n\nIMACEC total\nModelo con estadísticas experimentales\n88\n1.75\n1.28\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\nIMACEC no minero\nModelo con estadísticas experimentales\n88\n1.71\n1.22\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\nIMACEC total\nModelo con indicadores sectoriales INE\n88\n1.27\n1.00\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\nIMACEC no minero\nModelo con indicadores sectoriales INE\n88\n1.32\n0.99\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\n\n\n\n\n\n\n\n\n\nImportanteLectura prudente\n\n\n\nLas métricas anteriores corresponden a ajuste interno del modelo. La evaluación pseudo out-of-sample es más informativa para juzgar desempeño predictivo, aunque todavía no representa una evaluación en tiempo real con vintages de publicación."
+  },
+  {
+    "objectID": "proyectos/imacec.html#próximos-pasos",
+    "href": "proyectos/imacec.html#próximos-pasos",
+    "title": "Nowcasting de actividad económica en Chile",
+    "section": "Próximos pasos",
+    "text": "Próximos pasos\n\nSeparar formalmente una versión de nowcast temprano y otra de nowcast con indicadores sectoriales completos.\nIncorporar fechas efectivas de publicación de cada indicador para una evaluación más realista en tiempo real.\nProbar especificaciones más parsimoniosas: AR(1) + calendario, AR(1) + sectores clave y combinaciones de modelos.\nIncorporar intervalos de predicción calibrados con errores pseudo out-of-sample."
+  },
+  {
     "objectID": "proyectos/transmision-tpm.html",
     "href": "proyectos/transmision-tpm.html",
     "title": "Transmisión de la TPM a tasas de mercado",
@@ -138,251 +488,6 @@
     "title": "Transmisión de la TPM a tasas de mercado",
     "section": "Próximos pasos",
     "text": "Próximos pasos\n\nIncorporar expectativas o sorpresas de TPM para acercar mejor la interpretación a shocks monetarios.\nIntegrar condiciones de crédito de la Encuesta de Crédito Bancario en la especificación principal.\nAgregar flujos o cantidades de crédito, no solo tasas.\nProfundizar la comparación por plazo y por tipo de producto.\nConvertir el monitor en una nota técnica breve con discusión de literatura y estrategia empírica más formal."
-  },
-  {
-    "objectID": "proyectos/imacec.html",
-    "href": "proyectos/imacec.html",
-    "title": "Nowcasting de actividad económica en Chile",
-    "section": "",
-    "text": "NotaEstado del proyecto\n\n\n\nProyecto aplicado en desarrollo continuo. La metodología base está implementada para actualizarse mensualmente con nueva información. La página está pensada como una vitrina técnica: muestra la motivación, la estructura del modelo, los resultados principales y el pipeline reproducible."
-  },
-  {
-    "objectID": "proyectos/imacec.html#pregunta-económica",
-    "href": "proyectos/imacec.html#pregunta-económica",
-    "title": "Nowcasting de actividad económica en Chile",
-    "section": "Pregunta económica",
-    "text": "Pregunta económica\nEl IMACEC es una de las señales principales para evaluar la coyuntura económica chilena. Este proyecto busca responder una pregunta práctica:\n\n¿Es posible anticipar la evolución reciente del IMACEC total y no minero usando información mensual disponible antes de la publicación oficial?\n\nEl objetivo no es producir una proyección oficial, sino construir una herramienta reproducible de seguimiento coyuntural que combine datos macroeconómicos, variables calendario, indicadores sectoriales y modelos econométricos simples."
-  },
-  {
-    "objectID": "proyectos/imacec.html#resultado-principal",
-    "href": "proyectos/imacec.html#resultado-principal",
-    "title": "Nowcasting de actividad económica en Chile",
-    "section": "Resultado principal",
-    "text": "Resultado principal\n\n\n\n\n\n\nTip\n\n\n\n## Modelo actualmente publicado\n\nMes proyectado: 2026-05\nModelo activo: Modelo con indicadores sectoriales INE\nÚltima actualización: 20628 :::\n\n\n\n\nÚltimas observaciones y nowcast mensual\n\n\n\n\n\n\n\n\n\nPeríodo\nIMACEC total\nIMACEC no minero\nTipo\nModelo\n\n\n\n\n2025-12\n1.27\n2.64\nObservado\n\n\n\n2026-01\n-0.93\n-0.81\nObservado\n\n\n\n2026-02\n-0.31\n-0.21\nObservado\n\n\n\n2026-03\n-0.20\n0.95\nObservado\n\n\n\n2026-04\n-1.18\n0.42\nObservado\n\n\n\n2026-05\n-3.16\n-1.44\nNowcast\nModelo con indicadores sectoriales INE\n\n\n\n\n\n\nIMACEC total: observado versus ajuste/nowcast\n\n\n\n\n\n\n\n\nIMACEC no minero: observado versus ajuste/nowcast\n\n\n\n\n\n\n\n\nDatos utilizados\nEl pipeline integra información mensual de actividad, comercio, crédito, precios, mercado laboral e indicadores sectoriales. La versión actual considera:\n\nIMACEC total e IMACEC no minero.\nVentas minoristas.\nFlujo y número de operaciones de crédito.\nUF e inflación implícita asociada.\nDesempleo.\nCobre y petróleo.\nDías hábiles y variables calendario.\nIndicadores sectoriales INE: minería, manufactura, comercio y electricidad.\n\n\n\nEnfoque metodológico\nLa versión actual estima dos familias de modelos lineales de nowcasting:\n\nModelo con estadísticas experimentales: usa rezagos de actividad, ventas minoristas, crédito, UF y controles calendario.\nModelo con indicadores sectoriales INE: agrega minería, manufactura, comercio, electricidad y desempleo, cuando esos datos están disponibles.\n\nEl modelo publicado como nowcast activo es el de indicadores sectoriales INE cuando puede estimarse correctamente; en caso contrario, el pipeline puede usar la especificación de estadísticas experimentales. Para la evaluación, ambos aparecen como modelos separados frente a benchmarks simples.\n\n\nEvaluación pseudo out-of-sample contra benchmarks simples\nLa evaluación no usa una fecha arbitraria fija en el código de la página. Por defecto se calcula desde 2022-01, pero el inicio puede cambiarse con la variable de entorno:\nIMACEC_EVAL_START_DATE=2022-01-01\nSe comparan ambos modelos contra reglas simples:\n\nBenchmark AR(1): modelo autoregresivo de un rezago sobre la variación anual del IMACEC.\nPromedio móvil 3m: promedio de las últimas tres variaciones anuales observadas.\nNaive estacional t-12: se reutiliza la variación anual observada doce meses antes.\n\n\n\n\nEvaluación pseudo out-of-sample contra benchmarks simples\n\n\n\n\n\n\n\n\n\n\nVariable\nModelo\nN\nRMSE\nMAE\nPeriodo\n\n\n\n\nIMACEC no minero\nPromedio móvil 3m\n52\n2.18\n1.74\n2022-01 a 2026-04\n\n\nIMACEC no minero\nBenchmark AR(1)\n52\n2.27\n1.85\n2022-01 a 2026-04\n\n\nIMACEC no minero\nModelo con indicadores sectoriales INE\n52\n2.30\n1.72\n2022-01 a 2026-04\n\n\nIMACEC no minero\nModelo con estadísticas experimentales\n52\n2.31\n1.70\n2022-01 a 2026-04\n\n\nIMACEC no minero\nNaive estacional t-12\n52\n8.08\n5.75\n2022-01 a 2026-04\n\n\nIMACEC total\nModelo con indicadores sectoriales INE\n52\n2.05\n1.56\n2022-01 a 2026-04\n\n\nIMACEC total\nBenchmark AR(1)\n52\n2.10\n1.69\n2022-01 a 2026-04\n\n\nIMACEC total\nPromedio móvil 3m\n52\n2.18\n1.69\n2022-01 a 2026-04\n\n\nIMACEC total\nModelo con estadísticas experimentales\n52\n2.45\n1.86\n2022-01 a 2026-04\n\n\nIMACEC total\nNaive estacional t-12\n52\n7.22\n5.26\n2022-01 a 2026-04\n\n\n\n\n\n\n\n\n\n\n\nNotaCómo leer esta tabla\n\n\n\nLa comparación relevante no es si el modelo tiene error bajo en términos absolutos, sino si reduce RMSE/MAE frente a reglas simples. Si el promedio móvil o el AR(1) dominan al modelo, eso sugiere que la persistencia reciente explica buena parte de la dinámica y que los indicadores adicionales deben ser revisados o usados con una especificación más parsimoniosa.\nEsta evaluación es pseudo out-of-sample recursiva con datos finales disponibles. No reemplaza una evaluación con vintages en tiempo real.\n\n\n\n\nMétricas de ajuste interno\n\n\n\nMétricas de ajuste interno del modelo\n\n\n\n\n\n\n\n\n\n\nVariable\nModelo\nN\nRMSE\nMAE\nNota\n\n\n\n\nIMACEC total\nModelo con estadísticas experimentales\n88\n1.75\n1.28\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\nIMACEC no minero\nModelo con estadísticas experimentales\n88\n1.71\n1.22\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\nIMACEC total\nModelo con indicadores sectoriales INE\n88\n1.27\n1.00\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\nIMACEC no minero\nModelo con indicadores sectoriales INE\n88\n1.32\n0.99\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\n\n\n\n\n\n\n\n\n\nImportanteLectura prudente\n\n\n\nLas métricas anteriores corresponden a ajuste interno del modelo. La evaluación pseudo out-of-sample es más informativa para juzgar desempeño predictivo, aunque todavía no representa una evaluación en tiempo real con vintages de publicación.\n\n\n\n\nPróximos pasos\n\nSeparar formalmente una versión de nowcast temprano y otra de nowcast con indicadores sectoriales completos.\nIncorporar fechas efectivas de publicación de cada indicador para una evaluación más realista en tiempo real.\nProbar especificaciones más parsimoniosas: AR(1) + calendario, AR(1) + sectores clave y combinaciones de modelos.\nIncorporar intervalos de predicción calibrados con errores pseudo out-of-sample.\nAutomatizar actualización mensual con GitHub Actions.\n\n\n\nCódigo\nEl código fuente del proyecto queda organizado en módulos dentro del repositorio:\n\nR/imacec_config.R\nR/imacec_utils.R\nR/imacec_calendar.R\nR/imacec_data.R\nR/imacec_models.R\nR/imacec_outputs.R\nscripts/01_update_imacec.R"
-  },
-  {
-    "objectID": "proyectos/imacec.html#imacec-total-observado-versus-ajustenowcast",
-    "href": "proyectos/imacec.html#imacec-total-observado-versus-ajustenowcast",
-    "title": "Nowcasting de actividad económica en Chile",
-    "section": "IMACEC total: observado versus ajuste/nowcast",
-    "text": "IMACEC total: observado versus ajuste/nowcast"
-  },
-  {
-    "objectID": "proyectos/imacec.html#imacec-no-minero-observado-versus-ajustenowcast",
-    "href": "proyectos/imacec.html#imacec-no-minero-observado-versus-ajustenowcast",
-    "title": "Nowcasting de actividad económica en Chile",
-    "section": "IMACEC no minero: observado versus ajuste/nowcast",
-    "text": "IMACEC no minero: observado versus ajuste/nowcast"
-  },
-  {
-    "objectID": "proyectos/imacec.html#datos-utilizados",
-    "href": "proyectos/imacec.html#datos-utilizados",
-    "title": "Nowcasting de actividad económica en Chile",
-    "section": "Datos utilizados",
-    "text": "Datos utilizados\nEl pipeline integra información mensual de actividad, comercio, crédito, precios, mercado laboral e indicadores sectoriales. La versión actual considera:\n\nIMACEC total e IMACEC no minero.\nVentas minoristas.\nFlujo y número de operaciones de crédito.\nUF e inflación implícita asociada.\nDesempleo.\nCobre y petróleo.\nDías hábiles y variables calendario.\nIndicadores sectoriales INE: minería, manufactura, comercio y electricidad."
-  },
-  {
-    "objectID": "proyectos/imacec.html#enfoque-metodológico",
-    "href": "proyectos/imacec.html#enfoque-metodológico",
-    "title": "Nowcasting de actividad económica en Chile",
-    "section": "Enfoque metodológico",
-    "text": "Enfoque metodológico\nLa versión actual estima dos familias de modelos lineales de nowcasting:\n\nModelo con estadísticas experimentales: usa rezagos de actividad, ventas minoristas, crédito, UF y controles calendario.\nModelo con indicadores sectoriales INE: agrega minería, manufactura, comercio, electricidad y desempleo, cuando esos datos están disponibles.\n\nEl modelo publicado como nowcast activo es el de indicadores sectoriales INE cuando puede estimarse correctamente; en caso contrario, el pipeline puede usar la especificación de estadísticas experimentales. Para la evaluación, ambos aparecen como modelos separados frente a benchmarks simples."
-  },
-  {
-    "objectID": "proyectos/imacec.html#evaluación-pseudo-out-of-sample-contra-benchmarks-simples",
-    "href": "proyectos/imacec.html#evaluación-pseudo-out-of-sample-contra-benchmarks-simples",
-    "title": "Nowcasting de actividad económica en Chile",
-    "section": "Evaluación pseudo out-of-sample contra benchmarks simples",
-    "text": "Evaluación pseudo out-of-sample contra benchmarks simples\nLa evaluación no usa una fecha arbitraria fija en el código de la página. Por defecto se calcula desde 2022-01, pero el inicio puede cambiarse con la variable de entorno:\nIMACEC_EVAL_START_DATE=2022-01-01\nSe comparan ambos modelos contra reglas simples:\n\nBenchmark AR(1): modelo autoregresivo de un rezago sobre la variación anual del IMACEC.\nPromedio móvil 3m: promedio de las últimas tres variaciones anuales observadas.\nNaive estacional t-12: se reutiliza la variación anual observada doce meses antes.\n\n\n\n\nEvaluación pseudo out-of-sample contra benchmarks simples\n\n\n\n\n\n\n\n\n\n\nVariable\nModelo\nN\nRMSE\nMAE\nPeriodo\n\n\n\n\nIMACEC no minero\nPromedio móvil 3m\n52\n2.18\n1.74\n2022-01 a 2026-04\n\n\nIMACEC no minero\nBenchmark AR(1)\n52\n2.27\n1.85\n2022-01 a 2026-04\n\n\nIMACEC no minero\nModelo con indicadores sectoriales INE\n52\n2.30\n1.72\n2022-01 a 2026-04\n\n\nIMACEC no minero\nModelo con estadísticas experimentales\n52\n2.31\n1.70\n2022-01 a 2026-04\n\n\nIMACEC no minero\nNaive estacional t-12\n52\n8.08\n5.75\n2022-01 a 2026-04\n\n\nIMACEC total\nModelo con indicadores sectoriales INE\n52\n2.05\n1.56\n2022-01 a 2026-04\n\n\nIMACEC total\nBenchmark AR(1)\n52\n2.10\n1.69\n2022-01 a 2026-04\n\n\nIMACEC total\nPromedio móvil 3m\n52\n2.18\n1.69\n2022-01 a 2026-04\n\n\nIMACEC total\nModelo con estadísticas experimentales\n52\n2.45\n1.86\n2022-01 a 2026-04\n\n\nIMACEC total\nNaive estacional t-12\n52\n7.22\n5.26\n2022-01 a 2026-04\n\n\n\n\n\n\n\n\n\n\n\nNotaCómo leer esta tabla\n\n\n\nLa comparación relevante no es si el modelo tiene error bajo en términos absolutos, sino si reduce RMSE/MAE frente a reglas simples. Si el promedio móvil o el AR(1) dominan al modelo, eso sugiere que la persistencia reciente explica buena parte de la dinámica y que los indicadores adicionales deben ser revisados o usados con una especificación más parsimoniosa.\nEsta evaluación es pseudo out-of-sample recursiva con datos finales disponibles. No reemplaza una evaluación con vintages en tiempo real."
-  },
-  {
-    "objectID": "proyectos/imacec.html#métricas-de-ajuste-interno",
-    "href": "proyectos/imacec.html#métricas-de-ajuste-interno",
-    "title": "Nowcasting de actividad económica en Chile",
-    "section": "Métricas de ajuste interno",
-    "text": "Métricas de ajuste interno\n\n\n\nMétricas de ajuste interno del modelo\n\n\n\n\n\n\n\n\n\n\nVariable\nModelo\nN\nRMSE\nMAE\nNota\n\n\n\n\nIMACEC total\nModelo con estadísticas experimentales\n88\n1.75\n1.28\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\nIMACEC no minero\nModelo con estadísticas experimentales\n88\n1.71\n1.22\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\nIMACEC total\nModelo con indicadores sectoriales INE\n88\n1.27\n1.00\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\nIMACEC no minero\nModelo con indicadores sectoriales INE\n88\n1.32\n0.99\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\n\n\n\n\n\n\n\n\n\nImportanteLectura prudente\n\n\n\nLas métricas anteriores corresponden a ajuste interno del modelo. La evaluación pseudo out-of-sample es más informativa para juzgar desempeño predictivo, aunque todavía no representa una evaluación en tiempo real con vintages de publicación."
-  },
-  {
-    "objectID": "proyectos/imacec.html#próximos-pasos",
-    "href": "proyectos/imacec.html#próximos-pasos",
-    "title": "Nowcasting de actividad económica en Chile",
-    "section": "Próximos pasos",
-    "text": "Próximos pasos\n\nSeparar formalmente una versión de nowcast temprano y otra de nowcast con indicadores sectoriales completos.\nIncorporar fechas efectivas de publicación de cada indicador para una evaluación más realista en tiempo real.\nProbar especificaciones más parsimoniosas: AR(1) + calendario, AR(1) + sectores clave y combinaciones de modelos.\nIncorporar intervalos de predicción calibrados con errores pseudo out-of-sample.\nAutomatizar actualización mensual con GitHub Actions."
-  },
-  {
-    "objectID": "proyectos/imacec.html#código",
-    "href": "proyectos/imacec.html#código",
-    "title": "Nowcasting de actividad económica en Chile",
-    "section": "Código",
-    "text": "Código\nEl código fuente del proyecto queda organizado en módulos dentro del repositorio:\n\nR/imacec_config.R\nR/imacec_utils.R\nR/imacec_calendar.R\nR/imacec_data.R\nR/imacec_models.R\nR/imacec_outputs.R\nscripts/01_update_imacec.R"
-  },
-  {
-    "objectID": "cv.html",
-    "href": "cv.html",
-    "title": "CV",
-    "section": "",
-    "text": "Magíster en Análisis Económico\nUniversidad de Chile\nIngeniería Comercial, mención Economía\nUniversidad de Chile\nDescargar CV\n\n\n\n\nR: tidyverse, ggplot2, lubridate, modelsummary, Quarto/RMarkdown.\nMatlab / IRIS Toolbox: simulación macroeconómica y modelos semiestructurales.\nPython: automatización, manejo de datos y extracción de información.\nStata: econometría aplicada.\nExcel, LaTeX y GitHub: documentación, reportes y control de versiones."
-  },
-  {
-    "objectID": "cv.html#formación",
-    "href": "cv.html#formación",
-    "title": "CV",
-    "section": "",
-    "text": "Magíster en Análisis Económico\nUniversidad de Chile\nIngeniería Comercial, mención Economía\nUniversidad de Chile\nDescargar CV"
-  },
-  {
-    "objectID": "cv.html#herramientas",
-    "href": "cv.html#herramientas",
-    "title": "CV",
-    "section": "",
-    "text": "R: tidyverse, ggplot2, lubridate, modelsummary, Quarto/RMarkdown.\nMatlab / IRIS Toolbox: simulación macroeconómica y modelos semiestructurales.\nPython: automatización, manejo de datos y extracción de información.\nStata: econometría aplicada.\nExcel, LaTeX y GitHub: documentación, reportes y control de versiones."
-  },
-  {
-    "objectID": "cv.html#áreas-de-interés",
-    "href": "cv.html#áreas-de-interés",
-    "title": "CV",
-    "section": "Áreas de interés",
-    "text": "Áreas de interés\n\n\nMacroeconomía aplicada\nActividad, inflación, brecha de producto, condiciones externas y escenarios de política.\n\n\nPolítica monetaria\nTPM, tasas de mercado, expectativas, pass-through y lectura macrofinanciera.\n\n\nEconometría y datos\nSeries de tiempo, nowcasting, construcción de bases y visualización reproducible."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Macroeconomía aplicada, política monetaria y análisis de datos",
-    "section": "",
-    "text": "Portafolio técnico\n\n\n\nSoy economista formado en la Universidad de Chile, con foco en macroeconomía aplicada, política monetaria, proyecciones, econometría de series de tiempo y visualización de datos. Este sitio reúne proyectos aplicados orientados al seguimiento de indicadores, análisis de escenarios y discusión económica con base empírica.\nTrabajo principalmente con R, Matlab/IRIS, Python, Stata y GitHub, combinando construcción de bases, estimación econométrica, simulación macroeconómica y comunicación visual de resultados.\n\nVer proyectos Descargar CV Contacto\n\n\n\n\n\nFoco del portafolio\n\n\n\nSeguimiento macroeconómico y nowcasting.\nProyección de inflación, actividad y TPM.\nEscenarios tipo IPoM con supuestos externos.\nVisualización de datos para análisis económico.\n\n\n\nR Matlab/IRIS Python GitHub Pages\n\n\n\n\n\n\nUna selección de proyectos aplicados con metodología explícita, datos trazables y visualización orientada al seguimiento macroeconómico y la discusión de política económica.\n\n\n\n\nProyecto aplicado\n\n\n\nModelo mensual en R para anticipar la evolución del IMACEC total y no minero a partir de indicadores sectoriales, rezagos macroeconómicos, variables calendario y evaluación fuera de muestra.\n\nR Series de tiempo IMACEC Nowcasting\n\nAbrir proyecto\n\n\n\n\nSimulación macro\n\n\n\nModelo semi-estructural para construir un escenario de referencia tipo IPoM, simular escenarios alternativos con supuestos externos y comparar inflación, TPM y brecha de actividad.\n\nMatlab IRIS Inflación Escenarios\n\nAbrir proyecto\n\n\n\n\nNota técnica\n\n\n\nAnálisis del traspaso de la Tasa de Política Monetaria hacia tasas bancarias y financieras en Chile, con visualizaciones por horizonte, fase del ciclo monetario y tipo de tasa.\n\nR Política monetaria Pass-through Chile\n\nAbrir proyecto\n\n\n\n\nMacrofinanzas LatAm\n\n\n\nModelos diarios para CLP, BRL, MXN, PEN y COP que separan movimientos explicables por factores externos de residuos comparables en FX y tasas soberanas 10Y.\n\nR LatAm Tipo de cambio Tasas 10Y\n\nAbrir proyecto\n\n\n\n\n\n\n\n\n\nEl portafolio está organizado como una colección de herramientas y notas técnicas. Cada proyecto parte desde una pregunta económica específica, documenta la construcción de datos, explicita la estrategia metodológica y termina en gráficos o tablas que facilitan la interpretación.\nLa prioridad no es solo mostrar resultados, sino dejar trazabilidad: fuentes, transformaciones, supuestos, estimación, visualización y límites de interpretación.\n\n\n\n\nBases documentadas y scripts ejecutables.\nSeparación entre datos brutos, datos procesados y salidas.\nVisualizaciones sobrias, comparables y legibles.\nLectura económica prudente, sin sobrerreaccionar a correlaciones.\nDocumentación breve de supuestos, frecuencia y transformaciones.\n\n\n\n\n\n\n\n\n\nSeguimiento de actividad, inflación, brecha de producto, condiciones externas y escenarios de riesgo para economías pequeñas y abiertas.\n\n\n\nAnálisis de TPM, tasas de mercado, curva de rendimiento, expectativas, pass-through y condiciones financieras.\n\n\n\nProcesos de datos, tableros estáticos/interactivos, gráficos para informes y documentación técnica orientada a decisiones.\n\n\n\n\n\n\nR / tidyverse ggplot2 / plotly Matlab / IRIS Python Stata GitHub LaTeX"
-  },
-  {
-    "objectID": "index.html#proyectos-destacados",
-    "href": "index.html#proyectos-destacados",
-    "title": "Macroeconomía aplicada, política monetaria y análisis de datos",
-    "section": "",
-    "text": "Una selección de proyectos aplicados con metodología explícita, datos trazables y visualización orientada al seguimiento macroeconómico y la discusión de política económica.\n\n\n\n\nProyecto aplicado\n\n\n\nModelo mensual en R para anticipar la evolución del IMACEC total y no minero a partir de indicadores sectoriales, rezagos macroeconómicos, variables calendario y evaluación fuera de muestra.\n\nR Series de tiempo IMACEC Nowcasting\n\nAbrir proyecto\n\n\n\n\nSimulación macro\n\n\n\nModelo semi-estructural para construir un escenario de referencia tipo IPoM, simular escenarios alternativos con supuestos externos y comparar inflación, TPM y brecha de actividad.\n\nMatlab IRIS Inflación Escenarios\n\nAbrir proyecto\n\n\n\n\nNota técnica\n\n\n\nAnálisis del traspaso de la Tasa de Política Monetaria hacia tasas bancarias y financieras en Chile, con visualizaciones por horizonte, fase del ciclo monetario y tipo de tasa.\n\nR Política monetaria Pass-through Chile\n\nAbrir proyecto\n\n\n\n\nMacrofinanzas LatAm\n\n\n\nModelos diarios para CLP, BRL, MXN, PEN y COP que separan movimientos explicables por factores externos de residuos comparables en FX y tasas soberanas 10Y.\n\nR LatAm Tipo de cambio Tasas 10Y\n\nAbrir proyecto"
-  },
-  {
-    "objectID": "index.html#líneas-de-trabajo",
-    "href": "index.html#líneas-de-trabajo",
-    "title": "Macroeconomía aplicada, política monetaria y análisis de datos",
-    "section": "",
-    "text": "El portafolio está organizado como una colección de herramientas y notas técnicas. Cada proyecto parte desde una pregunta económica específica, documenta la construcción de datos, explicita la estrategia metodológica y termina en gráficos o tablas que facilitan la interpretación.\nLa prioridad no es solo mostrar resultados, sino dejar trazabilidad: fuentes, transformaciones, supuestos, estimación, visualización y límites de interpretación.\n\n\n\n\nBases documentadas y scripts ejecutables.\nSeparación entre datos brutos, datos procesados y salidas.\nVisualizaciones sobrias, comparables y legibles.\nLectura económica prudente, sin sobrerreaccionar a correlaciones.\nDocumentación breve de supuestos, frecuencia y transformaciones."
-  },
-  {
-    "objectID": "index.html#áreas-de-interés",
-    "href": "index.html#áreas-de-interés",
-    "title": "Macroeconomía aplicada, política monetaria y análisis de datos",
-    "section": "",
-    "text": "Seguimiento de actividad, inflación, brecha de producto, condiciones externas y escenarios de riesgo para economías pequeñas y abiertas.\n\n\n\nAnálisis de TPM, tasas de mercado, curva de rendimiento, expectativas, pass-through y condiciones financieras.\n\n\n\nProcesos de datos, tableros estáticos/interactivos, gráficos para informes y documentación técnica orientada a decisiones."
-  },
-  {
-    "objectID": "index.html#herramientas",
-    "href": "index.html#herramientas",
-    "title": "Macroeconomía aplicada, política monetaria y análisis de datos",
-    "section": "",
-    "text": "R / tidyverse ggplot2 / plotly Matlab / IRIS Python Stata GitHub LaTeX"
-  },
-  {
-    "objectID": "proyectos.html",
-    "href": "proyectos.html",
-    "title": "Proyectos",
-    "section": "",
-    "text": "Esta sección reúne proyectos aplicados, notas técnicas y líneas de investigación en macroeconomía, política monetaria, econometría de series de tiempo y visualización de datos. La prioridad es mantener una presentación sobria: pregunta económica clara, datos trazables, metodología explícita y resultados visuales legibles."
-  },
-  {
-    "objectID": "proyectos.html#proyectos-principales",
-    "href": "proyectos.html#proyectos-principales",
-    "title": "Proyectos",
-    "section": "Proyectos principales",
-    "text": "Proyectos principales\n\nHerramientas y análisis con estructura metodológica más desarrollada, orientados a seguimiento macroeconómico, proyecciones, simulación de escenarios y discusión de política económica.\n\n\n\n\n\n\n\nNowcasting IMACEC\n\n\n\n\nActividad\n\n\nNowcasting de actividad económica en Chile\nModelo mensual en R para anticipar la evolución del IMACEC total y no minero usando indicadores sectoriales, variables calendario, rezagos macroeconómicos y evaluación de ajuste.\n\nEstado: proyecto aplicado en desarrollo continuo.\nHerramientas: R, tidyverse, ggplot2, plotly, series de tiempo.\n\nAbrir proyecto\n\n\n\n\n\n\n\nEscenarios macroeconómicos\n\n\n\n\nEscenarios\n\n\nEscenarios macroeconómicos inspirados en IPoM\nSimulación condicional en Matlab/IRIS: escenario base IPoM identificado y alternativa con TPM en 4,5% durante 2026, retornando a la trayectoria base desde 2027.\n\nEstado: proyecto aplicado avanzado.\nHerramientas: Matlab, IRIS Toolbox y R.\n\nVer proyecto ↗\n\n\n\n\n\n\n\nPass-through acumulado de TPM\n\n\n\n\nPolítica monetaria\n\n\nTransmisión de la TPM a tasas de mercado\nAnálisis visual y econométrico del traspaso de movimientos de la Tasa de Política Monetaria a distintas tasas de mercado en Chile, distinguiendo horizontes, episodios y tipos de tasa.\n\nEstado: nota técnica en desarrollo.\nSalida esperada: pass-through por horizonte, modelos de rezagos distribuidos y lectura macroeconómica prudente.\n\nAbrir proyecto\n\n\n\n\n\n\n\nStress macrofinanciero LatAm\n\n\n\n\nMacrofinanzas regionales\n\n\nTipo de cambio, tasas largas y stress macrofinanciero en LatAm\nModelos diarios para CLP, BRL, MXN, PEN y COP que comparan movimientos del tipo de cambio y tasas soberanas 10Y respecto de fundamentos externos observables.\n\nEstado: proyecto aplicado con resultados gráficos y reporte PDF.\nHerramientas: R, tidyverse, ggplot2, modelsummary, BIS, FRED y BCCh.\n\nAbrir proyecto"
-  },
-  {
-    "objectID": "proyectos.html#prototipos-y-líneas-en-desarrollo",
-    "href": "proyectos.html#prototipos-y-líneas-en-desarrollo",
-    "title": "Proyectos",
-    "section": "Prototipos y líneas en desarrollo",
-    "text": "Prototipos y líneas en desarrollo\n\nIdeas metodológicas o visuales que todavía requieren consolidación de datos, validación empírica o mayor documentación antes de ser presentadas como proyectos aplicados principales.\n\n\n\n\nMercado de tasas\n\n\nCurva de rendimiento chilena interactiva\nVisualización interactiva de la curva nominal y real, pendiente de la curva y episodios macrofinancieros relevantes para interpretar expectativas, condiciones financieras y primas por plazo.\n\nEstado: prototipo visual en desarrollo.\nPróxima mejora: reemplazar la demo por curvas oficiales/mercado, agregar pendiente 10y-2y y separar curva nominal, real y compensación inflacionaria.\n\nAbrir prototipo"
-  },
-  {
-    "objectID": "proyectos.html#agenda-de-investigación",
-    "href": "proyectos.html#agenda-de-investigación",
-    "title": "Proyectos",
-    "section": "Agenda de investigación",
-    "text": "Agenda de investigación\n\n\nPolítica monetaria y heterogeneidad financiera\nAnálisis de la transmisión de la TPM hacia distintos segmentos del mercado financiero, evaluando si el pass-through cambia entre ciclos de alza, baja y normalización monetaria.\n\n\nProyección macroeconómica y escenarios\nConstrucción de escenarios alternativos con supuestos externos y juicio doméstico controlado, comparando impactos sobre inflación, TPM y brecha de actividad.\n\n\nVisualización para política pública\nDiseño de gráficos económicos que comuniquen resultados macroeconómicos sin sobrecargar la lectura ni esconder supuestos relevantes."
-  },
-  {
-    "objectID": "contacto.html",
-    "href": "contacto.html",
-    "title": "Contacto",
-    "section": "",
-    "text": "Para comentarios, oportunidades de investigación o colaboración en proyectos de economía aplicada, puedes contactarme por los siguientes canales.\n\nEmail GitHub LinkedIn"
-  },
-  {
-    "objectID": "proyectos/ipom-iris.html",
-    "href": "proyectos/ipom-iris.html",
-    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
-    "section": "",
-    "text": "NotaEstado del ejercicio\n\n\n\nEl proyecto ejecuta una simulación condicional en Matlab/IRIS. La corrida principal mantiene la TPM en 4,5% durante 2026 y fuerza el retorno a la trayectoria base/IPoM desde 2027T1. No es una proyección institucional ni una réplica del modelo oficial del Banco Central."
-  },
-  {
-    "objectID": "proyectos/ipom-iris.html#pregunta-económica",
-    "href": "proyectos/ipom-iris.html#pregunta-económica",
-    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
-    "section": "Pregunta económica",
-    "text": "Pregunta económica\nEl ejercicio pregunta cómo cambian las trayectorias de inflación, TPM y brecha de actividad cuando se impone una trayectoria de política monetaria más baja durante 2026, manteniendo el resto de la estructura del modelo y retornando al escenario base desde 2027."
-  },
-  {
-    "objectID": "proyectos/ipom-iris.html#escenarios",
-    "href": "proyectos/ipom-iris.html#escenarios",
-    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
-    "section": "Escenarios",
-    "text": "Escenarios\n\n\n\nEscenarios usados en la comparación pública.\n\n\n\n\n\n\n\nEscenario\nArchivo\nLectura\n\n\n\n\nEscenario base IPoM identificado\nfcast_ipom_exact.csv\nTrayectoria de referencia identificada sobre el escenario IPoM.\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nfcast_alt_tpm45_2026.csv\nTPM fijada en 4,5% durante 2026 y retorno a la trayectoria base desde 2027."
-  },
-  {
-    "objectID": "proyectos/ipom-iris.html#estructura-conceptual-del-modelo",
-    "href": "proyectos/ipom-iris.html#estructura-conceptual-del-modelo",
-    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
-    "section": "Estructura conceptual del modelo",
-    "text": "Estructura conceptual del modelo\n\nBrecha de actividad\n\\[\n\\tilde y_t =\n\\rho_y \\tilde y_{t-1}\n- \\phi_r (i_{t-1} - i^n_t)\n+ \\phi_x x_t\n+ \\phi_z \\tilde z_t\n+ \\phi_c c_t\n+ \\varepsilon^y_t\n\\]\nLa brecha depende de persistencia, posición monetaria, condiciones externas, tipo de cambio real y condiciones financieras.\n\n\nInflación subyacente\n\\[\n\\pi^{core}_t =\n\\alpha_1 \\pi^{core}_{t-1}\n+ \\alpha_4 \\pi^{core}_{t-4}\n+ (1-\\alpha_1-\\alpha_4)E_t\\pi^{core}_{t+h}\n+ \\kappa_y \\tilde y_t\n+ \\kappa_z \\tilde z_t\n+ \\kappa_f \\Delta p^{food}_t\n+ s_t\n+ \\varepsilon^\\pi_t\n\\]\n\n\nInflación total y regla monetaria\n\\[\n\\pi_t = \\pi^{core}_t + \\pi^{res}_t\n\\]\n\\[\ni_t =\n\\rho_i i_{t-1}\n+ (1-\\rho_i)\n\\left[\n  i^n_t\n  + \\phi_\\pi (E_t\\pi^{core}_{t+h}-\\pi^*)\n  + \\phi_y \\tilde y_t\n\\right]\n+ \\varepsilon^i_t\n\\]\nLa trayectoria alternativa se implementa exogenizando la TPM en 2026 y dejando que el modelo endogenice los shocks requeridos para cumplir esa condición."
-  },
-  {
-    "objectID": "proyectos/ipom-iris.html#resultado-principal",
-    "href": "proyectos/ipom-iris.html#resultado-principal",
-    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
-    "section": "Resultado principal",
-    "text": "Resultado principal\n\nTasa de Política Monetaria\n\n\n\n\n\n\n\n\nInflación total\n\n\n\n\n\n\n\n\nInflación subyacente\n\n\n\n\n\n\n\n\nBrecha de actividad"
-  },
-  {
-    "objectID": "proyectos/ipom-iris.html#diferencias-frente-al-escenario-base",
-    "href": "proyectos/ipom-iris.html#diferencias-frente-al-escenario-base",
-    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
-    "section": "Diferencias frente al escenario base",
-    "text": "Diferencias frente al escenario base\n\nTPM\n\n\n\n\n\n\n\n\nInflación total\n\n\n\n\n\n\n\n\nBrecha de actividad"
-  },
-  {
-    "objectID": "proyectos/ipom-iris.html#bloque-externo",
-    "href": "proyectos/ipom-iris.html#bloque-externo",
-    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
-    "section": "Bloque externo",
-    "text": "Bloque externo\nLas trayectorias externas se muestran para verificar que la comparación principal no está mezclando cambios de política con shocks externos no deseados.\n\n\n\nSupuestos externos: promedio 2025-2028 y desvíos frente al escenario base.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio escenario\nDiferencia promedio vs base\nDiferencia máxima vs base\nDiferencia mínima vs base\n\n\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nCobre nominal\nnivel aproximado\n5,05\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nCrecimiento socios comerciales\n% anual\n2,91\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nFederal Funds Rate\n% anual\n3,74\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTipo de cambio real índice\níndice\n103,22\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTreasury 10 años\n% anual\n4,41\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nVIX\níndice\n19,38\n0,00\n0,00\n0\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nWTI nominal\nnivel aproximado\n81,25\n5,17\n11,65\n0\n\n\n\n\n\n\nPetróleo WTI nominal\n\n\n\n\n\n\n\n\nTipo de cambio real índice"
-  },
-  {
-    "objectID": "proyectos/ipom-iris.html#tabla-resumen-de-impactos",
-    "href": "proyectos/ipom-iris.html#tabla-resumen-de-impactos",
-    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
-    "section": "Tabla resumen de impactos",
-    "text": "Tabla resumen de impactos\n\n\n\nDesvíos frente al escenario base en 2025-2028.\n\n\n\n\n\n\n\n\n\n\n\nEscenario\nVariable\nUnidad\nPromedio\nMínimo\nMáximo\nÚltimo\n\n\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nBrecha de actividad\n%\n0,00\n-0,14\n0,10\n0,10\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nCrecimiento socios comerciales\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nFederal Funds Rate\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nInflación subyacente sin volátiles\n% anual\n0,01\n0,00\n0,04\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nInflación total\n% anual\n0,08\n-0,10\n0,36\n-0,03\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTasa de Política Monetaria\n% anual\n-0,03\n-0,25\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTipo de cambio real índice\níndice\n0,00\n0,00\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nTreasury 10 años\n% anual\n0,00\n0,00\n0,00\n0,00\n\n\nTPM 4,5% durante 2026 y retorno a IPoM desde 2027\nVIX\níndice\n0,00\n0,00\n0,00\n0,00"
-  },
-  {
-    "objectID": "proyectos/ipom-iris.html#archivos-descargables",
-    "href": "proyectos/ipom-iris.html#archivos-descargables",
-    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
-    "section": "Archivos descargables",
-    "text": "Archivos descargables\n\nReporte escenario TPM 4,5% Baseline identificado Nota de supuestos CSV IRIS crudos"
-  },
-  {
-    "objectID": "proyectos/ipom-iris.html#limitaciones",
-    "href": "proyectos/ipom-iris.html#limitaciones",
-    "title": "Escenario IPoM/IRIS: TPM 4,5% durante 2026",
-    "section": "Limitaciones",
-    "text": "Limitaciones\n\n\n\n\n\n\nAdvertencia\n\n\n\nEste ejercicio es una simulación condicional bajo una estructura propia en IRIS/Matlab. La lectura correcta es comparativa: cuánto cambia el escenario alternativo frente a la trayectoria base bajo los supuestos impuestos."
   },
   {
     "objectID": "proyectos/curva-rendimiento.html",

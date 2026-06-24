@@ -1,8 +1,8 @@
 # Ejecutar desde PowerShell, en la raíz del repositorio Economics:
 #   powershell -ExecutionPolicy Bypass -File scripts\07_update_portfolio_public.ps1
 #
-# El script intenta encontrar Rscript.exe automáticamente, limpia docs/,
-# actualiza outputs clave y renderiza el sitio Quarto.
+# Actualiza outputs clave y renderiza SOLO las páginas públicas definidas en _quarto.yml.
+# Importante: no renderiza Rmd internos de matlab/, modelos/, archive_exploratory/, README/LEEME, etc.
 
 $ErrorActionPreference = "Stop"
 
@@ -33,22 +33,30 @@ $repo = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 Set-Location $repo
 
 $RSCRIPT = Find-Rscript
-Write-Host "Usando Rscript:" $RSCRIPT
+Write-Host "Usando Rscript: $RSCRIPT"
 
-Write-Host "\n1/5 Limpiando docs público..."
-& scripts\00_clean_public_docs.bat
-
-Write-Host "\n2/5 Actualizando IMACEC..."
+Write-Host "`n1/6 Actualizando IMACEC..."
 & $RSCRIPT scripts/01_update_imacec.R
 
-Write-Host "\n3/5 Actualizando estrés financiero..."
+Write-Host "`n2/6 Actualizando transmisión TPM..."
+& $RSCRIPT scripts/05_update_transmision_tpm.R
+
+Write-Host "`n3/6 Actualizando estrés financiero..."
 & $RSCRIPT -e "source('scripts/06_update_estres_financiero.R')"
 
-Write-Host "\n4/5 Procesando outputs IPoM/IRIS..."
+Write-Host "`n4/6 Procesando outputs IPoM/IRIS..."
 & $RSCRIPT scripts/03_build_ipom_outputs.R
 
-Write-Host "\n5/5 Renderizando Quarto..."
-quarto render
+Write-Host "`n5/6 Renderizando Quarto público..."
+quarto render --execute
 
-Write-Host "\nListo. Revisa estado de Git:"
+Write-Host "`n6/6 Limpiando HTML internos residuales..."
+& scripts\00_clean_public_docs.bat
+
+Write-Host "`nValidando que no se renderizó archivo interno Data_IPOM_exploratory..."
+if (Test-Path "docs\matlab\ipom\src\r\archive_exploratory\Data_IPOM_exploratory.html") {
+  throw "Se renderizó un Rmd interno que no debe ser público. Revisa project.render en _quarto.yml."
+}
+
+Write-Host "`nListo. Revisa estado de Git:"
 git status
