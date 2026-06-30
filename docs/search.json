@@ -340,70 +340,70 @@
     "href": "proyectos/imacec.html",
     "title": "Nowcasting de actividad económica en Chile",
     "section": "",
-    "text": "NotaEstado del proyecto\n\n\n\nProyecto aplicado en desarrollo continuo. La metodología base está implementada para actualizarse mensualmente con nueva información. La página muestra el resultado publicado, la fuente activa del nowcast, la evaluación contra benchmarks simples y el flujo reproducible del pipeline."
+    "text": "NotaEstado del proyecto\n\n\n\nProyecto aplicado en desarrollo continuo. La página está organizada para seguir el flujo mensual del IMACEC en el orden en que llega la información: EEE → modelo base con estadísticas experimentales → modelo INE → dato efectivo."
   },
   {
     "objectID": "proyectos/imacec.html#pregunta-económica",
     "href": "proyectos/imacec.html#pregunta-económica",
     "title": "Nowcasting de actividad económica en Chile",
     "section": "Pregunta económica",
-    "text": "Pregunta económica\nEl IMACEC es una de las señales principales para evaluar la coyuntura económica chilena. Este proyecto busca responder una pregunta práctica:\n\n¿Es posible anticipar la evolución reciente del IMACEC total y no minero usando información mensual disponible antes de la publicación oficial?\n\nEl objetivo no es producir una proyección oficial, sino construir una herramienta reproducible de seguimiento coyuntural que combine datos macroeconómicos, variables calendario, indicadores sectoriales, expectativas y modelos econométricos simples."
+    "text": "Pregunta económica\nEl IMACEC es una de las señales más importantes para monitorear la coyuntura chilena. El objetivo de este proyecto es responder una pregunta práctica:\n\n¿Cuánto se puede anticipar el IMACEC total y el IMACEC no minero antes de que aparezca la publicación oficial?\n\nLa lógica de la página no es mostrar un único ajuste histórico, sino el ciclo de publicación del nowcast: primero la EEE, luego el modelo base cuando ya existen estadísticas experimentales, después el modelo INE cuando entran los datos sectoriales, y finalmente el dato efectivo."
   },
   {
     "objectID": "proyectos/imacec.html#resultado-principal",
     "href": "proyectos/imacec.html#resultado-principal",
     "title": "Nowcasting de actividad económica en Chile",
     "section": "Resultado principal",
-    "text": "Resultado principal\n\n\nMes proyectado 2026-05\n\n\nFuente activa Estadísticas experimentales\n\n\nNowcast IMACEC total -0,9%\n\n\nÚltima actualización 2026-06-24\n\n\n\n\n\n\n\n\nNowcast con estadísticas experimentales disponibles para el mes objetivo.\n\n\n\n\n\n\n\n\n\n\n\nÚltimas observaciones y nowcast mensual\n\n\nPeríodo\nIMACEC total\nIMACEC no minero\nTipo\nFuente/modelo\n\n\n\n\n2025-12\n1,27\n2,64\nObservado\n\n\n\n2026-01\n−0,93\n−0,81\nObservado\n\n\n\n2026-02\n−0,31\n−0,21\nObservado\n\n\n\n2026-03\n−0,20\n0,95\nObservado\n\n\n\n2026-04\n−1,18\n0,42\nObservado\n\n\n\n2026-05\n−0,90\n0,79\nNowcast\nModelo con estadísticas experimentales"
+    "text": "Resultado principal\n\n\nMes objetivo 2026-05\n\n\nÚltima observación oficial 2026-04\n\n\nModelo/fuente activa Modelo con estadísticas experimentales\n\n\nÚltima actualización 2026-06-30\n\n\n\n\n\n\n\n\nEl modelo activo corresponde a la etapa intermedia del ciclo: ya existen estadísticas experimentales para el mes objetivo, pero todavía no están completos los indicadores sectoriales INE.\n\n\n\n\n\n\n\n\n\n\n\nCiclo del mes objetivo y último dato oficial\n\n\nPeriodo\nFuente\nIMACEC total\nIMACEC no minero\nEstado\n\n\n\n\n2026-05\nEEE\n0,20\n1,00\nDisponible\n\n\n2026-05\nModelo base\n−0,90\n0,79\nDisponible\n\n\n2026-05\nModelo INE\n−3,16\n−1,44\nDisponible\n\n\n2026-04\nEfectivo\n−1,18\n0,42\nDato publicado"
   },
   {
-    "objectID": "proyectos/imacec.html#imacec-total-observado-versus-ajustenowcast",
-    "href": "proyectos/imacec.html#imacec-total-observado-versus-ajustenowcast",
+    "objectID": "proyectos/imacec.html#imacec-total-flujo-eee-modelo-base-modelo-ine-efectivo",
+    "href": "proyectos/imacec.html#imacec-total-flujo-eee-modelo-base-modelo-ine-efectivo",
     "title": "Nowcasting de actividad económica en Chile",
-    "section": "IMACEC total: observado versus ajuste/nowcast",
-    "text": "IMACEC total: observado versus ajuste/nowcast"
+    "section": "IMACEC total: flujo EEE → modelo base → modelo INE → efectivo",
+    "text": "IMACEC total: flujo EEE → modelo base → modelo INE → efectivo"
   },
   {
-    "objectID": "proyectos/imacec.html#imacec-no-minero-observado-versus-ajustenowcast",
-    "href": "proyectos/imacec.html#imacec-no-minero-observado-versus-ajustenowcast",
+    "objectID": "proyectos/imacec.html#imacec-no-minero-flujo-eee-modelo-base-modelo-ine-efectivo",
+    "href": "proyectos/imacec.html#imacec-no-minero-flujo-eee-modelo-base-modelo-ine-efectivo",
     "title": "Nowcasting de actividad económica en Chile",
-    "section": "IMACEC no minero: observado versus ajuste/nowcast",
-    "text": "IMACEC no minero: observado versus ajuste/nowcast"
+    "section": "IMACEC no minero: flujo EEE → modelo base → modelo INE → efectivo",
+    "text": "IMACEC no minero: flujo EEE → modelo base → modelo INE → efectivo\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nÚltimas observaciones y publicación actual\n\n\nPeríodo\nIMACEC total\nIMACEC no minero\nTipo\nFuente/modelo\n\n\n\n\n2025-12\n1,27\n2,64\nObservado\n\n\n\n2026-01\n−0,93\n−0,81\nObservado\n\n\n\n2026-02\n−0,31\n−0,21\nObservado\n\n\n\n2026-03\n−0,20\n0,95\nObservado\n\n\n\n2026-04\n−1,18\n0,42\nObservado\n\n\n\n2026-05\n−0,90\n0,79\nNowcast\nModelo con estadísticas experimentales"
+  },
+  {
+    "objectID": "proyectos/imacec.html#flujo-del-proyecto",
+    "href": "proyectos/imacec.html#flujo-del-proyecto",
+    "title": "Nowcasting de actividad económica en Chile",
+    "section": "Flujo del proyecto",
+    "text": "Flujo del proyecto\n\n1. Al cerrarse un mes con dato oficial, el IMACEC efectivo pasa a la base de estimación y el ciclo vuelve a empezar para el mes siguiente.\n2. Cuando se publica la EEE, se incorpora como primera señal del nuevo mes objetivo. En esta etapa se compara la EEE con el dato efectivo del mes anterior y queda publicada como referencia temprana.\n3. Cuando llegan las estadísticas experimentales (alrededor del día hábil cercano al 23), se activa el modelo base y se compara nuevamente con la EEE.\n4. Cuando se publican los indicadores sectoriales INE, se activa el modelo INE, que reemplaza al modelo base como señal más rica del mes objetivo.\n5. Cuando aparece el IMACEC efectivo, se agrega el dato observado, se evalúa el error de las señales previas y el ciclo recomienza para el siguiente mes."
   },
   {
     "objectID": "proyectos/imacec.html#datos-utilizados",
     "href": "proyectos/imacec.html#datos-utilizados",
     "title": "Nowcasting de actividad económica en Chile",
     "section": "Datos utilizados",
-    "text": "Datos utilizados\nEl pipeline integra información mensual de actividad, comercio, crédito, precios, mercado laboral, expectativas y datos sectoriales. La versión actual distingue explícitamente tres niveles de información:\n\nEEE: fuente temprana para el mes objetivo cuando aún no existen indicadores sectoriales completos.\nEstadísticas experimentales: rezagos de actividad, ventas minoristas, crédito, UF y controles calendario.\nIndicadores sectoriales INE: minería, manufactura, comercio, electricidad y desempleo cuando ya están disponibles para el mes objetivo."
-  },
-  {
-    "objectID": "proyectos/imacec.html#enfoque-metodológico",
-    "href": "proyectos/imacec.html#enfoque-metodológico",
-    "title": "Nowcasting de actividad económica en Chile",
-    "section": "Enfoque metodológico",
-    "text": "Enfoque metodológico\nLa lógica del proyecto es secuencial: no todos los datos llegan al mismo tiempo, por lo que el nowcast debe cambiar de fuente según la información disponible en cada momento del mes.\n\n1. Ciclo cerrado: cuando el IMACEC oficial ya existe, se incorpora como observado y pasa a ser parte de la muestra de estimación.\n2. Nowcast temprano: si aún no está el IMACEC oficial y existe EEE para el mes objetivo, se publica la EEE como señal temprana.\n3. Nowcast con estadísticas experimentales: si no existe EEE usable y ya hay información experimental suficiente, se estima el modelo con rezagos de actividad, ventas minoristas, crédito, UF y calendario.\n4. Nowcast con indicadores sectoriales INE: cuando ya están disponibles minería, manufactura, comercio, electricidad y desempleo para el mes objetivo, se publica la especificación sectorial.\n\nLa regla de publicación busca evitar que un modelo más rico se active solo porque puede estimarse históricamente. Para que el modelo sectorial INE sea la fuente activa, los indicadores sectoriales del mes objetivo deben existir efectivamente."
+    "text": "Datos utilizados\nEl pipeline combina cuatro bloques de información:\n\nDato efectivo: publicación oficial del Banco Central para el IMACEC total y no minero.\nEEE: primera señal del mes objetivo, publicada con rezago de un mes respecto del período proyectado.\nModelo base: rezagos de actividad, ventas minoristas, crédito, UF y variables calendario.\nModelo INE: agrega minería, manufactura, comercio, electricidad y desempleo cuando esos indicadores existen efectivamente para el mes objetivo."
   },
   {
     "objectID": "proyectos/imacec.html#evaluación-pseudo-out-of-sample-contra-benchmarks-simples",
     "href": "proyectos/imacec.html#evaluación-pseudo-out-of-sample-contra-benchmarks-simples",
     "title": "Nowcasting de actividad económica en Chile",
     "section": "Evaluación pseudo out-of-sample contra benchmarks simples",
-    "text": "Evaluación pseudo out-of-sample contra benchmarks simples\nLa evaluación se calcula desde 2021-01 por defecto. Puede cambiarse con la variable de entorno IMACEC_EVAL_START_DATE antes de correr el script.\nSe comparan los modelos disponibles contra reglas simples:\n\nBenchmark AR(1): modelo autorregresivo de un rezago sobre la variación anual del IMACEC.\nPromedio móvil 3m: promedio de las últimas tres variaciones anuales observadas.\nNaive estacional t-12: se reutiliza la variación anual observada doce meses antes.\n\n\n\n\n\n\n\n\n\nEvaluación pseudo out-of-sample contra benchmarks simples\n\n\nModelo\nN\nRMSE\nMAE\nPeríodo\n\n\n\n\nIMACEC no minero\n\n\nBenchmark AR(1)\n64\n3,02\n2,26\n2021-01 a 2026-04\n\n\nModelo con estadísticas experimentales\n64\n3,48\n2,43\n2021-01 a 2026-04\n\n\nPromedio móvil 3m\n64\n3,83\n2,49\n2021-01 a 2026-04\n\n\nNaive estacional t-12\n64\n13,19\n8,78\n2021-01 a 2026-04\n\n\nModelo con indicadores sectoriales INE\n64\n19,30\n5,54\n2021-01 a 2026-04\n\n\nIMACEC total\n\n\nBenchmark AR(1)\n64\n2,77\n2,05\n2021-01 a 2026-04\n\n\nModelo con estadísticas experimentales\n64\n3,45\n2,48\n2021-01 a 2026-04\n\n\nPromedio móvil 3m\n64\n3,59\n2,38\n2021-01 a 2026-04\n\n\nModelo con indicadores sectoriales INE\n64\n7,13\n2,96\n2021-01 a 2026-04\n\n\nNaive estacional t-12\n64\n11,66\n7,90\n2021-01 a 2026-04\n\n\n\n\n\n\n\n\n\n\n\n\n\nNotaCómo leer esta tabla\n\n\n\nLa comparación relevante no es si el modelo tiene error bajo en términos absolutos, sino si reduce RMSE/MAE frente a reglas simples. Si el promedio móvil o el AR(1) dominan al modelo, eso sugiere que la persistencia reciente explica buena parte de la dinámica y que los indicadores adicionales deben revisarse o usarse con una especificación más parsimoniosa.\nEsta evaluación es pseudo out-of-sample recursiva con datos finales disponibles. No reemplaza una evaluación con vintages en tiempo real."
+    "text": "Evaluación pseudo out-of-sample contra benchmarks simples\nLa evaluación fuera de muestra se reporta desde 2021-01 por defecto. Se compara cada especificación contra reglas simples como AR(1), promedio móvil 3m y naive estacional t-12.\n\n\n\n\n\n\n\n\nEvaluación pseudo out-of-sample contra benchmarks simples\n\n\nModelo\nN\nRMSE\nMAE\nPeríodo\n\n\n\n\nIMACEC no minero\n\n\nModelo con indicadores sectoriales INE\n28\n1,79\n1,46\n2024-01 a 2026-04\n\n\nModelo con estadísticas experimentales\n40\n2,18\n1,56\n2023-01 a 2026-04\n\n\nBenchmark AR(1)\n64\n3,02\n2,26\n2021-01 a 2026-04\n\n\nPromedio móvil 3m\n64\n3,83\n2,49\n2021-01 a 2026-04\n\n\nNaive estacional t-12\n64\n13,19\n8,78\n2021-01 a 2026-04\n\n\nIMACEC total\n\n\nModelo con indicadores sectoriales INE\n28\n1,75\n1,40\n2024-01 a 2026-04\n\n\nModelo con estadísticas experimentales\n40\n2,43\n1,78\n2023-01 a 2026-04\n\n\nBenchmark AR(1)\n64\n2,77\n2,05\n2021-01 a 2026-04\n\n\nPromedio móvil 3m\n64\n3,59\n2,38\n2021-01 a 2026-04\n\n\nNaive estacional t-12\n64\n11,66\n7,90\n2021-01 a 2026-04\n\n\n\n\n\n\n\n\n\n\n\n\n\nNotaCómo leer la evaluación\n\n\n\nLa pregunta relevante no es si el modelo tiene un error bajo en abstracto, sino si mejora de manera sistemática a benchmarks simples. Si el promedio móvil o el AR(1) empatan o dominan al modelo, eso sugiere que la información adicional todavía no está agregando suficiente señal predictiva."
   },
   {
     "objectID": "proyectos/imacec.html#métricas-de-ajuste-interno",
     "href": "proyectos/imacec.html#métricas-de-ajuste-interno",
     "title": "Nowcasting de actividad económica en Chile",
     "section": "Métricas de ajuste interno",
-    "text": "Métricas de ajuste interno\n\n\n\n\n\n\n\n\nMétricas de ajuste interno del modelo\n\n\nVariable\nModelo\nN\nRMSE\nMAE\nNota\n\n\n\n\nIMACEC total\nModelo con estadísticas experimentales\n88\n1,75\n1,28\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\nIMACEC no minero\nModelo con estadísticas experimentales\n88\n1,71\n1,22\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\nIMACEC total\nModelo con indicadores sectoriales INE\n88\n1,27\n1,00\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\nIMACEC no minero\nModelo con indicadores sectoriales INE\n88\n1,32\n0,99\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\n\n\n\n\n\n\n\n\n\n\n\nImportanteLectura prudente\n\n\n\nLas métricas anteriores corresponden a ajuste interno del modelo. La evaluación pseudo out-of-sample es más informativa para juzgar desempeño predictivo, aunque todavía no representa una evaluación en tiempo real con vintages de publicación."
+    "text": "Métricas de ajuste interno\n\n\n\n\n\n\n\n\nMétricas de ajuste interno\n\n\nVariable\nModelo\nN\nRMSE\nMAE\nNota\n\n\n\n\nIMACEC total\nModelo con estadísticas experimentales\n88\n1,75\n1,28\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\nIMACEC no minero\nModelo con estadísticas experimentales\n88\n1,71\n1,22\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\nIMACEC total\nModelo con indicadores sectoriales INE\n88\n1,27\n1,00\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra.\n\n\nIMACEC no minero\nModelo con indicadores sectoriales INE\n88\n1,32\n0,99\nAjuste interno; no interpretar como desempeño predictivo fuera de muestra."
   },
   {
-    "objectID": "proyectos/imacec.html#próximos-pasos",
-    "href": "proyectos/imacec.html#próximos-pasos",
+    "objectID": "proyectos/imacec.html#gráficos-de-calendario-del-ciclo",
+    "href": "proyectos/imacec.html#gráficos-de-calendario-del-ciclo",
     "title": "Nowcasting de actividad económica en Chile",
-    "section": "Próximos pasos",
-    "text": "Próximos pasos\n\nSeparar formalmente una versión de nowcast temprano y otra de nowcast con indicadores sectoriales completos.\nIncorporar fechas efectivas de publicación de cada indicador para una evaluación más realista en tiempo real.\nProbar especificaciones más parsimoniosas: AR(1) + calendario, AR(1) + sectores clave y combinaciones de modelos.\nIncorporar intervalos de predicción calibrados con errores pseudo out-of-sample."
+    "section": "Gráficos de calendario del ciclo",
+    "text": "Gráficos de calendario del ciclo"
   },
   {
     "objectID": "proyectos/transmision-tpm.html",

@@ -54,7 +54,8 @@ exports <- export_imacec_outputs(
   output_dir = "data/processed",
   fig_dir = "assets/img/imacec",
   ultimos_meses = 96,
-  eval_start_date = as.Date(Sys.getenv("IMACEC_EVAL_START_DATE", unset = "2021-01-01"))
+  eval_start_date = as.Date(Sys.getenv("IMACEC_EVAL_START_DATE", unset = "2021-01-01")),
+  eee_nowcast = eee_nowcast
 )
 
 message("Actualización finalizada.")

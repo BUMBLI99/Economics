@@ -1,2 +1,2 @@
-Periodo,fecha_proyeccion,vintage,modelo,imacec_observado,imacec_predicho,error_imacec,eee_imacec,error_eee,imacec_nm_observado,imacec_nm_predicho,error_imacec_nm
-2026-04-01,2026-06-01,ine,Modelo con indicadores sectoriales INE,-1.178072826626786,-1.8833906645824137,0.7053178379556277,0.1,-1.278072826626786,0.4159187323826474,0.3413428337018054,0.07457589868084202
+Periodo,fecha_proyeccion,vintage,modelo,imacec_observado,imacec_predicho,error_imacec,eee_imacec,error_eee,imacec_nm_observado,imacec_nm_predicho,error_imacec_nm,eee_imacec_nm,error_eee_nm
+2026-04-01,2026-06-01,ine,Modelo con indicadores sectoriales INE,-1.178072826626786,-1.8833906645824137,0.7053178379556277,0.1,-1.278072826626786,0.4159187323826474,0.3413428337018054,0.07457589868084202,1,-0.5840812676173526

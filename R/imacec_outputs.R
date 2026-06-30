@@ -109,10 +109,20 @@ build_dataset_for_key <- function(model_key) {
   if (model_key == "base") build_dataset() else build_dataset_ine()
 }
 
+
+min_training_obs_for_model <- function(model_key) {
+  dplyr::case_when(
+    model_key == "ine" ~ 60L,
+    model_key == "base" ~ 48L,
+    TRUE ~ 48L
+  )
+}
+
 pseudo_oos_model_predictions <- function(model_key, variable = c("imacec", "imacec_nm"), eval_start_date) {
   variable <- match.arg(variable)
   Data_full <- build_dataset_for_key(model_key)
   cal_df <- read_calendar()
+  min_train <- min_training_obs_for_model(model_key)
 
   periodos <- Data_full |>
     dplyr::filter(Periodo >= eval_start_date, !is.na(.data[[variable]])) |>
@@ -125,7 +135,13 @@ pseudo_oos_model_predictions <- function(model_key, variable = c("imacec", "imac
         dplyr::filter(Periodo < p)
 
       fits <- fit_for_key(model_key, Data_train)
+
+      if (nrow(fits$Data_reg) < min_train) return(NULL)
+
       modelo <- if (variable == "imacec") fits$modelo_imacec else fits$modelo_imacec_nm
+
+      # Evitar predicciones pseudo-OOS con modelos sobre-identificados o casi sin grados de libertad.
+      if (stats::df.residual(modelo) < 12) return(NULL)
 
       newdata <- build_newdata_oos_from_model(
         modelo = modelo,
@@ -137,6 +153,8 @@ pseudo_oos_model_predictions <- function(model_key, variable = c("imacec", "imac
       )
 
       pred <- as.numeric(stats::predict(modelo, newdata = newdata))
+      if (!is.finite(pred) || abs(pred) > 50) return(NULL)
+
       obs <- Data_full |>
         dplyr::filter(Periodo == p) |>
         dplyr::pull(.data[[variable]])
@@ -300,12 +318,177 @@ plot_nowcast <- function(resultado, variable = c("total", "no_minero"), ultimos_
     )
 }
 
+
+# -------------------------------------------------------------------
+# Estado del ciclo y archivo histórico de vintages
+# -------------------------------------------------------------------
+
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
+imacec_vintage_from_result <- function(resultado) {
+  dplyr::case_when(
+    identical(resultado$model_key, "ine") ~ "ine",
+    identical(resultado$model_key, "base") ~ "experimental",
+    identical(resultado$model_key, "eee") ~ "eee",
+    identical(resultado$model_key, "preliminar") ~ "early",
+    TRUE ~ as.character(resultado$model_key %||% "unknown")
+  )
+}
+
+imacec_vintage_label <- function(vintage) {
+  dplyr::case_when(
+    vintage == "eee" ~ "Vintage temprano: EEE disponible para el mes objetivo",
+    vintage == "experimental" ~ "Vintage intermedio: modelo con estadísticas experimentales disponible",
+    vintage == "ine" ~ "Vintage INE: modelo con indicadores sectoriales completos",
+    vintage == "early" ~ "Vintage preliminar: arrastre y supuestos de corto plazo",
+    TRUE ~ vintage
+  )
+}
+
+build_update_status <- function(resultado, all_results = list(), eee_nowcast = NULL) {
+  all_results <- purrr::compact(all_results)
+  ref <- all_results$base %||% all_results$ine %||% resultado
+
+  periodo_objetivo <- as.Date(ref$proyeccion$Periodo[1])
+  ultima_obs <- ref$Data_full |>
+    dplyr::filter(!is.na(imacec)) |>
+    dplyr::summarise(x = max(Periodo)) |>
+    dplyr::pull(x)
+
+  tiene_eee <- eee_matches_target(eee_nowcast, periodo_objetivo)
+  tiene_experimentales <- !is.null(all_results$base) && model_has_target_information(all_results$base, "base")
+  tiene_ine <- !is.null(all_results$ine) && model_has_target_information(all_results$ine, "ine")
+
+  vintage <- imacec_vintage_from_result(resultado)
+  ciclo_estado <- if (periodo_objetivo <= ultima_obs) "official_review" else "active_nowcast"
+  ciclo_estado_label <- if (ciclo_estado == "official_review") {
+    "Ciclo cerrado: el dato efectivo del período ya está disponible"
+  } else {
+    "Nowcast activo para un mes sin publicación oficial"
+  }
+
+  tibble::tibble(
+    fecha_actualizacion = as.Date(Sys.Date()),
+    fecha_hora_actualizacion = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+    ultima_observacion_imacec = as.Date(ultima_obs),
+    periodo_objetivo = as.Date(periodo_objetivo),
+    siguiente_periodo_imacec = as.Date(periodo_objetivo),
+    ciclo_estado = ciclo_estado,
+    ciclo_estado_label = ciclo_estado_label,
+    vintage = vintage,
+    vintage_label = paste(imacec_vintage_label(vintage), "·", ciclo_estado_label),
+    modelo = as.character(resultado$model_label),
+    tiene_eee = isTRUE(tiene_eee),
+    tiene_eee_siguiente = isTRUE(tiene_eee),
+    tiene_experimentales = isTRUE(tiene_experimentales),
+    tiene_ine = isTRUE(tiene_ine)
+  )
+}
+
+build_projection_archive_row <- function(resultado, all_results = list(), eee_nowcast = NULL) {
+  st <- build_update_status(resultado, all_results, eee_nowcast)
+
+  tibble::tibble(
+    fecha_actualizacion = st$fecha_actualizacion,
+    fecha_hora_actualizacion = st$fecha_hora_actualizacion,
+    Periodo = st$periodo_objetivo,
+    ultima_observacion_imacec = st$ultima_observacion_imacec,
+    siguiente_periodo_imacec = st$siguiente_periodo_imacec,
+    ciclo_estado = st$ciclo_estado,
+    ciclo_estado_label = st$ciclo_estado_label,
+    vintage = st$vintage,
+    vintage_label = st$vintage_label,
+    modelo = as.character(resultado$model_label),
+    imacec_predicho = as.numeric(resultado$proyeccion$imacec_predicho[1]),
+    imacec_nm_predicho = as.numeric(resultado$proyeccion$imacec_nm_predicho[1]),
+    eee_imacec = if (eee_matches_target(eee_nowcast, st$periodo_objetivo)) as.numeric(eee_nowcast$imacec_predicho[1]) else NA_real_,
+    eee_imacec_nm = if (eee_matches_target(eee_nowcast, st$periodo_objetivo)) as.numeric(eee_nowcast$imacec_nm_predicho[1]) else NA_real_
+  )
+}
+
+read_existing_csv <- function(path) {
+  if (!file.exists(path)) return(NULL)
+  readr::read_csv(path, show_col_types = FALSE)
+}
+
+normalize_archive_types <- function(df) {
+  if (is.null(df) || !nrow(df)) return(df)
+  for (nm in c("fecha_actualizacion", "Periodo", "ultima_observacion_imacec", "siguiente_periodo_imacec")) {
+    if (nm %in% names(df)) df[[nm]] <- as.Date(df[[nm]])
+  }
+  if ("fecha_hora_actualizacion" %in% names(df)) df$fecha_hora_actualizacion <- as.character(df$fecha_hora_actualizacion)
+  for (nm in c("imacec_predicho", "imacec_nm_predicho", "eee_imacec", "eee_imacec_nm")) {
+    if (nm %in% names(df)) df[[nm]] <- as.numeric(df[[nm]])
+  }
+  df
+}
+
+update_projection_archive <- function(output_dir, archive_row) {
+  path <- file.path(output_dir, "imacec_projection_archive.csv")
+  old <- normalize_archive_types(read_existing_csv(path))
+  new <- normalize_archive_types(archive_row)
+
+  out <- dplyr::bind_rows(old, new) |>
+    dplyr::arrange(Periodo, fecha_hora_actualizacion) |>
+    dplyr::distinct(Periodo, vintage, fecha_actualizacion, .keep_all = TRUE)
+
+  readr::write_csv(out, path)
+  out
+}
+
+build_projection_evaluation <- function(archive_df, resultado_ref, output_dir) {
+  if (is.null(archive_df) || !nrow(archive_df)) {
+    readr::write_csv(tibble::tibble(), file.path(output_dir, "imacec_projection_evaluation.csv"))
+    return(invisible(tibble::tibble()))
+  }
+
+  obs <- resultado_ref$Data_full |>
+    dplyr::filter(!is.na(imacec), !is.na(imacec_nm)) |>
+    dplyr::select(Periodo, imacec_observado = imacec, imacec_nm_observado = imacec_nm)
+
+  eval_df <- archive_df |>
+    dplyr::left_join(obs, by = "Periodo") |>
+    dplyr::filter(!is.na(imacec_observado)) |>
+    dplyr::transmute(
+      Periodo,
+      fecha_proyeccion = as.Date(fecha_actualizacion),
+      vintage,
+      modelo,
+      imacec_observado,
+      imacec_predicho,
+      error_imacec = imacec_observado - imacec_predicho,
+      eee_imacec,
+      error_eee = dplyr::if_else(!is.na(eee_imacec), imacec_observado - eee_imacec, NA_real_),
+      imacec_nm_observado,
+      imacec_nm_predicho,
+      error_imacec_nm = imacec_nm_observado - imacec_nm_predicho,
+      eee_imacec_nm,
+      error_eee_nm = dplyr::if_else(!is.na(eee_imacec_nm), imacec_nm_observado - eee_imacec_nm, NA_real_)
+    ) |>
+    dplyr::arrange(Periodo, fecha_proyeccion)
+
+  readr::write_csv(eval_df, file.path(output_dir, "imacec_projection_evaluation.csv"))
+  invisible(eval_df)
+}
+
+build_assumptions_table <- function(resultado_ref) {
+  periodo_objetivo <- as.Date(resultado_ref$proyeccion$Periodo[1])
+  ass <- make_default_assumptions(resultado_ref$Data_full, periodo_objetivo = periodo_objetivo)
+  tibble::tibble(
+    variable = names(ass),
+    valor_asumido = unname(as.numeric(unlist(ass))),
+    criterio = "Último dato disponible previo al mes objetivo",
+    periodo_objetivo = periodo_objetivo
+  )
+}
+
 export_imacec_outputs <- function(resultado,
                                   all_results = list(base = NULL, ine = NULL),
                                   output_dir = "data/processed",
                                   fig_dir = "assets/img/imacec",
                                   ultimos_meses = 96,
-                                  eval_start_date = as.Date(Sys.getenv("IMACEC_EVAL_START_DATE", unset = "2021-01-01"))) {
+                                  eval_start_date = as.Date(Sys.getenv("IMACEC_EVAL_START_DATE", unset = "2021-01-01")),
+                                  eee_nowcast = NULL) {
   if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
   if (!dir.exists(fig_dir)) dir.create(fig_dir, recursive = TRUE)
 
@@ -329,6 +512,16 @@ export_imacec_outputs <- function(resultado,
   readr::write_csv(oos$predictions, file.path(output_dir, "imacec_pseudo_oos_predictions.csv"))
   readr::write_csv(oos$metrics, file.path(output_dir, "imacec_pseudo_oos_metrics.csv"))
 
+  status_row <- build_update_status(resultado, all_results, eee_nowcast = eee_nowcast)
+  readr::write_csv(status_row, file.path(output_dir, "imacec_update_status.csv"))
+
+  ass_tbl <- build_assumptions_table(all_results$base %||% resultado)
+  readr::write_csv(ass_tbl, file.path(output_dir, "imacec_assumptions.csv"))
+
+  archive_row <- build_projection_archive_row(resultado, all_results, eee_nowcast = eee_nowcast)
+  archive_df <- update_projection_archive(output_dir, archive_row)
+  build_projection_evaluation(archive_df, all_results$base %||% resultado, output_dir)
+
   g_total <- plot_nowcast(resultado, "total", ultimos_meses)
   g_nm <- plot_nowcast(resultado, "no_minero", ultimos_meses)
 
@@ -344,6 +537,9 @@ export_imacec_outputs <- function(resultado,
     projection_all = projection_all,
     pseudo_oos_metrics = oos$metrics,
     pseudo_oos_predictions = oos$predictions,
+    update_status = status_row,
+    projection_archive = archive_df,
+    assumptions = ass_tbl,
     g_total = g_total,
     g_nm = g_nm
   ))

@@ -1,28 +1,4 @@
 Periodo,variable,modelo,observado,predicho
-2021-01-01,IMACEC total,Modelo con estadísticas experimentales,-3.4287687132994904,-4.9004779146477375
-2021-02-01,IMACEC total,Modelo con estadísticas experimentales,-2.1666510508181247,-9.673756550033652
-2021-03-01,IMACEC total,Modelo con estadísticas experimentales,6.6327425250128025,4.841207020613583
-2021-04-01,IMACEC total,Modelo con estadísticas experimentales,15.285035960989358,21.367800938558872
-2021-05-01,IMACEC total,Modelo con estadísticas experimentales,19.551829417289813,30.475117483987123
-2021-06-01,IMACEC total,Modelo con estadísticas experimentales,20.382431879961494,22.79237502281624
-2021-07-01,IMACEC total,Modelo con estadísticas experimentales,17.42490393209195,19.88717486226983
-2021-08-01,IMACEC total,Modelo con estadísticas experimentales,17.966595780594965,9.519818439047874
-2021-09-01,IMACEC total,Modelo con estadísticas experimentales,13.463442930231295,11.075204913491294
-2021-10-01,IMACEC total,Modelo con estadísticas experimentales,13.261557495479682,3.5401044936392196
-2021-11-01,IMACEC total,Modelo con estadísticas experimentales,13.33203729920507,15.793935509255983
-2021-12-01,IMACEC total,Modelo con estadísticas experimentales,8.751161872273826,15.10136724990078
-2022-01-01,IMACEC total,Modelo con estadísticas experimentales,7.209596697608389,5.491201674351231
-2022-02-01,IMACEC total,Modelo con estadísticas experimentales,5.005438687016195,4.13060382109458
-2022-03-01,IMACEC total,Modelo con estadísticas experimentales,5.669655027882148,6.021190978358753
-2022-04-01,IMACEC total,Modelo con estadísticas experimentales,5.904856300445971,7.688194222581881
-2022-05-01,IMACEC total,Modelo con estadísticas experimentales,5.588591818479638,1.1446180118828018
-2022-06-01,IMACEC total,Modelo con estadísticas experimentales,2.7970632563766307,-1.359125522535642
-2022-07-01,IMACEC total,Modelo con estadísticas experimentales,-0.43808421788794627,-3.802085437001557
-2022-08-01,IMACEC total,Modelo con estadísticas experimentales,0.6349071225385083,-2.379226598350406
-2022-09-01,IMACEC total,Modelo con estadísticas experimentales,0.17856372039597446,-1.733760546060401
-2022-10-01,IMACEC total,Modelo con estadísticas experimentales,-1.8790917978623423,-1.3710995426384582
-2022-11-01,IMACEC total,Modelo con estadísticas experimentales,-2.866486420366976,-1.7090021223312912
-2022-12-01,IMACEC total,Modelo con estadísticas experimentales,-1.2635246838221925,-3.569505440966788
 2023-01-01,IMACEC total,Modelo con estadísticas experimentales,1.359126237823327,-1.166605463185347
 2023-02-01,IMACEC total,Modelo con estadísticas experimentales,0.16342433643201648,0.5127653255412363
 2023-03-01,IMACEC total,Modelo con estadísticas experimentales,-1.4905514158231825,-1.2699471770564725
@@ -63,30 +39,6 @@ Periodo,variable,modelo,observado,predicho
 2026-02-01,IMACEC total,Modelo con estadísticas experimentales,-0.30968774441596514,-1.5425714750807253
 2026-03-01,IMACEC total,Modelo con estadísticas experimentales,-0.20042612820599937,0.8838767731808719
 2026-04-01,IMACEC total,Modelo con estadísticas experimentales,-1.178072826626786,2.007341991615084
-2021-01-01,IMACEC no minero,Modelo con estadísticas experimentales,-3.350273769976153,-4.2784327718553925
-2021-02-01,IMACEC no minero,Modelo con estadísticas experimentales,-1.3854611211324586,-10.153726149444402
-2021-03-01,IMACEC no minero,Modelo con estadísticas experimentales,7.68507855505729,3.568126661921582
-2021-04-01,IMACEC no minero,Modelo con estadísticas experimentales,16.734270191563038,21.568666058973065
-2021-05-01,IMACEC no minero,Modelo con estadísticas experimentales,22.13975263630448,33.513045357862545
-2021-06-01,IMACEC no minero,Modelo con estadísticas experimentales,23.407318658335143,27.65014094147317
-2021-07-01,IMACEC no minero,Modelo con estadísticas experimentales,20.76463937480795,25.63686884341878
-2021-08-01,IMACEC no minero,Modelo con estadísticas experimentales,21.657203493350764,14.331072307857102
-2021-09-01,IMACEC no minero,Modelo con estadísticas experimentales,16.849040783117687,14.240379468590115
-2021-10-01,IMACEC no minero,Modelo con estadísticas experimentales,15.655913827209456,5.949235399745959
-2021-11-01,IMACEC no minero,Modelo con estadísticas experimentales,15.7452903795817,17.09112958357213
-2021-12-01,IMACEC no minero,Modelo con estadísticas experimentales,10.477766339800976,17.61529662768041
-2022-01-01,IMACEC no minero,Modelo con estadísticas experimentales,10.22222540329465,7.55552132831801
-2022-02-01,IMACEC no minero,Modelo con estadísticas experimentales,7.808978207744599,6.791353263014386
-2022-03-01,IMACEC no minero,Modelo con estadísticas experimentales,7.994692106551549,7.393794582608935
-2022-04-01,IMACEC no minero,Modelo con estadísticas experimentales,9.085282350398138,9.230850645317757
-2022-05-01,IMACEC no minero,Modelo con estadísticas experimentales,7.123730100359338,3.466429839026496
-2022-06-01,IMACEC no minero,Modelo con estadísticas experimentales,4.404975133900391,-1.756136143719039
-2022-07-01,IMACEC no minero,Modelo con estadísticas experimentales,1.2528044069725075,-2.070435150142968
-2022-08-01,IMACEC no minero,Modelo con estadísticas experimentales,2.5916980923111455,-0.8155938796219573
-2022-09-01,IMACEC no minero,Modelo con estadísticas experimentales,1.1620904191933956,0.21338668895089308
-2022-10-01,IMACEC no minero,Modelo con estadísticas experimentales,-2.3643191172496913,-0.7512493423045944
-2022-11-01,IMACEC no minero,Modelo con estadísticas experimentales,-2.537906042892557,-1.3879816007899377
-2022-12-01,IMACEC no minero,Modelo con estadísticas experimentales,-1.3300179238098009,-2.6768729485168605
 2023-01-01,IMACEC no minero,Modelo con estadísticas experimentales,0.5845919328884674,-0.8099401184377444
 2023-02-01,IMACEC no minero,Modelo con estadísticas experimentales,0.5722515823792129,0.2176399891483124
 2023-03-01,IMACEC no minero,Modelo con estadísticas experimentales,-0.06153635370935717,-0.3440273065186119
@@ -127,42 +79,6 @@ Periodo,variable,modelo,observado,predicho
 2026-02-01,IMACEC no minero,Modelo con estadísticas experimentales,-0.20696452402412246,-1.1473636573543216
 2026-03-01,IMACEC no minero,Modelo con estadísticas experimentales,0.9532149341167528,1.1006660300994577
 2026-04-01,IMACEC no minero,Modelo con estadísticas experimentales,0.4159187323826474,2.8410100573402017
-2021-01-01,IMACEC total,Modelo con indicadores sectoriales INE,-3.4287687132994904,4.060244739546874
-2021-02-01,IMACEC total,Modelo con indicadores sectoriales INE,-2.1666510508181247,-5.168550517194831
-2021-03-01,IMACEC total,Modelo con indicadores sectoriales INE,6.6327425250128025,57.88286964147846
-2021-04-01,IMACEC total,Modelo con indicadores sectoriales INE,15.285035960989358,16.173569798266612
-2021-05-01,IMACEC total,Modelo con indicadores sectoriales INE,19.551829417289813,28.252057700215744
-2021-06-01,IMACEC total,Modelo con indicadores sectoriales INE,20.382431879961494,22.830143172306812
-2021-07-01,IMACEC total,Modelo con indicadores sectoriales INE,17.42490393209195,19.94472806444301
-2021-08-01,IMACEC total,Modelo con indicadores sectoriales INE,17.966595780594965,25.15693509177121
-2021-09-01,IMACEC total,Modelo con indicadores sectoriales INE,13.463442930231295,6.465921167911971
-2021-10-01,IMACEC total,Modelo con indicadores sectoriales INE,13.261557495479682,5.598658170212942
-2021-11-01,IMACEC total,Modelo con indicadores sectoriales INE,13.33203729920507,13.97730588694941
-2021-12-01,IMACEC total,Modelo con indicadores sectoriales INE,8.751161872273826,18.28976746616882
-2022-01-01,IMACEC total,Modelo con indicadores sectoriales INE,7.209596697608389,5.696337559872802
-2022-02-01,IMACEC total,Modelo con indicadores sectoriales INE,5.005438687016195,3.1462857750075273
-2022-03-01,IMACEC total,Modelo con indicadores sectoriales INE,5.669655027882148,4.398919669066584
-2022-04-01,IMACEC total,Modelo con indicadores sectoriales INE,5.904856300445971,-1.3107036670832866
-2022-05-01,IMACEC total,Modelo con indicadores sectoriales INE,5.588591818479638,4.316212904167144
-2022-06-01,IMACEC total,Modelo con indicadores sectoriales INE,2.7970632563766307,-0.5115523298876923
-2022-07-01,IMACEC total,Modelo con indicadores sectoriales INE,-0.43808421788794627,-1.7656166029413187
-2022-08-01,IMACEC total,Modelo con indicadores sectoriales INE,0.6349071225385083,-2.3268836060834777
-2022-09-01,IMACEC total,Modelo con indicadores sectoriales INE,0.17856372039597446,0.20166638993444508
-2022-10-01,IMACEC total,Modelo con indicadores sectoriales INE,-1.8790917978623423,-1.4449263617136627
-2022-11-01,IMACEC total,Modelo con indicadores sectoriales INE,-2.866486420366976,-1.238873175291368
-2022-12-01,IMACEC total,Modelo con indicadores sectoriales INE,-1.2635246838221925,2.033328359144119
-2023-01-01,IMACEC total,Modelo con indicadores sectoriales INE,1.359126237823327,0.0501843309971548
-2023-02-01,IMACEC total,Modelo con indicadores sectoriales INE,0.16342433643201648,1.410360944050808
-2023-03-01,IMACEC total,Modelo con indicadores sectoriales INE,-1.4905514158231825,2.202247859912781
-2023-04-01,IMACEC total,Modelo con indicadores sectoriales INE,-0.497119351657882,1.1411791226989463
-2023-05-01,IMACEC total,Modelo con indicadores sectoriales INE,-0.599359494821039,-0.31024741300608527
-2023-06-01,IMACEC total,Modelo con indicadores sectoriales INE,0.02746104306026176,-1.494004384441026
-2023-07-01,IMACEC total,Modelo con indicadores sectoriales INE,2.915341321974929,0.021540978414698597
-2023-08-01,IMACEC total,Modelo con indicadores sectoriales INE,0.418336336923697,1.3526503946246953
-2023-09-01,IMACEC total,Modelo con indicadores sectoriales INE,0.9023618496374564,0.8693457057605629
-2023-10-01,IMACEC total,Modelo con indicadores sectoriales INE,2.3886867770460896,0.2546678639795873
-2023-11-01,IMACEC total,Modelo con indicadores sectoriales INE,2.281348596189936,2.5051598770314927
-2023-12-01,IMACEC total,Modelo con indicadores sectoriales INE,0.5421059316974342,0.7540185675623703
 2024-01-01,IMACEC total,Modelo con indicadores sectoriales INE,3.744961609875319,1.4339718210012506
 2024-02-01,IMACEC total,Modelo con indicadores sectoriales INE,5.836527826096916,5.244647121357104
 2024-03-01,IMACEC total,Modelo con indicadores sectoriales INE,1.184659965776258,0.6337542823826521
@@ -191,42 +107,6 @@ Periodo,variable,modelo,observado,predicho
 2026-02-01,IMACEC total,Modelo con indicadores sectoriales INE,-0.30968774441596514,-1.2670096540846885
 2026-03-01,IMACEC total,Modelo con indicadores sectoriales INE,-0.20042612820599937,-0.6839709979206983
 2026-04-01,IMACEC total,Modelo con indicadores sectoriales INE,-1.178072826626786,-2.0425313027929466
-2021-01-01,IMACEC no minero,Modelo con indicadores sectoriales INE,-3.350273769976153,6.454963550863297
-2021-02-01,IMACEC no minero,Modelo con indicadores sectoriales INE,-1.3854611211324586,-5.927916598047247
-2021-03-01,IMACEC no minero,Modelo con indicadores sectoriales INE,7.68507855505729,147.59822987503725
-2021-04-01,IMACEC no minero,Modelo con indicadores sectoriales INE,16.734270191563038,-41.977485202836995
-2021-05-01,IMACEC no minero,Modelo con indicadores sectoriales INE,22.13975263630448,30.51747805863718
-2021-06-01,IMACEC no minero,Modelo con indicadores sectoriales INE,23.407318658335143,15.044119789956506
-2021-07-01,IMACEC no minero,Modelo con indicadores sectoriales INE,20.76463937480795,25.806157077213385
-2021-08-01,IMACEC no minero,Modelo con indicadores sectoriales INE,21.657203493350764,31.257933582731116
-2021-09-01,IMACEC no minero,Modelo con indicadores sectoriales INE,16.849040783117687,13.040407942004371
-2021-10-01,IMACEC no minero,Modelo con indicadores sectoriales INE,15.655913827209456,10.266493579309003
-2021-11-01,IMACEC no minero,Modelo con indicadores sectoriales INE,15.7452903795817,15.798629888520761
-2021-12-01,IMACEC no minero,Modelo con indicadores sectoriales INE,10.477766339800976,21.954271201570155
-2022-01-01,IMACEC no minero,Modelo con indicadores sectoriales INE,10.22222540329465,11.647504184643566
-2022-02-01,IMACEC no minero,Modelo con indicadores sectoriales INE,7.808978207744599,7.888704634339078
-2022-03-01,IMACEC no minero,Modelo con indicadores sectoriales INE,7.994692106551549,7.158429235444899
-2022-04-01,IMACEC no minero,Modelo con indicadores sectoriales INE,9.085282350398138,0.8344889882729678
-2022-05-01,IMACEC no minero,Modelo con indicadores sectoriales INE,7.123730100359338,4.448878591854758
-2022-06-01,IMACEC no minero,Modelo con indicadores sectoriales INE,4.404975133900391,-0.41557159385468445
-2022-07-01,IMACEC no minero,Modelo con indicadores sectoriales INE,1.2528044069725075,0.022417442578094637
-2022-08-01,IMACEC no minero,Modelo con indicadores sectoriales INE,2.5916980923111455,-0.3269231432944453
-2022-09-01,IMACEC no minero,Modelo con indicadores sectoriales INE,1.1620904191933956,0.9988024454436619
-2022-10-01,IMACEC no minero,Modelo con indicadores sectoriales INE,-2.3643191172496913,-1.7120261911293935
-2022-11-01,IMACEC no minero,Modelo con indicadores sectoriales INE,-2.537906042892557,-1.3520341576686956
-2022-12-01,IMACEC no minero,Modelo con indicadores sectoriales INE,-1.3300179238098009,2.421876207273942
-2023-01-01,IMACEC no minero,Modelo con indicadores sectoriales INE,0.5845919328884674,0.9734432535680639
-2023-02-01,IMACEC no minero,Modelo con indicadores sectoriales INE,0.5722515823792129,1.740905580048377
-2023-03-01,IMACEC no minero,Modelo con indicadores sectoriales INE,-0.06153635370935717,4.500035580164966
-2023-04-01,IMACEC no minero,Modelo con indicadores sectoriales INE,-0.628578866738827,2.6876145160455502
-2023-05-01,IMACEC no minero,Modelo con indicadores sectoriales INE,0.765823394874432,2.0019786182494945
-2023-06-01,IMACEC no minero,Modelo con indicadores sectoriales INE,-0.15502564733940183,0.22538097296610182
-2023-07-01,IMACEC no minero,Modelo con indicadores sectoriales INE,2.330988389425115,0.7663537079352755
-2023-08-01,IMACEC no minero,Modelo con indicadores sectoriales INE,-0.48439612663464526,1.639874066091782
-2023-09-01,IMACEC no minero,Modelo con indicadores sectoriales INE,-0.9565011146409841,0.4541910314411428
-2023-10-01,IMACEC no minero,Modelo con indicadores sectoriales INE,3.136077145990246,-0.4687198255345878
-2023-11-01,IMACEC no minero,Modelo con indicadores sectoriales INE,2.167097326798406,2.490493340174731
-2023-12-01,IMACEC no minero,Modelo con indicadores sectoriales INE,0.7938512913761464,1.3197603737384553
 2024-01-01,IMACEC no minero,Modelo con indicadores sectoriales INE,4.1128471186122395,2.915082071867573
 2024-02-01,IMACEC no minero,Modelo con indicadores sectoriales INE,4.628470622877567,5.59426600675873
 2024-03-01,IMACEC no minero,Modelo con indicadores sectoriales INE,-0.2650223798154494,-0.05297629964510664
