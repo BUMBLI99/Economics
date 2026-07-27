@@ -37,8 +37,10 @@ make_default_assumptions <- function(Data, periodo_objetivo = get_target_period(
 
 model_label_from_key <- function(model_key) {
   dplyr::case_when(
+    model_key == "eee"  ~ "Encuesta de Expectativas Económicas (EEE)",
     model_key == "base" ~ "Modelo con estadísticas experimentales",
     model_key == "ine"  ~ "Modelo con indicadores sectoriales INE",
+    model_key == "preliminar" ~ "Modelo preliminar con supuestos de arrastre",
     TRUE ~ model_key
   )
 }
@@ -367,8 +369,106 @@ run_nowcast_safe <- function(model) {
   )
 }
 
-choose_active_nowcast <- function(results) {
-  if (!is.null(results$ine)) return(results$ine)
-  if (!is.null(results$base)) return(results$base)
-  stop("No se pudo estimar ningún modelo IMACEC.")
+# -------------------------------------------------------------------
+# Selección del nowcast activo
+# -------------------------------------------------------------------
+
+required_current_values_for_model <- function(model_key) {
+  if (identical(model_key, "ine")) {
+    return(c(
+      "venta_minorista", "monto_credito", "uf",
+      "mineria", "manufactura", "comercio", "electricidad"
+    ))
+  }
+
+  if (identical(model_key, "base")) {
+    return(c("venta_minorista", "monto_credito", "uf"))
+  }
+
+  character()
+}
+
+model_has_target_information <- function(result, model_key = result$model_key) {
+  if (is.null(result)) return(FALSE)
+
+  target <- result$proyeccion$Periodo[1]
+  req <- required_current_values_for_model(model_key)
+  if (!length(req)) return(TRUE)
+
+  df <- result$Data_full |>
+    dplyr::filter(Periodo == target)
+
+  if (nrow(df) == 0) return(FALSE)
+  all(req %in% names(df)) && all(!is.na(as.numeric(df[1, req, drop = TRUE])))
+}
+
+eee_matches_target <- function(eee_nowcast, target_period) {
+  if (is.null(eee_nowcast) || nrow(eee_nowcast) == 0) return(FALSE)
+  identical(as.Date(eee_nowcast$Periodo[1]), as.Date(target_period)) &&
+    !is.na(eee_nowcast$imacec_predicho[1]) &&
+    !is.na(eee_nowcast$imacec_nm_predicho[1])
+}
+
+make_eee_result <- function(eee_nowcast, reference_result) {
+  if (is.null(reference_result)) stop("No hay resultado de referencia para construir el output EEE.")
+
+  proy <- tibble::tibble(
+    Periodo = as.Date(eee_nowcast$Periodo[1]),
+    imacec_predicho = as.numeric(eee_nowcast$imacec_predicho[1]),
+    imacec_lwr = NA_real_,
+    imacec_upr = NA_real_,
+    imacec_nm_predicho = as.numeric(eee_nowcast$imacec_nm_predicho[1]),
+    imacec_nm_lwr = NA_real_,
+    imacec_nm_upr = NA_real_,
+    modelo = model_label_from_key("eee"),
+    model_key = "eee",
+    fecha_actualizacion = Sys.Date(),
+    eee_survey_period = as.Date(eee_nowcast$survey_period[1])
+  )
+
+  reference_result$fit_model_label <- reference_result$model_label
+  reference_result$fit_model_key <- reference_result$model_key
+  reference_result$proyeccion <- proy
+  reference_result$model_label <- model_label_from_key("eee")
+  reference_result$model_key <- "eee"
+  reference_result$active_note <- paste0(
+    "Nowcast temprano tomado desde la EEE de ",
+    format(as.Date(eee_nowcast$survey_period[1]), "%Y-%m"),
+    ". Los indicadores sectoriales INE del mes objetivo aún no están completos."
+  )
+  reference_result
+}
+
+choose_active_nowcast <- function(results, eee_nowcast = NULL) {
+  results <- purrr::compact(results)
+  if (!length(results)) stop("No se pudo estimar ningún modelo IMACEC.")
+
+  reference <- if (!is.null(results$base)) results$base else results[[1]]
+  target <- reference$proyeccion$Periodo[1]
+
+  # Prioridad correcta de publicación:
+  # 1) Indicadores sectoriales INE, solo si el mes objetivo tiene esos datos efectivos.
+  # 2) EEE, si existe para el mes objetivo.
+  # 3) Estadísticas experimentales, solo si tiene información contemporánea del mes objetivo.
+  # 4) Último recurso: modelo base con supuestos de arrastre, marcado como preliminar.
+  if (!is.null(results$ine) && model_has_target_information(results$ine, "ine")) {
+    results$ine$active_note <- "Nowcast con indicadores sectoriales INE disponibles para el mes objetivo."
+    return(results$ine)
+  }
+
+  if (eee_matches_target(eee_nowcast, target)) {
+    return(make_eee_result(eee_nowcast, reference))
+  }
+
+  if (!is.null(results$base) && model_has_target_information(results$base, "base")) {
+    results$base$active_note <- "Nowcast con estadísticas experimentales disponibles para el mes objetivo."
+    return(results$base)
+  }
+
+  reference$model_key <- "preliminar"
+  reference$model_label <- model_label_from_key("preliminar")
+  reference$proyeccion$model_key <- "preliminar"
+  reference$proyeccion$modelo <- model_label_from_key("preliminar")
+  reference$active_note <- "Nowcast preliminar: aún faltan EEE o indicadores contemporáneos completos para el mes objetivo."
+  reference
 }

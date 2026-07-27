@@ -1089,3 +1089,20 @@ main.content {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* --- IMACEC page rebuild refinements --- */
+.proyectos-imacec .cell-output-display:has(.plotly),
+.proyectos-imacec .cell-output-display:has(.js-plotly-plot) {
+  min-height: 520px;
+}
+
+.proyectos-imacec .js-plotly-plot,
+.proyectos-imacec .plotly.html-widget {
+  width: 100% !important;
+}
+
+.proyectos-imacec .callout-tip,
+.proyectos-imacec .callout-note {
+  border-radius: 16px;
+}

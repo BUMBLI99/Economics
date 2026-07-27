@@ -3,51 +3,6 @@
 # Descarga y preparación de base mensual IMACEC
 # ============================================================
 
-fetch_series_optional <- function(code, var_name = NULL, firstdate = first_date, lastdate = last_date) {
-  tryCatch(
-    fetch_series(code, firstdate = firstdate, lastdate = lastdate),
-    error = function(e) {
-      warning(
-        "No se pudo descargar la serie opcional",
-        if (!is.null(var_name)) paste0(" ", var_name) else "",
-        ": ", conditionMessage(e),
-        call. = FALSE
-      )
-      tibble::tibble(date = as.Date(character()), value = numeric())
-    }
-  )
-}
-
-get_eee_expectations <- function() {
-  # La EEE reporta expectativas para el IMACEC de "un mes atrás".
-  # Por eso una encuesta fechada en M se alinea al mes objetivo M-1.
-  eee_series <- list(
-    eee_imacec = codes$eee_imacec,
-    eee_imacec_nm = codes$eee_imacec_nm
-  )
-
-  df_raw <- purrr::imap_dfr(eee_series, function(code, var_name) {
-    fetch_series_optional(code, var_name = var_name) |>
-      dplyr::mutate(var = var_name)
-  })
-
-  if (nrow(df_raw) == 0) {
-    return(tibble::tibble(
-      Periodo = as.Date(character()),
-      eee_imacec = numeric(),
-      eee_imacec_nm = numeric()
-    ))
-  }
-
-  df_raw |>
-    dplyr::filter(!is.na(date)) |>
-    dplyr::mutate(Periodo = lubridate::floor_date(date, "month") %m-% lubridate::period(num = 1, units = "month")) |>
-    dplyr::group_by(var, Periodo) |>
-    dplyr::summarise(value = dplyr::last(value), .groups = "drop") |>
-    tidyr::pivot_wider(names_from = var, values_from = value) |>
-    dplyr::arrange(Periodo)
-}
-
 get_monthly_base <- function() {
   series_list <- list(
     imacec_nm_raw   = codes$imacec_nm,
@@ -74,9 +29,7 @@ get_monthly_base <- function() {
     tidyr::pivot_wider(names_from = var, values_from = value) |>
     dplyr::arrange(Periodo)
 
-  eee_df <- get_eee_expectations()
-
-  out <- base_wide |>
+  base_wide |>
     dplyr::mutate(
       imacec    = yoy(imacec_raw),
       imacec_nm = yoy(imacec_nm_raw),
@@ -95,17 +48,7 @@ get_monthly_base <- function() {
       desempleo,
       cobre_yoy,
       petroleo_yoy
-    ) |>
-    # La EEE puede ser la primera señal disponible para el mes objetivo.
-    # Por eso no basta un left_join desde la base mensual: si la BDE todavía
-    # no tiene ninguna otra serie para ese mes, perderíamos la fila del nowcast.
-    dplyr::full_join(eee_df, by = "Periodo") |>
-    dplyr::arrange(Periodo)
-
-  if (!"eee_imacec" %in% names(out)) out$eee_imacec <- NA_real_
-  if (!"eee_imacec_nm" %in% names(out)) out$eee_imacec_nm <- NA_real_
-
-  out
+    )
 }
 
 get_uf_monthly <- function() {
@@ -149,8 +92,6 @@ add_common_features <- function(df) {
       venta_minorista_lag1 = dplyr::lag(venta_minorista, 1),
       uf_lag1 = dplyr::lag(uf, 1),
       desempleo_lag1 = dplyr::lag(desempleo, 1),
-      eee_imacec_lag1 = dplyr::lag(eee_imacec, 1),
-      eee_imacec_nm_lag1 = dplyr::lag(eee_imacec_nm, 1),
       t = dplyr::row_number()
     )
 }
@@ -210,5 +151,111 @@ build_dataset_ine <- function() {
       comercio_lag1     = dplyr::lag(comercio, 1),
       electricidad_lag1 = dplyr::lag(electricidad, 1),
       desempleo_lag1    = dplyr::lag(desempleo, 1)
+    )
+}
+
+# -------------------------------------------------------------------
+# Encuesta de Expectativas Económicas (EEE) - IMACEC
+# -------------------------------------------------------------------
+# La BDE publica una tabla pública con expectativas de PIB/IMACEC.
+# Usamos la fila "IMACEC un mes atrás" y "IMACEC no minero, un mes atrás".
+# Si la encuesta es de junio, ese valor corresponde al IMACEC de mayo.
+# Esta fuente debe usarse como nowcast temprano, no como indicador sectorial INE.
+
+parse_spanish_month <- function(x) {
+  abbr <- c(
+    Ene = 1, Feb = 2, Mar = 3, Abr = 4, May = 5, Jun = 6,
+    Jul = 7, Ago = 8, Sep = 9, Oct = 10, Nov = 11, Dic = 12
+  )
+  m <- stringr::str_match(x, "^(Ene|Feb|Mar|Abr|May|Jun|Jul|Ago|Sep|Oct|Nov|Dic)\\.(\\d{4})$")
+  as.Date(sprintf("%s-%02d-01", m[, 3], abbr[m[, 2]]))
+}
+
+parse_numeric_es <- function(x) {
+  x <- stringr::str_replace_all(x, "\\.", "")
+  x <- stringr::str_replace_all(x, ",", ".")
+  suppressWarnings(as.numeric(x))
+}
+
+fetch_latest_eee_imacec <- function(url = eee_imacec_url) {
+  out_empty <- tibble::tibble(
+    Periodo = as.Date(character()),
+    survey_period = as.Date(character()),
+    imacec_predicho = numeric(),
+    imacec_nm_predicho = numeric(),
+    modelo = character(),
+    model_key = character(),
+    fecha_actualizacion = as.Date(character())
+  )
+
+  html <- tryCatch(
+    paste(readLines(url, warn = FALSE, encoding = "UTF-8"), collapse = "\n"),
+    error = function(e) NA_character_
+  )
+
+  if (length(html) == 0 || is.na(html)) return(out_empty)
+
+  # Convertir HTML básico a texto lineal. La página de BDE deja la tabla
+  # suficientemente expuesta en el HTML como para extraer filas por texto.
+  text <- html |>
+    stringr::str_replace_all("(?i)<br\\s*/?>", "\n") |>
+    stringr::str_replace_all("(?i)</(tr|td|th|div|span|li|p)>", "\n") |>
+    stringr::str_replace_all("<[^>]+>", " ") |>
+    stringr::str_replace_all("&nbsp;", " ") |>
+    stringr::str_replace_all("&ntilde;", "ñ") |>
+    stringr::str_replace_all("&aacute;", "á") |>
+    stringr::str_replace_all("&eacute;", "é") |>
+    stringr::str_replace_all("&iacute;", "í") |>
+    stringr::str_replace_all("&oacute;", "ó") |>
+    stringr::str_replace_all("&uacute;", "ú")
+
+  lines <- unlist(strsplit(text, "\n", fixed = TRUE)) |>
+    stringr::str_squish()
+  lines <- lines[nzchar(lines)]
+
+  header <- lines[stringr::str_detect(lines, "^Serie\\s+Ene\\.\\d{4}")][1]
+  total_line <- lines[stringr::str_detect(lines, "^IMACEC un mes atrás\\s+")][1]
+  nm_line <- lines[stringr::str_detect(lines, "^IMACEC no minero, un mes atrás\\s+")][1]
+
+  if (is.na(header) || is.na(total_line) || is.na(nm_line)) return(out_empty)
+
+  date_tokens <- stringr::str_extract_all(
+    header,
+    "(?:Ene|Feb|Mar|Abr|May|Jun|Jul|Ago|Sep|Oct|Nov|Dic)\\.\\d{4}"
+  )[[1]]
+
+  val_total <- stringr::str_extract_all(total_line, "-?\\d+(?:,\\d+)?")[[1]]
+  val_nm <- stringr::str_extract_all(nm_line, "-?\\d+(?:,\\d+)?")[[1]]
+
+  n <- min(length(date_tokens), length(val_total), length(val_nm))
+  if (n == 0) return(out_empty)
+
+  df <- tibble::tibble(
+    survey_period = parse_spanish_month(date_tokens[seq_len(n)]),
+    imacec_predicho = parse_numeric_es(val_total[seq_len(n)]),
+    imacec_nm_predicho = parse_numeric_es(val_nm[seq_len(n)])
+  ) |>
+    dplyr::filter(!is.na(survey_period)) |>
+    dplyr::mutate(
+      Periodo = survey_period %m-% lubridate::months(1),
+      modelo = "Encuesta de Expectativas Económicas (EEE)",
+      model_key = "eee",
+      fecha_actualizacion = Sys.Date()
+    ) |>
+    dplyr::filter(!is.na(imacec_predicho), !is.na(imacec_nm_predicho)) |>
+    dplyr::arrange(survey_period)
+
+  if (nrow(df) == 0) return(out_empty)
+
+  df |>
+    dplyr::slice_tail(n = 1) |>
+    dplyr::select(
+      Periodo,
+      survey_period,
+      imacec_predicho,
+      imacec_nm_predicho,
+      modelo,
+      model_key,
+      fecha_actualizacion
     )
 }

@@ -18,6 +18,15 @@ last_date  <- Sys.getenv("IMACEC_LAST_DATE", unset = format(Sys.Date(), "%Y-%m-%
 # Déjalo en data/raw/cal_1985_2030.xlsx o cambia la ruta con variable de entorno.
 cal_path <- Sys.getenv("IMACEC_CAL_PATH", unset = "data/raw/cal_1985_2030.xlsx")
 
+
+# Página pública de la BDE con la EEE de PIB/IMACEC. Se usa solo para
+# extraer el nowcast temprano de IMACEC/IMACEC no minero cuando aún no
+# existen indicadores sectoriales INE del mes objetivo.
+eee_imacec_url <- Sys.getenv(
+  "IMACEC_EEE_URL",
+  unset = "https://si3.bcentral.cl/Siete/ES/Siete/Cuadro/CAP_BDP/MN_EXP_EC11/EXE_BCCH_05/EXE_BCCH_05"
+)
+
 # Códigos BCCh / INE usados en la versión actual del prototipo.
 # Validar periódicamente en la BDE si cambia la codificación o definición de una serie.
 codes <- list(
@@ -29,12 +38,7 @@ codes <- list(
   uf_daily       = "F073.UFF.PRE.Z.D",
   desempleo      = "F049.DES.TAS.INE9.10.M",
   cobre          = "F019.PPB.PRE.40.M",
-  petroleo       = "F019.PPB.PRE.41AB.M",
-
-  # Encuesta de Expectativas Económicas: expectativas de IMACEC
-  # La serie se publica en el mes de encuesta y se alinea al mes objetivo t-1.
-  eee_imacec    = "F089.IMC.V12.10.M",
-  eee_imacec_nm = "F089.IMCNM.V12.10.M"
+  petroleo       = "F019.PPB.PRE.41AB.M"
 )
 
 codes_ine <- list(
