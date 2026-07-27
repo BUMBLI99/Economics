@@ -64,7 +64,7 @@ else
     reportName = 'Escenario_TPM45_2026';
 end
 
-% Por defecto el pipeline ordenado no genera PDF, porque Quarto usa CSV.
+% Por defecto el pipeline ordenado no genera PDF, porque el normalizador del portafolio usa CSV.
 % Para forzar reportes IRIS, define IPOM_RUN_REPORT = true antes de ejecutar.
 if exist('IPOM_RUN_REPORT','var')
     runReport = IPOM_RUN_REPORT;
@@ -585,7 +585,7 @@ d_alt = local_add_derived_variables(d_alt);
 dbsave(d_alt, outputFile);
 
 % Copia de compatibilidad: mantiene el nombre generico que ya lee el
-% pipeline R/Quarto si todavia no has agregado este escenario al catalogo.
+% pipeline R/portafolio si todavia no has agregado este escenario al catalogo.
 if exist('outputFileGeneric','var') && ~strcmp(outputFileGeneric, outputFile)
     dbsave(d_alt, outputFileGeneric);
 end
@@ -593,7 +593,7 @@ end
 fprintf('\nEscenario alternativo guardado en:\n');
 fprintf(' - %s\n', outputFile);
 if exist('outputFileGeneric','var') && ~strcmp(outputFileGeneric, outputFile)
-    fprintf(' - %s  [copia compatible para Quarto]\n', outputFileGeneric);
+    fprintf(' - %s  [copia compatible para el portafolio]\n', outputFileGeneric);
 end
 
 

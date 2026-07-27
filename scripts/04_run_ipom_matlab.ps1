@@ -30,4 +30,7 @@ $batch = ($cmds -join "; ")
 
 matlab -batch $batch
 
-Write-Host "Matlab/IRIS finalizó. Ahora corre: Rscript scripts/03_build_ipom_outputs.R"
+Write-Host "Matlab/IRIS finalizó. Siguientes pasos:"
+Write-Host "  Rscript scripts/03_build_ipom_outputs.R"
+Write-Host "  python scripts/build_site.py"
+Write-Host "  python scripts/validate_site.py"

@@ -1,1238 +1,136 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
-
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-<meta name="description" content="Monitor econométrico del pass-through desde la TPM hacia tasas bancarias y financieras en Chile.">
-
-<title>Transmisión de la TPM a tasas de mercado – Mauricio Ulloa</title>
-<style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-  width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
-  vertical-align: middle;
-}
-</style>
-
-
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-a0f9fd0d421825b736dc1bbcbcba2219.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
-  "location": "navbar",
-  "copy-button": false,
-  "collapse-after": 3,
-  "panel-placement": "end",
-  "type": "overlay",
-  "limit": 50,
-  "keyboard-shortcut": [
-    "f",
-    "/",
-    "s"
-  ],
-  "show-item-context": false,
-  "language": {
-    "search-no-results-text": "No se han encontrado resultados",
-    "search-matching-documents-text": "documentos encontrados",
-    "search-copy-link-title": "Copiar el enlace en la búsqueda",
-    "search-hide-matches-text": "Ocultar resultados adicionales",
-    "search-more-match-text": "resultado adicional en este documento",
-    "search-more-matches-text": "resultados adicionales en este documento",
-    "search-clear-button-title": "Borrar",
-    "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "Cancelar",
-    "search-submit-button-title": "Enviar",
-    "search-label": "Buscar"
-  }
-}</script>
-<link href="../site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
-
-<script src="../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
-
-<script src="../site_libs/plotly-binding-4.12.0/plotly.js"></script>
-
-<script src="../site_libs/typedarray-0.1/typedarray.min.js"></script>
-
-<script src="../site_libs/jquery-3.5.1/jquery.min.js"></script>
-
-<link href="../site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
-
-<script src="../site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
-
-<link href="../site_libs/plotly-htmlwidgets-css-2.25.2/plotly-htmlwidgets.css" rel="stylesheet">
-
-<script src="../site_libs/plotly-main-2.25.2/plotly-latest.min.js"></script>
-
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="../assets/css/styles.css">
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pass-through de la TPM · Mauricio Ulloa</title>
+  <meta name="description" content="Evidencia dinámica y heterogénea sobre el traspaso de la TPM a tasas bancarias mediante rezagos distribuidos, asimetrías y local projections.">
+  <meta name="author" content="Mauricio Andrés Ulloa Valdivia">
+  <meta name="theme-color" content="#f4f1eb">
+  <link rel="canonical" href="https://mulloav3007.github.io/Economics/proyectos/transmision-tpm.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Pass-through de la TPM · Mauricio Ulloa">
+  <meta property="og:description" content="Evidencia dinámica y heterogénea sobre el traspaso de la TPM a tasas bancarias mediante rezagos distribuidos, asimetrías y local projections.">
+  <meta property="og:url" content="https://mulloav3007.github.io/Economics/proyectos/transmision-tpm.html">
+  <meta property="og:image" content="https://mulloav3007.github.io/Economics/assets/img/projects/transmission.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/css/site.css">
 </head>
-
-<body class="nav-fixed quarto-light">
-
-<div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">Mauricio Ulloa</span>
-    </a>
-  </div>
-            <div id="quarto-search" class="" title="Buscar"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-  <span class="navbar-toggler-icon"></span>
-</button>
-          <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
-<span class="menu-text">Inicio</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../proyectos.html"> 
-<span class="menu-text">Proyectos</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../cv.html"> 
-<span class="menu-text">CV</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../contacto.html"> 
-<span class="menu-text">Contacto</span></a>
-  </li>  
-</ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/mulloav3007"> <i class="bi bi-github" role="img" aria-label="GitHub">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
-</ul>
-          </div> <!-- /navcollapse -->
-            <div class="quarto-navbar-tools">
-</div>
-      </div> <!-- /container-fluid -->
-    </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
-<!-- sidebar -->
-<!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">En esta página</h2>
-   
-  <ul>
-  <li><a href="#pregunta-de-investigación" id="toc-pregunta-de-investigación" class="nav-link active" data-scroll-target="#pregunta-de-investigación">Pregunta de investigación</a></li>
-  <li><a href="#qué-muestra-la-nota" id="toc-qué-muestra-la-nota" class="nav-link" data-scroll-target="#qué-muestra-la-nota">Qué muestra la nota</a></li>
-  <li><a href="#datos-usados" id="toc-datos-usados" class="nav-link" data-scroll-target="#datos-usados">Datos usados</a></li>
-  <li><a href="#especificación-empírica" id="toc-especificación-empírica" class="nav-link" data-scroll-target="#especificación-empírica">Especificación empírica</a>
-  <ul class="collapse">
-  <li><a href="#lectura-conceptual-del-canal-monetario" id="toc-lectura-conceptual-del-canal-monetario" class="nav-link" data-scroll-target="#lectura-conceptual-del-canal-monetario">Lectura conceptual del canal monetario</a></li>
-  <li><a href="#extensión-natural-convergencia-parcial" id="toc-extensión-natural-convergencia-parcial" class="nav-link" data-scroll-target="#extensión-natural-convergencia-parcial">Extensión natural: convergencia parcial</a></li>
-  </ul></li>
-  <li><a href="#canales-principales-tpm-y-tasas-clave" id="toc-canales-principales-tpm-y-tasas-clave" class="nav-link" data-scroll-target="#canales-principales-tpm-y-tasas-clave">Canales principales: TPM y tasas clave</a>
-  <ul class="collapse">
-  <li><a href="#spreads-respecto-a-la-tpm" id="toc-spreads-respecto-a-la-tpm" class="nav-link" data-scroll-target="#spreads-respecto-a-la-tpm">Spreads respecto a la TPM</a></li>
-  </ul></li>
-  <li><a href="#pass-through-acumulado" id="toc-pass-through-acumulado" class="nav-link" data-scroll-target="#pass-through-acumulado">Pass-through acumulado</a>
-  <ul class="collapse">
-  <li><a href="#resumen-por-horizonte" id="toc-resumen-por-horizonte" class="nav-link" data-scroll-target="#resumen-por-horizonte">Resumen por horizonte</a></li>
-  <li><a href="#lectura-ejecutiva-de-productos-clave" id="toc-lectura-ejecutiva-de-productos-clave" class="nav-link" data-scroll-target="#lectura-ejecutiva-de-productos-clave">Lectura ejecutiva de productos clave</a></li>
-  <li><a href="#comparación-de-especificaciones-a-6-meses" id="toc-comparación-de-especificaciones-a-6-meses" class="nav-link" data-scroll-target="#comparación-de-especificaciones-a-6-meses">Comparación de especificaciones a 6 meses</a></li>
-  <li><a href="#heatmap-de-pass-through" id="toc-heatmap-de-pass-through" class="nav-link" data-scroll-target="#heatmap-de-pass-through">Heatmap de pass-through</a></li>
-  </ul></li>
-  <li><a href="#asimetría-alzas-versus-bajas-de-tpm" id="toc-asimetría-alzas-versus-bajas-de-tpm" class="nav-link" data-scroll-target="#asimetría-alzas-versus-bajas-de-tpm">Asimetría: alzas versus bajas de TPM</a></li>
-  <li><a href="#local-projections" id="toc-local-projections" class="nav-link" data-scroll-target="#local-projections">Local projections</a></li>
-  <li><a href="#robustez-por-muestra" id="toc-robustez-por-muestra" class="nav-link" data-scroll-target="#robustez-por-muestra">Robustez por muestra</a></li>
-  <li><a href="#principales-cautelas-metodológicas" id="toc-principales-cautelas-metodológicas" class="nav-link" data-scroll-target="#principales-cautelas-metodológicas">Principales cautelas metodológicas</a></li>
-  <li><a href="#próximos-pasos" id="toc-próximos-pasos" class="nav-link" data-scroll-target="#próximos-pasos">Próximos pasos</a></li>
-  </ul>
-</nav>
+<body class="project project-transmision-tpm">
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="../index.html" aria-label="Ir al inicio">
+        <span class="brand-mark">MU</span>
+        <span>Mauricio Ulloa</span>
+      </a>
+      <button class="menu-toggle" type="button" aria-label="Abrir navegación" aria-expanded="false">☰</button>
+      <nav class="site-nav" aria-label="Navegación principal">
+        <a href="../index.html" >Inicio</a>
+        <a href="../proyectos.html" aria-current="page">Proyectos</a>
+        <a href="../cv.html" >CV</a>
+        <a href="../contacto.html" >Contacto</a>
+        <a class="nav-external" href="https://github.com/mulloav3007" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
     </div>
-<!-- main -->
-<main class="content column-page-left" id="quarto-document-content">
+  </header>
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Transmisión de la TPM a tasas de mercado</h1>
-<p class="subtitle lead">Monitor econométrico del pass-through de política monetaria en Chile</p>
-</div>
-
-<div>
-  <div class="description">
-    Monitor econométrico del pass-through desde la TPM hacia tasas bancarias y financieras en Chile.
+  <main id="contenido" class="site-main">
+<section class="project-hero">
+  <div class="container project-hero-grid">
+    <div>
+      <p class="eyebrow">Política monetaria</p>
+      <h1 class="project-title">Transmisión de la TPM a tasas de mercado</h1>
+      <p class="project-deck">Evidencia dinámica y heterogénea sobre el traspaso de la TPM a tasas bancarias mediante rezagos distribuidos, asimetrías y local projections.</p>
+      <div class="tag-row">
+<span class="tag">R</span><span class="tag">TPM</span><span class="tag">Pass-through</span><span class="tag">Local projections</span>      </div>
+<div class="actions"><a class="button button-secondary" href="https://github.com/mulloav3007/Economics/tree/main/R/transmision_tpm" target="_blank" rel="noopener">Ver código ↗</a></div>    </div>
+    <dl class="project-meta">
+      <div><dt>Estado</dt><dd>Nota técnica</dd></div>
+      <div><dt>Última actualización</dt><dd>Mayo de 2026</dd></div>
+      <div><dt>Frecuencia</dt><dd>Mensual</dd></div>
+      <div><dt>Herramientas</dt><dd>R</dd></div>
+    </dl>
   </div>
+</section>
+<section class="section-tight">
+  <div class="container project-layout">
+    <article class="project-content">
+      <div class="kpi-grid">
+<div class="kpi"><div class="kpi-label">Muestra</div><div class="kpi-value">2002–2026</div><div class="kpi-note">frecuencia mensual</div></div>
+<div class="kpi"><div class="kpi-label">Productos</div><div class="kpi-value">10</div><div class="kpi-note">tasas activas y pasivas</div></div>
+<div class="kpi"><div class="kpi-label">Comercial a 6 meses</div><div class="kpi-value">1,10</div><div class="kpi-note">pass-through acumulado</div></div>
+<div class="kpi"><div class="kpi-label">Vivienda UF a 6 meses</div><div class="kpi-value">0,005</div><div class="kpi-note">respuesta muy acotada</div></div>
+</div>
+<div class="callout">
+<strong>Interpretación prudente.</strong> Los resultados describen un pass-through condicional con datos agregados. No identifican por sí solos un shock monetario exógeno ni separan completamente cambios en riesgo, composición de clientes, fondeo o competencia bancaria.
+</div>
+<h2 id="pregunta-de-investigacion">Pregunta de investigación</h2>
+<p>¿Qué tan rápido y con qué intensidad se transmiten los cambios de la <strong>Tasa de Política Monetaria</strong> hacia tasas de captación y colocación en Chile? ¿Existen diferencias entre productos y entre episodios de alzas y bajas?</p>
+<p>El proyecto combina tres ejercicios complementarios:</p>
+<ol>
+<li>Modelos de rezagos distribuidos para el pass-through acumulado.</li>
+<li>Especificaciones asimétricas para alzas y bajas de TPM.</li>
+<li>Local projections para describir la trayectoria horizonte por horizonte.</li>
+</ol>
+<h2 id="canales-principales">Canales principales</h2>
+<figure class="chart-figure">
+<a href="../assets/img/charts/transmission_key_rates.svg" target="_blank"><img alt="TPM y tasas bancarias clave en Chile" src="../assets/img/charts/transmission_key_rates.svg"/></a>
+<figcaption class="chart-caption">Las tasas comerciales responden más rápido; vivienda y captaciones muestran dinámicas distintas por plazo y unidad de denominación.</figcaption>
+</figure>
+<h2 id="pass-through-acumulado">Pass-through acumulado</h2>
+<div class="equation"><span class="equation-label">Rezagos distribuidos</span>Δr<sub>j,t</sub> = α<sub>j</sub> + Σ<sup>K</sup><sub>k=0</sub>β<sub>j,k</sub>ΔTPM<sub>t−k</sub> + ρ<sub>j</sub>Δr<sub>j,t−1</sub> + Γ<sub>j</sub>X<sub>t</sub> + μ<sub>m</sub> + ε<sub>j,t</sub></div>
+<figure class="chart-figure">
+<a href="../assets/img/charts/transmission_cumulative.svg" target="_blank"><img alt="Pass-through acumulado de la TPM por producto" src="../assets/img/charts/transmission_cumulative.svg"/></a>
+<figcaption class="chart-caption">La línea de referencia en 1 corresponde a un traspaso acumulado uno a uno.</figcaption>
+</figure>
+<p>A seis meses, el coeficiente acumulado es cercano a <strong>1,10</strong> para crédito comercial total y <strong>1,22</strong> para consumo total. En vivienda UF, el coeficiente es prácticamente nulo en esta especificación mensual, consistente con una dinámica más lenta y con la influencia de tasas largas reales.</p>
+<div class="table-wrap"><table><thead><tr><th>Producto</th><th>1 mes</th><th>3 meses</th><th>6 meses</th></tr></thead><tbody><tr><td>Comercial: sobregiro</td><td>0,794</td><td>1,054</td><td>1,318</td></tr><tr><td>Consumo total</td><td>0,856</td><td>1,319</td><td>1,223</td></tr><tr><td>Comercial total</td><td>0,892</td><td>0,995</td><td>1,098</td></tr><tr><td>Tarjeta: rotativo</td><td>0,356</td><td>1,153</td><td>0,982</td></tr><tr><td>Comercial: cuotas</td><td>0,754</td><td>0,993</td><td>0,948</td></tr><tr><td>Consumo: cuotas</td><td>1,170</td><td>0,549</td><td>0,570</td></tr><tr><td>Tarjeta: cuota</td><td>0,008</td><td>1,025</td><td>0,562</td></tr><tr><td>Captación 30-89d</td><td>0,078</td><td>0,080</td><td>0,080</td></tr><tr><td>Captación 90d-1a</td><td>0,069</td><td>0,064</td><td>0,057</td></tr><tr><td>Vivienda UF &gt;3 años</td><td>0,118</td><td>0,048</td><td>0,005</td></tr></tbody></table></div>
+<h2 id="asimetria-entre-alzas-y-bajas">Asimetría entre alzas y bajas</h2>
+<figure class="chart-figure">
+<a href="../assets/img/charts/transmission_asymmetry.svg" target="_blank"><img alt="Pass-through asimétrico para alzas y bajas de TPM" src="../assets/img/charts/transmission_asymmetry.svg"/></a>
+<figcaption class="chart-caption">En varios productos el traspaso estimado es mayor durante bajas de TPM, especialmente en consumo; la comparación es descriptiva y sensible a la muestra.</figcaption>
+</figure>
+<p>La asimetría puede reflejar competencia, costos de ajuste, composición de cartera, riesgo o diferencias entre ciclos monetarios. No debe atribuirse mecánicamente a una conducta particular de la banca sin un diseño adicional.</p>
+<h2 id="local-projections">Local projections</h2>
+<figure class="chart-figure">
+<a href="../assets/img/charts/transmission_local_projections.svg" target="_blank"><img alt="Local projections del pass-through de la TPM" src="../assets/img/charts/transmission_local_projections.svg"/></a>
+<figcaption class="chart-caption">Trayectorias de respuesta con intervalos de confianza del 95%.</figcaption>
+</figure>
+<p>Las local projections permiten verificar si la forma dinámica obtenida con rezagos distribuidos se mantiene sin imponer la misma estructura paramétrica en todos los horizontes.</p>
+<h2 id="robustez-y-cautelas">Robustez y cautelas</h2>
+<ul>
+<li>Se comparan muestra completa, período posterior a 2010 y muestra excluyendo 2020–2023.</li>
+<li>Las tasas promedio pueden cambiar por composición de operaciones, no solo por precio puro.</li>
+<li>La TPM y las tasas responden simultáneamente al ciclo macroeconómico; los controles reducen, pero no eliminan, endogeneidad.</li>
+<li>El canal hipotecario requiere incorporar con mayor detalle tasas largas reales, spreads y condiciones de oferta.</li>
+<li>Los coeficientes mayores que uno no implican automáticamente sobre-reacción causal: pueden capturar movimientos conjuntos de riesgo y ciclo.</li>
+</ul>
+<h2 id="archivos-principales">Archivos principales</h2>
+<div class="download-grid">
+<a class="download" href="../assets/files/transmission-pass-through-summary.csv"><div><strong>Resumen de pass-through</strong><span>CSV · coeficientes por producto</span></div><span>↓</span></a>
+<a class="download" href="../assets/files/transmission-local-projections.csv"><div><strong>Local projections</strong><span>CSV · estimaciones e intervalos</span></div><span>↓</span></a>
 </div>
 
-
-<div class="quarto-title-meta column-page-left">
-
-    
-  
-    
+    </article>
+    <aside class="project-toc" aria-label="Contenido de la página">
+      <p class="project-toc-title">En esta página</p>
+<a href="#pregunta-de-investigacion">Pregunta de investigación</a><a href="#canales-principales">Canales principales</a><a href="#pass-through-acumulado">Pass-through acumulado</a><a href="#asimetria-entre-alzas-y-bajas">Asimetría entre alzas y bajas</a><a href="#local-projections">Local projections</a><a href="#robustez-y-cautelas">Robustez y cautelas</a><a href="#archivos-principales">Archivos principales</a>    </aside>
   </div>
-  
+</section>
+  </main>
 
-
-</header>
-
-
-<div class="mu-note">
-<p><strong>Objetivo.</strong> Esta nota construye un monitor del <strong>traspaso dinámico</strong> desde la Tasa de Política Monetaria (TPM) hacia tasas bancarias y financieras en Chile. La lectura es deliberadamente prudente: se trata de un ejercicio de <strong>pass-through condicional</strong> con datos agregados, no de una identificación causal definitiva de shocks monetarios.</p>
-</div>
-<section id="pregunta-de-investigación" class="level2">
-<h2 class="anchored" data-anchor-id="pregunta-de-investigación">Pregunta de investigación</h2>
-<p>La pregunta central es:</p>
-<blockquote class="blockquote">
-<p>¿Qué tan rápido, qué tan intensamente y con qué heterogeneidad por producto se transmite la TPM hacia el costo de fondeo bancario y hacia distintas tasas de colocación?</p>
-</blockquote>
-<p>La estructura del proyecto está pensada como una nota técnica aplicada, con espacio para futuras extensiones econométricas.</p>
-<div class="mu-kpi-grid">
-<div class="mu-kpi-card">
-<div class="mu-kpi-label">
-Último mes
-</div>
-<div class="mu-kpi-value">
-2026-05
-</div>
-</div>
-<div class="mu-kpi-card">
-<div class="mu-kpi-label">
-TPM último dato
-</div>
-<div class="mu-kpi-value">
-4.50%
-</div>
-</div>
-<div class="mu-kpi-card">
-<div class="mu-kpi-label">
-Productos estimados
-</div>
-<div class="mu-kpi-value">
-10
-</div>
-</div>
-</div>
-</section>
-<section id="qué-muestra-la-nota" class="level2">
-<h2 class="anchored" data-anchor-id="qué-muestra-la-nota">Qué muestra la nota</h2>
-<p>La lectura del monitor se organiza en cinco bloques:</p>
-<ol type="1">
-<li><strong>Lectura ejecutiva:</strong> tabla corta con productos clave y velocidad/intensidad del traspaso.</li>
-<li><strong>Canales principales:</strong> TPM comparada con cuatro tasas bancarias representativas.</li>
-<li><strong>Pass-through acumulado:</strong> traspaso estimado a distintos horizontes bajo una especificación base del proyecto.</li>
-<li><strong>Asimetría:</strong> contraste entre alzas y bajas de TPM para cada producto.</li>
-<li><strong>Local projections:</strong> trayectoria de la respuesta dinámica horizonte por horizonte.</li>
-</ol>
-</section>
-<section id="datos-usados" class="level2">
-<h2 class="anchored" data-anchor-id="datos-usados">Datos usados</h2>
-<p>El proyecto trabaja con tasas promedio oficiales del Banco Central de Chile. Como bloque central, utiliza:</p>
-<ul>
-<li><strong>TPM</strong> como tasa de política.</li>
-<li><strong>Captación 90 días a 1 año</strong> como referencia del costo de fondeo bancario.</li>
-<li><strong>Comercial total</strong> y <strong>Consumo total</strong> como tasas activas representativas para empresas y hogares.</li>
-<li><strong>Vivienda UF a más de 3 años</strong> como referencia del canal hipotecario de largo plazo.</li>
-</ul>
-<div class="cell">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Series principales del monitor.</caption>
-<colgroup>
-<col style="width: 21%">
-<col style="width: 65%">
-<col style="width: 12%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Serie</th>
-<th style="text-align: left;">Descripción</th>
-<th style="text-align: left;">Frecuencia</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">TPM</td>
-<td style="text-align: left;">Tasa de Política Monetaria diaria</td>
-<td style="text-align: left;">DAILY</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Consumo total</td>
-<td style="text-align: left;">Tasa promedio colocación consumo total</td>
-<td style="text-align: left;">MONTHLY</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Comercial total</td>
-<td style="text-align: left;">Tasa promedio créditos comerciales total</td>
-<td style="text-align: left;">MONTHLY</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Vivienda UF &gt;3 años</td>
-<td style="text-align: left;">Tasa vivienda UF mayor a 3 años</td>
-<td style="text-align: left;">MONTHLY</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Captación 90d-1a</td>
-<td style="text-align: left;">Tasa captación pesos 90 días a 1 año</td>
-<td style="text-align: left;">DAILY</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">BCP 2 años</td>
-<td style="text-align: left;">BCP 2 años</td>
-<td style="text-align: left;">DAILY</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">BCP 5 años</td>
-<td style="text-align: left;">BCP 5 años</td>
-<td style="text-align: left;">DAILY</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">BCU 5 años</td>
-<td style="text-align: left;">BCU 5 años</td>
-<td style="text-align: left;">DAILY</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">BCU 10 años</td>
-<td style="text-align: left;">BCU 10 años</td>
-<td style="text-align: left;">DAILY</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">IPC</td>
-<td style="text-align: left;">IPC nivel, base 2023=100</td>
-<td style="text-align: left;">MONTHLY</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Dólar observado</td>
-<td style="text-align: left;">Tipo de cambio dólar observado, promedio mensual</td>
-<td style="text-align: left;">MONTHLY</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">IMACEC</td>
-<td style="text-align: left;">IMACEC índice mensual, candidato; verificar en BDE si falla</td>
-<td style="text-align: left;">MONTHLY</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section>
-<section id="especificación-empírica" class="level2">
-<h2 class="anchored" data-anchor-id="especificación-empírica">Especificación empírica</h2>
-<p>La especificación principal de rezagos distribuidos para cada producto <span class="math inline">\(j\)</span> es:</p>
-<p><span class="math display">\[
-\Delta r_{j,t}=\alpha_j + \sum_{k=0}^{K}\beta_{j,k}\Delta TPM_{t-k}+\rho_j\Delta r_{j,t-1}+\Gamma_j X_t+\mu_m+\varepsilon_{j,t}
-\]</span></p>
-<p>donde:</p>
-<ul>
-<li><span class="math inline">\(\Delta r_{j,t}\)</span> es el cambio mensual de la tasa del producto.</li>
-<li><span class="math inline">\(\Delta TPM_{t-k}\)</span> son cambios contemporáneos y rezagados de la TPM.</li>
-<li><span class="math inline">\(X_t\)</span> resume controles macro básicos del ejercicio principal: inflación anual, variación anual del tipo de cambio e IMACEC anual cuando la serie está disponible.</li>
-<li><span class="math inline">\(\mu_m\)</span> corresponde a efectos fijos de mes.</li>
-</ul>
-<p>Como contraste, la nota también reporta una especificación más parsimoniosa y otra que incorpora referencias de curva soberana/real como robustez adicional.</p>
-<section id="lectura-conceptual-del-canal-monetario" class="level3">
-<h3 class="anchored" data-anchor-id="lectura-conceptual-del-canal-monetario">Lectura conceptual del canal monetario</h3>
-<p>La TPM no se transmite mecánicamente ni de forma idéntica a todos los productos. La tasa de política afecta con mayor fuerza el costo de fondeo de corto plazo, pero el traspaso observado hacia tasas bancarias depende de expectativas de TPM, inflación esperada, tasas soberanas, riesgo de crédito, liquidez bancaria, competencia, plazo y composición de nuevas operaciones.</p>
-<p>En ese sentido, los coeficientes de esta página deben leerse como <strong>pass-through condicional</strong>: describen comovimientos dinámicos entre TPM y tasas de mercado después de controlar por un conjunto limitado de variables macro, pero no equivalen a una identificación causal pura de sorpresas monetarias.</p>
-</section>
-<section id="extensión-natural-convergencia-parcial" class="level3">
-<h3 class="anchored" data-anchor-id="extensión-natural-convergencia-parcial">Extensión natural: convergencia parcial</h3>
-<p>Una forma más cercana a la literatura de tasas bancarias es modelar la tasa de cada producto como una convergencia gradual hacia una tasa de referencia o equilibrio:</p>
-<p><span class="math display">\[
-\Delta r^j_t =
-\lambda_j (r^j_{t-1}-r^{j,*}_{t-1})
-+ \sum_{h=0}^{H}\beta_{j,h}\Delta i_{t-h}
-+ \Gamma_j X_t
-+ \varepsilon^j_t
-\]</span></p>
-<p>Donde <span class="math inline">\(r^j_t\)</span> es la tasa bancaria del producto <span class="math inline">\(j\)</span>, <span class="math inline">\(i_t\)</span> es la TPM, <span class="math inline">\(X_t\)</span> resume controles macrofinancieros y <span class="math inline">\(r^{j,*}_t\)</span> representa una tasa de referencia compatible con condiciones de fondeo, riesgo y plazo. Esta extensión permitiría separar mejor velocidad de ajuste, nivel de equilibrio y eventuales asimetrías entre ciclos de alza y baja.</p>
-</section>
-</section>
-<section id="canales-principales-tpm-y-tasas-clave" class="level2">
-<h2 class="anchored" data-anchor-id="canales-principales-tpm-y-tasas-clave">Canales principales: TPM y tasas clave</h2>
-<p>En vez de superponer todas las tasas en un solo eje, el gráfico siguiente muestra cuatro segmentos centrales del mecanismo de transmisión. Cada panel usa su propia escala vertical, de modo que la comparación relevante es la <strong>dinámica temporal</strong> dentro de cada segmento.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="transmision-tpm_files/figure-html/plot-rates-key-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<section id="spreads-respecto-a-la-tpm" class="level3">
-<h3 class="anchored" data-anchor-id="spreads-respecto-a-la-tpm">Spreads respecto a la TPM</h3>
-<p>Como complemento, el siguiente gráfico resume la diferencia en niveles entre cada producto clave y la TPM. Es útil para seguir márgenes y el grado de transmisión acumulada en cada segmento.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="transmision-tpm_files/figure-html/plot-spreads-key-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-</section>
-<section id="pass-through-acumulado" class="level2">
-<h2 class="anchored" data-anchor-id="pass-through-acumulado">Pass-through acumulado</h2>
-<p>El pass-through acumulado a horizonte <span class="math inline">\(h\)</span> se define como:</p>
-<p><span class="math display">\[
-PT_{j,h}=\sum_{k=0}^{h}\beta_{j,k}
-\]</span></p>
-<p>Un valor cercano a 1 indica que un aumento de 100 puntos base en la TPM se asocia con un aumento acumulado cercano a 100 puntos base en esa tasa al horizonte correspondiente.</p>
-<section id="resumen-por-horizonte" class="level3">
-<h3 class="anchored" data-anchor-id="resumen-por-horizonte">Resumen por horizonte</h3>
-<div class="cell">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Pass-through acumulado estimado por producto. Coeficientes en puntos porcentuales por punto porcentual de TPM.</caption>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Producto</th>
-<th style="text-align: right;">1 mes</th>
-<th style="text-align: right;">3 meses</th>
-<th style="text-align: right;">6 meses</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Comercial: sobregiro</td>
-<td style="text-align: right;">0.79</td>
-<td style="text-align: right;">1.05</td>
-<td style="text-align: right;">1.32</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Consumo total</td>
-<td style="text-align: right;">0.86</td>
-<td style="text-align: right;">1.32</td>
-<td style="text-align: right;">1.22</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Comercial total</td>
-<td style="text-align: right;">0.89</td>
-<td style="text-align: right;">1.00</td>
-<td style="text-align: right;">1.10</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Tarjeta: rotativo</td>
-<td style="text-align: right;">0.36</td>
-<td style="text-align: right;">1.15</td>
-<td style="text-align: right;">0.98</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Comercial: cuotas</td>
-<td style="text-align: right;">0.75</td>
-<td style="text-align: right;">0.99</td>
-<td style="text-align: right;">0.95</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Consumo: cuotas</td>
-<td style="text-align: right;">1.17</td>
-<td style="text-align: right;">0.55</td>
-<td style="text-align: right;">0.57</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Tarjeta: cuota</td>
-<td style="text-align: right;">0.01</td>
-<td style="text-align: right;">1.02</td>
-<td style="text-align: right;">0.56</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Captación 30-89d</td>
-<td style="text-align: right;">0.08</td>
-<td style="text-align: right;">0.08</td>
-<td style="text-align: right;">0.08</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Captación 90d-1a</td>
-<td style="text-align: right;">0.07</td>
-<td style="text-align: right;">0.06</td>
-<td style="text-align: right;">0.06</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Vivienda UF &gt;3 años</td>
-<td style="text-align: right;">0.12</td>
-<td style="text-align: right;">0.05</td>
-<td style="text-align: right;">0.01</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section>
-<section id="lectura-ejecutiva-de-productos-clave" class="level3">
-<h3 class="anchored" data-anchor-id="lectura-ejecutiva-de-productos-clave">Lectura ejecutiva de productos clave</h3>
-<p>Para una lectura rápida, conviene concentrarse primero en fondeo bancario, tasas comerciales, consumo y vivienda. El criterio de clasificación combina el pass-through acumulado a seis meses y la velocidad inicial de ajuste.</p>
-<div class="cell">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Resumen ejecutivo del pass-through para tasas clave. Coeficientes en pp por pp de TPM.</caption>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Producto</th>
-<th style="text-align: right;">1 mes</th>
-<th style="text-align: right;">3 meses</th>
-<th style="text-align: right;">6 meses</th>
-<th style="text-align: left;">Lectura</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Consumo total</td>
-<td style="text-align: right;">0.86</td>
-<td style="text-align: right;">1.32</td>
-<td style="text-align: right;">1.22</td>
-<td style="text-align: left;">Traspaso alto y rápido</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Comercial total</td>
-<td style="text-align: right;">0.89</td>
-<td style="text-align: right;">1.00</td>
-<td style="text-align: right;">1.10</td>
-<td style="text-align: left;">Traspaso alto y rápido</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Captación 90d-1a</td>
-<td style="text-align: right;">0.07</td>
-<td style="text-align: right;">0.06</td>
-<td style="text-align: right;">0.06</td>
-<td style="text-align: left;">Traspaso bajo o lento</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Vivienda UF &gt;3 años</td>
-<td style="text-align: right;">0.12</td>
-<td style="text-align: right;">0.05</td>
-<td style="text-align: right;">0.01</td>
-<td style="text-align: left;">Traspaso bajo o lento</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>Interpretación económica breve
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>La transmisión hacia captaciones debería ser relativamente rápida porque refleja el costo marginal de fondeo de la banca. Las tasas comerciales suelen responder con más intensidad que consumo cuando existe mayor indexación al costo financiero y menor rigidez comercial. Vivienda UF, en cambio, no debe leerse como un canal mecánico de TPM: incorpora expectativas de inflación, tasas reales largas, premios por plazo y condiciones de originación hipotecaria.</p>
-</div>
-</div>
-</section>
-<section id="comparación-de-especificaciones-a-6-meses" class="level3">
-<h3 class="anchored" data-anchor-id="comparación-de-especificaciones-a-6-meses">Comparación de especificaciones a 6 meses</h3>
-<div class="cell">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Pass-through acumulado a 6 meses bajo tres especificaciones: base parsimoniosa, principal del proyecto y robustez con referencias de curva.</caption>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Producto</th>
-<th style="text-align: right;">Base</th>
-<th style="text-align: right;">Principal</th>
-<th style="text-align: right;">Robustez curva</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Comercial: sobregiro</td>
-<td style="text-align: right;">1.42</td>
-<td style="text-align: right;">1.32</td>
-<td style="text-align: right;">1.18</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Consumo total</td>
-<td style="text-align: right;">1.27</td>
-<td style="text-align: right;">1.22</td>
-<td style="text-align: right;">1.23</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Comercial total</td>
-<td style="text-align: right;">1.19</td>
-<td style="text-align: right;">1.10</td>
-<td style="text-align: right;">1.24</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Tarjeta: rotativo</td>
-<td style="text-align: right;">0.94</td>
-<td style="text-align: right;">0.98</td>
-<td style="text-align: right;">1.06</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Comercial: cuotas</td>
-<td style="text-align: right;">1.02</td>
-<td style="text-align: right;">0.95</td>
-<td style="text-align: right;">0.88</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Consumo: cuotas</td>
-<td style="text-align: right;">0.79</td>
-<td style="text-align: right;">0.57</td>
-<td style="text-align: right;">0.61</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Tarjeta: cuota</td>
-<td style="text-align: right;">0.63</td>
-<td style="text-align: right;">0.56</td>
-<td style="text-align: right;">1.04</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Captación 30-89d</td>
-<td style="text-align: right;">0.08</td>
-<td style="text-align: right;">0.08</td>
-<td style="text-align: right;">0.08</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Captación 90d-1a</td>
-<td style="text-align: right;">0.06</td>
-<td style="text-align: right;">0.06</td>
-<td style="text-align: right;">0.06</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Vivienda UF &gt;3 años</td>
-<td style="text-align: right;">0.09</td>
-<td style="text-align: right;">0.01</td>
-<td style="text-align: right;">0.05</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section>
-<section id="heatmap-de-pass-through" class="level3">
-<h3 class="anchored" data-anchor-id="heatmap-de-pass-through">Heatmap de pass-through</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="transmision-tpm_files/figure-html/heatmap-pt-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-</section>
-<section id="asimetría-alzas-versus-bajas-de-tpm" class="level2">
-<h2 class="anchored" data-anchor-id="asimetría-alzas-versus-bajas-de-tpm">Asimetría: alzas versus bajas de TPM</h2>
-<p>La comparación de alzas y bajas se reporta como <strong>magnitud de traspaso en la dirección esperada</strong>. Para las alzas se usa <span class="math inline">\(\max(\Delta TPM_t,0)\)</span>. Para las bajas se usa <span class="math inline">\(\max(-\Delta TPM_t,0)\)</span> y el coeficiente se reporta con el signo normalizado para facilitar la comparación de magnitudes.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-94a87c04eb8513567e66" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-94a87c04eb8513567e66">{"x":{"visdat":{"45f41ff93ef":["function () ","plotlyVisDat"],"45f473cea9b":["function () ","data"],"45f425ea3c04":["function () ","data"],"45f46c0f4596":["function () ","data"],"45f479fb6009":["function () ","data"],"45f4119b4967":["function () ","data"],"45f4156ec45":["function () ","data"],"45f4376a65b1":["function () ","data"],"45f46fa367a7":["function () ","data"],"45f417d2406":["function () ","data"],"45f44b3c4c5d":["function () ","data"],"45f43b205512":["function () ","data"],"45f45e7e5ea3":["function () ","data"],"45f4626c7e16":["function () ","data"],"45f45af95d9":["function () ","data"],"45f4d0f3a99":["function () ","data"],"45f4186b7bd9":["function () ","data"],"45f4a50665a":["function () ","data"],"45f466e26687":["function () ","data"],"45f4664d2388":["function () ","data"],"45f44c212faa":["function () ","data"]},"cur_data":"45f44c212faa","attrs":{"45f473cea9b":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":true,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f425ea3c04":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":true,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f46c0f4596":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f479fb6009":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f4119b4967":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f4156ec45":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f4376a65b1":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f46fa367a7":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f417d2406":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f44b3c4c5d":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f43b205512":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f45e7e5ea3":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f4626c7e16":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f45af95d9":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f4d0f3a99":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f4186b7bd9":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f4a50665a":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f466e26687":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f4664d2388":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f44c212faa":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7},"text":{},"hovertemplate":"%{text}<extra><\/extra>","inherit":true}},"layout":{"margin":{"b":90,"l":75,"t":110,"r":35},"title":"Pass-through acumulado: alzas versus bajas de TPM — Comercial total","xaxis":{"domain":[0,1],"automargin":true,"title":"Horizonte mensual","dtick":1,"zeroline":false,"fixedrange":true},"yaxis":{"domain":[0,1],"automargin":true,"title":"Pass-through acumulado","zeroline":false,"fixedrange":true},"shapes":[{"type":"line","x0":0,"x1":6,"y0":0,"y1":0,"line":{"color":"rgba(80,80,80,0.55)","width":1}},{"type":"line","x0":0,"x1":6,"y0":1,"y1":1,"line":{"color":"rgba(80,80,80,0.45)","width":1,"dash":"dot"}}],"updatemenus":[{"type":"dropdown","active":0,"x":0,"y":1.1599999999999999,"xanchor":"left","yanchor":"top","buttons":[{"method":"update","label":"Comercial total","args":[{"visible":[true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"title":"Pass-through acumulado: alzas versus bajas de TPM — Comercial total"}]},{"method":"update","label":"Consumo total","args":[{"visible":[false,false,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"title":"Pass-through acumulado: alzas versus bajas de TPM — Consumo total"}]},{"method":"update","label":"Vivienda UF >3 años","args":[{"visible":[false,false,false,false,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"title":"Pass-through acumulado: alzas versus bajas de TPM — Vivienda UF >3 años"}]},{"method":"update","label":"Captación 90d-1a","args":[{"visible":[false,false,false,false,false,false,true,true,false,false,false,false,false,false,false,false,false,false,false,false]},{"title":"Pass-through acumulado: alzas versus bajas de TPM — Captación 90d-1a"}]},{"method":"update","label":"Comercial: cuotas","args":[{"visible":[false,false,false,false,false,false,false,false,true,true,false,false,false,false,false,false,false,false,false,false]},{"title":"Pass-through acumulado: alzas versus bajas de TPM — Comercial: cuotas"}]},{"method":"update","label":"Comercial: sobregiro","args":[{"visible":[false,false,false,false,false,false,false,false,false,false,true,true,false,false,false,false,false,false,false,false]},{"title":"Pass-through acumulado: alzas versus bajas de TPM — Comercial: sobregiro"}]},{"method":"update","label":"Consumo: cuotas","args":[{"visible":[false,false,false,false,false,false,false,false,false,false,false,false,true,true,false,false,false,false,false,false]},{"title":"Pass-through acumulado: alzas versus bajas de TPM — Consumo: cuotas"}]},{"method":"update","label":"Tarjeta: rotativo","args":[{"visible":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,false,false,false,false]},{"title":"Pass-through acumulado: alzas versus bajas de TPM — Tarjeta: rotativo"}]},{"method":"update","label":"Tarjeta: cuota","args":[{"visible":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,false,false]},{"title":"Pass-through acumulado: alzas versus bajas de TPM — Tarjeta: cuota"}]},{"method":"update","label":"Captación 30-89d","args":[{"visible":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true]},{"title":"Pass-through acumulado: alzas versus bajas de TPM — Captación 30-89d"}]}]}],"legend":{"orientation":"h","x":0.5,"xanchor":"center","y":-0.22},"hovermode":"x unified","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false,"responsive":true,"scrollZoom":false,"displaylogo":false,"displayModeBar":false,"modeBarButtonsToRemove":["zoom2d","pan2d","select2d","lasso2d","zoomIn2d","zoomOut2d","autoScale2d","resetScale2d"]},"data":[{"x":[0,1,2,3,4,5,6],"y":[0.069615035080393253,0.74329220189050649,1.2596609245683477,1.3613935687064742,1.2391488638310857,1.0332332085722105,0.89427651460045643],"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":true,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7,"line":{"color":"rgba(31,119,180,1)"}},"text":["Producto: Comercial total<br>Tipo: Alzas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.07","Producto: Comercial total<br>Tipo: Alzas de TPM<br>Horizonte: 1 meses<br>Pass-through: 0.74","Producto: Comercial total<br>Tipo: Alzas de TPM<br>Horizonte: 2 meses<br>Pass-through: 1.26","Producto: Comercial total<br>Tipo: Alzas de TPM<br>Horizonte: 3 meses<br>Pass-through: 1.36","Producto: Comercial total<br>Tipo: Alzas de TPM<br>Horizonte: 4 meses<br>Pass-through: 1.24","Producto: Comercial total<br>Tipo: Alzas de TPM<br>Horizonte: 5 meses<br>Pass-through: 1.03","Producto: Comercial total<br>Tipo: Alzas de TPM<br>Horizonte: 6 meses<br>Pass-through: 0.89"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[0.59074941320345675,0.87182247978228067,1.1758894685038981,0.98420654270859376,0.9796061576019488,1.1403169707107077,1.2607484298007623],"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":true,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7,"line":{"color":"rgba(255,127,14,1)"}},"text":["Producto: Comercial total<br>Tipo: Bajas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.59","Producto: Comercial total<br>Tipo: Bajas de TPM<br>Horizonte: 1 meses<br>Pass-through: 0.87","Producto: Comercial total<br>Tipo: Bajas de TPM<br>Horizonte: 2 meses<br>Pass-through: 1.18","Producto: Comercial total<br>Tipo: Bajas de TPM<br>Horizonte: 3 meses<br>Pass-through: 0.98","Producto: Comercial total<br>Tipo: Bajas de TPM<br>Horizonte: 4 meses<br>Pass-through: 0.98","Producto: Comercial total<br>Tipo: Bajas de TPM<br>Horizonte: 5 meses<br>Pass-through: 1.14","Producto: Comercial total<br>Tipo: Bajas de TPM<br>Horizonte: 6 meses<br>Pass-through: 1.26"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[0.35785250359931325,0.71451126610886406,1.1295517159379371,1.4774076526231823,1.2754355646410678,0.88362194996435783,0.67651253076315243],"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7,"line":{"color":"rgba(44,160,44,1)"}},"text":["Producto: Consumo total<br>Tipo: Alzas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.36","Producto: Consumo total<br>Tipo: Alzas de TPM<br>Horizonte: 1 meses<br>Pass-through: 0.71","Producto: Consumo total<br>Tipo: Alzas de TPM<br>Horizonte: 2 meses<br>Pass-through: 1.13","Producto: Consumo total<br>Tipo: Alzas de TPM<br>Horizonte: 3 meses<br>Pass-through: 1.48","Producto: Consumo total<br>Tipo: Alzas de TPM<br>Horizonte: 4 meses<br>Pass-through: 1.28","Producto: Consumo total<br>Tipo: Alzas de TPM<br>Horizonte: 5 meses<br>Pass-through: 0.88","Producto: Consumo total<br>Tipo: Alzas de TPM<br>Horizonte: 6 meses<br>Pass-through: 0.68"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[0.11652289870345676,0.9316998196261268,1.384168877737727,1.3634983331948614,1.2756387328760002,1.6340200162619805,1.5267887827243956],"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7,"line":{"color":"rgba(214,39,40,1)"}},"text":["Producto: Consumo total<br>Tipo: Bajas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.12","Producto: Consumo total<br>Tipo: Bajas de TPM<br>Horizonte: 1 meses<br>Pass-through: 0.93","Producto: Consumo total<br>Tipo: Bajas de TPM<br>Horizonte: 2 meses<br>Pass-through: 1.38","Producto: Consumo total<br>Tipo: Bajas de TPM<br>Horizonte: 3 meses<br>Pass-through: 1.36","Producto: Consumo total<br>Tipo: Bajas de TPM<br>Horizonte: 4 meses<br>Pass-through: 1.28","Producto: Consumo total<br>Tipo: Bajas de TPM<br>Horizonte: 5 meses<br>Pass-through: 1.63","Producto: Consumo total<br>Tipo: Bajas de TPM<br>Horizonte: 6 meses<br>Pass-through: 1.53"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(214,39,40,1)"},"error_x":{"color":"rgba(214,39,40,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[0.025973183473295271,0.10063039986809735,0.088365532919224443,0.10211929825721298,0.13874838331782291,0.072394624976398286,-0.01978568272412894],"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7,"line":{"color":"rgba(148,103,189,1)"}},"text":["Producto: Vivienda UF >3 años<br>Tipo: Alzas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.03","Producto: Vivienda UF >3 años<br>Tipo: Alzas de TPM<br>Horizonte: 1 meses<br>Pass-through: 0.10","Producto: Vivienda UF >3 años<br>Tipo: Alzas de TPM<br>Horizonte: 2 meses<br>Pass-through: 0.09","Producto: Vivienda UF >3 años<br>Tipo: Alzas de TPM<br>Horizonte: 3 meses<br>Pass-through: 0.10","Producto: Vivienda UF >3 años<br>Tipo: Alzas de TPM<br>Horizonte: 4 meses<br>Pass-through: 0.14","Producto: Vivienda UF >3 años<br>Tipo: Alzas de TPM<br>Horizonte: 5 meses<br>Pass-through: 0.07","Producto: Vivienda UF >3 años<br>Tipo: Alzas de TPM<br>Horizonte: 6 meses<br>Pass-through: -0.02"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(148,103,189,1)"},"error_x":{"color":"rgba(148,103,189,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[0.016278326994475619,0.10967026235608518,0.076863918054223407,0.03389975667270155,0.03050599549058854,0.05503169230570374,0.01145774318655113],"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7,"line":{"color":"rgba(140,86,75,1)"}},"text":["Producto: Vivienda UF >3 años<br>Tipo: Bajas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.02","Producto: Vivienda UF >3 años<br>Tipo: Bajas de TPM<br>Horizonte: 1 meses<br>Pass-through: 0.11","Producto: Vivienda UF >3 años<br>Tipo: Bajas de TPM<br>Horizonte: 2 meses<br>Pass-through: 0.08","Producto: Vivienda UF >3 años<br>Tipo: Bajas de TPM<br>Horizonte: 3 meses<br>Pass-through: 0.03","Producto: Vivienda UF >3 años<br>Tipo: Bajas de TPM<br>Horizonte: 4 meses<br>Pass-through: 0.03","Producto: Vivienda UF >3 años<br>Tipo: Bajas de TPM<br>Horizonte: 5 meses<br>Pass-through: 0.06","Producto: Vivienda UF >3 años<br>Tipo: Bajas de TPM<br>Horizonte: 6 meses<br>Pass-through: 0.01"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(140,86,75,1)"},"error_x":{"color":"rgba(140,86,75,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[0.042844216655936629,0.084152543228150578,0.1063457581034286,0.091821723747385106,0.070427043818697951,0.062945079392382086,0.05645024687466732],"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7,"line":{"color":"rgba(227,119,194,1)"}},"text":["Producto: Captación 90d-1a<br>Tipo: Alzas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.04","Producto: Captación 90d-1a<br>Tipo: Alzas de TPM<br>Horizonte: 1 meses<br>Pass-through: 0.08","Producto: Captación 90d-1a<br>Tipo: Alzas de TPM<br>Horizonte: 2 meses<br>Pass-through: 0.11","Producto: Captación 90d-1a<br>Tipo: Alzas de TPM<br>Horizonte: 3 meses<br>Pass-through: 0.09","Producto: Captación 90d-1a<br>Tipo: Alzas de TPM<br>Horizonte: 4 meses<br>Pass-through: 0.07","Producto: Captación 90d-1a<br>Tipo: Alzas de TPM<br>Horizonte: 5 meses<br>Pass-through: 0.06","Producto: Captación 90d-1a<br>Tipo: Alzas de TPM<br>Horizonte: 6 meses<br>Pass-through: 0.06"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(227,119,194,1)"},"error_x":{"color":"rgba(227,119,194,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[0.050894145308558368,0.068737660105118156,0.066763805937306325,0.064789221446292344,0.059825604671351618,0.06350370402372417,0.063804066561929593],"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7,"line":{"color":"rgba(127,127,127,1)"}},"text":["Producto: Captación 90d-1a<br>Tipo: Bajas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.05","Producto: Captación 90d-1a<br>Tipo: Bajas de TPM<br>Horizonte: 1 meses<br>Pass-through: 0.07","Producto: Captación 90d-1a<br>Tipo: Bajas de TPM<br>Horizonte: 2 meses<br>Pass-through: 0.07","Producto: Captación 90d-1a<br>Tipo: Bajas de TPM<br>Horizonte: 3 meses<br>Pass-through: 0.06","Producto: Captación 90d-1a<br>Tipo: Bajas de TPM<br>Horizonte: 4 meses<br>Pass-through: 0.06","Producto: Captación 90d-1a<br>Tipo: Bajas de TPM<br>Horizonte: 5 meses<br>Pass-through: 0.06","Producto: Captación 90d-1a<br>Tipo: Bajas de TPM<br>Horizonte: 6 meses<br>Pass-through: 0.06"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(127,127,127,1)"},"error_x":{"color":"rgba(127,127,127,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[0.37827115415707674,0.78338239538999743,1.171738220768519,1.1893887805244876,1.1018162997186678,0.98928708772662521,0.87560385884857195],"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7,"line":{"color":"rgba(188,189,34,1)"}},"text":["Producto: Comercial: cuotas<br>Tipo: Alzas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.38","Producto: Comercial: cuotas<br>Tipo: Alzas de TPM<br>Horizonte: 1 meses<br>Pass-through: 0.78","Producto: Comercial: cuotas<br>Tipo: Alzas de TPM<br>Horizonte: 2 meses<br>Pass-through: 1.17","Producto: Comercial: cuotas<br>Tipo: Alzas de TPM<br>Horizonte: 3 meses<br>Pass-through: 1.19","Producto: Comercial: cuotas<br>Tipo: Alzas de TPM<br>Horizonte: 4 meses<br>Pass-through: 1.10","Producto: Comercial: cuotas<br>Tipo: Alzas de TPM<br>Horizonte: 5 meses<br>Pass-through: 0.99","Producto: Comercial: cuotas<br>Tipo: Alzas de TPM<br>Horizonte: 6 meses<br>Pass-through: 0.88"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(188,189,34,1)"},"error_x":{"color":"rgba(188,189,34,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[0.25058672053137127,0.73037846144847429,0.94506202012694795,0.81826769390131693,0.93600859817167936,1.036698663263419,0.95257357879682802],"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7,"line":{"color":"rgba(23,190,207,1)"}},"text":["Producto: Comercial: cuotas<br>Tipo: Bajas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.25","Producto: Comercial: cuotas<br>Tipo: Bajas de TPM<br>Horizonte: 1 meses<br>Pass-through: 0.73","Producto: Comercial: cuotas<br>Tipo: Bajas de TPM<br>Horizonte: 2 meses<br>Pass-through: 0.95","Producto: Comercial: cuotas<br>Tipo: Bajas de TPM<br>Horizonte: 3 meses<br>Pass-through: 0.82","Producto: Comercial: cuotas<br>Tipo: Bajas de TPM<br>Horizonte: 4 meses<br>Pass-through: 0.94","Producto: Comercial: cuotas<br>Tipo: Bajas de TPM<br>Horizonte: 5 meses<br>Pass-through: 1.04","Producto: Comercial: cuotas<br>Tipo: Bajas de TPM<br>Horizonte: 6 meses<br>Pass-through: 0.95"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(23,190,207,1)"},"error_x":{"color":"rgba(23,190,207,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[-0.40569372816085592,0.40089866280764602,1.2411303640766911,1.5159291908340946,0.86341773338273642,0.76468978630915008,1.038986875337204],"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7,"line":{"color":"rgba(31,119,180,1)"}},"text":["Producto: Comercial: sobregiro<br>Tipo: Alzas de TPM<br>Horizonte: 0 meses<br>Pass-through: -0.41","Producto: Comercial: sobregiro<br>Tipo: Alzas de TPM<br>Horizonte: 1 meses<br>Pass-through: 0.40","Producto: Comercial: sobregiro<br>Tipo: Alzas de TPM<br>Horizonte: 2 meses<br>Pass-through: 1.24","Producto: Comercial: sobregiro<br>Tipo: Alzas de TPM<br>Horizonte: 3 meses<br>Pass-through: 1.52","Producto: Comercial: sobregiro<br>Tipo: Alzas de TPM<br>Horizonte: 4 meses<br>Pass-through: 0.86","Producto: Comercial: sobregiro<br>Tipo: Alzas de TPM<br>Horizonte: 5 meses<br>Pass-through: 0.76","Producto: Comercial: sobregiro<br>Tipo: Alzas de TPM<br>Horizonte: 6 meses<br>Pass-through: 1.04"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[1.3611970358158421,1.2892493806277556,1.0449855668345926,0.99444529060850517,1.6790653948249701,1.6585524867495578,1.5182580253490925],"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7,"line":{"color":"rgba(255,127,14,1)"}},"text":["Producto: Comercial: sobregiro<br>Tipo: Bajas de TPM<br>Horizonte: 0 meses<br>Pass-through: 1.36","Producto: Comercial: sobregiro<br>Tipo: Bajas de TPM<br>Horizonte: 1 meses<br>Pass-through: 1.29","Producto: Comercial: sobregiro<br>Tipo: Bajas de TPM<br>Horizonte: 2 meses<br>Pass-through: 1.04","Producto: Comercial: sobregiro<br>Tipo: Bajas de TPM<br>Horizonte: 3 meses<br>Pass-through: 0.99","Producto: Comercial: sobregiro<br>Tipo: Bajas de TPM<br>Horizonte: 4 meses<br>Pass-through: 1.68","Producto: Comercial: sobregiro<br>Tipo: Bajas de TPM<br>Horizonte: 5 meses<br>Pass-through: 1.66","Producto: Comercial: sobregiro<br>Tipo: Bajas de TPM<br>Horizonte: 6 meses<br>Pass-through: 1.52"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[0.49464559899056543,1.0927455917059872,1.360928605184605,1.2460924260755897,0.84203906310482379,0.41952270473780151,0.40289938698878619],"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7,"line":{"color":"rgba(44,160,44,1)"}},"text":["Producto: Consumo: cuotas<br>Tipo: Alzas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.49","Producto: Consumo: cuotas<br>Tipo: Alzas de TPM<br>Horizonte: 1 meses<br>Pass-through: 1.09","Producto: Consumo: cuotas<br>Tipo: Alzas de TPM<br>Horizonte: 2 meses<br>Pass-through: 1.36","Producto: Consumo: cuotas<br>Tipo: Alzas de TPM<br>Horizonte: 3 meses<br>Pass-through: 1.25","Producto: Consumo: cuotas<br>Tipo: Alzas de TPM<br>Horizonte: 4 meses<br>Pass-through: 0.84","Producto: Consumo: cuotas<br>Tipo: Alzas de TPM<br>Horizonte: 5 meses<br>Pass-through: 0.42","Producto: Consumo: cuotas<br>Tipo: Alzas de TPM<br>Horizonte: 6 meses<br>Pass-through: 0.40"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[0.33528453550413623,1.2160206595668674,0.6007765821332518,-0.032730054746626318,0.075398503100150366,0.37061522317014539,0.51264695456280451],"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7,"line":{"color":"rgba(214,39,40,1)"}},"text":["Producto: Consumo: cuotas<br>Tipo: Bajas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.34","Producto: Consumo: cuotas<br>Tipo: Bajas de TPM<br>Horizonte: 1 meses<br>Pass-through: 1.22","Producto: Consumo: cuotas<br>Tipo: Bajas de TPM<br>Horizonte: 2 meses<br>Pass-through: 0.60","Producto: Consumo: cuotas<br>Tipo: Bajas de TPM<br>Horizonte: 3 meses<br>Pass-through: -0.03","Producto: Consumo: cuotas<br>Tipo: Bajas de TPM<br>Horizonte: 4 meses<br>Pass-through: 0.08","Producto: Consumo: cuotas<br>Tipo: Bajas de TPM<br>Horizonte: 5 meses<br>Pass-through: 0.37","Producto: Consumo: cuotas<br>Tipo: Bajas de TPM<br>Horizonte: 6 meses<br>Pass-through: 0.51"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(214,39,40,1)"},"error_x":{"color":"rgba(214,39,40,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[0.34574993611313659,0.9346762969546476,1.2999675690517751,1.4062272109733152,1.2747703061877025,1.0663448664738571,0.8801743734573938],"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7,"line":{"color":"rgba(148,103,189,1)"}},"text":["Producto: Tarjeta: rotativo<br>Tipo: Alzas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.35","Producto: Tarjeta: rotativo<br>Tipo: Alzas de TPM<br>Horizonte: 1 meses<br>Pass-through: 0.93","Producto: Tarjeta: rotativo<br>Tipo: Alzas de TPM<br>Horizonte: 2 meses<br>Pass-through: 1.30","Producto: Tarjeta: rotativo<br>Tipo: Alzas de TPM<br>Horizonte: 3 meses<br>Pass-through: 1.41","Producto: Tarjeta: rotativo<br>Tipo: Alzas de TPM<br>Horizonte: 4 meses<br>Pass-through: 1.27","Producto: Tarjeta: rotativo<br>Tipo: Alzas de TPM<br>Horizonte: 5 meses<br>Pass-through: 1.07","Producto: Tarjeta: rotativo<br>Tipo: Alzas de TPM<br>Horizonte: 6 meses<br>Pass-through: 0.88"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(148,103,189,1)"},"error_x":{"color":"rgba(148,103,189,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[-0.18267932311251045,-0.24536453214904852,0.2520439311506889,0.89226131165684408,0.66153224064243499,0.85467517595695597,0.95083158789216238],"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7,"line":{"color":"rgba(140,86,75,1)"}},"text":["Producto: Tarjeta: rotativo<br>Tipo: Bajas de TPM<br>Horizonte: 0 meses<br>Pass-through: -0.18","Producto: Tarjeta: rotativo<br>Tipo: Bajas de TPM<br>Horizonte: 1 meses<br>Pass-through: -0.25","Producto: Tarjeta: rotativo<br>Tipo: Bajas de TPM<br>Horizonte: 2 meses<br>Pass-through: 0.25","Producto: Tarjeta: rotativo<br>Tipo: Bajas de TPM<br>Horizonte: 3 meses<br>Pass-through: 0.89","Producto: Tarjeta: rotativo<br>Tipo: Bajas de TPM<br>Horizonte: 4 meses<br>Pass-through: 0.66","Producto: Tarjeta: rotativo<br>Tipo: Bajas de TPM<br>Horizonte: 5 meses<br>Pass-through: 0.85","Producto: Tarjeta: rotativo<br>Tipo: Bajas de TPM<br>Horizonte: 6 meses<br>Pass-through: 0.95"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(140,86,75,1)"},"error_x":{"color":"rgba(140,86,75,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[0.024281551554403549,-0.19337849015567504,1.1235909037194658,1.7359015058865379,1.1663383495908139,0.39986845094561219,-0.16003090302112938],"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7,"line":{"color":"rgba(227,119,194,1)"}},"text":["Producto: Tarjeta: cuota<br>Tipo: Alzas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.02","Producto: Tarjeta: cuota<br>Tipo: Alzas de TPM<br>Horizonte: 1 meses<br>Pass-through: -0.19","Producto: Tarjeta: cuota<br>Tipo: Alzas de TPM<br>Horizonte: 2 meses<br>Pass-through: 1.12","Producto: Tarjeta: cuota<br>Tipo: Alzas de TPM<br>Horizonte: 3 meses<br>Pass-through: 1.74","Producto: Tarjeta: cuota<br>Tipo: Alzas de TPM<br>Horizonte: 4 meses<br>Pass-through: 1.17","Producto: Tarjeta: cuota<br>Tipo: Alzas de TPM<br>Horizonte: 5 meses<br>Pass-through: 0.40","Producto: Tarjeta: cuota<br>Tipo: Alzas de TPM<br>Horizonte: 6 meses<br>Pass-through: -0.16"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(227,119,194,1)"},"error_x":{"color":"rgba(227,119,194,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[0.39918686512308332,0.34211881336950239,0.42351516314309151,0.67144541204701513,1.0193832855395435,0.82877647352723482,1.007799449805759],"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7,"line":{"color":"rgba(127,127,127,1)"}},"text":["Producto: Tarjeta: cuota<br>Tipo: Bajas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.40","Producto: Tarjeta: cuota<br>Tipo: Bajas de TPM<br>Horizonte: 1 meses<br>Pass-through: 0.34","Producto: Tarjeta: cuota<br>Tipo: Bajas de TPM<br>Horizonte: 2 meses<br>Pass-through: 0.42","Producto: Tarjeta: cuota<br>Tipo: Bajas de TPM<br>Horizonte: 3 meses<br>Pass-through: 0.67","Producto: Tarjeta: cuota<br>Tipo: Bajas de TPM<br>Horizonte: 4 meses<br>Pass-through: 1.02","Producto: Tarjeta: cuota<br>Tipo: Bajas de TPM<br>Horizonte: 5 meses<br>Pass-through: 0.83","Producto: Tarjeta: cuota<br>Tipo: Bajas de TPM<br>Horizonte: 6 meses<br>Pass-through: 1.01"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(127,127,127,1)"},"error_x":{"color":"rgba(127,127,127,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[0.036700115922137039,0.080401930061039434,0.10136184522695456,0.097119718763066076,0.0937450230782894,0.08811971756649073,0.0805100626603973],"type":"scatter","mode":"lines+markers","name":"Alzas de TPM","visible":false,"showlegend":true,"line":{"color":"#8B1E1E","width":3},"marker":{"color":"#8B1E1E","size":7,"line":{"color":"rgba(188,189,34,1)"}},"text":["Producto: Captación 30-89d<br>Tipo: Alzas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.04","Producto: Captación 30-89d<br>Tipo: Alzas de TPM<br>Horizonte: 1 meses<br>Pass-through: 0.08","Producto: Captación 30-89d<br>Tipo: Alzas de TPM<br>Horizonte: 2 meses<br>Pass-through: 0.10","Producto: Captación 30-89d<br>Tipo: Alzas de TPM<br>Horizonte: 3 meses<br>Pass-through: 0.10","Producto: Captación 30-89d<br>Tipo: Alzas de TPM<br>Horizonte: 4 meses<br>Pass-through: 0.09","Producto: Captación 30-89d<br>Tipo: Alzas de TPM<br>Horizonte: 5 meses<br>Pass-through: 0.09","Producto: Captación 30-89d<br>Tipo: Alzas de TPM<br>Horizonte: 6 meses<br>Pass-through: 0.08"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(188,189,34,1)"},"error_x":{"color":"rgba(188,189,34,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6],"y":[0.050840994799218629,0.075731300136794147,0.081387491317094399,0.077534726430155493,0.080053789619918089,0.079346456178045227,0.081603448658994632],"type":"scatter","mode":"lines+markers","name":"Bajas de TPM","visible":false,"showlegend":true,"line":{"color":"#1F5A7A","width":3,"dash":"dash"},"marker":{"color":"#1F5A7A","size":7,"line":{"color":"rgba(23,190,207,1)"}},"text":["Producto: Captación 30-89d<br>Tipo: Bajas de TPM<br>Horizonte: 0 meses<br>Pass-through: 0.05","Producto: Captación 30-89d<br>Tipo: Bajas de TPM<br>Horizonte: 1 meses<br>Pass-through: 0.08","Producto: Captación 30-89d<br>Tipo: Bajas de TPM<br>Horizonte: 2 meses<br>Pass-through: 0.08","Producto: Captación 30-89d<br>Tipo: Bajas de TPM<br>Horizonte: 3 meses<br>Pass-through: 0.08","Producto: Captación 30-89d<br>Tipo: Bajas de TPM<br>Horizonte: 4 meses<br>Pass-through: 0.08","Producto: Captación 30-89d<br>Tipo: Bajas de TPM<br>Horizonte: 5 meses<br>Pass-through: 0.08","Producto: Captación 30-89d<br>Tipo: Bajas de TPM<br>Horizonte: 6 meses<br>Pass-through: 0.08"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(23,190,207,1)"},"error_x":{"color":"rgba(23,190,207,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-</section>
-<section id="local-projections" class="level2">
-<h2 class="anchored" data-anchor-id="local-projections">Local projections</h2>
-<p>Como contraste, se estiman local projections para cada horizonte <span class="math inline">\(h\)</span>:</p>
-<p><span class="math display">\[
-r_{j,t+h}-r_{j,t-1} = \alpha_{j,h}+\beta_{j,h}\Delta TPM_t+\Gamma_{j,h}X_t+u_{j,t+h}
-\]</span></p>
-<p>donde el coeficiente <span class="math inline">\(\beta_{j,h}\)</span> resume la respuesta acumulada de la tasa del producto <span class="math inline">\(j\)</span> entre <span class="math inline">\(t-1\)</span> y <span class="math inline">\(t+h\)</span> ante un cambio observado en la TPM en <span class="math inline">\(t\)</span>.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-76f3fc9c1ac5aeaf55d3" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-76f3fc9c1ac5aeaf55d3">{"x":{"visdat":{"45f437a14609":["function () ","plotlyVisDat"]},"cur_data":"45f437a14609","attrs":{"45f437a14609":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.65383698979652616,1.2600895389195073,1.8960333035294088,2.1646453950049542,2.4810959947550928,2.8234079224028821,3.0646684437832832,3.1610597014206547,3.1328611586302779,3.5286423764487345,3.3356187289284667,3.3351487519024383,3.5858868445915695,2.3498211361133787,2.092450333947574,2.0137231490744552,2.1324592441547128,1.8044981662818875,1.6940525470708929,1.6233937637372189,1.5257637481666797,1.3286388358130528,1.0857072455579422,1.0005761756118841,0.67417741811857446,0.13450417106395002],"type":"scatter","mode":"lines","fill":"toself","fillcolor":"rgba(83,119,163,0.22)","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":"skip","name":"IC 95%","showlegend":true,"visible":true,"inherit":true},"45f437a14609.1":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.39417058043023812,0.96713347851904075,1.4483047395706463,1.6251763202814482,1.9048674152840728,2.1745858352847809,2.3440311037602508,2.4275561242457737,2.4686796624560827,2.8305508103017236,2.6746709390014609,2.7137995429250061,2.9678539903524741],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7},"name":"Respuesta estimada","showlegend":true,"visible":true,"text":["Producto: Comercial total<br>Horizonte: 0 meses<br>Respuesta: 0.39<br>IC 95%: [0.13, 0.65]","Producto: Comercial total<br>Horizonte: 1 meses<br>Respuesta: 0.97<br>IC 95%: [0.67, 1.26]","Producto: Comercial total<br>Horizonte: 2 meses<br>Respuesta: 1.45<br>IC 95%: [1.00, 1.90]","Producto: Comercial total<br>Horizonte: 3 meses<br>Respuesta: 1.63<br>IC 95%: [1.09, 2.16]","Producto: Comercial total<br>Horizonte: 4 meses<br>Respuesta: 1.90<br>IC 95%: [1.33, 2.48]","Producto: Comercial total<br>Horizonte: 5 meses<br>Respuesta: 2.17<br>IC 95%: [1.53, 2.82]","Producto: Comercial total<br>Horizonte: 6 meses<br>Respuesta: 2.34<br>IC 95%: [1.62, 3.06]","Producto: Comercial total<br>Horizonte: 7 meses<br>Respuesta: 2.43<br>IC 95%: [1.69, 3.16]","Producto: Comercial total<br>Horizonte: 8 meses<br>Respuesta: 2.47<br>IC 95%: [1.80, 3.13]","Producto: Comercial total<br>Horizonte: 9 meses<br>Respuesta: 2.83<br>IC 95%: [2.13, 3.53]","Producto: Comercial total<br>Horizonte: 10 meses<br>Respuesta: 2.67<br>IC 95%: [2.01, 3.34]","Producto: Comercial total<br>Horizonte: 11 meses<br>Respuesta: 2.71<br>IC 95%: [2.09, 3.34]","Producto: Comercial total<br>Horizonte: 12 meses<br>Respuesta: 2.97<br>IC 95%: [2.35, 3.59]"],"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f437a14609.2":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.4841516901039572,1.1712169667930561,1.9206201813744801,2.3776900467464555,2.4686586336446448,3.058177726823696,3.6819905439870206,3.531708665087419,3.1925746465952267,3.2996492999068461,3.096183154123505,2.8494821870198361,2.8165749103514859,1.6765539656320352,1.7388758070346295,1.8964770058418621,1.8300560260368568,1.6129539618745767,1.4904085379944731,1.6986133600807884,1.556885374028214,1.2304628715409169,1.1367102666670419,0.90555626942793599,0.58115804630018175,0.078159648608993965],"type":"scatter","mode":"lines","fill":"toself","fillcolor":"rgba(83,119,163,0.22)","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":"skip","name":"IC 95%","showlegend":false,"visible":false,"inherit":true},"45f437a14609.3":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.28115566935647557,0.87618750654661892,1.413088225401208,1.7572001567067488,1.8495607525927809,2.307531550425955,2.6903019520339044,2.5110586015409462,2.4027643042349016,2.5648526629718513,2.4963300799826835,2.2941789970272328,2.2465644379917604],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Consumo total<br>Horizonte: 0 meses<br>Respuesta: 0.28<br>IC 95%: [0.08, 0.48]","Producto: Consumo total<br>Horizonte: 1 meses<br>Respuesta: 0.88<br>IC 95%: [0.58, 1.17]","Producto: Consumo total<br>Horizonte: 2 meses<br>Respuesta: 1.41<br>IC 95%: [0.91, 1.92]","Producto: Consumo total<br>Horizonte: 3 meses<br>Respuesta: 1.76<br>IC 95%: [1.14, 2.38]","Producto: Consumo total<br>Horizonte: 4 meses<br>Respuesta: 1.85<br>IC 95%: [1.23, 2.47]","Producto: Consumo total<br>Horizonte: 5 meses<br>Respuesta: 2.31<br>IC 95%: [1.56, 3.06]","Producto: Consumo total<br>Horizonte: 6 meses<br>Respuesta: 2.69<br>IC 95%: [1.70, 3.68]","Producto: Consumo total<br>Horizonte: 7 meses<br>Respuesta: 2.51<br>IC 95%: [1.49, 3.53]","Producto: Consumo total<br>Horizonte: 8 meses<br>Respuesta: 2.40<br>IC 95%: [1.61, 3.19]","Producto: Consumo total<br>Horizonte: 9 meses<br>Respuesta: 2.56<br>IC 95%: [1.83, 3.30]","Producto: Consumo total<br>Horizonte: 10 meses<br>Respuesta: 2.50<br>IC 95%: [1.90, 3.10]","Producto: Consumo total<br>Horizonte: 11 meses<br>Respuesta: 2.29<br>IC 95%: [1.74, 2.85]","Producto: Consumo total<br>Horizonte: 12 meses<br>Respuesta: 2.25<br>IC 95%: [1.68, 2.82]"],"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f437a14609.4":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.091784285548946257,0.28960560984502831,0.40650669155917896,0.40150946699632584,0.39174146901204465,0.41517325939695415,0.41552243155477803,0.39280855569398371,0.43156814757927026,0.45142581436646778,0.44918996982524895,0.43515165349440749,0.48084304215309243,0.0025129541798457602,-0.0207028148438404,-0.00138922138838434,-0.0026314767230826899,0.00019782833275999723,0.017558996877672761,0.063100892028920413,0.050331073399913911,0.020064168747034171,-0.032753185722259437,-0.041322629234043499,-0.0071554328971906696,-0.03100626419409875],"type":"scatter","mode":"lines","fill":"toself","fillcolor":"rgba(83,119,163,0.22)","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":"skip","name":"IC 95%","showlegend":false,"visible":false,"inherit":true},"45f437a14609.5":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.03038901067742375,0.14122508847391882,0.18259203116256773,0.1843781406370332,0.20590281887953943,0.23275216639843399,0.23931166179184921,0.20518377628582821,0.21588298795601513,0.22439716882169253,0.22390037421843231,0.20722441932528352,0.24167799816646909],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Vivienda UF >3 años<br>Horizonte: 0 meses<br>Respuesta: 0.03<br>IC 95%: [-0.03, 0.09]","Producto: Vivienda UF >3 años<br>Horizonte: 1 meses<br>Respuesta: 0.14<br>IC 95%: [-0.01, 0.29]","Producto: Vivienda UF >3 años<br>Horizonte: 2 meses<br>Respuesta: 0.18<br>IC 95%: [-0.04, 0.41]","Producto: Vivienda UF >3 años<br>Horizonte: 3 meses<br>Respuesta: 0.18<br>IC 95%: [-0.03, 0.40]","Producto: Vivienda UF >3 años<br>Horizonte: 4 meses<br>Respuesta: 0.21<br>IC 95%: [0.02, 0.39]","Producto: Vivienda UF >3 años<br>Horizonte: 5 meses<br>Respuesta: 0.23<br>IC 95%: [0.05, 0.42]","Producto: Vivienda UF >3 años<br>Horizonte: 6 meses<br>Respuesta: 0.24<br>IC 95%: [0.06, 0.42]","Producto: Vivienda UF >3 años<br>Horizonte: 7 meses<br>Respuesta: 0.21<br>IC 95%: [0.02, 0.39]","Producto: Vivienda UF >3 años<br>Horizonte: 8 meses<br>Respuesta: 0.22<br>IC 95%: [0.00, 0.43]","Producto: Vivienda UF >3 años<br>Horizonte: 9 meses<br>Respuesta: 0.22<br>IC 95%: [0.00, 0.45]","Producto: Vivienda UF >3 años<br>Horizonte: 10 meses<br>Respuesta: 0.22<br>IC 95%: [0.00, 0.45]","Producto: Vivienda UF >3 años<br>Horizonte: 11 meses<br>Respuesta: 0.21<br>IC 95%: [-0.02, 0.44]","Producto: Vivienda UF >3 años<br>Horizonte: 12 meses<br>Respuesta: 0.24<br>IC 95%: [0.00, 0.48]"],"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f437a14609.6":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.058745701428723929,0.11104434013779724,0.14428560869348234,0.1677768607530348,0.18562832903114077,0.19956278636316735,0.20669153828171372,0.21428077558794181,0.21758779700761649,0.22306951165122052,0.23067632035861016,0.23444776084926269,0.24429299045636413,0.1140524771481842,0.11507079663744416,0.11995959456343848,0.11367295931709652,0.1184751840250737,0.12512962799388117,0.11833196276515692,0.11350352648714712,0.1017699924054554,0.098542020081245602,0.092518364880861806,0.065157807676484214,0.033347115047417379],"type":"scatter","mode":"lines","fill":"toself","fillcolor":"rgba(83,119,163,0.22)","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":"skip","name":"IC 95%","showlegend":false,"visible":false,"inherit":true},"45f437a14609.7":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.046046408238070657,0.088101073907140726,0.11840198678717208,0.1331594404171402,0.14369916071829808,0.15653315642515725,0.16251175052343531,0.16970520179091148,0.16803149051634508,0.16837123548415853,0.17531795746102433,0.17475927874335342,0.17917273380227416],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Captación 90d-1a<br>Horizonte: 0 meses<br>Respuesta: 0.05<br>IC 95%: [0.03, 0.06]","Producto: Captación 90d-1a<br>Horizonte: 1 meses<br>Respuesta: 0.09<br>IC 95%: [0.07, 0.11]","Producto: Captación 90d-1a<br>Horizonte: 2 meses<br>Respuesta: 0.12<br>IC 95%: [0.09, 0.14]","Producto: Captación 90d-1a<br>Horizonte: 3 meses<br>Respuesta: 0.13<br>IC 95%: [0.10, 0.17]","Producto: Captación 90d-1a<br>Horizonte: 4 meses<br>Respuesta: 0.14<br>IC 95%: [0.10, 0.19]","Producto: Captación 90d-1a<br>Horizonte: 5 meses<br>Respuesta: 0.16<br>IC 95%: [0.11, 0.20]","Producto: Captación 90d-1a<br>Horizonte: 6 meses<br>Respuesta: 0.16<br>IC 95%: [0.12, 0.21]","Producto: Captación 90d-1a<br>Horizonte: 7 meses<br>Respuesta: 0.17<br>IC 95%: [0.13, 0.21]","Producto: Captación 90d-1a<br>Horizonte: 8 meses<br>Respuesta: 0.17<br>IC 95%: [0.12, 0.22]","Producto: Captación 90d-1a<br>Horizonte: 9 meses<br>Respuesta: 0.17<br>IC 95%: [0.11, 0.22]","Producto: Captación 90d-1a<br>Horizonte: 10 meses<br>Respuesta: 0.18<br>IC 95%: [0.12, 0.23]","Producto: Captación 90d-1a<br>Horizonte: 11 meses<br>Respuesta: 0.17<br>IC 95%: [0.12, 0.23]","Producto: Captación 90d-1a<br>Horizonte: 12 meses<br>Respuesta: 0.18<br>IC 95%: [0.11, 0.24]"],"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f437a14609.8":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.50949607263537677,0.92002843881660679,1.2309371545346288,1.3901242827367959,1.7103878190134063,1.9544963255003864,2.1502869298000875,2.3771745290959174,2.6670224099978546,3.0186546144953104,3.0348680830871277,3.1684453947083013,3.394274790200309,2.0428900410231261,1.7913306203537469,1.7964539978478262,1.8113781119850083,1.5403218519562578,1.4067034575764079,1.3604055402817683,1.2346752225081956,1.1076770065958881,0.81202301865209681,0.75011225849339158,0.42401762514322783,0.13157051734416586],"type":"scatter","mode":"lines","fill":"toself","fillcolor":"rgba(83,119,163,0.22)","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":"skip","name":"IC 95%","showlegend":false,"visible":false,"inherit":true},"45f437a14609.9":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.32053329498977134,0.67202303197991731,0.99052470651401037,1.1010736506944463,1.4090324128046472,1.594585774004291,1.7553462350409279,1.8919389933361628,2.1036721309770563,2.4150163632401593,2.415661040467477,2.4798880075310241,2.7185824156117175],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Comercial: cuotas<br>Horizonte: 0 meses<br>Respuesta: 0.32<br>IC 95%: [0.13, 0.51]","Producto: Comercial: cuotas<br>Horizonte: 1 meses<br>Respuesta: 0.67<br>IC 95%: [0.42, 0.92]","Producto: Comercial: cuotas<br>Horizonte: 2 meses<br>Respuesta: 0.99<br>IC 95%: [0.75, 1.23]","Producto: Comercial: cuotas<br>Horizonte: 3 meses<br>Respuesta: 1.10<br>IC 95%: [0.81, 1.39]","Producto: Comercial: cuotas<br>Horizonte: 4 meses<br>Respuesta: 1.41<br>IC 95%: [1.11, 1.71]","Producto: Comercial: cuotas<br>Horizonte: 5 meses<br>Respuesta: 1.59<br>IC 95%: [1.23, 1.95]","Producto: Comercial: cuotas<br>Horizonte: 6 meses<br>Respuesta: 1.76<br>IC 95%: [1.36, 2.15]","Producto: Comercial: cuotas<br>Horizonte: 7 meses<br>Respuesta: 1.89<br>IC 95%: [1.41, 2.38]","Producto: Comercial: cuotas<br>Horizonte: 8 meses<br>Respuesta: 2.10<br>IC 95%: [1.54, 2.67]","Producto: Comercial: cuotas<br>Horizonte: 9 meses<br>Respuesta: 2.42<br>IC 95%: [1.81, 3.02]","Producto: Comercial: cuotas<br>Horizonte: 10 meses<br>Respuesta: 2.42<br>IC 95%: [1.80, 3.03]","Producto: Comercial: cuotas<br>Horizonte: 11 meses<br>Respuesta: 2.48<br>IC 95%: [1.79, 3.17]","Producto: Comercial: cuotas<br>Horizonte: 12 meses<br>Respuesta: 2.72<br>IC 95%: [2.04, 3.39]"],"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f437a14609.10":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.94471820709902965,1.322891861910694,1.7169935153956599,1.8131407973272369,2.3721619599611419,2.6365462483362312,3.0396268728626654,3.7006232324041743,3.5086623377080373,3.8855486046484882,3.9881185408325761,4.6480328887810636,4.7251220884374767,2.9062902718466908,2.9424357475617597,2.0470395565684329,2.3107563069255228,1.9247358709751681,1.9223762823228097,1.638662878887414,1.0325112908051499,0.90239362002935397,0.86162927935257072,0.52460438967072054,0.17271271077913375,-0.10254478098103226],"type":"scatter","mode":"lines","fill":"toself","fillcolor":"rgba(83,119,163,0.22)","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":"skip","name":"IC 95%","showlegend":false,"visible":false,"inherit":true},"45f437a14609.11":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.4210867130589987,0.74780228634491386,1.1207989525331905,1.3373850383399035,1.637277789995248,1.8345287695706909,2.3391448758750397,2.8114997573634919,2.7166991043416027,3.0981524557870053,3.0175790487005045,3.7952343181714121,3.815706180142084],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Comercial: sobregiro<br>Horizonte: 0 meses<br>Respuesta: 0.42<br>IC 95%: [-0.10, 0.94]","Producto: Comercial: sobregiro<br>Horizonte: 1 meses<br>Respuesta: 0.75<br>IC 95%: [0.17, 1.32]","Producto: Comercial: sobregiro<br>Horizonte: 2 meses<br>Respuesta: 1.12<br>IC 95%: [0.52, 1.72]","Producto: Comercial: sobregiro<br>Horizonte: 3 meses<br>Respuesta: 1.34<br>IC 95%: [0.86, 1.81]","Producto: Comercial: sobregiro<br>Horizonte: 4 meses<br>Respuesta: 1.64<br>IC 95%: [0.90, 2.37]","Producto: Comercial: sobregiro<br>Horizonte: 5 meses<br>Respuesta: 1.83<br>IC 95%: [1.03, 2.64]","Producto: Comercial: sobregiro<br>Horizonte: 6 meses<br>Respuesta: 2.34<br>IC 95%: [1.64, 3.04]","Producto: Comercial: sobregiro<br>Horizonte: 7 meses<br>Respuesta: 2.81<br>IC 95%: [1.92, 3.70]","Producto: Comercial: sobregiro<br>Horizonte: 8 meses<br>Respuesta: 2.72<br>IC 95%: [1.92, 3.51]","Producto: Comercial: sobregiro<br>Horizonte: 9 meses<br>Respuesta: 3.10<br>IC 95%: [2.31, 3.89]","Producto: Comercial: sobregiro<br>Horizonte: 10 meses<br>Respuesta: 3.02<br>IC 95%: [2.05, 3.99]","Producto: Comercial: sobregiro<br>Horizonte: 11 meses<br>Respuesta: 3.80<br>IC 95%: [2.94, 4.65]","Producto: Comercial: sobregiro<br>Horizonte: 12 meses<br>Respuesta: 3.82<br>IC 95%: [2.91, 4.73]"],"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f437a14609.12":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.6422724382917665,1.4265313169887279,1.1053902032220264,1.3102225813231856,1.4329291165564548,1.5836686329679841,1.8370900528193463,2.0805031142774859,2.2637439384292093,2.2545978273631464,2.4364980189684147,2.4750371652543479,2.5670679867515727,0.97005440931184517,0.82795254652155592,0.8225526774537395,0.70025132728953943,0.7864638203944736,0.75665988981637922,0.6181766389167469,0.40665944080755811,0.40204849425175471,0.48709488860182326,0.3689234687260563,0.40673403324765711,0.155486386551144],"type":"scatter","mode":"lines","fill":"toself","fillcolor":"rgba(83,119,163,0.22)","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":"skip","name":"IC 95%","showlegend":false,"visible":false,"inherit":true},"45f437a14609.13":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.3988794124214553,0.91663267511819235,0.73715683597404136,0.89865873496250448,0.91748880540410482,0.995164036887771,1.2276333458680466,1.4185815020469326,1.5251038794118414,1.477424577326343,1.6295253482110772,1.6514948558879521,1.7685611980317089],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Consumo: cuotas<br>Horizonte: 0 meses<br>Respuesta: 0.40<br>IC 95%: [0.16, 0.64]","Producto: Consumo: cuotas<br>Horizonte: 1 meses<br>Respuesta: 0.92<br>IC 95%: [0.41, 1.43]","Producto: Consumo: cuotas<br>Horizonte: 2 meses<br>Respuesta: 0.74<br>IC 95%: [0.37, 1.11]","Producto: Consumo: cuotas<br>Horizonte: 3 meses<br>Respuesta: 0.90<br>IC 95%: [0.49, 1.31]","Producto: Consumo: cuotas<br>Horizonte: 4 meses<br>Respuesta: 0.92<br>IC 95%: [0.40, 1.43]","Producto: Consumo: cuotas<br>Horizonte: 5 meses<br>Respuesta: 1.00<br>IC 95%: [0.41, 1.58]","Producto: Consumo: cuotas<br>Horizonte: 6 meses<br>Respuesta: 1.23<br>IC 95%: [0.62, 1.84]","Producto: Consumo: cuotas<br>Horizonte: 7 meses<br>Respuesta: 1.42<br>IC 95%: [0.76, 2.08]","Producto: Consumo: cuotas<br>Horizonte: 8 meses<br>Respuesta: 1.53<br>IC 95%: [0.79, 2.26]","Producto: Consumo: cuotas<br>Horizonte: 9 meses<br>Respuesta: 1.48<br>IC 95%: [0.70, 2.25]","Producto: Consumo: cuotas<br>Horizonte: 10 meses<br>Respuesta: 1.63<br>IC 95%: [0.82, 2.44]","Producto: Consumo: cuotas<br>Horizonte: 11 meses<br>Respuesta: 1.65<br>IC 95%: [0.83, 2.48]","Producto: Consumo: cuotas<br>Horizonte: 12 meses<br>Respuesta: 1.77<br>IC 95%: [0.97, 2.57]"],"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f437a14609.14":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.43214898931374268,0.85761083522646375,1.2268910781094573,1.5003387983630689,1.7836244676095829,2.1214864141571583,2.3138168333044171,2.5024303160061381,2.7065885902941398,2.972489655569261,3.1780108705664785,3.3249850087900996,3.2796903946883225,1.7109812966419449,1.6868385302004598,1.5257026972273295,1.4225461428527617,1.2277877650428266,1.1265571521207496,1.0732197744546541,1.0235941400030262,0.54864433848714156,0.60792047441920594,0.27694784743066314,-0.069201360990198968,-0.054922042742904159],"type":"scatter","mode":"lines","fill":"toself","fillcolor":"rgba(83,119,163,0.22)","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":"skip","name":"IC 95%","showlegend":false,"visible":false,"inherit":true},"45f437a14609.15":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.18861347328541928,0.39420473711813242,0.75191946277006017,1.0541296363911374,1.1661344030483622,1.5725402770800925,1.6935183038795356,1.8144937340634439,1.9671881776684832,2.1975178992110114,2.351856783896904,2.5059117694952797,2.4953358456651338],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Tarjeta: rotativo<br>Horizonte: 0 meses<br>Respuesta: 0.19<br>IC 95%: [-0.05, 0.43]","Producto: Tarjeta: rotativo<br>Horizonte: 1 meses<br>Respuesta: 0.39<br>IC 95%: [-0.07, 0.86]","Producto: Tarjeta: rotativo<br>Horizonte: 2 meses<br>Respuesta: 0.75<br>IC 95%: [0.28, 1.23]","Producto: Tarjeta: rotativo<br>Horizonte: 3 meses<br>Respuesta: 1.05<br>IC 95%: [0.61, 1.50]","Producto: Tarjeta: rotativo<br>Horizonte: 4 meses<br>Respuesta: 1.17<br>IC 95%: [0.55, 1.78]","Producto: Tarjeta: rotativo<br>Horizonte: 5 meses<br>Respuesta: 1.57<br>IC 95%: [1.02, 2.12]","Producto: Tarjeta: rotativo<br>Horizonte: 6 meses<br>Respuesta: 1.69<br>IC 95%: [1.07, 2.31]","Producto: Tarjeta: rotativo<br>Horizonte: 7 meses<br>Respuesta: 1.81<br>IC 95%: [1.13, 2.50]","Producto: Tarjeta: rotativo<br>Horizonte: 8 meses<br>Respuesta: 1.97<br>IC 95%: [1.23, 2.71]","Producto: Tarjeta: rotativo<br>Horizonte: 9 meses<br>Respuesta: 2.20<br>IC 95%: [1.42, 2.97]","Producto: Tarjeta: rotativo<br>Horizonte: 10 meses<br>Respuesta: 2.35<br>IC 95%: [1.53, 3.18]","Producto: Tarjeta: rotativo<br>Horizonte: 11 meses<br>Respuesta: 2.51<br>IC 95%: [1.69, 3.32]","Producto: Tarjeta: rotativo<br>Horizonte: 12 meses<br>Respuesta: 2.50<br>IC 95%: [1.71, 3.28]"],"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f437a14609.16":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.95638928716223504,1.4021555380874284,2.0835438236156394,1.834452306000192,1.75157333335906,2.0761024996466833,2.0399935463076133,2.0086910378480409,2.4250151614811588,1.9020699486564996,2.8489881689788388,2.744669683926884,2.4855658280851793,1.0361052125946653,0.98839966860164485,1.0707848654838168,0.45615191611339656,1.1184592140935332,0.64875886966594676,0.69082178984815312,0.84667281579258269,0.62143933413139896,0.24274298307154152,0.13645136645944855,-0.59937790328677532,-0.16439812545132471],"type":"scatter","mode":"lines","fill":"toself","fillcolor":"rgba(83,119,163,0.22)","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":"skip","name":"IC 95%","showlegend":false,"visible":false,"inherit":true},"45f437a14609.17":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.39599558085545522,0.4013888174003265,1.109997595037544,1.0385976445358669,1.1865063337452295,1.461387657719633,1.3654076680778833,1.3287249537569938,1.771737187787346,1.179110932384948,1.959886517231328,1.8665346762642645,1.7608355203399224],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Tarjeta: cuota<br>Horizonte: 0 meses<br>Respuesta: 0.40<br>IC 95%: [-0.16, 0.96]","Producto: Tarjeta: cuota<br>Horizonte: 1 meses<br>Respuesta: 0.40<br>IC 95%: [-0.60, 1.40]","Producto: Tarjeta: cuota<br>Horizonte: 2 meses<br>Respuesta: 1.11<br>IC 95%: [0.14, 2.08]","Producto: Tarjeta: cuota<br>Horizonte: 3 meses<br>Respuesta: 1.04<br>IC 95%: [0.24, 1.83]","Producto: Tarjeta: cuota<br>Horizonte: 4 meses<br>Respuesta: 1.19<br>IC 95%: [0.62, 1.75]","Producto: Tarjeta: cuota<br>Horizonte: 5 meses<br>Respuesta: 1.46<br>IC 95%: [0.85, 2.08]","Producto: Tarjeta: cuota<br>Horizonte: 6 meses<br>Respuesta: 1.37<br>IC 95%: [0.69, 2.04]","Producto: Tarjeta: cuota<br>Horizonte: 7 meses<br>Respuesta: 1.33<br>IC 95%: [0.65, 2.01]","Producto: Tarjeta: cuota<br>Horizonte: 8 meses<br>Respuesta: 1.77<br>IC 95%: [1.12, 2.43]","Producto: Tarjeta: cuota<br>Horizonte: 9 meses<br>Respuesta: 1.18<br>IC 95%: [0.46, 1.90]","Producto: Tarjeta: cuota<br>Horizonte: 10 meses<br>Respuesta: 1.96<br>IC 95%: [1.07, 2.85]","Producto: Tarjeta: cuota<br>Horizonte: 11 meses<br>Respuesta: 1.87<br>IC 95%: [0.99, 2.74]","Producto: Tarjeta: cuota<br>Horizonte: 12 meses<br>Respuesta: 1.76<br>IC 95%: [1.04, 2.49]"],"hovertemplate":"%{text}<extra><\/extra>","inherit":true},"45f437a14609.18":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.057693798143046718,0.1111738055900776,0.14791095884893946,0.16776874108919912,0.19270358168406743,0.20995813966898769,0.21860461097930972,0.2286425415913855,0.23619885631678525,0.24859319443068692,0.25938310805457621,0.26313252265239506,0.27345994483837788,0.1348434713193645,0.13569141452966019,0.1410257079980895,0.13832810118159342,0.14091858665522158,0.14702339448465029,0.14083312930504494,0.1343705262500208,0.12759866092353156,0.10996609745767869,0.098354216213771495,0.0713874771453097,0.03295847524696445],"type":"scatter","mode":"lines","fill":"toself","fillcolor":"rgba(83,119,163,0.22)","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":"skip","name":"IC 95%","showlegend":false,"visible":false,"inherit":true},"45f437a14609.19":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.045326136695005577,0.091280641367693635,0.12313258753135548,0.1388674192734389,0.16015112130379949,0.17216433295950423,0.17971887014217733,0.18783296803801788,0.18855872148600344,0.19346064780614017,0.20020440802633285,0.19941196859102764,0.20415170807887115],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Captación 30-89d<br>Horizonte: 0 meses<br>Respuesta: 0.05<br>IC 95%: [0.03, 0.06]","Producto: Captación 30-89d<br>Horizonte: 1 meses<br>Respuesta: 0.09<br>IC 95%: [0.07, 0.11]","Producto: Captación 30-89d<br>Horizonte: 2 meses<br>Respuesta: 0.12<br>IC 95%: [0.10, 0.15]","Producto: Captación 30-89d<br>Horizonte: 3 meses<br>Respuesta: 0.14<br>IC 95%: [0.11, 0.17]","Producto: Captación 30-89d<br>Horizonte: 4 meses<br>Respuesta: 0.16<br>IC 95%: [0.13, 0.19]","Producto: Captación 30-89d<br>Horizonte: 5 meses<br>Respuesta: 0.17<br>IC 95%: [0.13, 0.21]","Producto: Captación 30-89d<br>Horizonte: 6 meses<br>Respuesta: 0.18<br>IC 95%: [0.14, 0.22]","Producto: Captación 30-89d<br>Horizonte: 7 meses<br>Respuesta: 0.19<br>IC 95%: [0.15, 0.23]","Producto: Captación 30-89d<br>Horizonte: 8 meses<br>Respuesta: 0.19<br>IC 95%: [0.14, 0.24]","Producto: Captación 30-89d<br>Horizonte: 9 meses<br>Respuesta: 0.19<br>IC 95%: [0.14, 0.25]","Producto: Captación 30-89d<br>Horizonte: 10 meses<br>Respuesta: 0.20<br>IC 95%: [0.14, 0.26]","Producto: Captación 30-89d<br>Horizonte: 11 meses<br>Respuesta: 0.20<br>IC 95%: [0.14, 0.26]","Producto: Captación 30-89d<br>Horizonte: 12 meses<br>Respuesta: 0.20<br>IC 95%: [0.13, 0.27]"],"hovertemplate":"%{text}<extra><\/extra>","inherit":true}},"layout":{"margin":{"b":90,"l":70,"t":110,"r":30},"title":"Respuesta dinámica a cambios de TPM: Comercial total","xaxis":{"domain":[0,1],"automargin":true,"title":"Horizonte mensual","dtick":1,"zeroline":false,"fixedrange":true},"yaxis":{"domain":[0,1],"automargin":true,"title":"Respuesta acumulada","zeroline":false,"fixedrange":true},"shapes":[{"type":"line","x0":0,"x1":12,"y0":0,"y1":0,"line":{"color":"rgba(80,80,80,0.55)","width":1}}],"updatemenus":[{"type":"dropdown","active":0,"x":0,"y":1.1599999999999999,"xanchor":"left","yanchor":"top","buttons":[{"method":"update","label":"Comercial total","args":[{"visible":[true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"title":"Respuesta dinámica a cambios de TPM: Comercial total"}]},{"method":"update","label":"Consumo total","args":[{"visible":[false,false,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"title":"Respuesta dinámica a cambios de TPM: Consumo total"}]},{"method":"update","label":"Vivienda UF >3 años","args":[{"visible":[false,false,false,false,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"title":"Respuesta dinámica a cambios de TPM: Vivienda UF >3 años"}]},{"method":"update","label":"Captación 90d-1a","args":[{"visible":[false,false,false,false,false,false,true,true,false,false,false,false,false,false,false,false,false,false,false,false]},{"title":"Respuesta dinámica a cambios de TPM: Captación 90d-1a"}]},{"method":"update","label":"Comercial: cuotas","args":[{"visible":[false,false,false,false,false,false,false,false,true,true,false,false,false,false,false,false,false,false,false,false]},{"title":"Respuesta dinámica a cambios de TPM: Comercial: cuotas"}]},{"method":"update","label":"Comercial: sobregiro","args":[{"visible":[false,false,false,false,false,false,false,false,false,false,true,true,false,false,false,false,false,false,false,false]},{"title":"Respuesta dinámica a cambios de TPM: Comercial: sobregiro"}]},{"method":"update","label":"Consumo: cuotas","args":[{"visible":[false,false,false,false,false,false,false,false,false,false,false,false,true,true,false,false,false,false,false,false]},{"title":"Respuesta dinámica a cambios de TPM: Consumo: cuotas"}]},{"method":"update","label":"Tarjeta: rotativo","args":[{"visible":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,false,false,false,false]},{"title":"Respuesta dinámica a cambios de TPM: Tarjeta: rotativo"}]},{"method":"update","label":"Tarjeta: cuota","args":[{"visible":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,false,false]},{"title":"Respuesta dinámica a cambios de TPM: Tarjeta: cuota"}]},{"method":"update","label":"Captación 30-89d","args":[{"visible":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true]},{"title":"Respuesta dinámica a cambios de TPM: Captación 30-89d"}]}]}],"legend":{"orientation":"h","x":0.5,"xanchor":"center","y":-0.20000000000000001},"hovermode":"x unified","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false,"responsive":true,"scrollZoom":false,"displaylogo":false,"displayModeBar":false,"modeBarButtonsToRemove":["zoom2d","pan2d","select2d","lasso2d","zoomIn2d","zoomOut2d","autoScale2d","resetScale2d"]},"data":[{"fillcolor":"rgba(83,119,163,0.22)","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.65383698979652616,1.2600895389195073,1.8960333035294088,2.1646453950049542,2.4810959947550928,2.8234079224028821,3.0646684437832832,3.1610597014206547,3.1328611586302779,3.5286423764487345,3.3356187289284667,3.3351487519024383,3.5858868445915695,2.3498211361133787,2.092450333947574,2.0137231490744552,2.1324592441547128,1.8044981662818875,1.6940525470708929,1.6233937637372189,1.5257637481666797,1.3286388358130528,1.0857072455579422,1.0005761756118841,0.67417741811857446,0.13450417106395002],"type":"scatter","mode":"lines","fill":"toself","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":["skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip"],"name":"IC 95%","showlegend":true,"visible":true,"marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.39417058043023812,0.96713347851904075,1.4483047395706463,1.6251763202814482,1.9048674152840728,2.1745858352847809,2.3440311037602508,2.4275561242457737,2.4686796624560827,2.8305508103017236,2.6746709390014609,2.7137995429250061,2.9678539903524741],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7,"line":{"color":"rgba(255,127,14,1)"}},"name":"Respuesta estimada","showlegend":true,"visible":true,"text":["Producto: Comercial total<br>Horizonte: 0 meses<br>Respuesta: 0.39<br>IC 95%: [0.13, 0.65]","Producto: Comercial total<br>Horizonte: 1 meses<br>Respuesta: 0.97<br>IC 95%: [0.67, 1.26]","Producto: Comercial total<br>Horizonte: 2 meses<br>Respuesta: 1.45<br>IC 95%: [1.00, 1.90]","Producto: Comercial total<br>Horizonte: 3 meses<br>Respuesta: 1.63<br>IC 95%: [1.09, 2.16]","Producto: Comercial total<br>Horizonte: 4 meses<br>Respuesta: 1.90<br>IC 95%: [1.33, 2.48]","Producto: Comercial total<br>Horizonte: 5 meses<br>Respuesta: 2.17<br>IC 95%: [1.53, 2.82]","Producto: Comercial total<br>Horizonte: 6 meses<br>Respuesta: 2.34<br>IC 95%: [1.62, 3.06]","Producto: Comercial total<br>Horizonte: 7 meses<br>Respuesta: 2.43<br>IC 95%: [1.69, 3.16]","Producto: Comercial total<br>Horizonte: 8 meses<br>Respuesta: 2.47<br>IC 95%: [1.80, 3.13]","Producto: Comercial total<br>Horizonte: 9 meses<br>Respuesta: 2.83<br>IC 95%: [2.13, 3.53]","Producto: Comercial total<br>Horizonte: 10 meses<br>Respuesta: 2.67<br>IC 95%: [2.01, 3.34]","Producto: Comercial total<br>Horizonte: 11 meses<br>Respuesta: 2.71<br>IC 95%: [2.09, 3.34]","Producto: Comercial total<br>Horizonte: 12 meses<br>Respuesta: 2.97<br>IC 95%: [2.35, 3.59]"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(83,119,163,0.22)","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.4841516901039572,1.1712169667930561,1.9206201813744801,2.3776900467464555,2.4686586336446448,3.058177726823696,3.6819905439870206,3.531708665087419,3.1925746465952267,3.2996492999068461,3.096183154123505,2.8494821870198361,2.8165749103514859,1.6765539656320352,1.7388758070346295,1.8964770058418621,1.8300560260368568,1.6129539618745767,1.4904085379944731,1.6986133600807884,1.556885374028214,1.2304628715409169,1.1367102666670419,0.90555626942793599,0.58115804630018175,0.078159648608993965],"type":"scatter","mode":"lines","fill":"toself","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":["skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip"],"name":"IC 95%","showlegend":false,"visible":false,"marker":{"color":"rgba(44,160,44,1)","line":{"color":"rgba(44,160,44,1)"}},"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.28115566935647557,0.87618750654661892,1.413088225401208,1.7572001567067488,1.8495607525927809,2.307531550425955,2.6903019520339044,2.5110586015409462,2.4027643042349016,2.5648526629718513,2.4963300799826835,2.2941789970272328,2.2465644379917604],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7,"line":{"color":"rgba(214,39,40,1)"}},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Consumo total<br>Horizonte: 0 meses<br>Respuesta: 0.28<br>IC 95%: [0.08, 0.48]","Producto: Consumo total<br>Horizonte: 1 meses<br>Respuesta: 0.88<br>IC 95%: [0.58, 1.17]","Producto: Consumo total<br>Horizonte: 2 meses<br>Respuesta: 1.41<br>IC 95%: [0.91, 1.92]","Producto: Consumo total<br>Horizonte: 3 meses<br>Respuesta: 1.76<br>IC 95%: [1.14, 2.38]","Producto: Consumo total<br>Horizonte: 4 meses<br>Respuesta: 1.85<br>IC 95%: [1.23, 2.47]","Producto: Consumo total<br>Horizonte: 5 meses<br>Respuesta: 2.31<br>IC 95%: [1.56, 3.06]","Producto: Consumo total<br>Horizonte: 6 meses<br>Respuesta: 2.69<br>IC 95%: [1.70, 3.68]","Producto: Consumo total<br>Horizonte: 7 meses<br>Respuesta: 2.51<br>IC 95%: [1.49, 3.53]","Producto: Consumo total<br>Horizonte: 8 meses<br>Respuesta: 2.40<br>IC 95%: [1.61, 3.19]","Producto: Consumo total<br>Horizonte: 9 meses<br>Respuesta: 2.56<br>IC 95%: [1.83, 3.30]","Producto: Consumo total<br>Horizonte: 10 meses<br>Respuesta: 2.50<br>IC 95%: [1.90, 3.10]","Producto: Consumo total<br>Horizonte: 11 meses<br>Respuesta: 2.29<br>IC 95%: [1.74, 2.85]","Producto: Consumo total<br>Horizonte: 12 meses<br>Respuesta: 2.25<br>IC 95%: [1.68, 2.82]"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(214,39,40,1)"},"error_x":{"color":"rgba(214,39,40,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(83,119,163,0.22)","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.091784285548946257,0.28960560984502831,0.40650669155917896,0.40150946699632584,0.39174146901204465,0.41517325939695415,0.41552243155477803,0.39280855569398371,0.43156814757927026,0.45142581436646778,0.44918996982524895,0.43515165349440749,0.48084304215309243,0.0025129541798457602,-0.0207028148438404,-0.00138922138838434,-0.0026314767230826899,0.00019782833275999723,0.017558996877672761,0.063100892028920413,0.050331073399913911,0.020064168747034171,-0.032753185722259437,-0.041322629234043499,-0.0071554328971906696,-0.03100626419409875],"type":"scatter","mode":"lines","fill":"toself","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":["skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip"],"name":"IC 95%","showlegend":false,"visible":false,"marker":{"color":"rgba(148,103,189,1)","line":{"color":"rgba(148,103,189,1)"}},"error_y":{"color":"rgba(148,103,189,1)"},"error_x":{"color":"rgba(148,103,189,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.03038901067742375,0.14122508847391882,0.18259203116256773,0.1843781406370332,0.20590281887953943,0.23275216639843399,0.23931166179184921,0.20518377628582821,0.21588298795601513,0.22439716882169253,0.22390037421843231,0.20722441932528352,0.24167799816646909],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7,"line":{"color":"rgba(140,86,75,1)"}},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Vivienda UF >3 años<br>Horizonte: 0 meses<br>Respuesta: 0.03<br>IC 95%: [-0.03, 0.09]","Producto: Vivienda UF >3 años<br>Horizonte: 1 meses<br>Respuesta: 0.14<br>IC 95%: [-0.01, 0.29]","Producto: Vivienda UF >3 años<br>Horizonte: 2 meses<br>Respuesta: 0.18<br>IC 95%: [-0.04, 0.41]","Producto: Vivienda UF >3 años<br>Horizonte: 3 meses<br>Respuesta: 0.18<br>IC 95%: [-0.03, 0.40]","Producto: Vivienda UF >3 años<br>Horizonte: 4 meses<br>Respuesta: 0.21<br>IC 95%: [0.02, 0.39]","Producto: Vivienda UF >3 años<br>Horizonte: 5 meses<br>Respuesta: 0.23<br>IC 95%: [0.05, 0.42]","Producto: Vivienda UF >3 años<br>Horizonte: 6 meses<br>Respuesta: 0.24<br>IC 95%: [0.06, 0.42]","Producto: Vivienda UF >3 años<br>Horizonte: 7 meses<br>Respuesta: 0.21<br>IC 95%: [0.02, 0.39]","Producto: Vivienda UF >3 años<br>Horizonte: 8 meses<br>Respuesta: 0.22<br>IC 95%: [0.00, 0.43]","Producto: Vivienda UF >3 años<br>Horizonte: 9 meses<br>Respuesta: 0.22<br>IC 95%: [0.00, 0.45]","Producto: Vivienda UF >3 años<br>Horizonte: 10 meses<br>Respuesta: 0.22<br>IC 95%: [0.00, 0.45]","Producto: Vivienda UF >3 años<br>Horizonte: 11 meses<br>Respuesta: 0.21<br>IC 95%: [-0.02, 0.44]","Producto: Vivienda UF >3 años<br>Horizonte: 12 meses<br>Respuesta: 0.24<br>IC 95%: [0.00, 0.48]"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(140,86,75,1)"},"error_x":{"color":"rgba(140,86,75,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(83,119,163,0.22)","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.058745701428723929,0.11104434013779724,0.14428560869348234,0.1677768607530348,0.18562832903114077,0.19956278636316735,0.20669153828171372,0.21428077558794181,0.21758779700761649,0.22306951165122052,0.23067632035861016,0.23444776084926269,0.24429299045636413,0.1140524771481842,0.11507079663744416,0.11995959456343848,0.11367295931709652,0.1184751840250737,0.12512962799388117,0.11833196276515692,0.11350352648714712,0.1017699924054554,0.098542020081245602,0.092518364880861806,0.065157807676484214,0.033347115047417379],"type":"scatter","mode":"lines","fill":"toself","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":["skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip"],"name":"IC 95%","showlegend":false,"visible":false,"marker":{"color":"rgba(227,119,194,1)","line":{"color":"rgba(227,119,194,1)"}},"error_y":{"color":"rgba(227,119,194,1)"},"error_x":{"color":"rgba(227,119,194,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.046046408238070657,0.088101073907140726,0.11840198678717208,0.1331594404171402,0.14369916071829808,0.15653315642515725,0.16251175052343531,0.16970520179091148,0.16803149051634508,0.16837123548415853,0.17531795746102433,0.17475927874335342,0.17917273380227416],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7,"line":{"color":"rgba(127,127,127,1)"}},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Captación 90d-1a<br>Horizonte: 0 meses<br>Respuesta: 0.05<br>IC 95%: [0.03, 0.06]","Producto: Captación 90d-1a<br>Horizonte: 1 meses<br>Respuesta: 0.09<br>IC 95%: [0.07, 0.11]","Producto: Captación 90d-1a<br>Horizonte: 2 meses<br>Respuesta: 0.12<br>IC 95%: [0.09, 0.14]","Producto: Captación 90d-1a<br>Horizonte: 3 meses<br>Respuesta: 0.13<br>IC 95%: [0.10, 0.17]","Producto: Captación 90d-1a<br>Horizonte: 4 meses<br>Respuesta: 0.14<br>IC 95%: [0.10, 0.19]","Producto: Captación 90d-1a<br>Horizonte: 5 meses<br>Respuesta: 0.16<br>IC 95%: [0.11, 0.20]","Producto: Captación 90d-1a<br>Horizonte: 6 meses<br>Respuesta: 0.16<br>IC 95%: [0.12, 0.21]","Producto: Captación 90d-1a<br>Horizonte: 7 meses<br>Respuesta: 0.17<br>IC 95%: [0.13, 0.21]","Producto: Captación 90d-1a<br>Horizonte: 8 meses<br>Respuesta: 0.17<br>IC 95%: [0.12, 0.22]","Producto: Captación 90d-1a<br>Horizonte: 9 meses<br>Respuesta: 0.17<br>IC 95%: [0.11, 0.22]","Producto: Captación 90d-1a<br>Horizonte: 10 meses<br>Respuesta: 0.18<br>IC 95%: [0.12, 0.23]","Producto: Captación 90d-1a<br>Horizonte: 11 meses<br>Respuesta: 0.17<br>IC 95%: [0.12, 0.23]","Producto: Captación 90d-1a<br>Horizonte: 12 meses<br>Respuesta: 0.18<br>IC 95%: [0.11, 0.24]"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(127,127,127,1)"},"error_x":{"color":"rgba(127,127,127,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(83,119,163,0.22)","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.50949607263537677,0.92002843881660679,1.2309371545346288,1.3901242827367959,1.7103878190134063,1.9544963255003864,2.1502869298000875,2.3771745290959174,2.6670224099978546,3.0186546144953104,3.0348680830871277,3.1684453947083013,3.394274790200309,2.0428900410231261,1.7913306203537469,1.7964539978478262,1.8113781119850083,1.5403218519562578,1.4067034575764079,1.3604055402817683,1.2346752225081956,1.1076770065958881,0.81202301865209681,0.75011225849339158,0.42401762514322783,0.13157051734416586],"type":"scatter","mode":"lines","fill":"toself","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":["skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip"],"name":"IC 95%","showlegend":false,"visible":false,"marker":{"color":"rgba(188,189,34,1)","line":{"color":"rgba(188,189,34,1)"}},"error_y":{"color":"rgba(188,189,34,1)"},"error_x":{"color":"rgba(188,189,34,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.32053329498977134,0.67202303197991731,0.99052470651401037,1.1010736506944463,1.4090324128046472,1.594585774004291,1.7553462350409279,1.8919389933361628,2.1036721309770563,2.4150163632401593,2.415661040467477,2.4798880075310241,2.7185824156117175],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7,"line":{"color":"rgba(23,190,207,1)"}},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Comercial: cuotas<br>Horizonte: 0 meses<br>Respuesta: 0.32<br>IC 95%: [0.13, 0.51]","Producto: Comercial: cuotas<br>Horizonte: 1 meses<br>Respuesta: 0.67<br>IC 95%: [0.42, 0.92]","Producto: Comercial: cuotas<br>Horizonte: 2 meses<br>Respuesta: 0.99<br>IC 95%: [0.75, 1.23]","Producto: Comercial: cuotas<br>Horizonte: 3 meses<br>Respuesta: 1.10<br>IC 95%: [0.81, 1.39]","Producto: Comercial: cuotas<br>Horizonte: 4 meses<br>Respuesta: 1.41<br>IC 95%: [1.11, 1.71]","Producto: Comercial: cuotas<br>Horizonte: 5 meses<br>Respuesta: 1.59<br>IC 95%: [1.23, 1.95]","Producto: Comercial: cuotas<br>Horizonte: 6 meses<br>Respuesta: 1.76<br>IC 95%: [1.36, 2.15]","Producto: Comercial: cuotas<br>Horizonte: 7 meses<br>Respuesta: 1.89<br>IC 95%: [1.41, 2.38]","Producto: Comercial: cuotas<br>Horizonte: 8 meses<br>Respuesta: 2.10<br>IC 95%: [1.54, 2.67]","Producto: Comercial: cuotas<br>Horizonte: 9 meses<br>Respuesta: 2.42<br>IC 95%: [1.81, 3.02]","Producto: Comercial: cuotas<br>Horizonte: 10 meses<br>Respuesta: 2.42<br>IC 95%: [1.80, 3.03]","Producto: Comercial: cuotas<br>Horizonte: 11 meses<br>Respuesta: 2.48<br>IC 95%: [1.79, 3.17]","Producto: Comercial: cuotas<br>Horizonte: 12 meses<br>Respuesta: 2.72<br>IC 95%: [2.04, 3.39]"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(23,190,207,1)"},"error_x":{"color":"rgba(23,190,207,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(83,119,163,0.22)","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.94471820709902965,1.322891861910694,1.7169935153956599,1.8131407973272369,2.3721619599611419,2.6365462483362312,3.0396268728626654,3.7006232324041743,3.5086623377080373,3.8855486046484882,3.9881185408325761,4.6480328887810636,4.7251220884374767,2.9062902718466908,2.9424357475617597,2.0470395565684329,2.3107563069255228,1.9247358709751681,1.9223762823228097,1.638662878887414,1.0325112908051499,0.90239362002935397,0.86162927935257072,0.52460438967072054,0.17271271077913375,-0.10254478098103226],"type":"scatter","mode":"lines","fill":"toself","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":["skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip"],"name":"IC 95%","showlegend":false,"visible":false,"marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.4210867130589987,0.74780228634491386,1.1207989525331905,1.3373850383399035,1.637277789995248,1.8345287695706909,2.3391448758750397,2.8114997573634919,2.7166991043416027,3.0981524557870053,3.0175790487005045,3.7952343181714121,3.815706180142084],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7,"line":{"color":"rgba(255,127,14,1)"}},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Comercial: sobregiro<br>Horizonte: 0 meses<br>Respuesta: 0.42<br>IC 95%: [-0.10, 0.94]","Producto: Comercial: sobregiro<br>Horizonte: 1 meses<br>Respuesta: 0.75<br>IC 95%: [0.17, 1.32]","Producto: Comercial: sobregiro<br>Horizonte: 2 meses<br>Respuesta: 1.12<br>IC 95%: [0.52, 1.72]","Producto: Comercial: sobregiro<br>Horizonte: 3 meses<br>Respuesta: 1.34<br>IC 95%: [0.86, 1.81]","Producto: Comercial: sobregiro<br>Horizonte: 4 meses<br>Respuesta: 1.64<br>IC 95%: [0.90, 2.37]","Producto: Comercial: sobregiro<br>Horizonte: 5 meses<br>Respuesta: 1.83<br>IC 95%: [1.03, 2.64]","Producto: Comercial: sobregiro<br>Horizonte: 6 meses<br>Respuesta: 2.34<br>IC 95%: [1.64, 3.04]","Producto: Comercial: sobregiro<br>Horizonte: 7 meses<br>Respuesta: 2.81<br>IC 95%: [1.92, 3.70]","Producto: Comercial: sobregiro<br>Horizonte: 8 meses<br>Respuesta: 2.72<br>IC 95%: [1.92, 3.51]","Producto: Comercial: sobregiro<br>Horizonte: 9 meses<br>Respuesta: 3.10<br>IC 95%: [2.31, 3.89]","Producto: Comercial: sobregiro<br>Horizonte: 10 meses<br>Respuesta: 3.02<br>IC 95%: [2.05, 3.99]","Producto: Comercial: sobregiro<br>Horizonte: 11 meses<br>Respuesta: 3.80<br>IC 95%: [2.94, 4.65]","Producto: Comercial: sobregiro<br>Horizonte: 12 meses<br>Respuesta: 3.82<br>IC 95%: [2.91, 4.73]"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(83,119,163,0.22)","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.6422724382917665,1.4265313169887279,1.1053902032220264,1.3102225813231856,1.4329291165564548,1.5836686329679841,1.8370900528193463,2.0805031142774859,2.2637439384292093,2.2545978273631464,2.4364980189684147,2.4750371652543479,2.5670679867515727,0.97005440931184517,0.82795254652155592,0.8225526774537395,0.70025132728953943,0.7864638203944736,0.75665988981637922,0.6181766389167469,0.40665944080755811,0.40204849425175471,0.48709488860182326,0.3689234687260563,0.40673403324765711,0.155486386551144],"type":"scatter","mode":"lines","fill":"toself","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":["skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip"],"name":"IC 95%","showlegend":false,"visible":false,"marker":{"color":"rgba(44,160,44,1)","line":{"color":"rgba(44,160,44,1)"}},"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.3988794124214553,0.91663267511819235,0.73715683597404136,0.89865873496250448,0.91748880540410482,0.995164036887771,1.2276333458680466,1.4185815020469326,1.5251038794118414,1.477424577326343,1.6295253482110772,1.6514948558879521,1.7685611980317089],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7,"line":{"color":"rgba(214,39,40,1)"}},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Consumo: cuotas<br>Horizonte: 0 meses<br>Respuesta: 0.40<br>IC 95%: [0.16, 0.64]","Producto: Consumo: cuotas<br>Horizonte: 1 meses<br>Respuesta: 0.92<br>IC 95%: [0.41, 1.43]","Producto: Consumo: cuotas<br>Horizonte: 2 meses<br>Respuesta: 0.74<br>IC 95%: [0.37, 1.11]","Producto: Consumo: cuotas<br>Horizonte: 3 meses<br>Respuesta: 0.90<br>IC 95%: [0.49, 1.31]","Producto: Consumo: cuotas<br>Horizonte: 4 meses<br>Respuesta: 0.92<br>IC 95%: [0.40, 1.43]","Producto: Consumo: cuotas<br>Horizonte: 5 meses<br>Respuesta: 1.00<br>IC 95%: [0.41, 1.58]","Producto: Consumo: cuotas<br>Horizonte: 6 meses<br>Respuesta: 1.23<br>IC 95%: [0.62, 1.84]","Producto: Consumo: cuotas<br>Horizonte: 7 meses<br>Respuesta: 1.42<br>IC 95%: [0.76, 2.08]","Producto: Consumo: cuotas<br>Horizonte: 8 meses<br>Respuesta: 1.53<br>IC 95%: [0.79, 2.26]","Producto: Consumo: cuotas<br>Horizonte: 9 meses<br>Respuesta: 1.48<br>IC 95%: [0.70, 2.25]","Producto: Consumo: cuotas<br>Horizonte: 10 meses<br>Respuesta: 1.63<br>IC 95%: [0.82, 2.44]","Producto: Consumo: cuotas<br>Horizonte: 11 meses<br>Respuesta: 1.65<br>IC 95%: [0.83, 2.48]","Producto: Consumo: cuotas<br>Horizonte: 12 meses<br>Respuesta: 1.77<br>IC 95%: [0.97, 2.57]"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(214,39,40,1)"},"error_x":{"color":"rgba(214,39,40,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(83,119,163,0.22)","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.43214898931374268,0.85761083522646375,1.2268910781094573,1.5003387983630689,1.7836244676095829,2.1214864141571583,2.3138168333044171,2.5024303160061381,2.7065885902941398,2.972489655569261,3.1780108705664785,3.3249850087900996,3.2796903946883225,1.7109812966419449,1.6868385302004598,1.5257026972273295,1.4225461428527617,1.2277877650428266,1.1265571521207496,1.0732197744546541,1.0235941400030262,0.54864433848714156,0.60792047441920594,0.27694784743066314,-0.069201360990198968,-0.054922042742904159],"type":"scatter","mode":"lines","fill":"toself","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":["skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip"],"name":"IC 95%","showlegend":false,"visible":false,"marker":{"color":"rgba(148,103,189,1)","line":{"color":"rgba(148,103,189,1)"}},"error_y":{"color":"rgba(148,103,189,1)"},"error_x":{"color":"rgba(148,103,189,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.18861347328541928,0.39420473711813242,0.75191946277006017,1.0541296363911374,1.1661344030483622,1.5725402770800925,1.6935183038795356,1.8144937340634439,1.9671881776684832,2.1975178992110114,2.351856783896904,2.5059117694952797,2.4953358456651338],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7,"line":{"color":"rgba(140,86,75,1)"}},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Tarjeta: rotativo<br>Horizonte: 0 meses<br>Respuesta: 0.19<br>IC 95%: [-0.05, 0.43]","Producto: Tarjeta: rotativo<br>Horizonte: 1 meses<br>Respuesta: 0.39<br>IC 95%: [-0.07, 0.86]","Producto: Tarjeta: rotativo<br>Horizonte: 2 meses<br>Respuesta: 0.75<br>IC 95%: [0.28, 1.23]","Producto: Tarjeta: rotativo<br>Horizonte: 3 meses<br>Respuesta: 1.05<br>IC 95%: [0.61, 1.50]","Producto: Tarjeta: rotativo<br>Horizonte: 4 meses<br>Respuesta: 1.17<br>IC 95%: [0.55, 1.78]","Producto: Tarjeta: rotativo<br>Horizonte: 5 meses<br>Respuesta: 1.57<br>IC 95%: [1.02, 2.12]","Producto: Tarjeta: rotativo<br>Horizonte: 6 meses<br>Respuesta: 1.69<br>IC 95%: [1.07, 2.31]","Producto: Tarjeta: rotativo<br>Horizonte: 7 meses<br>Respuesta: 1.81<br>IC 95%: [1.13, 2.50]","Producto: Tarjeta: rotativo<br>Horizonte: 8 meses<br>Respuesta: 1.97<br>IC 95%: [1.23, 2.71]","Producto: Tarjeta: rotativo<br>Horizonte: 9 meses<br>Respuesta: 2.20<br>IC 95%: [1.42, 2.97]","Producto: Tarjeta: rotativo<br>Horizonte: 10 meses<br>Respuesta: 2.35<br>IC 95%: [1.53, 3.18]","Producto: Tarjeta: rotativo<br>Horizonte: 11 meses<br>Respuesta: 2.51<br>IC 95%: [1.69, 3.32]","Producto: Tarjeta: rotativo<br>Horizonte: 12 meses<br>Respuesta: 2.50<br>IC 95%: [1.71, 3.28]"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(140,86,75,1)"},"error_x":{"color":"rgba(140,86,75,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(83,119,163,0.22)","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.95638928716223504,1.4021555380874284,2.0835438236156394,1.834452306000192,1.75157333335906,2.0761024996466833,2.0399935463076133,2.0086910378480409,2.4250151614811588,1.9020699486564996,2.8489881689788388,2.744669683926884,2.4855658280851793,1.0361052125946653,0.98839966860164485,1.0707848654838168,0.45615191611339656,1.1184592140935332,0.64875886966594676,0.69082178984815312,0.84667281579258269,0.62143933413139896,0.24274298307154152,0.13645136645944855,-0.59937790328677532,-0.16439812545132471],"type":"scatter","mode":"lines","fill":"toself","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":["skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip"],"name":"IC 95%","showlegend":false,"visible":false,"marker":{"color":"rgba(227,119,194,1)","line":{"color":"rgba(227,119,194,1)"}},"error_y":{"color":"rgba(227,119,194,1)"},"error_x":{"color":"rgba(227,119,194,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.39599558085545522,0.4013888174003265,1.109997595037544,1.0385976445358669,1.1865063337452295,1.461387657719633,1.3654076680778833,1.3287249537569938,1.771737187787346,1.179110932384948,1.959886517231328,1.8665346762642645,1.7608355203399224],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7,"line":{"color":"rgba(127,127,127,1)"}},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Tarjeta: cuota<br>Horizonte: 0 meses<br>Respuesta: 0.40<br>IC 95%: [-0.16, 0.96]","Producto: Tarjeta: cuota<br>Horizonte: 1 meses<br>Respuesta: 0.40<br>IC 95%: [-0.60, 1.40]","Producto: Tarjeta: cuota<br>Horizonte: 2 meses<br>Respuesta: 1.11<br>IC 95%: [0.14, 2.08]","Producto: Tarjeta: cuota<br>Horizonte: 3 meses<br>Respuesta: 1.04<br>IC 95%: [0.24, 1.83]","Producto: Tarjeta: cuota<br>Horizonte: 4 meses<br>Respuesta: 1.19<br>IC 95%: [0.62, 1.75]","Producto: Tarjeta: cuota<br>Horizonte: 5 meses<br>Respuesta: 1.46<br>IC 95%: [0.85, 2.08]","Producto: Tarjeta: cuota<br>Horizonte: 6 meses<br>Respuesta: 1.37<br>IC 95%: [0.69, 2.04]","Producto: Tarjeta: cuota<br>Horizonte: 7 meses<br>Respuesta: 1.33<br>IC 95%: [0.65, 2.01]","Producto: Tarjeta: cuota<br>Horizonte: 8 meses<br>Respuesta: 1.77<br>IC 95%: [1.12, 2.43]","Producto: Tarjeta: cuota<br>Horizonte: 9 meses<br>Respuesta: 1.18<br>IC 95%: [0.46, 1.90]","Producto: Tarjeta: cuota<br>Horizonte: 10 meses<br>Respuesta: 1.96<br>IC 95%: [1.07, 2.85]","Producto: Tarjeta: cuota<br>Horizonte: 11 meses<br>Respuesta: 1.87<br>IC 95%: [0.99, 2.74]","Producto: Tarjeta: cuota<br>Horizonte: 12 meses<br>Respuesta: 1.76<br>IC 95%: [1.04, 2.49]"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(127,127,127,1)"},"error_x":{"color":"rgba(127,127,127,1)"},"xaxis":"x","yaxis":"y","frame":null},{"fillcolor":"rgba(83,119,163,0.22)","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,1,0],"y":[0.057693798143046718,0.1111738055900776,0.14791095884893946,0.16776874108919912,0.19270358168406743,0.20995813966898769,0.21860461097930972,0.2286425415913855,0.23619885631678525,0.24859319443068692,0.25938310805457621,0.26313252265239506,0.27345994483837788,0.1348434713193645,0.13569141452966019,0.1410257079980895,0.13832810118159342,0.14091858665522158,0.14702339448465029,0.14083312930504494,0.1343705262500208,0.12759866092353156,0.10996609745767869,0.098354216213771495,0.0713874771453097,0.03295847524696445],"type":"scatter","mode":"lines","fill":"toself","line":{"color":"rgba(83,119,163,0)"},"hoverinfo":["skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip"],"name":"IC 95%","showlegend":false,"visible":false,"marker":{"color":"rgba(188,189,34,1)","line":{"color":"rgba(188,189,34,1)"}},"error_y":{"color":"rgba(188,189,34,1)"},"error_x":{"color":"rgba(188,189,34,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[0,1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.045326136695005577,0.091280641367693635,0.12313258753135548,0.1388674192734389,0.16015112130379949,0.17216433295950423,0.17971887014217733,0.18783296803801788,0.18855872148600344,0.19346064780614017,0.20020440802633285,0.19941196859102764,0.20415170807887115],"type":"scatter","mode":"lines+markers","line":{"color":"#243B53","width":3},"marker":{"color":"#243B53","size":7,"line":{"color":"rgba(23,190,207,1)"}},"name":"Respuesta estimada","showlegend":false,"visible":false,"text":["Producto: Captación 30-89d<br>Horizonte: 0 meses<br>Respuesta: 0.05<br>IC 95%: [0.03, 0.06]","Producto: Captación 30-89d<br>Horizonte: 1 meses<br>Respuesta: 0.09<br>IC 95%: [0.07, 0.11]","Producto: Captación 30-89d<br>Horizonte: 2 meses<br>Respuesta: 0.12<br>IC 95%: [0.10, 0.15]","Producto: Captación 30-89d<br>Horizonte: 3 meses<br>Respuesta: 0.14<br>IC 95%: [0.11, 0.17]","Producto: Captación 30-89d<br>Horizonte: 4 meses<br>Respuesta: 0.16<br>IC 95%: [0.13, 0.19]","Producto: Captación 30-89d<br>Horizonte: 5 meses<br>Respuesta: 0.17<br>IC 95%: [0.13, 0.21]","Producto: Captación 30-89d<br>Horizonte: 6 meses<br>Respuesta: 0.18<br>IC 95%: [0.14, 0.22]","Producto: Captación 30-89d<br>Horizonte: 7 meses<br>Respuesta: 0.19<br>IC 95%: [0.15, 0.23]","Producto: Captación 30-89d<br>Horizonte: 8 meses<br>Respuesta: 0.19<br>IC 95%: [0.14, 0.24]","Producto: Captación 30-89d<br>Horizonte: 9 meses<br>Respuesta: 0.19<br>IC 95%: [0.14, 0.25]","Producto: Captación 30-89d<br>Horizonte: 10 meses<br>Respuesta: 0.20<br>IC 95%: [0.14, 0.26]","Producto: Captación 30-89d<br>Horizonte: 11 meses<br>Respuesta: 0.20<br>IC 95%: [0.14, 0.26]","Producto: Captación 30-89d<br>Horizonte: 12 meses<br>Respuesta: 0.20<br>IC 95%: [0.13, 0.27]"],"hovertemplate":["%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>","%{text}<extra><\/extra>"],"error_y":{"color":"rgba(23,190,207,1)"},"error_x":{"color":"rgba(23,190,207,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-</section>
-<section id="robustez-por-muestra" class="level2">
-<h2 class="anchored" data-anchor-id="robustez-por-muestra">Robustez por muestra</h2>
-<div class="cell">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Pass-through acumulado a seis meses bajo distintas muestras.</caption>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Producto</th>
-<th style="text-align: right;">Excluye 2020-2023</th>
-<th style="text-align: right;">Muestra completa</th>
-<th style="text-align: right;">Desde 2010</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Captación 30-89d</td>
-<td style="text-align: right;">0.08</td>
-<td style="text-align: right;">0.08</td>
-<td style="text-align: right;">0.08</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Captación 90d-1a</td>
-<td style="text-align: right;">0.06</td>
-<td style="text-align: right;">0.06</td>
-<td style="text-align: right;">0.06</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Comercial total</td>
-<td style="text-align: right;">1.32</td>
-<td style="text-align: right;">1.10</td>
-<td style="text-align: right;">1.06</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Comercial: cuotas</td>
-<td style="text-align: right;">1.02</td>
-<td style="text-align: right;">0.95</td>
-<td style="text-align: right;">0.95</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Comercial: sobregiro</td>
-<td style="text-align: right;">1.27</td>
-<td style="text-align: right;">1.32</td>
-<td style="text-align: right;">1.32</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Consumo total</td>
-<td style="text-align: right;">1.57</td>
-<td style="text-align: right;">1.22</td>
-<td style="text-align: right;">0.95</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Consumo: cuotas</td>
-<td style="text-align: right;">0.35</td>
-<td style="text-align: right;">0.57</td>
-<td style="text-align: right;">0.57</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Tarjeta: cuota</td>
-<td style="text-align: right;">0.93</td>
-<td style="text-align: right;">0.56</td>
-<td style="text-align: right;">0.56</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Tarjeta: rotativo</td>
-<td style="text-align: right;">1.27</td>
-<td style="text-align: right;">0.98</td>
-<td style="text-align: right;">0.98</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Vivienda UF &gt;3 años</td>
-<td style="text-align: right;">0.06</td>
-<td style="text-align: right;">0.01</td>
-<td style="text-align: right;">-0.01</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section>
-<section id="principales-cautelas-metodológicas" class="level2">
-<h2 class="anchored" data-anchor-id="principales-cautelas-metodológicas">Principales cautelas metodológicas</h2>
-<ul>
-<li>Las tasas promedio bancarias agregadas mezclan precio puro con composición de operaciones: cambia la tasa, pero también cambia quién pide crédito, en qué plazo y con qué riesgo.</li>
-<li>La TPM observada es endógena al escenario macroeconómico; por eso los coeficientes deben leerse como pass-through condicional, no como efecto causal puro de una sorpresa monetaria.</li>
-<li>Para tasas largas, especialmente vivienda UF, importa la trayectoria esperada de TPM y no solo su cambio contemporáneo. Por eso una mejora natural es incorporar swaps cámara, curva soberana, expectativas de inflación o sorpresas de política.</li>
-<li>Riesgo de crédito, liquidez bancaria, spreads soberanos/corporativos, actividad e inflación esperada pueden desplazar las tasas bancarias independientemente de la TPM.</li>
-<li>Las tasas de vivienda y otras tasas largas incorporan expectativas de inflación, tasas reales largas, premios por plazo y condiciones de originación; no deberían compararse mecánicamente con productos de corto plazo.</li>
-<li>Las asimetrías entre alzas y bajas pueden reflejar fricciones bancarias, pero también diferencias de contexto macro entre ciclos de contracción, normalización y relajamiento monetario.</li>
-<li>El episodio 2021-2023 probablemente concentra una parte importante de la variación útil para identificación; por eso la robustez por muestra es central y no solo decorativa.</li>
-</ul>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Importante</span>Próxima mejora metodológica
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>La extensión más relevante es reemplazar cambios observados de TPM por medidas de <strong>sorpresa de política monetaria</strong> o expectativas de TPM. Eso permitiría acercar la interpretación a shocks monetarios y reduciría la endogeneidad entre política, inflación esperada y actividad.</p>
-</div>
-</div>
-</section>
-<section id="próximos-pasos" class="level2">
-<h2 class="anchored" data-anchor-id="próximos-pasos">Próximos pasos</h2>
-<ol type="1">
-<li>Incorporar expectativas o sorpresas de TPM para acercar mejor la interpretación a shocks monetarios.</li>
-<li>Integrar condiciones de crédito de la Encuesta de Crédito Bancario en la especificación principal.</li>
-<li>Agregar flujos o cantidades de crédito, no solo tasas.</li>
-<li>Profundizar la comparación por plazo y por tipo de producto.</li>
-<li>Convertir el monitor en una nota técnica breve con discusión de literatura y estrategia empírica más formal.</li>
-</ol>
-
-
-</section>
-
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-    const icon = "";
-    const anchorJS = new window.AnchorJS();
-    anchorJS.options = {
-      placement: 'right',
-      icon: icon
-    };
-    anchorJS.add('.anchored');
-    const isCodeAnnotation = (el) => {
-      for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {                     
-          return true;
-        }
-      }
-      return false;
-    }
-    const onCopySuccess = function(e) {
-      // button target
-      const button = e.trigger;
-      // don't keep focus
-      button.blur();
-      // flash "checked"
-      button.classList.add('code-copy-button-checked');
-      var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copiado");
-      let tooltip;
-      if (window.bootstrap) {
-        button.setAttribute("data-bs-toggle", "tooltip");
-        button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copiado");
-        tooltip = new bootstrap.Tooltip(button, 
-          { trigger: "manual", 
-            customClass: "code-copy-button-tooltip",
-            offset: [0, -8]});
-        tooltip.show();    
-      }
-      setTimeout(function() {
-        if (tooltip) {
-          tooltip.hide();
-          button.removeAttribute("data-bs-title");
-          button.removeAttribute("data-bs-toggle");
-          button.removeAttribute("data-bs-placement");
-        }
-        button.setAttribute("title", currentTitle);
-        button.classList.remove('code-copy-button-checked');
-      }, 1000);
-      // clear code selection
-      e.clearSelection();
-    }
-    const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-      text: getTextToCopy
-    });
-    clipboard.on('success', onCopySuccess);
-    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-        text: getTextToCopy,
-        container: window.document.getElementById('quarto-embedded-source-code-modal')
-      });
-      clipboardModal.on('success', onCopySuccess);
-    }
-      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/mulloav3007\.github\.io\/Economics\/");
-      var isInternal = (href) => {
-          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-      }
-      // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-      for (var i=0; i<links.length; i++) {
-        const link = links[i];
-        if (!isInternal(link.href)) {
-          // undo the damage that might have been done by quarto-nav.js in the case of
-          // links that we want to consider external
-          if (link.dataset.originalHref !== undefined) {
-            link.href = link.dataset.originalHref;
-          }
-        }
-      }
-    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-      const config = {
-        allowHTML: true,
-        maxWidth: 500,
-        delay: 100,
-        arrow: false,
-        appendTo: function(el) {
-            return el.parentElement;
-        },
-        interactive: true,
-        interactiveBorder: 10,
-        theme: 'quarto',
-        placement: 'bottom-start',
-      };
-      if (contentFn) {
-        config.content = contentFn;
-      }
-      if (onTriggerFn) {
-        config.onTrigger = onTriggerFn;
-      }
-      if (onUntriggerFn) {
-        config.onUntrigger = onUntriggerFn;
-      }
-      window.tippy(el, config); 
-    }
-    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-    for (var i=0; i<noterefs.length; i++) {
-      const ref = noterefs[i];
-      tippyHover(ref, function() {
-        // use id or data attribute instead here
-        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-        try { href = new URL(href).hash; } catch {}
-        const id = href.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note) {
-          return note.innerHTML;
-        } else {
-          return "";
-        }
-      });
-    }
-    const xrefs = window.document.querySelectorAll('a.quarto-xref');
-    const processXRef = (id, note) => {
-      // Strip column container classes
-      const stripColumnClz = (el) => {
-        el.classList.remove("page-full", "page-columns");
-        if (el.children) {
-          for (const child of el.children) {
-            stripColumnClz(child);
-          }
-        }
-      }
-      stripColumnClz(note)
-      if (id === null || id.startsWith('sec-')) {
-        // Special case sections, only their first couple elements
-        const container = document.createElement("div");
-        if (note.children && note.children.length > 2) {
-          container.appendChild(note.children[0].cloneNode(true));
-          for (let i = 1; i < note.children.length; i++) {
-            const child = note.children[i];
-            if (child.tagName === "P" && child.innerText === "") {
-              continue;
-            } else {
-              container.appendChild(child.cloneNode(true));
-              break;
-            }
-          }
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(container);
-          }
-          return container.innerHTML
-        } else {
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(note);
-          }
-          return note.innerHTML;
-        }
-      } else {
-        // Remove any anchor links if they are present
-        const anchorLink = note.querySelector('a.anchorjs-link');
-        if (anchorLink) {
-          anchorLink.remove();
-        }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(note);
-        }
-        if (note.classList.contains("callout")) {
-          return note.outerHTML;
-        } else {
-          return note.innerHTML;
-        }
-      }
-    }
-    for (var i=0; i<xrefs.length; i++) {
-      const xref = xrefs[i];
-      tippyHover(xref, undefined, function(instance) {
-        instance.disable();
-        let url = xref.getAttribute('href');
-        let hash = undefined; 
-        if (url.startsWith('#')) {
-          hash = url;
-        } else {
-          try { hash = new URL(url).hash; } catch {}
-        }
-        if (hash) {
-          const id = hash.replace(/^#\/?/, "");
-          const note = window.document.getElementById(id);
-          if (note !== null) {
-            try {
-              const html = processXRef(id, note.cloneNode(true));
-              instance.setContent(html);
-            } finally {
-              instance.enable();
-              instance.show();
-            }
-          } else {
-            // See if we can fetch this
-            fetch(url.split('#')[0])
-            .then(res => res.text())
-            .then(html => {
-              const parser = new DOMParser();
-              const htmlDoc = parser.parseFromString(html, "text/html");
-              const note = htmlDoc.getElementById(id);
-              if (note !== null) {
-                const html = processXRef(id, note);
-                instance.setContent(html);
-              } 
-            }).finally(() => {
-              instance.enable();
-              instance.show();
-            });
-          }
-        } else {
-          // See if we can fetch a full url (with no hash to target)
-          // This is a special case and we should probably do some content thinning / targeting
-          fetch(url)
-          .then(res => res.text())
-          .then(html => {
-            const parser = new DOMParser();
-            const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.querySelector('main.content');
-            if (note !== null) {
-              // This should only happen for chapter cross references
-              // (since there is no id in the URL)
-              // remove the first header
-              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-                note.children[0].remove();
-              }
-              const html = processXRef(null, note);
-              instance.setContent(html);
-            } 
-          }).finally(() => {
-            instance.enable();
-            instance.show();
-          });
-        }
-      }, function(instance) {
-      });
-    }
-        let selectedAnnoteEl;
-        const selectorForAnnotation = ( cell, annotation) => {
-          let cellAttr = 'data-code-cell="' + cell + '"';
-          let lineAttr = 'data-code-annotation="' +  annotation + '"';
-          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-          return selector;
-        }
-        const selectCodeLines = (annoteEl) => {
-          const doc = window.document;
-          const targetCell = annoteEl.getAttribute("data-target-cell");
-          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-          const lineIds = lines.map((line) => {
-            return targetCell + "-" + line;
-          })
-          let top = null;
-          let height = null;
-          let parent = null;
-          if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
-            }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
-            }
-            selectedAnnoteEl = annoteEl;
-          }
-        };
-        const unselectCodeLines = () => {
-          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-          elementsIds.forEach((elId) => {
-            const div = window.document.getElementById(elId);
-            if (div) {
-              div.remove();
-            }
-          });
-          selectedAnnoteEl = undefined;
-        };
-          // Handle positioning of the toggle
-      window.addEventListener(
-        "resize",
-        throttle(() => {
-          elRect = undefined;
-          if (selectedAnnoteEl) {
-            selectCodeLines(selectedAnnoteEl);
-          }
-        }, 10)
-      );
-      function throttle(fn, ms) {
-      let throttle = false;
-      let timer;
-        return (...args) => {
-          if(!throttle) { // first call gets through
-              fn.apply(this, args);
-              throttle = true;
-          } else { // all the others get throttled
-              if(timer) clearTimeout(timer); // cancel #2
-              timer = setTimeout(() => {
-                fn.apply(this, args);
-                timer = throttle = false;
-              }, ms);
-          }
-        };
-      }
-        // Attach click handler to the DT
-        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-        for (const annoteDlNode of annoteDls) {
-          annoteDlNode.addEventListener('click', (event) => {
-            const clickedEl = event.target;
-            if (clickedEl !== selectedAnnoteEl) {
-              unselectCodeLines();
-              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-              if (activeEl) {
-                activeEl.classList.remove('code-annotation-active');
-              }
-              selectCodeLines(clickedEl);
-              clickedEl.classList.add('code-annotation-active');
-            } else {
-              // Unselect the line
-              unselectCodeLines();
-              clickedEl.classList.remove('code-annotation-active');
-            }
-          });
-        }
-    const findCites = (el) => {
-      const parentEl = el.parentElement;
-      if (parentEl) {
-        const cites = parentEl.dataset.cites;
-        if (cites) {
-          return {
-            el,
-            cites: cites.split(' ')
-          };
-        } else {
-          return findCites(el.parentElement)
-        }
-      } else {
-        return undefined;
-      }
-    };
-    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-    for (var i=0; i<bibliorefs.length; i++) {
-      const ref = bibliorefs[i];
-      const citeInfo = findCites(ref);
-      if (citeInfo) {
-        tippyHover(citeInfo.el, function() {
-          var popup = window.document.createElement('div');
-          citeInfo.cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
-            }
-            popup.appendChild(citeDiv);
-          });
-          return popup.innerHTML;
-        });
-      }
-    }
-  });
-  </script>
-</div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
-    <div class="nav-footer-left">
-<p>© 2026 Mauricio Ulloa</p>
-</div>   
-    <div class="nav-footer-center">
-      &nbsp;
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© <span data-current-year>2026</span> Mauricio Ulloa · Portafolio personal.</div>
+      <div class="footer-links">
+        <a href="../contacto.html">Contacto</a>
+        <a href="https://github.com/mulloav3007/Economics" target="_blank" rel="noopener">Código fuente ↗</a>
+      </div>
     </div>
-    <div class="nav-footer-right">
-<p>Sitio construido con Quarto y publicado en GitHub Pages</p>
-</div>
-  </div>
-</footer>
-
-
-
-
-</body></html>
+  </footer>
+  <button class="back-to-top" type="button" aria-label="Volver arriba">↑</button>
+  <script src="../assets/js/site.js" defer></script>
+</body>
+</html>

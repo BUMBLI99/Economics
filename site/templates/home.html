@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block main %}
+<section class="home-hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">Portafolio de economía aplicada</p>
+      <h1 class="display-title">Macroeconomía, política monetaria y datos con trazabilidad.</h1>
+      <p class="lead">Soy economista y Magíster en Análisis Económico por la Universidad de Chile. Desarrollo herramientas de seguimiento macroeconómico, proyecciones, modelos de política monetaria y análisis macrofinanciero con énfasis en Chile y América Latina.</p>
+      <div class="actions">
+        <a class="button button-primary" href="proyectos.html">Explorar proyectos</a>
+        <a class="button button-secondary" href="assets/files/cv-mauricio-ulloa.pdf">Descargar CV</a>
+        <a class="button button-ghost" href="contacto.html">Contacto</a>
+      </div>
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-value">6</div><div class="stat-label">proyectos aplicados</div></div>
+        <div class="stat"><div class="stat-value">R · Matlab</div><div class="stat-label">stack principal</div></div>
+        <div class="stat"><div class="stat-value">Chile + LatAm</div><div class="stat-label">foco empírico</div></div>
+        <div class="stat"><div class="stat-value">2000–2026</div><div class="stat-label">cobertura de datos</div></div>
+      </div>
+    </div>
+    <aside class="hero-panel">
+      <p class="eyebrow">Enfoque de trabajo</p>
+      <h2>De la pregunta económica a una salida publicable</h2>
+      <ul class="hero-panel-list">
+        <li><strong>Datos trazables</strong><span>Fuentes, transformaciones y vintages explícitos.</span></li>
+        <li><strong>Modelos comparables</strong><span>Benchmarks, evaluación fuera de muestra y cautelas.</span></li>
+        <li><strong>Comunicación clara</strong><span>Gráficos legibles y resultados sin sobreinterpretación.</span></li>
+        <li><strong>Flujos reproducibles</strong><span>Separación entre insumos, procesamiento y publicación.</span></li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-heading">
+      <div><p class="eyebrow">Selección</p><h2>Proyectos destacados</h2><p>Herramientas y notas técnicas con resultados consolidados, metodología explícita y una presentación común.</p></div>
+      <a class="text-link" href="proyectos.html">Ver todos</a>
+    </div>
+    <div class="card-grid">
+      {% for p in featured_projects %}
+      <article class="project-card">
+        <a class="card-image" href="proyectos/{{ p.slug }}.html"><img src="{{ p.image }}" alt="Vista previa de {{ p.short_title }}" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-kicker">{{ p.category }}</div>
+          <h3 class="card-title"><a href="proyectos/{{ p.slug }}.html">{{ p.title }}</a></h3>
+          <p class="card-description">{{ p.description }}</p>
+          <div class="tag-row">{% for tag in p.tags[:3] %}<span class="tag">{{ tag }}</span>{% endfor %}</div>
+          <div class="card-footer"><a class="card-link" href="proyectos/{{ p.slug }}.html">Abrir proyecto →</a><span class="status {% if p.status_class == 'note' %}status-note{% endif %}">{{ p.status }}</span></div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container two-col">
+    <div class="panel">
+      <p class="eyebrow">Perfil</p>
+      <h2>Economía aplicada con orientación a política pública</h2>
+      <p>Mi trabajo combina construcción de bases, econometría de series de tiempo, modelos macroeconómicos y visualización. El objetivo es producir análisis que permitan seguir la coyuntura, comparar escenarios y comunicar incertidumbre de forma responsable.</p>
+      <p>Actualmente me desempeño como economista en el Banco Central de Chile. Este sitio es un portafolio personal y no representa posiciones institucionales.</p>
+      <a class="text-link" href="cv.html">Ver trayectoria</a>
+    </div>
+    <div class="panel">
+      <p class="eyebrow">Agenda de investigación</p>
+      <ul class="clean-list">
+        <li><strong>Política monetaria y tipo de cambio.</strong><br><span class="muted">Cuándo reaccionar, con qué intensidad y bajo qué fricciones.</span></li>
+        <li><strong>Heterogeneidad en transmisión financiera.</strong><br><span class="muted">Velocidades y asimetrías del pass-through por producto.</span></li>
+        <li><strong>Infraestructura digital y comercio.</strong><br><span class="muted">Conectividad, regulación y exportaciones de servicios.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+{% endblock %}

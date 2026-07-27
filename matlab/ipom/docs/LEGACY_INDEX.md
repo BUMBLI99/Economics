@@ -1,6 +1,6 @@
 # Índice de archivos legacy
 
-## `archive_legacy/matlab_old_pipeline/`
+## `archive_legacy/pipeline_pre_audit/`
 
 - `Forecast.m`, `Forecast_V2.m`: baseline antiguo que guardaba `fcast_ipom.csv`. Reemplazado por `step01_identificar_shocks_ipom.m`, que genera `fcast_ipom_exact.csv` y preserva shocks identificados.
 - `alternatives.m`: escenario alternativo global/risk-off antiguo basado en `fcast_ipom.csv`.

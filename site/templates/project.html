@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block main %}
+<section class="project-hero">
+  <div class="container project-hero-grid">
+    <div>
+      <p class="eyebrow">{{ project.category }}</p>
+      <h1 class="project-title">{{ project.title }}</h1>
+      <p class="project-deck">{{ project.deck }}</p>
+      <div class="tag-row">
+        {% for tag in project.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+      </div>
+      {% if project.actions %}<div class="actions">{{ project.actions|safe }}</div>{% endif %}
+    </div>
+    <dl class="project-meta">
+      <div><dt>Estado</dt><dd>{{ project.status }}</dd></div>
+      <div><dt>Última actualización</dt><dd>{{ project.updated }}</dd></div>
+      <div><dt>Frecuencia</dt><dd>{{ project.frequency }}</dd></div>
+      <div><dt>Herramientas</dt><dd>{{ project.tools }}</dd></div>
+    </dl>
+  </div>
+</section>
+<section class="section-tight">
+  <div class="container project-layout">
+    <article class="project-content">
+      {{ content_html|safe }}
+    </article>
+    {% if toc %}
+    <aside class="project-toc" aria-label="Contenido de la página">
+      <p class="project-toc-title">En esta página</p>
+      {% for item in toc %}<a href="#{{ item.id }}">{{ item.text }}</a>{% endfor %}
+    </aside>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

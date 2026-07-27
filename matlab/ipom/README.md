@@ -1,81 +1,59 @@
-# Proyecto IPOM/IRIS-MATLAB ordenado
+# IPoM / IRIS · pipeline activo
 
-Versión auditada del proyecto. El objetivo es preservar el modelo/forecast final y separar claramente el pipeline activo del material histórico.
+Subproyecto Matlab/IRIS para identificar un escenario base y construir trayectorias condicionales de TPM, inflación y brecha de actividad.
 
-## Ejecutar pipeline final
+## Entrada principal
 
-En MATLAB, abre esta carpeta como directorio de trabajo y ejecuta:
+Desde Matlab, abre `matlab/ipom/` y ejecuta:
 
 ```matlab
 run_project
 ```
 
-Esto usa el `history.csv` ya incluido y genera/actualiza:
-
-- `output/raw/fcast_ipom_exact.csv`
-- `output/raw/fcast_ipom_with_shocks.csv`
-- `output/raw/fcast_alt_petroleo_gap.csv`
-- `output/raw/fcast_alt_escenario.csv`
-
-## Si actualizaste Data.csv desde R
+Para el escenario que mantiene la TPM en 4,5% durante 2026 y retorna a la trayectoria base desde 2027:
 
 ```matlab
-IPOM_REBUILD_HISTORY = true;
-run_project
-```
-
-Eso equivale a correr el `makedata` moderno antes del forecast.
-
-También puedes correr solo la etapa de historia:
-
-```matlab
-run_build_history
-```
-
-## Reportes PDF IRIS
-
-Por defecto no se generan PDFs para mantener el pipeline liviano. Para generarlos:
-
-```matlab
-IPOM_RUN_REPORT = true;
-run_project
-```
-
-## Estructura
-
-```text
-config_ipom.m                 rutas centralizadas
-startup_ipom.m                inicialización de path
-run_project.m                 pipeline principal
-run_build_history.m           reconstruye history.csv desde Data.csv
-src/matlab/model/             modelo IRIS activo
-src/matlab/scripts/           pasos activos del pipeline
-src/r/                         Rmd principal de estimaciones/datos
-src/r/archive_exploratory/     Rmd exploratorio antiguo
-data/raw/                      Data.csv y ponderadores
-data/processed/                history.csv para IRIS
-output/raw/                    CSV finales del modelo
-output/reports/                PDFs IRIS si se generan
-archive_legacy/                scripts y salidas anteriores fuera del path activo
-docs/                          auditoría y explicación de dependencias
-```
-
-## Qué versión usar
-
-Usa esta versión auditada. La versión `clean_fixed` solo corregía el error de `cfg`; esta además reubica correctamente `makedata`, documenta dependencias y saca el pipeline viejo del área activa.
-
-
-## Actualizar datos desde R
-
-Copia `.Renviron.example` como `.Renviron`, completa tus credenciales y ejecuta desde R/RStudio:
-
-```r
-source("run_update_data_from_r.R")
-```
-
-Luego, en MATLAB, si quieres reconstruir `history.csv` desde el nuevo `Data.csv`:
-
-```matlab
-IPOM_REBUILD_HISTORY = true;
 run_tpm45_2026
 ```
+
+Opciones:
+
+```matlab
+IPOM_REBUILD_HISTORY = true;  % reconstruye history.csv desde Data.csv
+IPOM_RUN_REPORT = true;       % genera reportes PDF IRIS
+run_tpm45_2026
+```
+
+## Estructura operativa
+
+```text
+config_ipom.m             rutas centralizadas
+startup_ipom.m            agrega únicamente el código activo al path
+run_project.m             baseline + escenario general
+run_tpm45_2026.m          escenario TPM 4,5%
+data/raw/                  insumos originales
+data/processed/            history.csv utilizado por IRIS
+src/matlab/model/          modelo activo
+src/matlab/scripts/        pasos ordenados del pipeline
+output/raw/                CSV finales de IRIS
+output/reports/            reportes opcionales
+archive_legacy/            versiones anteriores fuera del path
+```
+
+La ruta de IRIS no está codificada en el repositorio. Debe agregarse al path de Matlab antes de ejecutar, según la instalación local.
+
+## Integración con el portafolio
+
+Después de una corrida Matlab:
+
+```bash
+Rscript scripts/03_build_ipom_outputs.R
+python scripts/build_site.py
+python scripts/validate_site.py
+```
+
+El paso R transforma los CSV de `matlab/ipom/output/raw/` en bases estandarizadas bajo `data/processed/ipom/`.
+
+## Alcance de la auditoría
+
+La reorganización preservó el modelo y la lógica de forecast. La validación incluida en este repositorio es estructural para Matlab/IRIS; una reestimación completa requiere una instalación compatible de Matlab e IRIS Toolbox.

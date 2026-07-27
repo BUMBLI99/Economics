@@ -1,69 +1,134 @@
-# Economics — ExchangeReg
+# Economics · Portafolio de economía aplicada
 
-Sitio GitHub Pages de Mauricio Ulloa, centrado en el proyecto **ExchangeReg**: modelos de tipo de cambio, tasas soberanas 10Y y stress macrofinanciero para Chile, Brasil, México, Perú y Colombia.
+Repositorio y sitio público de **Mauricio Andrés Ulloa Valdivia**. Reúne proyectos de seguimiento macroeconómico, política monetaria, actividad, tasas de interés y macrofinanzas para Chile y América Latina.
 
-## Ejecutar todo
+**Sitio público:** https://mulloav3007.github.io/Economics/
 
-Desde la raíz del repo:
+> Este es un portafolio personal. Los análisis y opiniones no representan posiciones institucionales.
+
+## Proyectos publicados
+
+| Proyecto | Pregunta principal | Pipeline |
+|---|---|---|
+| Nowcasting IMACEC | ¿Cómo anticipar el IMACEC total y no minero respetando el vintage de información? | R |
+| Escenarios tipo IPoM | ¿Cómo cambian inflación, TPM y brecha bajo trayectorias condicionales? | Matlab · IRIS · R |
+| Transmisión de la TPM | ¿Con qué velocidad y heterogeneidad se transmite la TPM a tasas bancarias? | R |
+| FX, tasas 10Y y riesgo LatAm | ¿Qué parte de los movimientos financieros excede lo explicado por factores globales? | R |
+| Estrés financiero Chile | ¿Cómo resumir presiones anómalas en USD/CLP y tasa soberana 10Y? | R |
+| Curva soberana chilena | ¿Qué muestran nivel, pendiente y compensación inflacionaria de BCP y BCU? | R |
+
+## Arquitectura
+
+El repositorio separa explícitamente cuatro capas:
+
+```text
+R/ y matlab/       código analítico
+scripts/           actualización, construcción y validación
+site/              fuente editorial y visual del sitio
+ data/processed/   salidas estables consumidas por la publicación
+outputs/           tablas y objetos derivados de los modelos
+docs/              sitio estático final que publica GitHub Pages
+archive/           material histórico fuera del flujo activo
+```
+
+La página pública **no ejecuta R ni Matlab al abrirse**. Consume salidas procesadas y validadas. Así, una descarga fallida o una dependencia local no rompe el sitio ya publicado.
+
+## Construir el sitio
+
+Requiere Python 3.11 o superior.
+
+```bash
+python -m pip install -r requirements-site.txt
+python scripts/build_site.py
+python scripts/validate_site.py
+```
+
+En Windows también se puede usar:
 
 ```powershell
-.\render_exchange_site.ps1
+.\build_site.ps1 -Install
 ```
 
-Ese comando hace todo el flujo:
+El constructor:
 
-1. Ejecuta `modelos/exchange/Exchange_CPI_BIS.Rmd`.
-2. Descarga datos BCCh, FRED y BIS.
-3. Construye el CPI desde BIS `WS_LONG_CPI` en nivel mensual, base 2010=100.
-4. Genera el PDF del reporte.
-5. Genera gráficos en `modelos/exchange/Graficos/`.
-6. Copia los outputs a `assets/`.
-7. Renderiza el sitio Quarto hacia `docs/`.
-8. Elimina de `docs/proyectos/` las páginas públicas antiguas que no deben verse.
+1. regenera gráficos web desde los CSV procesados;
+2. genera un CV público sin dirección, teléfono ni fecha de nacimiento;
+3. limpia completamente `docs/`;
+4. construye todas las páginas con diseño común;
+5. copia solo las descargas públicas autorizadas;
+6. mantiene una redirección para la antigua URL `estres-externo.html`.
 
-Luego subir a GitHub:
+## Actualizar análisis
 
-```powershell
-git status
-git add .
-git commit -m "Publish ExchangeReg with BIS CPI"
-git push
+Las credenciales se mantienen exclusivamente en un archivo local `.Renviron`. Copia `.Renviron.example` como `.Renviron` y completa las variables necesarias.
+
+### IMACEC
+
+```bash
+Rscript scripts/01_update_imacec.R
+python scripts/build_site.py
+python scripts/validate_site.py
 ```
 
-## Credenciales locales
+### IPoM / IRIS
 
-Copia `.Renviron.example` como `.Renviron` y completa:
+En Matlab, desde `matlab/ipom/`:
 
-```text
-BCCH_USER=tu_usuario_bcch
-BCCH_PASS=tu_password_bcch
-FRED_API_KEY=tu_api_key_fred
+```matlab
+run_tpm45_2026
 ```
 
-No subas `.Renviron` a GitHub.
+Luego, desde la raíz:
 
-## Archivos importantes
-
-```text
-modelos/exchange/Exchange_CPI_BIS.Rmd      # modelo principal corregido
-proyectos/exchange.qmd                     # página web del proyecto
-render_exchange_site.ps1                   # pipeline único
-assets/img/exchange/                       # gráficos publicados
-assets/files/exchange_report.pdf           # PDF publicado
-docs/                                      # carpeta que publica GitHub Pages
+```bash
+Rscript scripts/03_build_ipom_outputs.R
+python scripts/build_site.py
+python scripts/validate_site.py
 ```
 
-## Nota sobre el CPI
+### Transmisión TPM
 
-El modelo ya no reconstruye índices de precios desde variaciones mensuales o 12 meses. Usa directamente los índices mensuales de BIS `WS_LONG_CPI`:
-
-```text
-M.CL.628  Chile
-M.US.628  United States
-M.BR.628  Brazil
-M.CO.628  Colombia
-M.MX.628  Mexico
-M.PE.628  Peru
+```bash
+Rscript scripts/05_update_transmision_tpm.R
+python scripts/build_site.py
+python scripts/validate_site.py
 ```
 
-Luego convierte esos niveles mensuales a frecuencia diaria mediante interpolación log-lineal y arrastre plano del último dato disponible. Esto evita el patrón artificial de serrucho.
+### Estrés financiero Chile
+
+```bash
+Rscript scripts/06_update_estres_financiero.R
+python scripts/build_site.py
+python scripts/validate_site.py
+```
+
+### Exchange LatAm
+
+```bash
+Rscript scripts/exchange/build_exchange_outputs.R
+python scripts/build_site.py
+python scripts/validate_site.py
+```
+
+Para una actualización integrada en Windows existe `scripts/07_update_portfolio_public.ps1`.
+
+## Publicación
+
+El workflow `.github/workflows/pages.yml` construye, valida y despliega `docs/` en cada `push` a `main`. La primera vez se debe seleccionar **GitHub Actions** como fuente en `Settings → Pages`.
+
+Las instrucciones exactas están en [DEPLOY.md](DEPLOY.md).
+
+## Controles de calidad
+
+`scripts/validate_site.py` comprueba:
+
+- páginas esperadas;
+- enlaces y recursos internos;
+- IDs y anclas duplicadas;
+- imágenes sin texto alternativo;
+- marcadores de plantilla sin resolver;
+- filtración accidental de código fuente a `docs/`.
+
+## Estado de la reconstrucción
+
+La reorganización conserva los pipelines analíticos y sus salidas, reemplaza la antigua capa pública Quarto por un constructor estático determinista y archiva los hotfixes anteriores. La revisión estructural no equivale a reestimar todos los modelos: las corridas de R, Matlab e IRIS requieren sus dependencias y credenciales locales.

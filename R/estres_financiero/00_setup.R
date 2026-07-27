@@ -36,7 +36,8 @@ estres_project_root <- function() {
   ))
 
   for (path in candidates) {
-    if (file.exists(file.path(path, "_quarto.yml"))) return(path)
+    if (file.exists(file.path(path, "README.md")) &&
+        dir.exists(file.path(path, "site"))) return(path)
     if (file.exists(file.path(path, "R/estres_financiero/00_setup.R"))) return(path)
   }
 

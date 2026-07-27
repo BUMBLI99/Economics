@@ -1,1081 +1,134 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
-
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-<meta name="description" content="Proyecto aplicado de escenarios macroeconómicos en Matlab/IRIS para inflación, TPM y brecha de actividad en Chile.">
-
-<title>Escenario IPoM/IRIS: TPM 4,5% durante 2026 – Mauricio Ulloa</title>
-<style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-  width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
-  vertical-align: middle;
-}
-</style>
-
-
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-a0f9fd0d421825b736dc1bbcbcba2219.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
-  "location": "navbar",
-  "copy-button": false,
-  "collapse-after": 3,
-  "panel-placement": "end",
-  "type": "overlay",
-  "limit": 50,
-  "keyboard-shortcut": [
-    "f",
-    "/",
-    "s"
-  ],
-  "show-item-context": false,
-  "language": {
-    "search-no-results-text": "No se han encontrado resultados",
-    "search-matching-documents-text": "documentos encontrados",
-    "search-copy-link-title": "Copiar el enlace en la búsqueda",
-    "search-hide-matches-text": "Ocultar resultados adicionales",
-    "search-more-match-text": "resultado adicional en este documento",
-    "search-more-matches-text": "resultados adicionales en este documento",
-    "search-clear-button-title": "Borrar",
-    "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "Cancelar",
-    "search-submit-button-title": "Enviar",
-    "search-label": "Buscar"
-  }
-}</script>
-<link href="../site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
-
-<script src="../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
-
-<script src="../site_libs/plotly-binding-4.12.0/plotly.js"></script>
-
-<script src="../site_libs/typedarray-0.1/typedarray.min.js"></script>
-
-<script src="../site_libs/jquery-3.5.1/jquery.min.js"></script>
-
-<link href="../site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
-
-<script src="../site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
-
-<link href="../site_libs/plotly-htmlwidgets-css-2.25.2/plotly-htmlwidgets.css" rel="stylesheet">
-
-<script src="../site_libs/plotly-main-2.25.2/plotly-latest.min.js"></script>
-
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="../assets/css/styles.css">
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Escenarios tipo IPoM · Mauricio Ulloa</title>
+  <meta name="description" content="Modelo semi-estructural para identificar un escenario base y comparar trayectorias condicionales de TPM, inflación y brecha de actividad.">
+  <meta name="author" content="Mauricio Andrés Ulloa Valdivia">
+  <meta name="theme-color" content="#f4f1eb">
+  <link rel="canonical" href="https://mulloav3007.github.io/Economics/proyectos/ipom-iris.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Escenarios tipo IPoM · Mauricio Ulloa">
+  <meta property="og:description" content="Modelo semi-estructural para identificar un escenario base y comparar trayectorias condicionales de TPM, inflación y brecha de actividad.">
+  <meta property="og:url" content="https://mulloav3007.github.io/Economics/proyectos/ipom-iris.html">
+  <meta property="og:image" content="https://mulloav3007.github.io/Economics/assets/img/projects/ipom.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/css/site.css">
 </head>
-
-<body class="nav-fixed quarto-light">
-
-<div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">Mauricio Ulloa</span>
-    </a>
-  </div>
-            <div id="quarto-search" class="" title="Buscar"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-  <span class="navbar-toggler-icon"></span>
-</button>
-          <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
-<span class="menu-text">Inicio</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../proyectos.html"> 
-<span class="menu-text">Proyectos</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../cv.html"> 
-<span class="menu-text">CV</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../contacto.html"> 
-<span class="menu-text">Contacto</span></a>
-  </li>  
-</ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/mulloav3007"> <i class="bi bi-github" role="img" aria-label="GitHub">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
-</ul>
-          </div> <!-- /navcollapse -->
-            <div class="quarto-navbar-tools">
-</div>
-      </div> <!-- /container-fluid -->
-    </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
-<!-- sidebar -->
-<!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">En esta página</h2>
-   
-  <ul>
-  <li><a href="#pregunta-económica" id="toc-pregunta-económica" class="nav-link active" data-scroll-target="#pregunta-económica">Pregunta económica</a></li>
-  <li><a href="#escenarios" id="toc-escenarios" class="nav-link" data-scroll-target="#escenarios">Escenarios</a></li>
-  <li><a href="#estructura-conceptual-del-modelo" id="toc-estructura-conceptual-del-modelo" class="nav-link" data-scroll-target="#estructura-conceptual-del-modelo">Estructura conceptual del modelo</a>
-  <ul class="collapse">
-  <li><a href="#brecha-de-actividad" id="toc-brecha-de-actividad" class="nav-link" data-scroll-target="#brecha-de-actividad">Brecha de actividad</a></li>
-  <li><a href="#inflación-subyacente" id="toc-inflación-subyacente" class="nav-link" data-scroll-target="#inflación-subyacente">Inflación subyacente</a></li>
-  <li><a href="#inflación-total-y-regla-monetaria" id="toc-inflación-total-y-regla-monetaria" class="nav-link" data-scroll-target="#inflación-total-y-regla-monetaria">Inflación total y regla monetaria</a></li>
-  </ul></li>
-  <li><a href="#resultado-principal" id="toc-resultado-principal" class="nav-link" data-scroll-target="#resultado-principal">Resultado principal</a>
-  <ul class="collapse">
-  <li><a href="#tasa-de-política-monetaria" id="toc-tasa-de-política-monetaria" class="nav-link" data-scroll-target="#tasa-de-política-monetaria">Tasa de Política Monetaria</a></li>
-  <li><a href="#inflación-total" id="toc-inflación-total" class="nav-link" data-scroll-target="#inflación-total">Inflación total</a></li>
-  <li><a href="#inflación-subyacente-1" id="toc-inflación-subyacente-1" class="nav-link" data-scroll-target="#inflación-subyacente-1">Inflación subyacente</a></li>
-  <li><a href="#brecha-de-actividad-1" id="toc-brecha-de-actividad-1" class="nav-link" data-scroll-target="#brecha-de-actividad-1">Brecha de actividad</a></li>
-  </ul></li>
-  <li><a href="#diferencias-frente-al-escenario-base" id="toc-diferencias-frente-al-escenario-base" class="nav-link" data-scroll-target="#diferencias-frente-al-escenario-base">Diferencias frente al escenario base</a>
-  <ul class="collapse">
-  <li><a href="#tpm" id="toc-tpm" class="nav-link" data-scroll-target="#tpm">TPM</a></li>
-  <li><a href="#inflación-total-1" id="toc-inflación-total-1" class="nav-link" data-scroll-target="#inflación-total-1">Inflación total</a></li>
-  <li><a href="#brecha-de-actividad-2" id="toc-brecha-de-actividad-2" class="nav-link" data-scroll-target="#brecha-de-actividad-2">Brecha de actividad</a></li>
-  </ul></li>
-  <li><a href="#bloque-externo" id="toc-bloque-externo" class="nav-link" data-scroll-target="#bloque-externo">Bloque externo</a>
-  <ul class="collapse">
-  <li><a href="#petróleo-wti-nominal" id="toc-petróleo-wti-nominal" class="nav-link" data-scroll-target="#petróleo-wti-nominal">Petróleo WTI nominal</a></li>
-  <li><a href="#tipo-de-cambio-real-índice" id="toc-tipo-de-cambio-real-índice" class="nav-link" data-scroll-target="#tipo-de-cambio-real-índice">Tipo de cambio real índice</a></li>
-  </ul></li>
-  <li><a href="#tabla-resumen-de-impactos" id="toc-tabla-resumen-de-impactos" class="nav-link" data-scroll-target="#tabla-resumen-de-impactos">Tabla resumen de impactos</a></li>
-  <li><a href="#archivos-descargables" id="toc-archivos-descargables" class="nav-link" data-scroll-target="#archivos-descargables">Archivos descargables</a></li>
-  <li><a href="#limitaciones" id="toc-limitaciones" class="nav-link" data-scroll-target="#limitaciones">Limitaciones</a></li>
-  </ul>
-</nav>
+<body class="project project-ipom-iris">
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="../index.html" aria-label="Ir al inicio">
+        <span class="brand-mark">MU</span>
+        <span>Mauricio Ulloa</span>
+      </a>
+      <button class="menu-toggle" type="button" aria-label="Abrir navegación" aria-expanded="false">☰</button>
+      <nav class="site-nav" aria-label="Navegación principal">
+        <a href="../index.html" >Inicio</a>
+        <a href="../proyectos.html" aria-current="page">Proyectos</a>
+        <a href="../cv.html" >CV</a>
+        <a href="../contacto.html" >Contacto</a>
+        <a class="nav-external" href="https://github.com/mulloav3007" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
     </div>
-<!-- main -->
-<main class="content" id="quarto-document-content">
+  </header>
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Escenario IPoM/IRIS: TPM 4,5% durante 2026</h1>
-<p class="subtitle lead">Simulación condicional en Matlab/IRIS con retorno a la trayectoria IPoM desde 2027</p>
-</div>
-
-<div>
-  <div class="description">
-    Proyecto aplicado de escenarios macroeconómicos en Matlab/IRIS para inflación, TPM y brecha de actividad en Chile.
+  <main id="contenido" class="site-main">
+<section class="project-hero">
+  <div class="container project-hero-grid">
+    <div>
+      <p class="eyebrow">Simulación macroeconómica</p>
+      <h1 class="project-title">Escenarios macroeconómicos con Matlab e IRIS</h1>
+      <p class="project-deck">Modelo semi-estructural para identificar un escenario base y comparar trayectorias condicionales de TPM, inflación y brecha de actividad.</p>
+      <div class="tag-row">
+<span class="tag">Matlab</span><span class="tag">IRIS</span><span class="tag">Inflación</span><span class="tag">Política monetaria</span>      </div>
+<div class="actions"><a class="button button-secondary" href="https://github.com/mulloav3007/Economics/tree/main/matlab/ipom" target="_blank" rel="noopener">Ver código ↗</a></div>    </div>
+    <dl class="project-meta">
+      <div><dt>Estado</dt><dd>Avanzado</dd></div>
+      <div><dt>Última actualización</dt><dd>2026</dd></div>
+      <div><dt>Frecuencia</dt><dd>Trimestral</dd></div>
+      <div><dt>Herramientas</dt><dd>Matlab · IRIS · R</dd></div>
+    </dl>
   </div>
+</section>
+<section class="section-tight">
+  <div class="container project-layout">
+    <article class="project-content">
+      <div class="kpi-grid">
+<div class="kpi"><div class="kpi-label">Escenario alternativo</div><div class="kpi-value">TPM 4,5%</div><div class="kpi-note">durante 2026</div></div>
+<div class="kpi"><div class="kpi-label">Retorno al escenario base</div><div class="kpi-value">2027T1</div><div class="kpi-note">condición explícita del ejercicio</div></div>
+<div class="kpi"><div class="kpi-label">Máx. diferencia inflación</div><div class="kpi-value">0,36 pp</div><div class="kpi-note">respecto del escenario base</div></div>
+<div class="kpi"><div class="kpi-label">Horizonte</div><div class="kpi-value">2029T4</div><div class="kpi-note">trayectorias trimestrales</div></div>
+</div>
+<div class="callout">
+<strong>Naturaleza del ejercicio.</strong> Se trata de una simulación condicional en un modelo semi-estructural. No es una predicción oficial ni una recomendación de política. El escenario alternativo se impone y el modelo calcula los shocks compatibles con esa trayectoria.
+</div>
+<h2 id="pregunta-economica">Pregunta económica</h2>
+<p>¿Cómo cambian la inflación y la brecha de actividad cuando la TPM se mantiene en <strong>4,5% durante 2026</strong>, en lugar de seguir la trayectoria del escenario base identificado, y luego retorna al escenario base desde 2027?</p>
+<p>El valor del ejercicio está en la coherencia conjunta: una trayectoria de tasa no se evalúa de manera aislada, sino junto con las ecuaciones de demanda, inflación, expectativas, tipo de cambio real y condiciones externas.</p>
+<h2 id="escenarios-comparados">Escenarios comparados</h2>
+<ul>
+<li><strong>Escenario base IPoM identificado:</strong> reproduce una trayectoria de referencia consistente con el modelo y los supuestos externos incorporados.</li>
+<li><strong>TPM 4,5% durante 2026:</strong> exogeniza la tasa durante cuatro trimestres y fuerza el retorno a la trayectoria base a partir de 2027T1.</li>
+</ul>
+<h2 id="resultados-principales">Resultados principales</h2>
+<figure class="chart-figure">
+<a href="../assets/img/charts/ipom_tpm.svg" target="_blank"><img alt="Trayectorias de TPM del escenario base y alternativo" src="../assets/img/charts/ipom_tpm.svg"/></a>
+<figcaption class="chart-caption">La zona sombreada identifica el período en que la trayectoria alternativa es impuesta.</figcaption>
+</figure>
+<div class="figure-grid">
+<figure class="chart-figure"><a href="../assets/img/charts/ipom_inflation.svg" target="_blank"><img alt="Inflación total en escenarios IPoM" src="../assets/img/charts/ipom_inflation.svg"/></a><figcaption class="chart-caption">Inflación total anual.</figcaption></figure>
+<figure class="chart-figure"><a href="../assets/img/charts/ipom_core.svg" target="_blank"><img alt="Inflación subyacente en escenarios IPoM" src="../assets/img/charts/ipom_core.svg"/></a><figcaption class="chart-caption">Inflación subyacente sin volátiles.</figcaption></figure>
+</div>
+<figure class="chart-figure">
+<a href="../assets/img/charts/ipom_output_gap.svg" target="_blank"><img alt="Brecha de actividad en escenarios IPoM" src="../assets/img/charts/ipom_output_gap.svg"/></a>
+<figcaption class="chart-caption">La respuesta de actividad es acotada y transitoria bajo la condición de convergencia impuesta.</figcaption>
+</figure>
+<p>El escenario alternativo genera una diferencia máxima de inflación total cercana a <strong>0,36 puntos porcentuales</strong>. La magnitud es moderada porque la desviación de la TPM es temporal y el ejercicio obliga a regresar al escenario base desde 2027.</p>
+<h2 id="estructura-conceptual">Estructura conceptual</h2>
+<div class="equation"><span class="equation-label">Brecha de actividad</span>ỹ<sub>t</sub> = a<sub>1</sub>ỹ<sub>t−1</sub> − a<sub>2</sub>(i<sub>t</sub> − i<sup>n</sup><sub>t</sub>) + a<sub>3</sub>q̃<sub>t</sub> + a<sub>4</sub>y*<sub>t</sub> + ε<sup>y</sup><sub>t</sub></div>
+<div class="equation"><span class="equation-label">Inflación subyacente</span>π<sup>core</sup><sub>t</sub> = b<sub>1</sub>π<sup>core</sup><sub>t−1</sub> + b<sub>2</sub>E<sub>t</sub>π<sup>core</sup><sub>t+h</sub> + κ<sub>y</sub>ỹ<sub>t</sub> + κ<sub>q</sub>q̃<sub>t</sub> + ε<sup>π</sup><sub>t</sub></div>
+<div class="equation"><span class="equation-label">Regla monetaria</span>i<sub>t</sub> = ρi<sub>t−1</sub> + (1−ρ)[i<sup>n</sup><sub>t</sub> + φ<sub>π</sub>(E<sub>t</sub>π<sub>t+h</sub>−π*) + φ<sub>y</sub>ỹ<sub>t</sub>] + ε<sup>i</sup><sub>t</sub></div>
+<p>La implementación en IRIS distingue variables endógenas, shocks y condiciones de escenario. La trayectoria alternativa de TPM se trata como una condición sobre el modelo, no como un cambio arbitrario de una columna de datos.</p>
+<h2 id="bloque-externo-y-supuestos">Bloque externo y supuestos</h2>
+<p>El modelo incorpora crecimiento de socios comerciales, Federal Funds Rate, Treasury a 10 años, VIX, cobre, petróleo y tipo de cambio real. Los escenarios comparten el mismo bloque externo salvo cuando se evalúa una alternativa específica de petróleo o brecha.</p>
+<p>La comparación principal mantiene constantes esos supuestos para aislar el efecto de la condición monetaria.</p>
+<h2 id="limites-de-interpretacion">Límites de interpretación</h2>
+<ul>
+<li>Los resultados dependen de la calibración y de la identificación del escenario base.</li>
+<li>Una trayectoria condicional no incorpora todas las respuestas de expectativas o primas de riesgo que podrían observarse en la práctica.</li>
+<li>La magnitud de las diferencias no debe leerse como una estimación causal estructural definitiva.</li>
+<li>El retorno exógeno al escenario base desde 2027 reduce deliberadamente la persistencia de los efectos.</li>
+</ul>
+<h2 id="documentos-y-salidas">Documentos y salidas</h2>
+<div class="download-grid">
+<a class="download" href="../assets/files/ipom/Escenario_TPM45_2026.pdf"><div><strong>Escenario TPM 4,5%</strong><span>PDF · gráficos del ejercicio</span></div><span>↓</span></a>
+<a class="download" href="../assets/files/ipom/Baseline_IPOM_Identificado.pdf"><div><strong>Escenario base identificado</strong><span>PDF · referencia</span></div><span>↓</span></a>
+<a class="download" href="../assets/files/ipom/ipom_raw_outputs.zip"><div><strong>Salidas brutas</strong><span>ZIP · series del modelo</span></div><span>↓</span></a>
+<a class="download" href="../assets/files/ipom/Nota_supuestos.pdf"><div><strong>Nota de supuestos</strong><span>PDF · documentación</span></div><span>↓</span></a>
 </div>
 
-
-<div class="quarto-title-meta">
-
-    
-  
-    
+    </article>
+    <aside class="project-toc" aria-label="Contenido de la página">
+      <p class="project-toc-title">En esta página</p>
+<a href="#pregunta-economica">Pregunta económica</a><a href="#escenarios-comparados">Escenarios comparados</a><a href="#resultados-principales">Resultados principales</a><a href="#estructura-conceptual">Estructura conceptual</a><a href="#bloque-externo-y-supuestos">Bloque externo y supuestos</a><a href="#limites-de-interpretacion">Límites de interpretación</a><a href="#documentos-y-salidas">Documentos y salidas</a>    </aside>
   </div>
-  
+</section>
+  </main>
 
-
-</header>
-
-
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>Estado del ejercicio
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>El proyecto ejecuta una simulación condicional en <strong>Matlab/IRIS</strong>. La corrida principal mantiene la TPM en <strong>4,5% durante 2026</strong> y fuerza el retorno a la trayectoria base/IPoM desde <strong>2027T1</strong>. No es una proyección institucional ni una réplica del modelo oficial del Banco Central.</p>
-</div>
-</div>
-<section id="pregunta-económica" class="level2">
-<h2 class="anchored" data-anchor-id="pregunta-económica">Pregunta económica</h2>
-<p>El ejercicio pregunta cómo cambian las trayectorias de inflación, TPM y brecha de actividad cuando se impone una trayectoria de política monetaria más baja durante 2026, manteniendo el resto de la estructura del modelo y retornando al escenario base desde 2027.</p>
-</section>
-<section id="escenarios" class="level2">
-<h2 class="anchored" data-anchor-id="escenarios">Escenarios</h2>
-<div class="cell">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Escenarios usados en la comparación pública.</caption>
-<colgroup>
-<col style="width: 33%">
-<col style="width: 16%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Escenario</th>
-<th style="text-align: left;">Archivo</th>
-<th style="text-align: left;">Lectura</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Escenario base IPoM identificado</td>
-<td style="text-align: left;">fcast_ipom_exact.csv</td>
-<td style="text-align: left;">Trayectoria de referencia identificada sobre el escenario IPoM.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">fcast_alt_tpm45_2026.csv</td>
-<td style="text-align: left;">TPM fijada en 4,5% durante 2026 y retorno a la trayectoria base desde 2027.</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section>
-<section id="estructura-conceptual-del-modelo" class="level2">
-<h2 class="anchored" data-anchor-id="estructura-conceptual-del-modelo">Estructura conceptual del modelo</h2>
-<section id="brecha-de-actividad" class="level3 mu-equation-panel">
-<h3 class="anchored" data-anchor-id="brecha-de-actividad">Brecha de actividad</h3>
-<p><span class="math display">\[
-\tilde y_t =
-\rho_y \tilde y_{t-1}
-- \phi_r (i_{t-1} - i^n_t)
-+ \phi_x x_t
-+ \phi_z \tilde z_t
-+ \phi_c c_t
-+ \varepsilon^y_t
-\]</span></p>
-<p>La brecha depende de persistencia, posición monetaria, condiciones externas, tipo de cambio real y condiciones financieras.</p>
-</section>
-<section id="inflación-subyacente" class="level3 mu-equation-panel">
-<h3 class="anchored" data-anchor-id="inflación-subyacente">Inflación subyacente</h3>
-<p><span class="math display">\[
-\pi^{core}_t =
-\alpha_1 \pi^{core}_{t-1}
-+ \alpha_4 \pi^{core}_{t-4}
-+ (1-\alpha_1-\alpha_4)E_t\pi^{core}_{t+h}
-+ \kappa_y \tilde y_t
-+ \kappa_z \tilde z_t
-+ \kappa_f \Delta p^{food}_t
-+ s_t
-+ \varepsilon^\pi_t
-\]</span></p>
-</section>
-<section id="inflación-total-y-regla-monetaria" class="level3 mu-equation-panel">
-<h3 class="anchored" data-anchor-id="inflación-total-y-regla-monetaria">Inflación total y regla monetaria</h3>
-<p><span class="math display">\[
-\pi_t = \pi^{core}_t + \pi^{res}_t
-\]</span></p>
-<p><span class="math display">\[
-i_t =
-\rho_i i_{t-1}
-+ (1-\rho_i)
-\left[
-  i^n_t
-  + \phi_\pi (E_t\pi^{core}_{t+h}-\pi^*)
-  + \phi_y \tilde y_t
-\right]
-+ \varepsilon^i_t
-\]</span></p>
-<p>La trayectoria alternativa se implementa exogenizando la TPM en 2026 y dejando que el modelo endogenice los shocks requeridos para cumplir esa condición.</p>
-</section>
-</section>
-<section id="resultado-principal" class="level2">
-<h2 class="anchored" data-anchor-id="resultado-principal">Resultado principal</h2>
-<section id="tasa-de-política-monetaria" class="level3">
-<h3 class="anchored" data-anchor-id="tasa-de-política-monetaria">Tasa de Política Monetaria</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-bc0549360f673e6e9b7c" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-bc0549360f673e6e9b7c">{"x":{"data":[{"x":["2024-12-18","2028-10-28"],"y":[0,0],"text":"","type":"scatter","mode":"lines","line":{"width":0.94488188976377963,"color":"rgba(191,191,191,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01","2026-04-01","2026-07-01","2026-10-01","2027-01-01","2027-04-01","2027-07-01","2027-10-01","2028-01-01","2028-04-01","2028-07-01","2028-10-01"],"y":[5,5,4.8266666699999998,4.7133333300000002,4.5,4.5,4.5,4.5,4.3200000000000003,4.25,4.25,4.25,4.2053306800000003,4.1418842199999997,4.1201546799999997,4.11115998],"text":["<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q1<br><b>Valor:<\/b> 5","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q2<br><b>Valor:<\/b> 5","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q3<br><b>Valor:<\/b> 4.827","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q4<br><b>Valor:<\/b> 4.713","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q1<br><b>Valor:<\/b> 4.5","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q2<br><b>Valor:<\/b> 4.5","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q3<br><b>Valor:<\/b> 4.5","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q4<br><b>Valor:<\/b> 4.5","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q1<br><b>Valor:<\/b> 4.32","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q2<br><b>Valor:<\/b> 4.25","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q3<br><b>Valor:<\/b> 4.25","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q4<br><b>Valor:<\/b> 4.25","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q1<br><b>Valor:<\/b> 4.205","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q2<br><b>Valor:<\/b> 4.142","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q3<br><b>Valor:<\/b> 4.12","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q4<br><b>Valor:<\/b> 4.111"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","legendgroup":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01","2026-04-01","2026-07-01","2026-10-01","2027-01-01","2027-04-01","2027-07-01","2027-10-01","2028-01-01","2028-04-01","2028-07-01","2028-10-01"],"y":[5,5,4.8266666699999998,4.7133333300000002,4.5,4.5300000000000002,4.75,4.5599999999999996,4.3200000000000003,4.25,4.25,4.25,4.1967316300000004,4.1343276500000004,4.1356824999999997,4.1401876499999997],"text":["<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q1<br><b>Valor:<\/b> 5","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q2<br><b>Valor:<\/b> 5","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q3<br><b>Valor:<\/b> 4.827","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q4<br><b>Valor:<\/b> 4.713","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q1<br><b>Valor:<\/b> 4.5","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q2<br><b>Valor:<\/b> 4.53","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q3<br><b>Valor:<\/b> 4.75","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q4<br><b>Valor:<\/b> 4.56","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q1<br><b>Valor:<\/b> 4.32","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q2<br><b>Valor:<\/b> 4.25","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q3<br><b>Valor:<\/b> 4.25","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q4<br><b>Valor:<\/b> 4.25","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q1<br><b>Valor:<\/b> 4.197","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q2<br><b>Valor:<\/b> 4.134","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q3<br><b>Valor:<\/b> 4.136","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q4<br><b>Valor:<\/b> 4.14"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(231,111,81,1)","dash":"solid"},"hoveron":"points","name":"Escenario base IPoM identificado","legendgroup":"Escenario base IPoM identificado","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":80,"r":7.9701120797011216,"b":95,"l":34.271481942714829},"font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243},"title":{"text":"<b> TPM: trayectoria base vs escenario 4,5% en 2026 <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["2025-01-01","2028-10-01"],"tickmode":"auto","ticktext":["2025","2026","2027","2028"],"tickvals":[20089,20454,20819,21184],"categoryorder":"array","categoryarray":["2025","2026","2027","2028"],"nticks":10,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[-0.25,5.25],"tickmode":"auto","ticktext":["0","1","2","3","4","5"],"tickvals":[0,1,2,3,4,5],"categoryorder":"array","categoryarray":["0","1","2","3","4","5"],"nticks":8,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"x","title":{"text":"% anual","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","tickformat":".1f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":12.7521793275218},"orientation":"h","x":0.5,"y":-0.22,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":null,"family":null,"size":0}}},"hovermode":"x unified","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"605053c61c36":{"yintercept":{},"type":"scatter"},"6050675d3476":{"x":{},"y":{},"colour":{},"text":{}},"60502db31bd3":{"x":{},"y":{},"colour":{},"text":{}}},"cur_data":"605053c61c36","visdat":{"605053c61c36":["function (y) ","x"],"6050675d3476":["function (y) ","x"],"60502db31bd3":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-</section>
-<section id="inflación-total" class="level3">
-<h3 class="anchored" data-anchor-id="inflación-total">Inflación total</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-4f226fcbd39e04693dba" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-4f226fcbd39e04693dba">{"x":{"data":[{"x":["2024-12-18","2028-10-28"],"y":[0,0],"text":"","type":"scatter","mode":"lines","line":{"width":0.94488188976377963,"color":"rgba(191,191,191,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01","2026-04-01","2026-07-01","2026-10-01","2027-01-01","2027-04-01","2027-07-01","2027-10-01","2028-01-01","2028-04-01","2028-07-01","2028-10-01"],"y":[4.7348733300000001,4.2676312699999999,4.1428335799999996,3.38676573,2.6263086100000002,4.0651457000000004,4.21016002,4.2947123999999999,4.0160990400000003,2.80316433,2.4322092899999999,2.7296871199999999,2.8730455699999999,2.7599318899999998,2.96240762,2.7683885899999998],"text":["<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q1<br><b>Valor:<\/b> 4.735","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q2<br><b>Valor:<\/b> 4.268","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q3<br><b>Valor:<\/b> 4.143","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q4<br><b>Valor:<\/b> 3.387","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q1<br><b>Valor:<\/b> 2.626","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q2<br><b>Valor:<\/b> 4.065","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q3<br><b>Valor:<\/b> 4.21","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q4<br><b>Valor:<\/b> 4.295","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q1<br><b>Valor:<\/b> 4.016","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q2<br><b>Valor:<\/b> 2.803","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q3<br><b>Valor:<\/b> 2.432","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q4<br><b>Valor:<\/b> 2.73","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q1<br><b>Valor:<\/b> 2.873","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q2<br><b>Valor:<\/b> 2.76","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q3<br><b>Valor:<\/b> 2.962","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q4<br><b>Valor:<\/b> 2.768"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","legendgroup":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01","2026-04-01","2026-07-01","2026-10-01","2027-01-01","2027-04-01","2027-07-01","2027-10-01","2028-01-01","2028-04-01","2028-07-01","2028-10-01"],"y":[4.7348733300000001,4.2676312699999999,4.1428335799999996,3.38676573,2.55732078,3.8997615400000001,3.8454082199999999,3.9630244600000002,3.91601344,2.71199082,2.5296332700000002,2.7635594800000001,2.7370292599999999,2.8359890299999999,3.1079264499999999,2.99983968],"text":["<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q1<br><b>Valor:<\/b> 4.735","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q2<br><b>Valor:<\/b> 4.268","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q3<br><b>Valor:<\/b> 4.143","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q4<br><b>Valor:<\/b> 3.387","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q1<br><b>Valor:<\/b> 2.557","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q2<br><b>Valor:<\/b> 3.9","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q3<br><b>Valor:<\/b> 3.845","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q4<br><b>Valor:<\/b> 3.963","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q1<br><b>Valor:<\/b> 3.916","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q2<br><b>Valor:<\/b> 2.712","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q3<br><b>Valor:<\/b> 2.53","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q4<br><b>Valor:<\/b> 2.764","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q1<br><b>Valor:<\/b> 2.737","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q2<br><b>Valor:<\/b> 2.836","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q3<br><b>Valor:<\/b> 3.108","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q4<br><b>Valor:<\/b> 3"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(231,111,81,1)","dash":"solid"},"hoveron":"points","name":"Escenario base IPoM identificado","legendgroup":"Escenario base IPoM identificado","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":80,"r":7.9701120797011216,"b":95,"l":34.271481942714829},"font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243},"title":{"text":"<b> Inflación total <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["2025-01-01","2028-10-01"],"tickmode":"auto","ticktext":["2025","2026","2027","2028"],"tickvals":[20089,20454,20819,21184],"categoryorder":"array","categoryarray":["2025","2026","2027","2028"],"nticks":10,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[-0.23674366650000001,4.9716169964999999],"tickmode":"auto","ticktext":["0","1","2","3","4"],"tickvals":[0,1,1.9999999999999998,3,4],"categoryorder":"array","categoryarray":["0","1","2","3","4"],"nticks":8,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"x","title":{"text":"% anual","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","tickformat":".1f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":12.7521793275218},"orientation":"h","x":0.5,"y":-0.22,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":null,"family":null,"size":0}}},"hovermode":"x unified","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"605042ff55ad":{"yintercept":{},"type":"scatter"},"605032b543d5":{"x":{},"y":{},"colour":{},"text":{}},"60502180784c":{"x":{},"y":{},"colour":{},"text":{}}},"cur_data":"605042ff55ad","visdat":{"605042ff55ad":["function (y) ","x"],"605032b543d5":["function (y) ","x"],"60502180784c":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-</section>
-<section id="inflación-subyacente-1" class="level3">
-<h3 class="anchored" data-anchor-id="inflación-subyacente-1">Inflación subyacente</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-ceaa6bd41ac98490cec3" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-ceaa6bd41ac98490cec3">{"x":{"data":[{"x":["2024-12-18","2028-10-28"],"y":[0,0],"text":"","type":"scatter","mode":"lines","line":{"width":0.94488188976377963,"color":"rgba(191,191,191,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01","2026-04-01","2026-07-01","2026-10-01","2027-01-01","2027-04-01","2027-07-01","2027-10-01","2028-01-01","2028-04-01","2028-07-01","2028-10-01"],"y":[3.8338556000000001,3.5674633899999999,3.8604150100000001,3.3357516,3.3454118300000002,3.3369348300000001,3.2484331499999999,3.23827205,3.2472234499999999,3.2295114200000001,2.9622870400000001,2.9690268199999998,2.7585097099999998,2.8162426800000002,3.0346902500000001,3.1733814499999999],"text":["<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q1<br><b>Valor:<\/b> 3.834","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q2<br><b>Valor:<\/b> 3.567","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q3<br><b>Valor:<\/b> 3.86","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q4<br><b>Valor:<\/b> 3.336","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q1<br><b>Valor:<\/b> 3.345","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q2<br><b>Valor:<\/b> 3.337","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q3<br><b>Valor:<\/b> 3.248","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q4<br><b>Valor:<\/b> 3.238","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q1<br><b>Valor:<\/b> 3.247","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q2<br><b>Valor:<\/b> 3.23","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q3<br><b>Valor:<\/b> 2.962","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q4<br><b>Valor:<\/b> 2.969","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q1<br><b>Valor:<\/b> 2.759","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q2<br><b>Valor:<\/b> 2.816","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q3<br><b>Valor:<\/b> 3.035","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q4<br><b>Valor:<\/b> 3.173"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","legendgroup":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01","2026-04-01","2026-07-01","2026-10-01","2027-01-01","2027-04-01","2027-07-01","2027-10-01","2028-01-01","2028-04-01","2028-07-01","2028-10-01"],"y":[3.8338556000000001,3.5674633899999999,3.8604150100000001,3.3357516,3.3259718,3.30546272,3.2134128300000002,3.2020817500000001,3.22745288,3.2200939800000001,2.95646275,2.96452063,2.7572349300000001,2.8182179199999999,3.04021382,3.18416991],"text":["<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q1<br><b>Valor:<\/b> 3.834","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q2<br><b>Valor:<\/b> 3.567","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q3<br><b>Valor:<\/b> 3.86","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q4<br><b>Valor:<\/b> 3.336","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q1<br><b>Valor:<\/b> 3.326","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q2<br><b>Valor:<\/b> 3.305","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q3<br><b>Valor:<\/b> 3.213","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q4<br><b>Valor:<\/b> 3.202","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q1<br><b>Valor:<\/b> 3.227","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q2<br><b>Valor:<\/b> 3.22","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q3<br><b>Valor:<\/b> 2.956","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q4<br><b>Valor:<\/b> 2.965","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q1<br><b>Valor:<\/b> 2.757","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q2<br><b>Valor:<\/b> 2.818","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q3<br><b>Valor:<\/b> 3.04","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q4<br><b>Valor:<\/b> 3.184"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(231,111,81,1)","dash":"solid"},"hoveron":"points","name":"Escenario base IPoM identificado","legendgroup":"Escenario base IPoM identificado","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":80,"r":7.9701120797011216,"b":95,"l":47.023661270236623},"font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243},"title":{"text":"<b> Inflación subyacente sin volátiles <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["2025-01-01","2028-10-01"],"tickmode":"auto","ticktext":["2025","2026","2027","2028"],"tickvals":[20089,20454,20819,21184],"categoryorder":"array","categoryarray":["2025","2026","2027","2028"],"nticks":10,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[-0.1930207505,4.0534357605000002],"tickmode":"auto","ticktext":["0.0","0.5","1.0","1.5","2.0","2.5","3.0","3.5","4.0"],"tickvals":[0,0.5,1,1.5,2,2.5,3,3.5,3.9999999999999996],"categoryorder":"array","categoryarray":["0.0","0.5","1.0","1.5","2.0","2.5","3.0","3.5","4.0"],"nticks":8,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"x","title":{"text":"% anual","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","tickformat":".1f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":12.7521793275218},"orientation":"h","x":0.5,"y":-0.22,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":null,"family":null,"size":0}}},"hovermode":"x unified","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"605013f73fa5":{"yintercept":{},"type":"scatter"},"60503c4a363d":{"x":{},"y":{},"colour":{},"text":{}},"60506bed46b7":{"x":{},"y":{},"colour":{},"text":{}}},"cur_data":"605013f73fa5","visdat":{"605013f73fa5":["function (y) ","x"],"60503c4a363d":["function (y) ","x"],"60506bed46b7":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-</section>
-<section id="brecha-de-actividad-1" class="level3">
-<h3 class="anchored" data-anchor-id="brecha-de-actividad-1">Brecha de actividad</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-373a03519e2b8d5975b2" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-373a03519e2b8d5975b2">{"x":{"data":[{"x":["2024-12-18","2028-10-28"],"y":[0,0],"text":"","type":"scatter","mode":"lines","line":{"width":0.94488188976377963,"color":"rgba(191,191,191,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01","2026-04-01","2026-07-01","2026-10-01","2027-01-01","2027-04-01","2027-07-01","2027-10-01","2028-01-01","2028-04-01","2028-07-01","2028-10-01"],"y":[0.68999999999999995,-0.071999999999999995,-0.26500000000000001,-0.29699999999999999,-0.5,-0.5,-0.459270183,-0.46786998299999999,-0.50795652999999996,-0.47835368099999998,-0.355435428,-0.268568009,-0.35349865899999999,-0.436560218,-0.50705354000000002,-0.521447259],"text":["<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q1<br><b>Valor:<\/b> 0.69","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q2<br><b>Valor:<\/b> -0.072","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q3<br><b>Valor:<\/b> -0.265","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q4<br><b>Valor:<\/b> -0.297","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q1<br><b>Valor:<\/b> -0.5","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q2<br><b>Valor:<\/b> -0.5","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q3<br><b>Valor:<\/b> -0.459","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q4<br><b>Valor:<\/b> -0.468","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q1<br><b>Valor:<\/b> -0.508","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q2<br><b>Valor:<\/b> -0.478","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q3<br><b>Valor:<\/b> -0.355","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q4<br><b>Valor:<\/b> -0.269","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q1<br><b>Valor:<\/b> -0.353","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q2<br><b>Valor:<\/b> -0.437","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q3<br><b>Valor:<\/b> -0.507","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q4<br><b>Valor:<\/b> -0.521"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","legendgroup":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01","2026-04-01","2026-07-01","2026-10-01","2027-01-01","2027-04-01","2027-07-01","2027-10-01","2028-01-01","2028-04-01","2028-07-01","2028-10-01"],"y":[0.68999999999999995,-0.071999999999999995,-0.26500000000000001,-0.29699999999999999,-0.38500000000000001,-0.36099999999999999,-0.439,-0.498,-0.51600000000000001,-0.48199999999999998,-0.42499999999999999,-0.373,-0.431536217,-0.45805368400000002,-0.46507106599999998,-0.45235148200000003],"text":["<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q1<br><b>Valor:<\/b> 0.69","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q2<br><b>Valor:<\/b> -0.072","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q3<br><b>Valor:<\/b> -0.265","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q4<br><b>Valor:<\/b> -0.297","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q1<br><b>Valor:<\/b> -0.385","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q2<br><b>Valor:<\/b> -0.361","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q3<br><b>Valor:<\/b> -0.439","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q4<br><b>Valor:<\/b> -0.498","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q1<br><b>Valor:<\/b> -0.516","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q2<br><b>Valor:<\/b> -0.482","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q3<br><b>Valor:<\/b> -0.425","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q4<br><b>Valor:<\/b> -0.373","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q1<br><b>Valor:<\/b> -0.432","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q2<br><b>Valor:<\/b> -0.458","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q3<br><b>Valor:<\/b> -0.465","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q4<br><b>Valor:<\/b> -0.452"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(231,111,81,1)","dash":"solid"},"hoveron":"points","name":"Escenario base IPoM identificado","legendgroup":"Escenario base IPoM identificado","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":80,"r":7.9701120797011216,"b":95,"l":53.399750933997524},"font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243},"title":{"text":"<b> Brecha de actividad <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["2025-01-01","2028-10-01"],"tickmode":"auto","ticktext":["2025","2026","2027","2028"],"tickvals":[20089,20454,20819,21184],"categoryorder":"array","categoryarray":["2025","2026","2027","2028"],"nticks":10,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[-0.58201962195000001,0.75057236294999996],"tickmode":"auto","ticktext":["-0.4","-0.2","0.0","0.2","0.4","0.6"],"tickvals":[-0.40000000000000008,-0.20000000000000001,0,0.19999999999999984,0.39999999999999991,0.60000000000000009],"categoryorder":"array","categoryarray":["-0.4","-0.2","0.0","0.2","0.4","0.6"],"nticks":8,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"x","title":{"text":"%","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","tickformat":".1f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":12.7521793275218},"orientation":"h","x":0.5,"y":-0.22,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":null,"family":null,"size":0}}},"hovermode":"x unified","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"60505c5a456e":{"yintercept":{},"type":"scatter"},"6050535674b":{"x":{},"y":{},"colour":{},"text":{}},"60506578238f":{"x":{},"y":{},"colour":{},"text":{}}},"cur_data":"60505c5a456e","visdat":{"60505c5a456e":["function (y) ","x"],"6050535674b":["function (y) ","x"],"60506578238f":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-</section>
-</section>
-<section id="diferencias-frente-al-escenario-base" class="level2">
-<h2 class="anchored" data-anchor-id="diferencias-frente-al-escenario-base">Diferencias frente al escenario base</h2>
-<section id="tpm" class="level3">
-<h3 class="anchored" data-anchor-id="tpm">TPM</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-c94043fd28ff743ef876" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-c94043fd28ff743ef876">{"x":{"data":[{"x":["2024-12-18","2028-10-28"],"y":[0,0],"text":"","type":"scatter","mode":"lines","line":{"width":0.94488188976377963,"color":"rgba(153,153,153,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01","2026-04-01","2026-07-01","2026-10-01","2027-01-01","2027-04-01","2027-07-01","2027-10-01","2028-01-01","2028-04-01","2028-07-01","2028-10-01"],"y":[0,0,0,0,0,-0.030000000000000249,-0.25,-0.059999999999999609,0,0,0,0,0.0085990499999999397,0.0075565699999993099,-0.01552781999999997,-0.02902766999999961],"text":["<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q1<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q2<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q3<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q4<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q1<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q2<br><b>Diferencia:<\/b> -0.03","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q3<br><b>Diferencia:<\/b> -0.25","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q4<br><b>Diferencia:<\/b> -0.06","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q1<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q2<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q3<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q4<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q1<br><b>Diferencia:<\/b> 0.009","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q2<br><b>Diferencia:<\/b> 0.008","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q3<br><b>Diferencia:<\/b> -0.016","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q4<br><b>Diferencia:<\/b> -0.029"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","legendgroup":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":80,"r":7.9701120797011216,"b":95,"l":59.775840597758425},"font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243},"title":{"text":"<b> TPM: diferencia respecto del escenario base <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["2025-01-01","2028-10-01"],"tickmode":"auto","ticktext":["2025","2026","2027","2028"],"tickvals":[20089,20454,20819,21184],"categoryorder":"array","categoryarray":["2025","2026","2027","2028"],"nticks":10,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[-0.26292995250000001,0.021529002499999936],"tickmode":"auto","ticktext":["-0.25","-0.20","-0.15","-0.10","-0.05","0.00"],"tickvals":[-0.25,-0.20000000000000001,-0.14999999999999999,-0.099999999999999978,-0.049999999999999989,0],"categoryorder":"array","categoryarray":["-0.25","-0.20","-0.15","-0.10","-0.05","0.00"],"nticks":8,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"x","title":{"text":"Diferencia respecto del escenario base","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","tickformat":".2f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":12.7521793275218},"orientation":"h","x":0.5,"y":-0.22,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}}},"hovermode":"x unified","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"60506e4c140a":{"yintercept":{},"type":"scatter"},"6050610f7db9":{"x":{},"y":{},"colour":{},"text":{}}},"cur_data":"60506e4c140a","visdat":{"60506e4c140a":["function (y) ","x"],"6050610f7db9":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-</section>
-<section id="inflación-total-1" class="level3">
-<h3 class="anchored" data-anchor-id="inflación-total-1">Inflación total</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-d2d07cc07d7d95dcdeca" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-d2d07cc07d7d95dcdeca">{"x":{"data":[{"x":["2024-12-18","2028-10-28"],"y":[0,0],"text":"","type":"scatter","mode":"lines","line":{"width":0.94488188976377963,"color":"rgba(153,153,153,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01","2026-04-01","2026-07-01","2026-10-01","2027-01-01","2027-04-01","2027-07-01","2027-10-01","2028-01-01","2028-04-01","2028-07-01","2028-10-01"],"y":[0,0,0,0,0.068987830000000194,0.16538416000000034,0.36475180000000007,0.33168793999999968,0.10008560000000032,0.091173509999999958,-0.097423980000000299,-0.033872360000000157,0.13601631000000003,-0.076057140000000079,-0.14551882999999988,-0.23145109000000019],"text":["<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q1<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q2<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q3<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q4<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q1<br><b>Diferencia:<\/b> 0.069","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q2<br><b>Diferencia:<\/b> 0.165","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q3<br><b>Diferencia:<\/b> 0.365","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q4<br><b>Diferencia:<\/b> 0.332","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q1<br><b>Diferencia:<\/b> 0.1","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q2<br><b>Diferencia:<\/b> 0.091","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q3<br><b>Diferencia:<\/b> -0.097","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q4<br><b>Diferencia:<\/b> -0.034","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q1<br><b>Diferencia:<\/b> 0.136","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q2<br><b>Diferencia:<\/b> -0.076","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q3<br><b>Diferencia:<\/b> -0.146","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q4<br><b>Diferencia:<\/b> -0.231"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","legendgroup":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":80,"r":7.9701120797011216,"b":95,"l":53.399750933997524},"font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243},"title":{"text":"<b> Inflación total: diferencia respecto del escenario base <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["2025-01-01","2028-10-01"],"tickmode":"auto","ticktext":["2025","2026","2027","2028"],"tickvals":[20089,20454,20819,21184],"categoryorder":"array","categoryarray":["2025","2026","2027","2028"],"nticks":10,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[-0.26126123450000022,0.39456194450000009],"tickmode":"auto","ticktext":["-0.2","-0.1","0.0","0.1","0.2","0.3"],"tickvals":[-0.20000000000000004,-0.10000000000000003,0,0.099999999999999978,0.19999999999999996,0.3000000000000001],"categoryorder":"array","categoryarray":["-0.2","-0.1","0.0","0.1","0.2","0.3"],"nticks":8,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"x","title":{"text":"Diferencia respecto del escenario base","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","tickformat":".2f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":12.7521793275218},"orientation":"h","x":0.5,"y":-0.22,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}}},"hovermode":"x unified","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"6050619670ee":{"yintercept":{},"type":"scatter"},"605020fd4978":{"x":{},"y":{},"colour":{},"text":{}}},"cur_data":"6050619670ee","visdat":{"6050619670ee":["function (y) ","x"],"605020fd4978":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-</section>
-<section id="brecha-de-actividad-2" class="level3">
-<h3 class="anchored" data-anchor-id="brecha-de-actividad-2">Brecha de actividad</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-bc124754dbd4e65f6dc6" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-bc124754dbd4e65f6dc6">{"x":{"data":[{"x":["2024-12-18","2028-10-28"],"y":[0,0],"text":"","type":"scatter","mode":"lines","line":{"width":0.94488188976377963,"color":"rgba(153,153,153,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01","2026-04-01","2026-07-01","2026-10-01","2027-01-01","2027-04-01","2027-07-01","2027-10-01","2028-01-01","2028-04-01","2028-07-01","2028-10-01"],"y":[0,0,0,0,-0.115,-0.13900000000000001,-0.02027018299999999,0.030130017000000009,0.0080434700000000508,0.0036463189999999999,0.069564571999999991,0.104431991,0.078037558000000007,0.02149346600000001,-0.041982474000000047,-0.069095776999999969],"text":["<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q1<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q2<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q3<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q4<br><b>Diferencia:<\/b> 0","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q1<br><b>Diferencia:<\/b> -0.115","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q2<br><b>Diferencia:<\/b> -0.139","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q3<br><b>Diferencia:<\/b> -0.02","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q4<br><b>Diferencia:<\/b> 0.03","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q1<br><b>Diferencia:<\/b> 0.008","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q2<br><b>Diferencia:<\/b> 0.004","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q3<br><b>Diferencia:<\/b> 0.07","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q4<br><b>Diferencia:<\/b> 0.104","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q1<br><b>Diferencia:<\/b> 0.078","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q2<br><b>Diferencia:<\/b> 0.021","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q3<br><b>Diferencia:<\/b> -0.042","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q4<br><b>Diferencia:<\/b> -0.069"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","legendgroup":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":80,"r":7.9701120797011216,"b":95,"l":59.775840597758425},"font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243},"title":{"text":"<b> Brecha de actividad: diferencia respecto del escenario base <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["2025-01-01","2028-10-01"],"tickmode":"auto","ticktext":["2025","2026","2027","2028"],"tickvals":[20089,20454,20819,21184],"categoryorder":"array","categoryarray":["2025","2026","2027","2028"],"nticks":10,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[-0.15117159955000001,0.11660359055],"tickmode":"auto","ticktext":["-0.12","-0.08","-0.04","0.00","0.04","0.08"],"tickvals":[-0.12,-0.080000000000000002,-0.040000000000000008,0,0.040000000000000008,0.080000000000000016],"categoryorder":"array","categoryarray":["-0.12","-0.08","-0.04","0.00","0.04","0.08"],"nticks":8,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"x","title":{"text":"Diferencia respecto del escenario base","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","tickformat":".2f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":12.7521793275218},"orientation":"h","x":0.5,"y":-0.22,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}}},"hovermode":"x unified","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"60502b4ea42":{"yintercept":{},"type":"scatter"},"6050256e2f3d":{"x":{},"y":{},"colour":{},"text":{}}},"cur_data":"60502b4ea42","visdat":{"60502b4ea42":["function (y) ","x"],"6050256e2f3d":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-</section>
-</section>
-<section id="bloque-externo" class="level2">
-<h2 class="anchored" data-anchor-id="bloque-externo">Bloque externo</h2>
-<p>Las trayectorias externas se muestran para verificar que la comparación principal no está mezclando cambios de política con shocks externos no deseados.</p>
-<div class="cell">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Supuestos externos: promedio 2025-2028 y desvíos frente al escenario base.</caption>
-<colgroup>
-<col style="width: 25%">
-<col style="width: 15%">
-<col style="width: 8%">
-<col style="width: 9%">
-<col style="width: 14%">
-<col style="width: 13%">
-<col style="width: 13%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Escenario</th>
-<th style="text-align: left;">Variable</th>
-<th style="text-align: left;">Unidad</th>
-<th style="text-align: right;">Promedio escenario</th>
-<th style="text-align: right;">Diferencia promedio vs base</th>
-<th style="text-align: right;">Diferencia máxima vs base</th>
-<th style="text-align: right;">Diferencia mínima vs base</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">Cobre nominal</td>
-<td style="text-align: left;">nivel aproximado</td>
-<td style="text-align: right;">5,05</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">Crecimiento socios comerciales</td>
-<td style="text-align: left;">% anual</td>
-<td style="text-align: right;">2,91</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">Federal Funds Rate</td>
-<td style="text-align: left;">% anual</td>
-<td style="text-align: right;">3,74</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">Tipo de cambio real índice</td>
-<td style="text-align: left;">índice</td>
-<td style="text-align: right;">103,22</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">Treasury 10 años</td>
-<td style="text-align: left;">% anual</td>
-<td style="text-align: right;">4,41</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">VIX</td>
-<td style="text-align: left;">índice</td>
-<td style="text-align: right;">19,38</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">WTI nominal</td>
-<td style="text-align: left;">nivel aproximado</td>
-<td style="text-align: right;">81,25</td>
-<td style="text-align: right;">5,17</td>
-<td style="text-align: right;">11,65</td>
-<td style="text-align: right;">0</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<section id="petróleo-wti-nominal" class="level3">
-<h3 class="anchored" data-anchor-id="petróleo-wti-nominal">Petróleo WTI nominal</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-581fae2c9d1a1168e7ce" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-581fae2c9d1a1168e7ce">{"x":{"data":[{"x":["2024-12-18","2028-10-28"],"y":[0,0],"text":"","type":"scatter","mode":"lines","line":{"width":0.94488188976377963,"color":"rgba(191,191,191,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01","2026-04-01","2026-07-01","2026-10-01","2027-01-01","2027-04-01","2027-07-01","2027-10-01","2028-01-01","2028-04-01","2028-07-01","2028-10-01"],"y":[71.836666500000007,64.626666499999999,65.736666499999998,59.640000100000002,83.1504434,100,100,90,85,85,85,85,79.199250300000003,null,null,null],"text":["<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q1<br><b>Valor:<\/b> 71.837","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q2<br><b>Valor:<\/b> 64.627","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q3<br><b>Valor:<\/b> 65.737","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q4<br><b>Valor:<\/b> 59.64","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q1<br><b>Valor:<\/b> 83.15","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q2<br><b>Valor:<\/b> 100","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q3<br><b>Valor:<\/b> 100","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q4<br><b>Valor:<\/b> 90","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q1<br><b>Valor:<\/b> 85","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q2<br><b>Valor:<\/b> 85","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q3<br><b>Valor:<\/b> 85","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q4<br><b>Valor:<\/b> 85","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q1<br><b>Valor:<\/b> 79.199","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q2<br><b>Valor:<\/b> NA","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q3<br><b>Valor:<\/b> NA","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q4<br><b>Valor:<\/b> NA"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","legendgroup":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01","2026-04-01","2026-07-01","2026-10-01","2027-01-01","2027-04-01","2027-07-01","2027-10-01","2028-01-01","2028-04-01","2028-07-01","2028-10-01"],"y":[71.836666500000007,64.626666499999999,65.736666499999998,59.640000100000002,83.150443499999994,89.759321600000007,88.6449286,86.720067,79.020622000000003,76.183983699999999,74.259123299999999,73.347346400000006,71.450686500000003,null,null,null],"text":["<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q1<br><b>Valor:<\/b> 71.837","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q2<br><b>Valor:<\/b> 64.627","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q3<br><b>Valor:<\/b> 65.737","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q4<br><b>Valor:<\/b> 59.64","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q1<br><b>Valor:<\/b> 83.15","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q2<br><b>Valor:<\/b> 89.759","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q3<br><b>Valor:<\/b> 88.645","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q4<br><b>Valor:<\/b> 86.72","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q1<br><b>Valor:<\/b> 79.021","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q2<br><b>Valor:<\/b> 76.184","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q3<br><b>Valor:<\/b> 74.259","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q4<br><b>Valor:<\/b> 73.347","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q1<br><b>Valor:<\/b> 71.451","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q2<br><b>Valor:<\/b> NA","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q3<br><b>Valor:<\/b> NA","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q4<br><b>Valor:<\/b> NA"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(231,111,81,1)","dash":"solid"},"hoveron":"points","name":"Escenario base IPoM identificado","legendgroup":"Escenario base IPoM identificado","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":80,"r":7.9701120797011216,"b":95,"l":47.023661270236623},"font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243},"title":{"text":"<b> Precio del petróleo WTI nominal <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["2025-01-01","2028-10-01"],"tickmode":"auto","ticktext":["2025","2026","2027","2028"],"tickvals":[20089,20454,20819,21184],"categoryorder":"array","categoryarray":["2025","2026","2027","2028"],"nticks":10,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[-5,105],"tickmode":"auto","ticktext":["0","20","40","60","80","100"],"tickvals":[0,20,40,60,80,100],"categoryorder":"array","categoryarray":["0","20","40","60","80","100"],"nticks":8,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"x","title":{"text":"nivel aproximado","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","tickformat":".1f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":12.7521793275218},"orientation":"h","x":0.5,"y":-0.22,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":null,"family":null,"size":0}}},"hovermode":"x unified","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"60504f504b2":{"yintercept":{},"type":"scatter"},"605052fb5f47":{"x":{},"y":{},"colour":{},"text":{}},"60504da01ece":{"x":{},"y":{},"colour":{},"text":{}}},"cur_data":"60504f504b2","visdat":{"60504f504b2":["function (y) ","x"],"605052fb5f47":["function (y) ","x"],"60504da01ece":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-</section>
-<section id="tipo-de-cambio-real-índice" class="level3">
-<h3 class="anchored" data-anchor-id="tipo-de-cambio-real-índice">Tipo de cambio real índice</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-bd2d32aeed779a19d133" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-bd2d32aeed779a19d133">{"x":{"data":[{"x":["2024-12-18","2028-10-28"],"y":[0,0],"text":"","type":"scatter","mode":"lines","line":{"width":0.94488188976377963,"color":"rgba(191,191,191,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01","2026-04-01","2026-07-01","2026-10-01","2027-01-01","2027-04-01","2027-07-01","2027-10-01","2028-01-01","2028-04-01","2028-07-01","2028-10-01"],"y":[104.620721,103.958546,105.765719,103.327397,104.499993,103.50004,103.000001,102.6875,102.249999,102.00001899999999,101.494032,101.494032,101.696117,101.817562,101.89049799999999,101.934285],"text":["<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q1<br><b>Valor:<\/b> 104.621","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q2<br><b>Valor:<\/b> 103.959","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q3<br><b>Valor:<\/b> 105.766","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2025Q4<br><b>Valor:<\/b> 103.327","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q1<br><b>Valor:<\/b> 104.5","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q2<br><b>Valor:<\/b> 103.5","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q3<br><b>Valor:<\/b> 103","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2026Q4<br><b>Valor:<\/b> 102.688","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q1<br><b>Valor:<\/b> 102.25","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q2<br><b>Valor:<\/b> 102","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q3<br><b>Valor:<\/b> 101.494","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2027Q4<br><b>Valor:<\/b> 101.494","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q1<br><b>Valor:<\/b> 101.696","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q2<br><b>Valor:<\/b> 101.818","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q3<br><b>Valor:<\/b> 101.89","<b>Escenario:<\/b> TPM 4,5% durante 2026 y retorno a IPoM desde 2027<br><b>Fecha:<\/b> 2028Q4<br><b>Valor:<\/b> 101.934"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","legendgroup":"TPM 4,5% durante 2026 y retorno a IPoM desde 2027","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01","2026-04-01","2026-07-01","2026-10-01","2027-01-01","2027-04-01","2027-07-01","2027-10-01","2028-01-01","2028-04-01","2028-07-01","2028-10-01"],"y":[104.620721,103.958546,105.765719,103.327397,104.499993,103.50004,103.000001,102.6875,102.249999,102.00001899999999,101.494032,101.494032,101.696117,101.817562,101.89049799999999,101.934285],"text":["<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q1<br><b>Valor:<\/b> 104.621","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q2<br><b>Valor:<\/b> 103.959","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q3<br><b>Valor:<\/b> 105.766","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2025Q4<br><b>Valor:<\/b> 103.327","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q1<br><b>Valor:<\/b> 104.5","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q2<br><b>Valor:<\/b> 103.5","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q3<br><b>Valor:<\/b> 103","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2026Q4<br><b>Valor:<\/b> 102.688","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q1<br><b>Valor:<\/b> 102.25","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q2<br><b>Valor:<\/b> 102","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q3<br><b>Valor:<\/b> 101.494","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2027Q4<br><b>Valor:<\/b> 101.494","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q1<br><b>Valor:<\/b> 101.696","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q2<br><b>Valor:<\/b> 101.818","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q3<br><b>Valor:<\/b> 101.89","<b>Escenario:<\/b> Escenario base IPoM identificado<br><b>Fecha:<\/b> 2028Q4<br><b>Valor:<\/b> 101.934"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(231,111,81,1)","dash":"solid"},"hoveron":"points","name":"Escenario base IPoM identificado","legendgroup":"Escenario base IPoM identificado","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":80,"r":7.9701120797011216,"b":95,"l":47.023661270236623},"font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243},"title":{"text":"<b> Tipo de cambio real <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["2025-01-01","2028-10-01"],"tickmode":"auto","ticktext":["2025","2026","2027","2028"],"tickvals":[20089,20454,20819,21184],"categoryorder":"array","categoryarray":["2025","2026","2027","2028"],"nticks":10,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[-5.2882859500000006,111.05400495000001],"tickmode":"auto","ticktext":["0","20","40","60","80","100"],"tickvals":[0,20,40,60,80,100],"categoryorder":"array","categoryarray":["0","20","40","60","80","100"],"nticks":8,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"x","title":{"text":"índice","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","tickformat":".1f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":12.7521793275218},"orientation":"h","x":0.5,"y":-0.22,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":null,"family":null,"size":0}}},"hovermode":"x unified","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"60507d4f4885":{"yintercept":{},"type":"scatter"},"605056334128":{"x":{},"y":{},"colour":{},"text":{}},"60505e775d73":{"x":{},"y":{},"colour":{},"text":{}}},"cur_data":"60507d4f4885","visdat":{"60507d4f4885":["function (y) ","x"],"605056334128":["function (y) ","x"],"60505e775d73":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-</section>
-</section>
-<section id="tabla-resumen-de-impactos" class="level2">
-<h2 class="anchored" data-anchor-id="tabla-resumen-de-impactos">Tabla resumen de impactos</h2>
-<div class="cell">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Desvíos frente al escenario base en 2025-2028.</caption>
-<colgroup>
-<col style="width: 40%">
-<col style="width: 28%">
-<col style="width: 6%">
-<col style="width: 7%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 5%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Escenario</th>
-<th style="text-align: left;">Variable</th>
-<th style="text-align: left;">Unidad</th>
-<th style="text-align: right;">Promedio</th>
-<th style="text-align: right;">Mínimo</th>
-<th style="text-align: right;">Máximo</th>
-<th style="text-align: right;">Último</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">Brecha de actividad</td>
-<td style="text-align: left;">%</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">-0,14</td>
-<td style="text-align: right;">0,10</td>
-<td style="text-align: right;">0,10</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">Crecimiento socios comerciales</td>
-<td style="text-align: left;">% anual</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">Federal Funds Rate</td>
-<td style="text-align: left;">% anual</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">Inflación subyacente sin volátiles</td>
-<td style="text-align: left;">% anual</td>
-<td style="text-align: right;">0,01</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,04</td>
-<td style="text-align: right;">0,00</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">Inflación total</td>
-<td style="text-align: left;">% anual</td>
-<td style="text-align: right;">0,08</td>
-<td style="text-align: right;">-0,10</td>
-<td style="text-align: right;">0,36</td>
-<td style="text-align: right;">-0,03</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">Tasa de Política Monetaria</td>
-<td style="text-align: left;">% anual</td>
-<td style="text-align: right;">-0,03</td>
-<td style="text-align: right;">-0,25</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">Tipo de cambio real índice</td>
-<td style="text-align: left;">índice</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">Treasury 10 años</td>
-<td style="text-align: left;">% anual</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">TPM 4,5% durante 2026 y retorno a IPoM desde 2027</td>
-<td style="text-align: left;">VIX</td>
-<td style="text-align: left;">índice</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-<td style="text-align: right;">0,00</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section>
-<section id="archivos-descargables" class="level2">
-<h2 class="anchored" data-anchor-id="archivos-descargables">Archivos descargables</h2>
-<div class="mu-download-grid">
-<p><a href="../assets/files/ipom/Escenario_TPM45_2026.pdf" class="mu-button mu-button-secondary">Reporte escenario TPM 4,5%</a> <a href="../assets/files/ipom/Baseline_IPOM_Identificado.pdf" class="mu-button mu-button-secondary">Baseline identificado</a> <a href="../assets/files/ipom/Nota_supuestos.pdf" class="mu-button mu-button-secondary">Nota de supuestos</a> <a href="../assets/files/ipom/ipom_raw_outputs.zip" class="mu-button mu-button-secondary">CSV IRIS crudos</a></p>
-</div>
-</section>
-<section id="limitaciones" class="level2">
-<h2 class="anchored" data-anchor-id="limitaciones">Limitaciones</h2>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Advertencia
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Este ejercicio es una simulación condicional bajo una estructura propia en IRIS/Matlab. La lectura correcta es comparativa: cuánto cambia el escenario alternativo frente a la trayectoria base bajo los supuestos impuestos.</p>
-</div>
-</div>
-
-
-</section>
-
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-    const icon = "";
-    const anchorJS = new window.AnchorJS();
-    anchorJS.options = {
-      placement: 'right',
-      icon: icon
-    };
-    anchorJS.add('.anchored');
-    const isCodeAnnotation = (el) => {
-      for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {                     
-          return true;
-        }
-      }
-      return false;
-    }
-    const onCopySuccess = function(e) {
-      // button target
-      const button = e.trigger;
-      // don't keep focus
-      button.blur();
-      // flash "checked"
-      button.classList.add('code-copy-button-checked');
-      var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copiado");
-      let tooltip;
-      if (window.bootstrap) {
-        button.setAttribute("data-bs-toggle", "tooltip");
-        button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copiado");
-        tooltip = new bootstrap.Tooltip(button, 
-          { trigger: "manual", 
-            customClass: "code-copy-button-tooltip",
-            offset: [0, -8]});
-        tooltip.show();    
-      }
-      setTimeout(function() {
-        if (tooltip) {
-          tooltip.hide();
-          button.removeAttribute("data-bs-title");
-          button.removeAttribute("data-bs-toggle");
-          button.removeAttribute("data-bs-placement");
-        }
-        button.setAttribute("title", currentTitle);
-        button.classList.remove('code-copy-button-checked');
-      }, 1000);
-      // clear code selection
-      e.clearSelection();
-    }
-    const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-      text: getTextToCopy
-    });
-    clipboard.on('success', onCopySuccess);
-    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-        text: getTextToCopy,
-        container: window.document.getElementById('quarto-embedded-source-code-modal')
-      });
-      clipboardModal.on('success', onCopySuccess);
-    }
-      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/mulloav3007\.github\.io\/Economics\/");
-      var isInternal = (href) => {
-          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-      }
-      // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-      for (var i=0; i<links.length; i++) {
-        const link = links[i];
-        if (!isInternal(link.href)) {
-          // undo the damage that might have been done by quarto-nav.js in the case of
-          // links that we want to consider external
-          if (link.dataset.originalHref !== undefined) {
-            link.href = link.dataset.originalHref;
-          }
-        }
-      }
-    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-      const config = {
-        allowHTML: true,
-        maxWidth: 500,
-        delay: 100,
-        arrow: false,
-        appendTo: function(el) {
-            return el.parentElement;
-        },
-        interactive: true,
-        interactiveBorder: 10,
-        theme: 'quarto',
-        placement: 'bottom-start',
-      };
-      if (contentFn) {
-        config.content = contentFn;
-      }
-      if (onTriggerFn) {
-        config.onTrigger = onTriggerFn;
-      }
-      if (onUntriggerFn) {
-        config.onUntrigger = onUntriggerFn;
-      }
-      window.tippy(el, config); 
-    }
-    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-    for (var i=0; i<noterefs.length; i++) {
-      const ref = noterefs[i];
-      tippyHover(ref, function() {
-        // use id or data attribute instead here
-        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-        try { href = new URL(href).hash; } catch {}
-        const id = href.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note) {
-          return note.innerHTML;
-        } else {
-          return "";
-        }
-      });
-    }
-    const xrefs = window.document.querySelectorAll('a.quarto-xref');
-    const processXRef = (id, note) => {
-      // Strip column container classes
-      const stripColumnClz = (el) => {
-        el.classList.remove("page-full", "page-columns");
-        if (el.children) {
-          for (const child of el.children) {
-            stripColumnClz(child);
-          }
-        }
-      }
-      stripColumnClz(note)
-      if (id === null || id.startsWith('sec-')) {
-        // Special case sections, only their first couple elements
-        const container = document.createElement("div");
-        if (note.children && note.children.length > 2) {
-          container.appendChild(note.children[0].cloneNode(true));
-          for (let i = 1; i < note.children.length; i++) {
-            const child = note.children[i];
-            if (child.tagName === "P" && child.innerText === "") {
-              continue;
-            } else {
-              container.appendChild(child.cloneNode(true));
-              break;
-            }
-          }
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(container);
-          }
-          return container.innerHTML
-        } else {
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(note);
-          }
-          return note.innerHTML;
-        }
-      } else {
-        // Remove any anchor links if they are present
-        const anchorLink = note.querySelector('a.anchorjs-link');
-        if (anchorLink) {
-          anchorLink.remove();
-        }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(note);
-        }
-        if (note.classList.contains("callout")) {
-          return note.outerHTML;
-        } else {
-          return note.innerHTML;
-        }
-      }
-    }
-    for (var i=0; i<xrefs.length; i++) {
-      const xref = xrefs[i];
-      tippyHover(xref, undefined, function(instance) {
-        instance.disable();
-        let url = xref.getAttribute('href');
-        let hash = undefined; 
-        if (url.startsWith('#')) {
-          hash = url;
-        } else {
-          try { hash = new URL(url).hash; } catch {}
-        }
-        if (hash) {
-          const id = hash.replace(/^#\/?/, "");
-          const note = window.document.getElementById(id);
-          if (note !== null) {
-            try {
-              const html = processXRef(id, note.cloneNode(true));
-              instance.setContent(html);
-            } finally {
-              instance.enable();
-              instance.show();
-            }
-          } else {
-            // See if we can fetch this
-            fetch(url.split('#')[0])
-            .then(res => res.text())
-            .then(html => {
-              const parser = new DOMParser();
-              const htmlDoc = parser.parseFromString(html, "text/html");
-              const note = htmlDoc.getElementById(id);
-              if (note !== null) {
-                const html = processXRef(id, note);
-                instance.setContent(html);
-              } 
-            }).finally(() => {
-              instance.enable();
-              instance.show();
-            });
-          }
-        } else {
-          // See if we can fetch a full url (with no hash to target)
-          // This is a special case and we should probably do some content thinning / targeting
-          fetch(url)
-          .then(res => res.text())
-          .then(html => {
-            const parser = new DOMParser();
-            const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.querySelector('main.content');
-            if (note !== null) {
-              // This should only happen for chapter cross references
-              // (since there is no id in the URL)
-              // remove the first header
-              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-                note.children[0].remove();
-              }
-              const html = processXRef(null, note);
-              instance.setContent(html);
-            } 
-          }).finally(() => {
-            instance.enable();
-            instance.show();
-          });
-        }
-      }, function(instance) {
-      });
-    }
-        let selectedAnnoteEl;
-        const selectorForAnnotation = ( cell, annotation) => {
-          let cellAttr = 'data-code-cell="' + cell + '"';
-          let lineAttr = 'data-code-annotation="' +  annotation + '"';
-          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-          return selector;
-        }
-        const selectCodeLines = (annoteEl) => {
-          const doc = window.document;
-          const targetCell = annoteEl.getAttribute("data-target-cell");
-          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-          const lineIds = lines.map((line) => {
-            return targetCell + "-" + line;
-          })
-          let top = null;
-          let height = null;
-          let parent = null;
-          if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
-            }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
-            }
-            selectedAnnoteEl = annoteEl;
-          }
-        };
-        const unselectCodeLines = () => {
-          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-          elementsIds.forEach((elId) => {
-            const div = window.document.getElementById(elId);
-            if (div) {
-              div.remove();
-            }
-          });
-          selectedAnnoteEl = undefined;
-        };
-          // Handle positioning of the toggle
-      window.addEventListener(
-        "resize",
-        throttle(() => {
-          elRect = undefined;
-          if (selectedAnnoteEl) {
-            selectCodeLines(selectedAnnoteEl);
-          }
-        }, 10)
-      );
-      function throttle(fn, ms) {
-      let throttle = false;
-      let timer;
-        return (...args) => {
-          if(!throttle) { // first call gets through
-              fn.apply(this, args);
-              throttle = true;
-          } else { // all the others get throttled
-              if(timer) clearTimeout(timer); // cancel #2
-              timer = setTimeout(() => {
-                fn.apply(this, args);
-                timer = throttle = false;
-              }, ms);
-          }
-        };
-      }
-        // Attach click handler to the DT
-        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-        for (const annoteDlNode of annoteDls) {
-          annoteDlNode.addEventListener('click', (event) => {
-            const clickedEl = event.target;
-            if (clickedEl !== selectedAnnoteEl) {
-              unselectCodeLines();
-              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-              if (activeEl) {
-                activeEl.classList.remove('code-annotation-active');
-              }
-              selectCodeLines(clickedEl);
-              clickedEl.classList.add('code-annotation-active');
-            } else {
-              // Unselect the line
-              unselectCodeLines();
-              clickedEl.classList.remove('code-annotation-active');
-            }
-          });
-        }
-    const findCites = (el) => {
-      const parentEl = el.parentElement;
-      if (parentEl) {
-        const cites = parentEl.dataset.cites;
-        if (cites) {
-          return {
-            el,
-            cites: cites.split(' ')
-          };
-        } else {
-          return findCites(el.parentElement)
-        }
-      } else {
-        return undefined;
-      }
-    };
-    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-    for (var i=0; i<bibliorefs.length; i++) {
-      const ref = bibliorefs[i];
-      const citeInfo = findCites(ref);
-      if (citeInfo) {
-        tippyHover(citeInfo.el, function() {
-          var popup = window.document.createElement('div');
-          citeInfo.cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
-            }
-            popup.appendChild(citeDiv);
-          });
-          return popup.innerHTML;
-        });
-      }
-    }
-  });
-  </script>
-</div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
-    <div class="nav-footer-left">
-<p>© 2026 Mauricio Ulloa</p>
-</div>   
-    <div class="nav-footer-center">
-      &nbsp;
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© <span data-current-year>2026</span> Mauricio Ulloa · Portafolio personal.</div>
+      <div class="footer-links">
+        <a href="../contacto.html">Contacto</a>
+        <a href="https://github.com/mulloav3007/Economics" target="_blank" rel="noopener">Código fuente ↗</a>
+      </div>
     </div>
-    <div class="nav-footer-right">
-<p>Sitio construido con Quarto y publicado en GitHub Pages</p>
-</div>
-  </div>
-</footer>
-
-
-
-
-</body></html>
+  </footer>
+  <button class="back-to-top" type="button" aria-label="Volver arriba">↑</button>
+  <script src="../assets/js/site.js" defer></script>
+</body>
+</html>

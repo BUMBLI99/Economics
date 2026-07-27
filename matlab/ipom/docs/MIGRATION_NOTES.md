@@ -19,8 +19,8 @@ La lógica económica central no fue reescrita. La limpieza se concentró en rut
 3. Se creó `run_project.m` como entrada única del pipeline final.
 4. Se renombraron scripts finales a `step01_*` y `step02_*` para que el orden sea explícito.
 5. Se movieron datos y salidas a `data/` y `output/`.
-6. Se separaron scripts antiguos en `src/matlab/legacy/`.
-7. Se dejaron outputs históricos antiguos en `archive_legacy/`, fuera del flujo principal.
+6. Se concentró la versión previa del pipeline en `archive_legacy/pipeline_pre_audit/`, fuera del path activo.
+7. Se conservaron outputs y documentación histórica dentro de `archive_legacy/`, fuera del flujo principal.
 8. Se omitieron archivos temporales o de sesión como `.RData`, `.Rhistory`, `~$*.xlsx` y carpetas temporales `tp*`.
 
 ## Limitación

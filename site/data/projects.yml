@@ -1,0 +1,66 @@
+- slug: imacec
+  title: Nowcasting de actividad económica en Chile
+  short_title: Nowcasting IMACEC
+  category: Actividad económica
+  status: Activo
+  status_class: active
+  description: Modelo mensual para anticipar el IMACEC total y no minero con vintages de información, variables calendario y evaluación pseudo out-of-sample.
+  image: assets/img/projects/imacec.jpg
+  tags: [R, IMACEC, Nowcasting, Series de tiempo]
+  featured: true
+  order: 1
+- slug: ipom-iris
+  title: Escenarios macroeconómicos con Matlab e IRIS
+  short_title: Escenarios tipo IPoM
+  category: Simulación macroeconómica
+  status: Avanzado
+  status_class: active
+  description: Modelo semi-estructural para identificar un escenario base y comparar trayectorias condicionales de TPM, inflación y brecha de actividad.
+  image: assets/img/projects/ipom.jpg
+  tags: [Matlab, IRIS, Inflación, Política monetaria]
+  featured: true
+  order: 2
+- slug: transmision-tpm
+  title: Transmisión de la TPM a tasas de mercado
+  short_title: Pass-through de la TPM
+  category: Política monetaria
+  status: Nota técnica
+  status_class: note
+  description: Evidencia dinámica y heterogénea sobre el traspaso de la TPM a tasas bancarias mediante rezagos distribuidos, asimetrías y local projections.
+  image: assets/img/projects/transmission.jpg
+  tags: [R, TPM, Pass-through, Local projections]
+  featured: true
+  order: 3
+- slug: exchange
+  title: Tipo de cambio, tasas largas y riesgo soberano en LatAm
+  short_title: Stress macrofinanciero LatAm
+  category: Macrofinanzas regionales
+  status: Activo
+  status_class: active
+  description: Modelos diarios para CLP, BRL, MXN, PEN y COP que separan movimientos asociados a factores globales de desvíos específicos por mercado.
+  image: assets/img/projects/exchange.jpg
+  tags: [R, FX, Tasas 10Y, LatAm]
+  featured: true
+  order: 4
+- slug: estres-financiero
+  title: Índice de estrés financiero de mercado para Chile
+  short_title: Estrés financiero Chile
+  category: Condiciones financieras
+  status: Activo
+  status_class: active
+  description: Indicador sintético basado en residuos estandarizados del USD/CLP y la tasa soberana a 10 años respecto de fundamentos externos observables.
+  image: assets/img/projects/stress.jpg
+  tags: [R, Chile, USD/CLP, Riesgo]
+  featured: false
+  order: 5
+- slug: curva-rendimiento
+  title: Curva soberana chilena y compensación inflacionaria
+  short_title: Curva de rendimiento
+  category: Tasas de interés
+  status: Monitor aplicado
+  status_class: note
+  description: Monitor con datos efectivos de BCP y BCU para estudiar nivel, pendiente, inversión de curva y compensaciones inflacionarias aproximadas.
+  image: assets/img/projects/yield.jpg
+  tags: [R, BCP, BCU, Curva de rendimiento]
+  featured: false
+  order: 6

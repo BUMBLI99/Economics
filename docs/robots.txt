@@ -1,1 +1,3 @@
+User-agent: *
+Allow: /
 Sitemap: https://mulloav3007.github.io/Economics/sitemap.xml

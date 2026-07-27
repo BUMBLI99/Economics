@@ -1,0 +1,50 @@
+name: Mauricio Andrés Ulloa Valdivia
+headline: Economista · Magíster en Análisis Económico
+email: mulloav@fen.uchile.cl
+github: github.com/mulloav3007
+linkedin: linkedin.com/in/mauricio-andrés-ulloa-valdivia
+summary: >-
+  Economista y Magíster en Análisis Económico por la Universidad de Chile. Experiencia en seguimiento
+  macroeconómico, proyecciones, econometría aplicada, construcción de bases y modelos macrofinancieros.
+  Manejo de R, Matlab/IRIS, Python y Stata, con énfasis en resultados reproducibles y comunicación técnica.
+experience:
+  - period: 2026–presente
+    role: Economista
+    institution: Banco Central de Chile
+    details: Análisis económico aplicado. El presente CV y portafolio son personales y no representan posiciones institucionales.
+  - period: 2024–2026
+    role: Ayudante de investigación
+    institution: Pablo García Silva
+    details: Procesos reproducibles con BCCh/BDE, FRED y otras fuentes para seguimiento de actividad, tipo de cambio, tasas y proyecciones.
+  - period: 2025–2026
+    role: Ayudante de investigación
+    institution: Alfie Ulloa Urrutia
+    details: Integración de grandes bases, indicadores de conectividad con RIPE Atlas y estimaciones sobre infraestructura digital y comercio de servicios.
+  - period: 2024
+    role: Ayudante de investigación
+    institution: Universidad Adolfo Ibáñez
+    details: Análisis de datos de energía e hidrógeno verde, estimaciones econométricas y productos técnicos en Stata.
+  - period: 2022–2023
+    role: Practicante, División Anti-Carteles
+    institution: Fiscalía Nacional Económica
+    details: Construcción y análisis de bases para investigaciones de libre competencia, participaciones de mercado y licitaciones.
+education:
+  - period: 2024–2026
+    degree: Magíster en Análisis Económico
+    institution: Universidad de Chile
+  - period: 2018–2024
+    degree: Ingeniería Comercial, mención Economía
+    institution: Universidad de Chile
+thesis:
+  title: "Fluctuaciones cambiarias y reacción de política monetaria: ¿cuándo y cómo?"
+  details: >-
+    Modelo de brechas para Chile, 1996–2024, con tres especificaciones cambiarias y simulaciones para evaluar
+    volatilidad de inflación y actividad. Nota final 6,0; Seminario de Investigación Aplicada 7,0; examen de grado 7,0.
+skills:
+  - R: tidyverse, ggplot2, series de tiempo, Quarto/RMarkdown
+  - Matlab / IRIS: modelos semi-estructurales y simulación macroeconómica
+  - Python: automatización, APIs, bases de gran escala y visualización
+  - Stata: econometría aplicada y datos de panel
+  - Datos: BCCh/BDE, FRED, BIS, RIPE Atlas, CMF
+  - Otros: Excel avanzado, Git/GitHub, LaTeX
+interests: Macroeconomía aplicada · Política monetaria · Tipo de cambio · Actividad e inflación · Políticas públicas

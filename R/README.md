@@ -1,26 +1,33 @@
-# Carpeta R
+# Código R
 
-Aquí puedes ir moviendo scripts reutilizables para los proyectos del sitio.
+Esta carpeta contiene módulos analíticos; no contiene la fuente del sitio público.
 
-Sugerencia de estructura futura:
+## Proyectos
 
-- `00_config.R`: configuración global, paquetes y rutas.
-- `01_fetch_series.R`: descarga de series públicas.
-- `02_build_estres_externo.R`: construcción del índice de estrés externo.
-- `03_build_tpm_pass_through.R`: preparación y estimación de transmisión de TPM.
-- `04_build_curva_rendimiento.R`: preparación de curva de tasas.
+- `imacec_*.R`: descarga, calendario, modelos, vintages, evaluación pseudo out-of-sample y exportación del nowcast.
+- `transmision_tpm/`: panel mensual, rezagos distribuidos, asimetrías y local projections.
+- `estres_financiero/`: fuentes diarias, modelos de USD/CLP y tasa 10Y, componentes e índice agregado.
+- `ipom_*.R`: lectura y normalización de salidas Matlab/IRIS.
 
-No guardes claves, usuarios ni contraseñas dentro de estos archivos. Usa `.Renviron` y deja solo `.Renviron.example` en GitHub.
+## Convención de salidas
 
-## Scripts IPoM / IRIS
+Los scripts escriben bases consolidadas en `data/processed/`, tablas en `outputs/tables/` y figuras analíticas de respaldo en `assets/img/`. El sitio consume esas salidas mediante `scripts/build_site.py`.
 
-- `ipom_config.R`: diccionario de variables, escenarios y grupos analíticos.
-- `ipom_utils.R`: lectura de CSV exportados por IRIS y conversión a bases limpias.
-- `ipom_plots.R`: funciones de gráficos y tablas para `proyectos/ipom-iris.qmd`.
+## Raíz y credenciales
 
-Para regenerar los archivos limpios usados por Quarto:
+Los módulos deben resolver rutas desde el repositorio, no desde una ruta absoluta del computador. Las credenciales se leen desde `.Renviron`, que está ignorado por Git.
 
-```bash
-Rscript scripts/03_build_ipom_outputs.R
+```text
+BCCH_USER=...
+BCCH_PASS=...
+FRED_API_KEY=...
 ```
 
+## Publicación después de una actualización
+
+```bash
+python scripts/build_site.py
+python scripts/validate_site.py
+```
+
+No edites `docs/` manualmente: es un artefacto generado.

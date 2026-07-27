@@ -25,7 +25,7 @@ run_tpm45_2026
 ## Archivos de salida
 
 - `output/raw/fcast_alt_tpm45_2026.csv`: escenario nuevo con TPM 4.5.
-- `output/raw/fcast_alt_escenario.csv`: copia compatible para reportes externos/Quarto.
+- `output/raw/fcast_alt_escenario.csv`: copia compatible para el normalizador R y los reportes del portafolio.
 - `output/reports/Escenario_TPM45_2026.pdf`: si `IPOM_RUN_REPORT = true`.
 
 ## Dónde está el cambio

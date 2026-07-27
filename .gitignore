@@ -1,29 +1,49 @@
-.Rproj.user
+# R
+.Rproj.user/
 .Rhistory
 .RData
 .Ruserdata
 .Renviron
+renv/library/
+renv/staging/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Jupyter / editors / OS
+.ipynb_checkpoints/
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
+
+# Logs and temporary files
 *.log
+*.tmp
+*.temp
+*.bak
 *.aux
 *.out
 *.toc
-__pycache__/
-.ipynb_checkpoints/
+~$*
+
+# Local/private data
 data/raw/private/
 
-/.quarto/
-**/*.quarto_ipynb
-
-# Matlab / IRIS temporales
+# Matlab / IRIS temporary artifacts
 *.asv
 matlab/ipom/**/tp*/
-matlab/ipom/**/*.pdf
-matlab/ipom/**/*.log
-# Objetos pesados de modelos
-outputs/model_objects/transmision_tpm/*.rds
+matlab/ipom/output/reports/*.pdf
 
-_freeze/
+# Heavy model objects regenerated locally
 outputs/model_objects/
+
+# Legacy renderer caches if recreated
 .quarto/
+_freeze/
+**/*.quarto_ipynb

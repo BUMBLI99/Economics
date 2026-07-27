@@ -38,7 +38,7 @@ output/raw/fcast_alt_escenario.csv
 
 ## Qué quedó archivado y por qué
 
-La carpeta `archive_legacy/matlab_old_pipeline/` contiene scripts que pertenecen al flujo anterior:
+La carpeta `archive_legacy/pipeline_pre_audit/` conserva la disposición y los scripts del flujo previo a esta auditoría:
 
 ```text
 Forecast.m → fcast_ipom.csv → alternativesAjuste.m / alternatives.m → fcast_alt.csv → Report_*.m

@@ -1,5 +1,5 @@
 # ============================================================
-# Construye outputs limpios para la página Quarto IPoM / IRIS
+# Construye outputs limpios para la salidas públicas IPoM / IRIS
 # ============================================================
 # Ejecutar desde la raíz del repositorio:
 # Rscript scripts/03_build_ipom_outputs.R
@@ -21,13 +21,9 @@ source("R/ipom_utils.R")
 
 project_root <- find_project_root()
 
-raw_candidates <- c(
-  file.path(project_root, "matlab", "ipom", "output", "raw"),
-  file.path(project_root, "matlab", "ipom", "outputs", "raw_iris")
-)
-outputs_dir <- raw_candidates[dir.exists(raw_candidates)][1]
-if (is.na(outputs_dir)) {
-  stop("No encontré output/raw ni outputs/raw_iris en matlab/ipom.", call. = FALSE)
+outputs_dir <- file.path(project_root, "matlab", "ipom", "output", "raw")
+if (!dir.exists(outputs_dir)) {
+  stop("No encontré matlab/ipom/output/raw. Ejecuta primero el pipeline Matlab/IRIS.", call. = FALSE)
 }
 
 message("Raíz del proyecto: ", project_root)

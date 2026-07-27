@@ -1,7 +1,7 @@
 # ============================================================
 # ExchangeReg: FX, tasas 10Y y riesgo soberano LatAm
 # Objetivo: replicar el modelo FX/EMBI y generar outputs web
-#           para Quarto/GitHub Pages.
+#           para el portafolio estático/GitHub Pages.
 # ============================================================
 
 args <- commandArgs(trailingOnly = TRUE)
@@ -754,7 +754,7 @@ second_stage_summary <- imap_dfr(second_stage_models, function(mod, cc) {
 }) %>% mutate(across(c(beta_y10_spread, p_value, r2), ~ round(.x, 4)))
 
 # ------------------------------------------------------------
-# Outputs para Quarto
+# Outputs para el portafolio público
 # ------------------------------------------------------------
 # Para los gráficos comparativos se usa la muestra común FX-10Y por país.
 # Así los paneles regionales y los dashboards no muestran colas de un mercado

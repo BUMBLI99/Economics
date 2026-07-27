@@ -5,12 +5,14 @@
 find_project_root <- function(path = getwd()) {
   path <- normalizePath(path, winslash = "/", mustWork = TRUE)
   for (i in seq_len(12)) {
-    if (file.exists(file.path(path, "_quarto.yml"))) return(path)
+    if (file.exists(file.path(path, "README.md")) &&
+        dir.exists(file.path(path, "site")) &&
+        dir.exists(file.path(path, "data"))) return(path)
     parent <- dirname(path)
     if (identical(parent, path)) break
     path <- parent
   }
-  stop("No pude encontrar la raíz del proyecto. Revisa que exista _quarto.yml.", call. = FALSE)
+  stop("No pude encontrar la raíz del repositorio Economics.", call. = FALSE)
 }
 
 path_project <- function(...) {
@@ -74,7 +76,7 @@ add_ipom_derived_variables <- function(df) {
 }
 
 build_ipom_processed_data <- function(
-    outputs_dir = path_project("matlab", "ipom", "outputs", "raw_iris"),
+    outputs_dir = path_project("matlab", "ipom", "output", "raw"),
     processed_dir = path_project("data", "processed", "ipom"),
     forecast_start_year = 2025,
     forecast_end_year = 2027

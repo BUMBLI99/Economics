@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block main %}
+<section class="page-hero">
+  <div class="container">
+    {% if eyebrow %}<p class="eyebrow">{{ eyebrow }}</p>{% endif %}
+    <h1 class="page-title">{{ page_title }}</h1>
+    {% if subtitle %}<p class="page-subtitle">{{ subtitle }}</p>{% endif %}
+    {% if actions %}<div class="actions">{{ actions|safe }}</div>{% endif %}
+  </div>
+</section>
+<section class="section-tight">
+  <div class="container">
+    {{ content_html|safe }}
+  </div>
+</section>
+{% endblock %}
