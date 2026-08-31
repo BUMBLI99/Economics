@@ -127,7 +127,7 @@
       const anchor = points.reduce((best, item) => Math.abs(new Date(item.point.date).getTime() - target) < Math.abs(new Date(best.point.date).getTime() - target) ? item : best);
       const x = sx(new Date(anchor.point.date).getTime());
       focusLine.setAttribute('x1', x); focusLine.setAttribute('x2', x); focusLine.setAttribute('visibility', 'visible');
-      tooltip.innerHTML = `<strong>${anchor.point.date}</strong>${points.map(({ series: s, point }) => `<br><span style="color:${s.color}">●</span> ${s.name}: ${point.value.toFixed(options.yDigits ?? 2)}`).join('')}`;
+      tooltip.innerHTML = `<strong>${anchor.point.label || anchor.point.date}</strong>${points.map(({ series: s, point }) => `<br><span style="color:${s.color}">●</span> ${s.name}: ${point.value.toFixed(options.yDigits ?? 2)}`).join('')}`;
       tooltip.style.display = 'block';
       const containerRect = container.getBoundingClientRect();
       const tooltipX = event.clientX - containerRect.left;
@@ -231,7 +231,8 @@
       });
       const render = () => {
         const dataset = config.datasets.find((item) => item.id === select.value) || config.datasets[0];
-        lineChart(chart, dataset.series, { ariaLabel: `${config.ariaLabel}: ${dataset.label}`, yDigits: dataset.yDigits ?? 2, zeroLine: Boolean(dataset.zeroLine) });
+        const xTicks = dataset.xTicks?.map((tick) => ({ value: new Date(tick.date).getTime(), label: tick.label }));
+        lineChart(chart, dataset.series, { ariaLabel: `${config.ariaLabel}: ${dataset.label}`, yDigits: dataset.yDigits ?? 2, zeroLine: Boolean(dataset.zeroLine), xTicks });
         legend.innerHTML = dataset.series.map((series) => `<span class="legend-item"><span class="legend-swatch" style="background:${series.color}"></span>${series.name}</span>`).join('');
       };
       select.addEventListener('change', render); render(); root.classList.add('chart-ready');

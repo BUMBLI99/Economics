@@ -120,9 +120,14 @@ def interactive_assets() -> None:
     rates = rates[rates["date"] >= "2014-01-01"]
     rate_series = [web_series(name, color, rates, "date", col) for col, name, color in [("tpm", "TPM", COLORS["navy"]), ("comercial_total", "Crédito comercial", COLORS["terracotta"]), ("vivienda_uf", "Vivienda UF >3 años", COLORS["purple"]), ("cap_90_1y", "Captación 90d–1a", COLORS["teal"])]]
     cum = pd.read_csv(ROOT / "outputs/tables/transmision_tpm/pass_through_cumulative.csv")
-    cum["chart_date"] = pd.to_datetime("2000-01-01") + pd.to_timedelta(cum["horizon"] * 365, unit="D")
+    cum["chart_date"] = pd.to_datetime("2000-01-01") + cum["horizon"].map(lambda value: pd.DateOffset(months=int(value)))
     cum_series = [web_series(label, color, cum[cum["product"] == product], "chart_date", "cumulative") for product, label, color in [("comercial_total", "Comercial", COLORS["terracotta"]), ("consumo_total", "Consumo", COLORS["teal"]), ("vivienda_uf", "Vivienda UF", COLORS["purple"]), ("cap_90_1y", "Captaciones", COLORS["gold"])]]
-    charts["transmission"] = {"ariaLabel": "Transmisión interactiva de la TPM", "datasets": [{"id": "rates", "label": "TPM y tasas bancarias", "series": rate_series, "yDigits": 2}, {"id": "pass", "label": "Pass-through acumulado", "series": cum_series, "yDigits": 3}]}
+    horizon_by_date = {pd.Timestamp(row.chart_date).strftime("%Y-%m-%d"): f"Horizonte: {int(row.horizon)} meses" for row in cum[["chart_date", "horizon"]].drop_duplicates().itertuples(index=False)}
+    for series in cum_series:
+        for point in series["values"]:
+            point["label"] = horizon_by_date[point["date"]]
+    horizon_ticks = [{"date": date, "label": label.removeprefix("Horizonte: ")} for date, label in horizon_by_date.items()]
+    charts["transmission"] = {"ariaLabel": "Transmisión interactiva de la TPM", "datasets": [{"id": "rates", "label": "TPM y tasas bancarias", "series": rate_series, "yDigits": 2}, {"id": "pass", "label": "Pass-through acumulado", "series": cum_series, "xTicks": horizon_ticks, "yDigits": 3}]}
 
     stress = pd.read_csv(ROOT / "data/processed/estres_financiero/stress_index_chile.csv", parse_dates=["date"])
     stress = stress[stress["date"] >= "2013-01-01"].set_index("date").resample("W-FRI").last().reset_index()
