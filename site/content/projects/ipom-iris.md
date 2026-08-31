@@ -22,6 +22,11 @@ El valor del ejercicio está en la coherencia conjunta: una trayectoria de tasa 
 
 ## Resultados principales
 
+<div class="interactive-card" data-project-chart="ipom" data-url="../assets/data/project_charts.json">
+  <div class="chart-controls"><label for="ipom-dataset">Variable</label><select id="ipom-dataset" data-dataset-select></select></div>
+  <div class="interactive-chart" data-generic-chart aria-live="polite"></div><div class="chart-legend" data-chart-legend></div>
+</div>
+
 <figure class="chart-figure">
   <a href="../assets/img/charts/ipom_tpm.svg" target="_blank"><img src="../assets/img/charts/ipom_tpm.svg" alt="Trayectorias de TPM del escenario base y alternativo"></a>
   <figcaption class="chart-caption">La zona sombreada identifica el período en que la trayectoria alternativa es impuesta.</figcaption>

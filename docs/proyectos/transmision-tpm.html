@@ -75,27 +75,31 @@
 <li>Local projections para describir la trayectoria horizonte por horizonte.</li>
 </ol>
 <h2 id="canales-principales">Canales principales</h2>
+<div class="interactive-card" data-project-chart="transmission" data-url="../assets/data/project_charts.json">
+<div class="chart-controls"><label for="transmission-dataset">Vista</label><select data-dataset-select="" id="transmission-dataset"></select></div>
+<div aria-live="polite" class="interactive-chart" data-generic-chart=""></div><div class="chart-legend" data-chart-legend=""></div>
+</div>
 <figure class="chart-figure">
-<a href="../assets/img/charts/transmission_key_rates.svg" target="_blank"><img alt="TPM y tasas bancarias clave en Chile" src="../assets/img/charts/transmission_key_rates.svg"/></a>
+<a href="../assets/img/charts/transmission_key_rates.svg" rel="noopener noreferrer" target="_blank"><img alt="TPM y tasas bancarias clave en Chile" decoding="async" loading="lazy" src="../assets/img/charts/transmission_key_rates.svg"/></a>
 <figcaption class="chart-caption">Las tasas comerciales responden más rápido; vivienda y captaciones muestran dinámicas distintas por plazo y unidad de denominación.</figcaption>
 </figure>
 <h2 id="pass-through-acumulado">Pass-through acumulado</h2>
 <div class="equation"><span class="equation-label">Rezagos distribuidos</span>Δr<sub>j,t</sub> = α<sub>j</sub> + Σ<sup>K</sup><sub>k=0</sub>β<sub>j,k</sub>ΔTPM<sub>t−k</sub> + ρ<sub>j</sub>Δr<sub>j,t−1</sub> + Γ<sub>j</sub>X<sub>t</sub> + μ<sub>m</sub> + ε<sub>j,t</sub></div>
 <figure class="chart-figure">
-<a href="../assets/img/charts/transmission_cumulative.svg" target="_blank"><img alt="Pass-through acumulado de la TPM por producto" src="../assets/img/charts/transmission_cumulative.svg"/></a>
+<a href="../assets/img/charts/transmission_cumulative.svg" rel="noopener noreferrer" target="_blank"><img alt="Pass-through acumulado de la TPM por producto" decoding="async" loading="lazy" src="../assets/img/charts/transmission_cumulative.svg"/></a>
 <figcaption class="chart-caption">La línea de referencia en 1 corresponde a un traspaso acumulado uno a uno.</figcaption>
 </figure>
 <p>A seis meses, el coeficiente acumulado es cercano a <strong>1,10</strong> para crédito comercial total y <strong>1,22</strong> para consumo total. En vivienda UF, el coeficiente es prácticamente nulo en esta especificación mensual, consistente con una dinámica más lenta y con la influencia de tasas largas reales.</p>
 <div class="table-wrap"><table><thead><tr><th>Producto</th><th>1 mes</th><th>3 meses</th><th>6 meses</th></tr></thead><tbody><tr><td>Comercial: sobregiro</td><td>0,794</td><td>1,054</td><td>1,318</td></tr><tr><td>Consumo total</td><td>0,856</td><td>1,319</td><td>1,223</td></tr><tr><td>Comercial total</td><td>0,892</td><td>0,995</td><td>1,098</td></tr><tr><td>Tarjeta: rotativo</td><td>0,356</td><td>1,153</td><td>0,982</td></tr><tr><td>Comercial: cuotas</td><td>0,754</td><td>0,993</td><td>0,948</td></tr><tr><td>Consumo: cuotas</td><td>1,170</td><td>0,549</td><td>0,570</td></tr><tr><td>Tarjeta: cuota</td><td>0,008</td><td>1,025</td><td>0,562</td></tr><tr><td>Captación 30-89d</td><td>0,078</td><td>0,080</td><td>0,080</td></tr><tr><td>Captación 90d-1a</td><td>0,069</td><td>0,064</td><td>0,057</td></tr><tr><td>Vivienda UF &gt;3 años</td><td>0,118</td><td>0,048</td><td>0,005</td></tr></tbody></table></div>
 <h2 id="asimetria-entre-alzas-y-bajas">Asimetría entre alzas y bajas</h2>
 <figure class="chart-figure">
-<a href="../assets/img/charts/transmission_asymmetry.svg" target="_blank"><img alt="Pass-through asimétrico para alzas y bajas de TPM" src="../assets/img/charts/transmission_asymmetry.svg"/></a>
+<a href="../assets/img/charts/transmission_asymmetry.svg" rel="noopener noreferrer" target="_blank"><img alt="Pass-through asimétrico para alzas y bajas de TPM" decoding="async" loading="lazy" src="../assets/img/charts/transmission_asymmetry.svg"/></a>
 <figcaption class="chart-caption">En varios productos el traspaso estimado es mayor durante bajas de TPM, especialmente en consumo; la comparación es descriptiva y sensible a la muestra.</figcaption>
 </figure>
 <p>La asimetría puede reflejar competencia, costos de ajuste, composición de cartera, riesgo o diferencias entre ciclos monetarios. No debe atribuirse mecánicamente a una conducta particular de la banca sin un diseño adicional.</p>
 <h2 id="local-projections">Local projections</h2>
 <figure class="chart-figure">
-<a href="../assets/img/charts/transmission_local_projections.svg" target="_blank"><img alt="Local projections del pass-through de la TPM" src="../assets/img/charts/transmission_local_projections.svg"/></a>
+<a href="../assets/img/charts/transmission_local_projections.svg" rel="noopener noreferrer" target="_blank"><img alt="Local projections del pass-through de la TPM" decoding="async" loading="lazy" src="../assets/img/charts/transmission_local_projections.svg"/></a>
 <figcaption class="chart-caption">Trayectorias de respuesta con intervalos de confianza del 95%.</figcaption>
 </figure>
 <p>Las local projections permiten verificar si la forma dinámica obtenida con rezagos distribuidos se mantiene sin imponer la misma estructura paramétrica en todos los horizontes.</p>

@@ -239,6 +239,14 @@ def enrich_html(content_html: str) -> tuple[str, list[dict[str, str]]]:
         used.add(ident)
         h["id"] = ident
         toc.append({"id": ident, "text": text})
+    for image in soup.find_all("img"):
+        if not image.has_attr("loading"):
+            image["loading"] = "lazy"
+        if not image.has_attr("decoding"):
+            image["decoding"] = "async"
+    for anchor in soup.find_all("a", target="_blank"):
+        rel = set(anchor.get("rel", []))
+        anchor["rel"] = sorted(rel | {"noopener", "noreferrer"})
     return str(soup), toc
 
 

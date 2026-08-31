@@ -44,6 +44,8 @@ Economics/
 
 `site/` es la única fuente editorial activa. Los textos de proyectos tienen una estructura común: indicadores, pregunta, resultados, método, interpretación, límites y archivos.
 
+Los exploradores se publican desde JSON liviano en `site/assets/data/` y se renderizan con el único motor de `site/assets/js/site.js`. Los SVG siguen siendo el respaldo estático, accesible y descargable; no se mantienen implementaciones JavaScript separadas por proyecto.
+
 ### Artefacto público
 
 `docs/` se elimina y reconstruye por completo. Nunca debe editarse a mano porque esos cambios se perderán en el siguiente build.

@@ -75,14 +75,18 @@
 <li><strong>Cierre del ciclo:</strong> dato efectivo del IMACEC, que reemplaza la proyección y permite evaluar el error.</li>
 </ol>
 <h2 id="resultado-vigente">Resultado vigente</h2>
+<div class="interactive-card" data-project-chart="imacec" data-url="../assets/data/project_charts.json">
+<div class="chart-controls"><label for="imacec-dataset">Serie</label><select data-dataset-select="" id="imacec-dataset"></select></div>
+<div aria-live="polite" class="interactive-chart" data-generic-chart=""></div><div class="chart-legend" data-chart-legend=""></div>
+</div>
 <p>La estimación para <strong>mayo de 2026</strong> apunta a una variación anual de <strong>-0,90%</strong> en el IMACEC total y de <strong>+0,79%</strong> en el componente no minero. La divergencia sugiere una lectura de actividad agregada débil, pero con mejor desempeño fuera del componente minero.</p>
 <p>Estas cifras deben interpretarse junto con sus intervalos y con el estado del ciclo informativo. No son una publicación oficial ni una estimación en tiempo real libre de revisiones.</p>
 <figure class="chart-figure">
-<a href="../assets/img/charts/imacec_total_history.svg" target="_blank"><img alt="IMACEC total efectivo, ajustes de modelos y nowcast vigente" src="../assets/img/charts/imacec_total_history.svg"/></a>
+<a href="../assets/img/charts/imacec_total_history.svg" rel="noopener noreferrer" target="_blank"><img alt="IMACEC total efectivo, ajustes de modelos y nowcast vigente" decoding="async" loading="lazy" src="../assets/img/charts/imacec_total_history.svg"/></a>
 <figcaption class="chart-caption">Serie completa disponible. El punto de proyección corresponde solo al modelo activo para el vintage actual.</figcaption>
 </figure>
 <figure class="chart-figure">
-<a href="../assets/img/charts/imacec_nonmining_history.svg" target="_blank"><img alt="IMACEC no minero efectivo, ajustes de modelos y nowcast vigente" src="../assets/img/charts/imacec_nonmining_history.svg"/></a>
+<a href="../assets/img/charts/imacec_nonmining_history.svg" rel="noopener noreferrer" target="_blank"><img alt="IMACEC no minero efectivo, ajustes de modelos y nowcast vigente" decoding="async" loading="lazy" src="../assets/img/charts/imacec_nonmining_history.svg"/></a>
 <figcaption class="chart-caption">El ajuste histórico de ambos modelos puede compararse, pero una proyección solo se publica cuando sus insumos existen.</figcaption>
 </figure>
 <h2 id="arquitectura-del-nowcast">Arquitectura del nowcast</h2>
@@ -91,7 +95,7 @@
 <p>Los dos modelos se estiman para IMACEC total y no minero. Además del ajuste interno, se comparan con benchmarks simples: AR(1), promedio móvil de tres meses y regla estacional a doce meses.</p>
 <h2 id="evaluacion-pseudo-out-of-sample">Evaluación pseudo out-of-sample</h2>
 <figure class="chart-figure">
-<a href="../assets/img/charts/imacec_oos_rmse.svg" target="_blank"><img alt="RMSE pseudo out-of-sample para modelos IMACEC y benchmarks" src="../assets/img/charts/imacec_oos_rmse.svg"/></a>
+<a href="../assets/img/charts/imacec_oos_rmse.svg" rel="noopener noreferrer" target="_blank"><img alt="RMSE pseudo out-of-sample para modelos IMACEC y benchmarks" decoding="async" loading="lazy" src="../assets/img/charts/imacec_oos_rmse.svg"/></a>
 <figcaption class="chart-caption">La evaluación comienza en 2021, pero el número de pronósticos difiere según la fecha desde la cual cada bloque de datos puede reconstruirse.</figcaption>
 </figure>
 <div class="table-wrap"><table><thead><tr><th>Variable</th><th>Modelo</th><th>N</th><th>RMSE</th><th>MAE</th><th>Ventana evaluada</th></tr></thead><tbody><tr><td>IMACEC total</td><td>Modelo con indicadores sectoriales INE</td><td>28</td><td>1,75</td><td>1,40</td><td>2024-01 a 2026-04</td></tr><tr><td>IMACEC total</td><td>Modelo con estadísticas experimentales</td><td>40</td><td>2,43</td><td>1,78</td><td>2023-01 a 2026-04</td></tr><tr><td>IMACEC total</td><td>Benchmark AR(1)</td><td>64</td><td>2,77</td><td>2,05</td><td>2021-01 a 2026-04</td></tr><tr><td>IMACEC total</td><td>Promedio móvil 3m</td><td>64</td><td>3,59</td><td>2,38</td><td>2021-01 a 2026-04</td></tr><tr><td>IMACEC total</td><td>Naive estacional t-12</td><td>64</td><td>11,66</td><td>7,90</td><td>2021-01 a 2026-04</td></tr><tr><td>IMACEC no minero</td><td>Modelo con indicadores sectoriales INE</td><td>28</td><td>1,79</td><td>1,46</td><td>2024-01 a 2026-04</td></tr><tr><td>IMACEC no minero</td><td>Modelo con estadísticas experimentales</td><td>40</td><td>2,18</td><td>1,56</td><td>2023-01 a 2026-04</td></tr><tr><td>IMACEC no minero</td><td>Benchmark AR(1)</td><td>64</td><td>3,02</td><td>2,26</td><td>2021-01 a 2026-04</td></tr><tr><td>IMACEC no minero</td><td>Promedio móvil 3m</td><td>64</td><td>3,83</td><td>2,49</td><td>2021-01 a 2026-04</td></tr><tr><td>IMACEC no minero</td><td>Naive estacional t-12</td><td>64</td><td>13,19</td><td>8,78</td><td>2021-01 a 2026-04</td></tr></tbody></table></div>

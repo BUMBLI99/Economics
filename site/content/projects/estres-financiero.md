@@ -20,6 +20,11 @@ El índice combina los residuos estandarizados de ambos mercados. Un valor posit
 
 ## Resultado principal
 
+<div class="interactive-card" data-project-chart="stress" data-url="../assets/data/project_charts.json">
+  <div class="chart-controls"><label for="stress-dataset">Vista</label><select id="stress-dataset" data-dataset-select></select></div>
+  <div class="interactive-chart" data-generic-chart aria-live="polite"></div><div class="chart-legend" data-chart-legend></div>
+</div>
+
 <figure class="chart-figure">
   <a href="../assets/img/charts/stress_index_chile.svg" target="_blank"><img src="../assets/img/charts/stress_index_chile.svg" alt="Índice de estrés financiero de mercado para Chile"></a>
   <figcaption class="chart-caption">La media móvil de 30 días reduce el ruido diario y facilita la identificación de episodios persistentes.</figcaption>
