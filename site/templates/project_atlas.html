@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block main %}
+<section class="atlas-hero">
+  <div class="container atlas-hero-grid">
+    <div>
+      <p class="eyebrow">{{ project.category }}</p>
+      <h1 class="project-title">{{ project.title }}</h1>
+      <p class="project-deck">{{ project.deck }}</p>
+      <div class="tag-row">
+        {% for tag in project.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+      </div>
+    </div>
+    <dl class="atlas-facts" aria-label="Ficha del proyecto">
+      <div><dt>Cobertura</dt><dd>52 comunas</dd></div>
+      <div><dt>Módulos</dt><dd>5 áreas</dd></div>
+      <div><dt>Cortes</dt><dd>2017 · 2022 · 2024</dd></div>
+      <div><dt>Estado</dt><dd>{{ project.status }}</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="atlas-workspace" id="explorador-territorial" aria-labelledby="atlas-workspace-title">
+  <div class="atlas-workspace-bar">
+    <div>
+      <span class="atlas-live"><span aria-hidden="true"></span>Explorador interactivo</span>
+      <h2 id="atlas-workspace-title">Panorama territorial de Santiago</h2>
+      <p>Selecciona una comuna para sincronizar el mapa, el ranking y todos los gráficos.</p>
+    </div>
+    <a class="button button-secondary atlas-fullscreen" href="../assets/dashboards/atlas-metropolitano.html" target="_blank" rel="noopener">Abrir a pantalla completa ↗</a>
+  </div>
+  <div class="atlas-frame-status" data-atlas-status>Preparando el explorador…</div>
+  <iframe
+    class="atlas-frame"
+    src="../assets/dashboards/atlas-metropolitano.html?embed=1"
+    title="Atlas Metropolitano de Santiago interactivo"
+    data-atlas-frame
+    loading="eager"
+    scrolling="no"
+    allowfullscreen
+  ></iframe>
+</section>
+
+<section class="atlas-notes section-tight">
+  <div class="container project-layout">
+    <article class="project-content">
+      {{ content_html|safe }}
+    </article>
+    {% if toc %}
+    <aside class="project-toc" aria-label="Contenido de la página">
+      <p class="project-toc-title">Sobre el proyecto</p>
+      {% for item in toc %}<a href="#{{ item.id }}">{{ item.text }}</a>{% endfor %}
+    </aside>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

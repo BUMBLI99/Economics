@@ -1,21 +1,12 @@
+## Qué reúne el Atlas
+
+El Atlas reúne indicadores territoriales dispersos en una interfaz común para comparar comunas, detectar heterogeneidad y consultar las definiciones y cautelas de cada fuente. El **mapa**, el ranking, las métricas y los gráficos se actualizan conjuntamente al cambiar de comuna, módulo, indicador, año o cobertura.
+
 <div class="kpi-grid">
-  <div class="kpi"><div class="kpi-label">Cobertura</div><div class="kpi-value">52</div><div class="kpi-note">comunas de la Región Metropolitana</div></div>
-  <div class="kpi"><div class="kpi-label">Módulos</div><div class="kpi-value">5</div><div class="kpi-note">pobreza, municipios, seguridad, educación y vivienda</div></div>
-  <div class="kpi"><div class="kpi-label">Cortes principales</div><div class="kpi-value">3</div><div class="kpi-note">2017 · 2022 · 2024</div></div>
-  <div class="kpi"><div class="kpi-label">Interacción</div><div class="kpi-value">Mapa + gráficos</div><div class="kpi-note">selección sincronizada por comuna</div></div>
-</div>
-
-<div class="callout">
-  <strong>Objetivo.</strong> Reunir indicadores territoriales dispersos en una interfaz común que permita comparar comunas, detectar heterogeneidad y consultar las definiciones y cautelas de cada fuente.
-</div>
-
-## Explorador territorial
-
-El panel sincroniza el **mapa**, el ranking, las métricas y los gráficos al seleccionar una comuna. Puedes cambiar módulo, indicador, año, cobertura territorial y escala cartográfica.
-
-<div class="dashboard-frame">
-  <iframe src="../assets/dashboards/atlas-metropolitano.html" title="Atlas Metropolitano de Santiago interactivo" loading="lazy" allowfullscreen></iframe>
-  <div class="dashboard-frame-note"><span>Para disponer de más espacio, abre el panel en una pestaña independiente.</span><a href="../assets/dashboards/atlas-metropolitano.html" target="_blank" rel="noopener">Abrir a pantalla completa ↗</a></div>
+  <div class="kpi"><div class="kpi-label">Unidad territorial</div><div class="kpi-value">Comuna</div><div class="kpi-note">52 comunas de la Región Metropolitana</div></div>
+  <div class="kpi"><div class="kpi-label">Cobertura temática</div><div class="kpi-value">5 módulos</div><div class="kpi-note">ámbitos sociales, fiscales y territoriales</div></div>
+  <div class="kpi"><div class="kpi-label">Cortes principales</div><div class="kpi-value">3 años</div><div class="kpi-note">2017 · 2022 · 2024</div></div>
+  <div class="kpi"><div class="kpi-label">Interacción</div><div class="kpi-value">Sincronizada</div><div class="kpi-note">mapa, ranking, métricas y gráficos</div></div>
 </div>
 
 ## Módulos e indicadores
