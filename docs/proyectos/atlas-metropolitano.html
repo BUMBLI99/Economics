@@ -93,13 +93,14 @@
 <li>Los indicadores educacionales combinan fuentes con fechas de corte diferentes y deben interpretarse como descripciones territoriales.</li>
 <li>Los indicadores construidos por el Atlas, como algunos agrupamientos de delitos o proxies de materialidad, no son indicadores oficiales de las instituciones fuente.</li>
 </ul>
-<h2 id="reproducibilidad-y-publicacion">Reproducibilidad y publicación</h2>
-<p>La publicación distribuye el <strong>artefacto web compilado</strong> con los datos agregados necesarios para la visualización; no redistribuye microdatos individuales. El pipeline original de preparación en R permanece separado del sitio público y puede incorporarse posteriormente como paquete reproducible cuando se consoliden sus fuentes y rutas de actualización.</p>
+<h2 id="publicacion-liviana">Publicación liviana</h2>
+<p>La publicación distribuye únicamente el <strong>HTML compilado</strong> y las librerías visuales necesarias. Los datos comunales agregados y la cartografía están contenidos en el propio panel; por eso los gráficos funcionan sin subir las bases originales ni redistribuir microdatos individuales.</p>
+<p>Leaflet y una versión reducida de Plotly se sirven desde el mismo sitio para evitar que un bloqueo o demora de servidores externos deje vacío el mapa. Solo las teselas cartográficas de fondo requieren conexión; los polígonos comunales y los datos permanecen disponibles en el archivo publicado.</p>
 
     </article>
     <aside class="project-toc" aria-label="Contenido de la página">
       <p class="project-toc-title">En esta página</p>
-<a href="#explorador-territorial">Explorador territorial</a><a href="#modulos-e-indicadores">Módulos e indicadores</a><a href="#diseno-de-la-herramienta">Diseño de la herramienta</a><a href="#fuentes">Fuentes</a><a href="#limites-de-interpretacion">Límites de interpretación</a><a href="#reproducibilidad-y-publicacion">Reproducibilidad y publicación</a>    </aside>
+<a href="#explorador-territorial">Explorador territorial</a><a href="#modulos-e-indicadores">Módulos e indicadores</a><a href="#diseno-de-la-herramienta">Diseño de la herramienta</a><a href="#fuentes">Fuentes</a><a href="#limites-de-interpretacion">Límites de interpretación</a><a href="#publicacion-liviana">Publicación liviana</a>    </aside>
   </div>
 </section>
   </main>

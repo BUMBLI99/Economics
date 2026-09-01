@@ -17,6 +17,8 @@ EXPECTED = {
     "proyectos/exchange.html", "proyectos/estres-financiero.html", "proyectos/curva-rendimiento.html",
     "proyectos/atlas-metropolitano.html", "assets/dashboards/atlas-metropolitano.html",
     "assets/img/projects/atlas.jpg",
+    "assets/vendor/leaflet/leaflet.css", "assets/vendor/leaflet/leaflet.js",
+    "assets/vendor/plotly/plotly-basic-2.35.2.min.js",
     "proyectos/estres-externo.html", "assets/css/site.css", "assets/js/site.js",
     "assets/data/project_charts.json",
     "assets/files/cv-mauricio-ulloa.pdf", ".nojekyll", "sitemap.xml", "robots.txt",
@@ -121,6 +123,13 @@ def main() -> int:
                         errors.append(f"Catálogo interactivo incompleto: {key}")
             except (json.JSONDecodeError, OSError) as exc:
                 errors.append(f"Catálogo interactivo inválido: {exc}")
+
+        atlas = DOCS / "assets/dashboards/atlas-metropolitano.html"
+        if atlas.exists():
+            atlas_text = atlas.read_text(encoding="utf-8")
+            for external in ["unpkg.com/leaflet", "cdn.plot.ly"]:
+                if external in atlas_text:
+                    errors.append(f"Atlas depende todavía de CDN externo: {external}")
 
         # Keep large downloads visible but flag extreme accidental files.
         for p in DOCS.rglob("*"):
