@@ -314,6 +314,11 @@ def copy_public_assets(contexts: dict[str, Any]) -> None:
 
 def project_actions(slug: str) -> str:
     github_base = "https://github.com/mulloav3007/Economics/tree/main"
+    if slug == "atlas-metropolitano":
+        dashboard = "../assets/dashboards/atlas-metropolitano.html"
+        source = f"{github_base}/site/assets/dashboards/atlas-metropolitano.html"
+        return (f'<a class="button button-primary" href="{dashboard}" target="_blank" rel="noopener">Abrir explorador ↗</a>'
+                f'<a class="button button-secondary" href="{source}" target="_blank" rel="noopener">Ver HTML ↗</a>')
     source_map = {
         "imacec": f"{github_base}/R",
         "ipom-iris": f"{github_base}/matlab/ipom",
@@ -358,6 +363,7 @@ def build_pages(contexts: dict[str, Any]) -> None:
         base_path="",
         active_nav="inicio",
         body_class="home",
+        project_count=len(projects),
         featured_projects=[p for p in projects if p.get("featured")],
     )
     write_text(DOCS / "index.html", home)
@@ -410,6 +416,7 @@ def build_pages(contexts: dict[str, Any]) -> None:
         "exchange": ("1 de junio de 2026", "Diaria", "R"),
         "estres-financiero": ("18 de mayo de 2026", "Diaria", "R"),
         "curva-rendimiento": ("Mayo de 2026", "Mensual", "R"),
+        "atlas-metropolitano": ("Agosto de 2026", "2017 · 2022 · 2024", "R · JavaScript · Leaflet · Plotly"),
     }
     for p in projects:
         content_html, toc = render_markdown(SITE / f"content/projects/{p['slug']}.md", common, markdown)

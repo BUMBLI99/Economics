@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atlas Metropolitano · Mauricio Ulloa</title>
+  <meta name="description" content="Panel comunal para comparar pobreza, finanzas municipales, seguridad, educación, vivienda y hogares en las 52 comunas de la Región Metropolitana.">
+  <meta name="author" content="Mauricio Andrés Ulloa Valdivia">
+  <meta name="theme-color" content="#f4f1eb">
+  <link rel="canonical" href="https://mulloav3007.github.io/Economics/proyectos/atlas-metropolitano.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Atlas Metropolitano · Mauricio Ulloa">
+  <meta property="og:description" content="Panel comunal para comparar pobreza, finanzas municipales, seguridad, educación, vivienda y hogares en las 52 comunas de la Región Metropolitana.">
+  <meta property="og:url" content="https://mulloav3007.github.io/Economics/proyectos/atlas-metropolitano.html">
+  <meta property="og:image" content="https://mulloav3007.github.io/Economics/assets/img/projects/atlas.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body class="project project-atlas-metropolitano">
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="../index.html" aria-label="Ir al inicio">
+        <span class="brand-mark">MU</span>
+        <span>Mauricio Ulloa</span>
+      </a>
+      <button class="menu-toggle" type="button" aria-label="Abrir navegación" aria-expanded="false">☰</button>
+      <nav class="site-nav" aria-label="Navegación principal">
+        <a href="../index.html" >Inicio</a>
+        <a href="../proyectos.html" aria-current="page">Proyectos</a>
+        <a href="../cv.html" >CV</a>
+        <a href="../contacto.html" >Contacto</a>
+        <a class="nav-external" href="https://github.com/mulloav3007" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido" class="site-main">
+<section class="project-hero">
+  <div class="container project-hero-grid">
+    <div>
+      <p class="eyebrow">Economía urbana y territorial</p>
+      <h1 class="project-title">Atlas Metropolitano de Santiago</h1>
+      <p class="project-deck">Panel comunal para comparar pobreza, finanzas municipales, seguridad, educación, vivienda y hogares en las 52 comunas de la Región Metropolitana.</p>
+      <div class="tag-row">
+<span class="tag">R</span><span class="tag">Datos territoriales</span><span class="tag">Santiago</span><span class="tag">Visualización</span>      </div>
+<div class="actions"><a class="button button-primary" href="../assets/dashboards/atlas-metropolitano.html" target="_blank" rel="noopener">Abrir explorador ↗</a><a class="button button-secondary" href="https://github.com/mulloav3007/Economics/tree/main/site/assets/dashboards/atlas-metropolitano.html" target="_blank" rel="noopener">Ver HTML ↗</a></div>    </div>
+    <dl class="project-meta">
+      <div><dt>Estado</dt><dd>Explorador interactivo</dd></div>
+      <div><dt>Última actualización</dt><dd>Agosto de 2026</dd></div>
+      <div><dt>Frecuencia</dt><dd>2017 · 2022 · 2024</dd></div>
+      <div><dt>Herramientas</dt><dd>R · JavaScript · Leaflet · Plotly</dd></div>
+    </dl>
+  </div>
+</section>
+<section class="section-tight">
+  <div class="container project-layout">
+    <article class="project-content">
+      <div class="kpi-grid">
+<div class="kpi"><div class="kpi-label">Cobertura</div><div class="kpi-value">52</div><div class="kpi-note">comunas de la Región Metropolitana</div></div>
+<div class="kpi"><div class="kpi-label">Módulos</div><div class="kpi-value">5</div><div class="kpi-note">pobreza, municipios, seguridad, educación y vivienda</div></div>
+<div class="kpi"><div class="kpi-label">Cortes principales</div><div class="kpi-value">3</div><div class="kpi-note">2017 · 2022 · 2024</div></div>
+<div class="kpi"><div class="kpi-label">Interacción</div><div class="kpi-value">Mapa + gráficos</div><div class="kpi-note">selección sincronizada por comuna</div></div>
+</div>
+<div class="callout">
+<strong>Objetivo.</strong> Reunir indicadores territoriales dispersos en una interfaz común que permita comparar comunas, detectar heterogeneidad y consultar las definiciones y cautelas de cada fuente.
+</div>
+<h2 id="explorador-territorial">Explorador territorial</h2>
+<p>El panel sincroniza el <strong>mapa</strong>, el ranking, las métricas y los gráficos al seleccionar una comuna. Puedes cambiar módulo, indicador, año, cobertura territorial y escala cartográfica.</p>
+<div class="dashboard-frame">
+<iframe allowfullscreen="" loading="lazy" src="../assets/dashboards/atlas-metropolitano.html" title="Atlas Metropolitano de Santiago interactivo"></iframe>
+<div class="dashboard-frame-note"><span>Para disponer de más espacio, abre el panel en una pestaña independiente.</span><a href="../assets/dashboards/atlas-metropolitano.html" rel="noopener noreferrer" target="_blank">Abrir a pantalla completa ↗</a></div>
+</div>
+<h2 id="modulos-e-indicadores">Módulos e indicadores</h2>
+<ul>
+<li><strong>Pobreza SAE:</strong> pobreza por ingresos y multidimensional, población estimada afectada e intervalos de confianza cuando están disponibles.</li>
+<li><strong>Finanzas municipales:</strong> dependencia del Fondo Común Municipal, autonomía fiscal, transferencias y composición del gasto.</li>
+<li><strong>Seguridad territorial:</strong> casos policiales comunales y estadísticas institucionales de Carabineros y PDI, manteniendo separados sus universos.</li>
+<li><strong>Educación escolar:</strong> matrícula, dependencia administrativa, SEP, PIE, asistencia, repitencia y retiros.</li>
+<li><strong>Vivienda y hogares:</strong> tenencia, hacinamiento, servicios básicos, conectividad y composición de hogares a partir del Censo 2024.</li>
+</ul>
+<h2 id="diseno-de-la-herramienta">Diseño de la herramienta</h2>
+<p>La unidad de observación pública es la <strong>comuna</strong>. La interfaz permite alternar entre las 52 comunas de la Región Metropolitana y las 34 comunas del Gran Santiago. Las escalas por cuantiles favorecen la comparación espacial dentro de cada corte; la escala absoluta temporal mantiene referencias comunes cuando el indicador lo permite.</p>
+<p>Los datos procesados y la cartografía necesaria están contenidos en la versión compilada del panel. Esto permite publicarlo como un archivo estático y evita depender de un servidor o de una sesión de R durante la consulta.</p>
+<h2 id="fuentes">Fuentes</h2>
+<p>El Atlas combina estimaciones comunales SAE del Ministerio de Desarrollo Social y Familia; registros municipales de SUBDERE–SINIM; estadísticas de Carabineros, PDI y CEAD; directorio, matrícula, rendimiento y SEP del Centro de Estudios MINEDUC; microdatos de viviendas y hogares del Censo 2024; y cartografía y población del INE.</p>
+<h2 id="limites-de-interpretacion">Límites de interpretación</h2>
+<ul>
+<li>El cambio metodológico de las estimaciones SAE 2024 impide leer su variación frente a 2017 o 2022 como una comparación completamente homogénea.</li>
+<li>Los montos municipales nominales no deben compararse entre años como si estuvieran expresados en pesos reales.</li>
+<li>Los casos policiales son registros administrativos: no equivalen a victimización ni a la incidencia real de delitos.</li>
+<li>Los indicadores educacionales combinan fuentes con fechas de corte diferentes y deben interpretarse como descripciones territoriales.</li>
+<li>Los indicadores construidos por el Atlas, como algunos agrupamientos de delitos o proxies de materialidad, no son indicadores oficiales de las instituciones fuente.</li>
+</ul>
+<h2 id="reproducibilidad-y-publicacion">Reproducibilidad y publicación</h2>
+<p>La publicación distribuye el <strong>artefacto web compilado</strong> con los datos agregados necesarios para la visualización; no redistribuye microdatos individuales. El pipeline original de preparación en R permanece separado del sitio público y puede incorporarse posteriormente como paquete reproducible cuando se consoliden sus fuentes y rutas de actualización.</p>
+
+    </article>
+    <aside class="project-toc" aria-label="Contenido de la página">
+      <p class="project-toc-title">En esta página</p>
+<a href="#explorador-territorial">Explorador territorial</a><a href="#modulos-e-indicadores">Módulos e indicadores</a><a href="#diseno-de-la-herramienta">Diseño de la herramienta</a><a href="#fuentes">Fuentes</a><a href="#limites-de-interpretacion">Límites de interpretación</a><a href="#reproducibilidad-y-publicacion">Reproducibilidad y publicación</a>    </aside>
+  </div>
+</section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© <span data-current-year>2026</span> Mauricio Ulloa · Portafolio personal.</div>
+      <div class="footer-links">
+        <a href="../contacto.html">Contacto</a>
+        <a href="https://github.com/mulloav3007/Economics" target="_blank" rel="noopener">Código fuente ↗</a>
+      </div>
+    </div>
+  </footer>
+  <button class="back-to-top" type="button" aria-label="Volver arriba">↑</button>
+  <script src="../assets/js/site.js" defer></script>
+</body>
+</html>

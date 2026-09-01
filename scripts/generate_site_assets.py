@@ -475,6 +475,19 @@ def yield_curve_assets() -> None:
 
 def project_thumbnails() -> None:
     # Use already generated charts as stable thumbnails; the build copies both formats.
+    dashboard = ROOT / "site" / "assets" / "dashboards" / "atlas-metropolitano.html"
+    if dashboard.exists():
+        sae_line = next(line for line in dashboard.read_text(encoding="utf-8").splitlines() if line.startswith("const SAE = "))
+        sae = pd.DataFrame(json.loads(sae_line.removeprefix("const SAE = ").removesuffix(";")))
+        atlas = sae[(sae["d"] == "income") & (sae["y"] == 2024)].nlargest(12, "v").sort_values("v")
+        fig, ax = plt.subplots(figsize=(12.0, 6.75))
+        ax.barh(atlas["n"].str.title(), atlas["v"] * 100, color=COLORS["terracotta"], alpha=.9)
+        ax.set_xlabel("Porcentaje de la población")
+        style_ax(ax, "Pobreza por ingresos SAE · 2024", "Comunas con mayor estimación puntual en la Región Metropolitana.")
+        add_source(fig, "Fuente: Ministerio de Desarrollo Social y Familia, estimaciones SAE comunales.")
+        fig.tight_layout(pad=1.8)
+        fig.savefig(OUT / "atlas_poverty_2024.png", dpi=160, bbox_inches="tight")
+        plt.close(fig)
     mapping = {
         "imacec": "imacec_total_history.png",
         "ipom": "ipom_tpm.png",
@@ -482,6 +495,7 @@ def project_thumbnails() -> None:
         "stress": "stress_index_chile.png",
         "exchange": "exchange_fx_residuals.png",
         "yield": "yield_curve_latest.png",
+        "atlas": "atlas_poverty_2024.png",
     }
     thumbs = ROOT / "site" / "assets" / "img" / "projects"
     thumbs.mkdir(parents=True, exist_ok=True)

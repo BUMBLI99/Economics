@@ -64,3 +64,14 @@
   tags: [R, BCP, BCU, Curva de rendimiento]
   featured: false
   order: 6
+- slug: atlas-metropolitano
+  title: Atlas Metropolitano de Santiago
+  short_title: Atlas Metropolitano
+  category: Economía urbana y territorial
+  status: Explorador interactivo
+  status_class: active
+  description: Panel comunal para comparar pobreza, finanzas municipales, seguridad, educación, vivienda y hogares en las 52 comunas de la Región Metropolitana.
+  image: assets/img/projects/atlas.jpg
+  tags: [R, Datos territoriales, Santiago, Visualización]
+  featured: true
+  order: 7

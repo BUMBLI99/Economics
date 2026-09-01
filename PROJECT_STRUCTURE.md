@@ -25,7 +25,7 @@ Economics/
 │  ├─ content/                   contenido editorial en Markdown/HTML
 │  ├─ data/                      metadatos del portafolio
 │  ├─ templates/                 plantillas Jinja
-│  └─ assets/                    CSS, JS, gráficos y CV público
+│  └─ assets/                    CSS, JS, gráficos, dashboards y CV público
 ├─ docs/                         artefacto final de GitHub Pages
 └─ archive/                      Quarto, hotfixes y notas históricas
 ```
@@ -45,6 +45,8 @@ Economics/
 `site/` es la única fuente editorial activa. Los textos de proyectos tienen una estructura común: indicadores, pregunta, resultados, método, interpretación, límites y archivos.
 
 Los exploradores se publican desde JSON liviano en `site/assets/data/` y se renderizan con el único motor de `site/assets/js/site.js`. Los SVG siguen siendo el respaldo estático, accesible y descargable; no se mantienen implementaciones JavaScript separadas por proyecto.
+
+Los paneles autocontenidos de mayor complejidad se guardan en `site/assets/dashboards/` como artefactos web compilados. Su página editorial documenta fuentes y límites, mientras el panel permanece disponible a pantalla completa.
 
 ### Artefacto público
 
