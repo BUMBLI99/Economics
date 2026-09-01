@@ -1,0 +1,136 @@
+name: Update IMACEC nowcasts
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Revisa datos hábiles a diario; solo crea un commit cuando cambian las salidas.
+    - cron: '35 13 * * 1-5'
+  push:
+    branches: [main]
+    paths:
+      - 'R/imacec_*.R'
+      - 'R/00_packages.R'
+      - 'scripts/01_update_imacec.R'
+      - '.github/workflows/update-imacec.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'R/imacec_*.R'
+      - 'scripts/01_update_imacec.R'
+      - '.github/workflows/update-imacec.yml'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: imacec-update
+  cancel-in-progress: true
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Check BCCh credentials
+        id: credentials
+        env:
+          BCCH_USER: ${{ secrets.BCCH_USER }}
+          BCCH_PASS: ${{ secrets.BCCH_PASS }}
+        run: |
+          if [ -n "$BCCH_USER" ] && [ -n "$BCCH_PASS" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "BCCH_USER/BCCH_PASS no están configurados; se conserva la última publicación válida."
+          fi
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Parse IMACEC R sources
+        run: Rscript -e 'invisible(lapply(c(list.files("R", pattern = "^imacec_.*[.]R$", full.names = TRUE), "scripts/01_update_imacec.R"), parse))'
+
+      - name: Install R dependencies
+        if: steps.credentials.outputs.configured == 'true' && github.event_name != 'pull_request'
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::rjson
+            any::dplyr
+            any::tidyr
+            any::lubridate
+            any::readxl
+            any::ggplot2
+            any::knitr
+            any::tibble
+            any::readr
+            any::purrr
+            any::stringr
+            any::scales
+            any::gt
+            any::plotly
+            any::httr
+            any::jsonlite
+
+      - name: Set up Python
+        if: steps.credentials.outputs.configured == 'true' && github.event_name != 'pull_request'
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-site.txt
+
+      - name: Install site dependencies
+        if: steps.credentials.outputs.configured == 'true' && github.event_name != 'pull_request'
+        run: python -m pip install -r requirements-site.txt
+
+      - name: Estimate M4 and M8P
+        if: steps.credentials.outputs.configured == 'true' && github.event_name != 'pull_request'
+        env:
+          BCCH_USER: ${{ secrets.BCCH_USER }}
+          BCCH_PASS: ${{ secrets.BCCH_PASS }}
+          IMACEC_IVS_URL: ${{ vars.IMACEC_IVS_URL }}
+        run: Rscript scripts/01_update_imacec.R
+
+      - name: Build and validate site
+        if: steps.credentials.outputs.configured == 'true' && github.event_name != 'pull_request'
+        run: |
+          python scripts/build_site.py
+          python scripts/validate_site.py
+
+      - name: Commit reproducible outputs
+        if: steps.credentials.outputs.configured == 'true' && github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/processed/imacec_* assets/img/imacec site/assets/data/project_charts.json site/assets/img/charts/imacec_* site/assets/img/projects/imacec.jpg
+          if git diff --cached --quiet; then
+            echo "No hay cambios analíticos para publicar."
+          else
+            git commit -m "Actualiza nowcasts IMACEC M4 y M8P"
+            git push
+          fi
+
+      - name: Configure GitHub Pages
+        if: steps.credentials.outputs.configured == 'true' && github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        if: steps.credentials.outputs.configured == 'true' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs
+
+      - name: Deploy GitHub Pages
+        if: steps.credentials.outputs.configured == 'true' && github.event_name != 'pull_request'
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -104,36 +104,53 @@ def table_html(df: pd.DataFrame, columns: list[str], labels: dict[str, str], for
 def build_contexts() -> dict[str, Any]:
     # IMACEC
     projections = pd.read_csv(ROOT / "data/processed/imacec_projection_all_models.csv")
-    status = pd.read_csv(ROOT / "data/processed/imacec_update_status.csv").iloc[0]
-    active = projections.loc[projections["model_key"].eq("base")].iloc[0]
     oos = pd.read_csv(ROOT / "data/processed/imacec_pseudo_oos_metrics.csv")
-    oos["orden_var"] = oos["variable"].map({"IMACEC total": 0, "IMACEC no minero": 1}).fillna(9)
-    preferred = [
-        "Modelo con indicadores sectoriales INE",
-        "Modelo con estadísticas experimentales",
-        "Benchmark AR(1)",
-        "Promedio móvil 3m",
-        "Naive estacional t-12",
-    ]
-    oos["orden_mod"] = pd.Categorical(oos["modelo"], categories=preferred, ordered=True)
-    oos = oos.sort_values(["orden_var", "orden_mod"])
-    oos_table = table_html(
-        oos,
-        ["variable", "modelo", "N", "RMSE", "MAE", "Periodo"],
-        {"variable": "Variable", "modelo": "Modelo", "N": "N", "RMSE": "RMSE", "MAE": "MAE", "Periodo": "Ventana evaluada"},
-        {"N": lambda x: str(int(x)), "RMSE": lambda x: fmt_num(x, 2), "MAE": lambda x: fmt_num(x, 2)},
-    )
-    imacec = {
-        "target": fmt_month(active["Periodo"]),
-        "total": fmt_pct(active["imacec_predicho"], 2, True),
-        "total_lwr": fmt_pct(active["imacec_lwr"], 2, True),
-        "total_upr": fmt_pct(active["imacec_upr"], 2, True),
-        "nonmining": fmt_pct(active["imacec_nm_predicho"], 2, True),
-        "nonmining_lwr": fmt_pct(active["imacec_nm_lwr"], 2, True),
-        "nonmining_upr": fmt_pct(active["imacec_nm_upr"], 2, True),
-        "updated": fmt_date(status["fecha_actualizacion"]),
-        "oos_table": oos_table,
-    }
+    ready = set(projections.get("model_key", pd.Series(dtype=str))) >= {"m4", "m8p"}
+
+    if ready:
+        status = pd.read_csv(ROOT / "data/processed/imacec_update_status.csv")
+        m4 = projections.loc[projections["model_key"].eq("m4")].iloc[0]
+        m8p = projections.loc[projections["model_key"].eq("m8p")].iloc[0]
+
+        def cutoff_context(row: pd.Series) -> dict[str, str]:
+            survey = "—" if pd.isna(row.get("eee_survey_period")) else fmt_month(row["eee_survey_period"])
+            return {
+                "target": fmt_month(row["Periodo"]),
+                "forecast": fmt_pct(row["imacec_predicho"], 2, True),
+                "lwr": fmt_pct(row["imacec_lwr"], 2, True),
+                "upr": fmt_pct(row["imacec_upr"], 2, True),
+                "eee": fmt_pct(row.get("eee_imacec"), 2, True),
+                "eee_survey": survey,
+                "state": str(row.get("estado", "Nowcast")),
+            }
+
+        preferred = ["M4 · Dinámico", "M8P · INE + IVS real parsimonioso"]
+        oos = oos[oos["modelo"].isin(preferred)].copy()
+        oos["orden"] = pd.Categorical(oos["modelo"], categories=preferred, ordered=True)
+        oos = oos.sort_values("orden")
+        oos_table = table_html(
+            oos,
+            ["modelo", "N", "RMSE", "MAE", "Periodo"],
+            {"modelo": "Especificación", "N": "N", "RMSE": "RMSE", "MAE": "MAE", "Periodo": "Ventana evaluada"},
+            {"N": lambda x: str(int(x)), "RMSE": lambda x: fmt_num(x, 2), "MAE": lambda x: fmt_num(x, 2)},
+        )
+        imacec = {
+            "ready": True,
+            "experimental": cutoff_context(m4),
+            "ine": cutoff_context(m8p),
+            "updated": fmt_date(status["fecha_actualizacion"].max()),
+            "oos_table": oos_table,
+        }
+    else:
+        # Nunca relabelar como M4/M8P cifras producidas por las especificaciones antiguas.
+        pending = {"target": "Pendiente", "forecast": "—", "lwr": "—", "upr": "—", "eee": "—", "eee_survey": "—", "state": "Primera ejecución segura pendiente"}
+        imacec = {
+            "ready": False,
+            "experimental": pending,
+            "ine": pending,
+            "updated": "pendiente de la primera ejecución M4/M8P",
+            "oos_table": '<div class="callout">Las métricas se publicarán con la primera ejecución reproducible de las dos especificaciones fijadas.</div>',
+        }
 
     # IPoM / IRIS
     ipom_diff = pd.read_csv(ROOT / "data/processed/ipom/ipom_scenario_differences_summary.csv")

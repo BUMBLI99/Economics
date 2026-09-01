@@ -2,4 +2,6 @@
 # No subas .Renviron a GitHub.
 BCCH_USER=tu_usuario_bcch
 BCCH_PASS=tu_password_bcch
+IMACEC_IVS_FILE=data/raw/series_mensuales_desde_enero_2018_a_la_fecha.xlsx
+# Alternativa para automatización: IMACEC_IVS_URL=https://.../archivo_oficial.xlsx
 FRED_API_KEY=tu_api_key_fred

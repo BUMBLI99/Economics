@@ -10,7 +10,7 @@ Repositorio y sitio público de **Mauricio Andrés Ulloa Valdivia**. Reúne proy
 
 | Proyecto | Pregunta principal | Pipeline |
 |---|---|---|
-| Nowcasting IMACEC | ¿Cómo anticipar el IMACEC total y no minero respetando el vintage de información? | R |
+| Nowcasting IMACEC | ¿Cómo anticipar el IMACEC total con M4 en el corte experimental y M8P en el corte INE? | R |
 | Escenarios tipo IPoM | ¿Cómo cambian inflación, TPM y brecha bajo trayectorias condicionales? | Matlab · IRIS · R |
 | Transmisión de la TPM | ¿Con qué velocidad y heterogeneidad se transmite la TPM a tasas bancarias? | R |
 | FX, tasas 10Y y riesgo LatAm | ¿Qué parte de los movimientos financieros excede lo explicado por factores globales? | R |
@@ -63,6 +63,15 @@ El constructor:
 Las credenciales se mantienen exclusivamente en un archivo local `.Renviron`. Copia `.Renviron.example` como `.Renviron` y completa las variables necesarias.
 
 ### IMACEC
+
+La publicación usa exclusivamente **M4 · Dinámico** para el corte experimental y
+**M8P · INE + IVS real parsimonioso** para el corte INE. La EEE fechada en `M`
+se conserva con su fecha de encuesta y se compara con el IMACEC de `M-1`.
+
+Además de `BCCH_USER` y `BCCH_PASS`, deja el Excel histórico IVS oficial en
+`data/raw/series_mensuales_desde_enero_2018_a_la_fecha.xlsx`, o define
+`IMACEC_IVS_URL`. En GitHub, las credenciales deben ser Repository Secrets;
+`IMACEC_IVS_URL` puede ser una Repository Variable.
 
 ```bash
 Rscript scripts/01_update_imacec.R
