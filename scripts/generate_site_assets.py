@@ -122,7 +122,7 @@ def interactive_assets() -> None:
     cum = pd.read_csv(ROOT / "outputs/tables/transmision_tpm/pass_through_cumulative.csv")
     cum["chart_date"] = pd.to_datetime("2000-01-01") + cum["horizon"].map(lambda value: pd.DateOffset(months=int(value)))
     cum_series = [web_series(label, color, cum[cum["product"] == product], "chart_date", "cumulative") for product, label, color in [("comercial_total", "Comercial", COLORS["terracotta"]), ("consumo_total", "Consumo", COLORS["teal"]), ("vivienda_uf", "Vivienda UF", COLORS["purple"]), ("cap_90_1y", "Captaciones", COLORS["gold"])]]
-    horizon_by_date = {pd.Timestamp(row.chart_date).strftime("%Y-%m-%d"): f"Horizonte: {int(row.horizon)} meses" for row in cum[["chart_date", "horizon"]].drop_duplicates().itertuples(index=False)}
+    horizon_by_date = {pd.Timestamp(row.chart_date).strftime("%Y-%m-%d"): f"Horizonte: {int(row.horizon)} {'mes' if int(row.horizon) == 1 else 'meses'}" for row in cum[["chart_date", "horizon"]].drop_duplicates().itertuples(index=False)}
     for series in cum_series:
         for point in series["values"]:
             point["label"] = horizon_by_date[point["date"]]
