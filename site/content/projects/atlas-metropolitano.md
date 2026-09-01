@@ -44,6 +44,8 @@ El Atlas combina estimaciones comunales SAE del Ministerio de Desarrollo Social 
 - Los indicadores educacionales combinan fuentes con fechas de corte diferentes y deben interpretarse como descripciones territoriales.
 - Los indicadores construidos por el Atlas, como algunos agrupamientos de delitos o proxies de materialidad, no son indicadores oficiales de las instituciones fuente.
 
-## Reproducibilidad y publicación
+## Publicación liviana
 
-La publicación distribuye el **artefacto web compilado** con los datos agregados necesarios para la visualización; no redistribuye microdatos individuales. El pipeline original de preparación en R permanece separado del sitio público y puede incorporarse posteriormente como paquete reproducible cuando se consoliden sus fuentes y rutas de actualización.
+La publicación distribuye únicamente el **HTML compilado** y las librerías visuales necesarias. Los datos comunales agregados y la cartografía están contenidos en el propio panel; por eso los gráficos funcionan sin subir las bases originales ni redistribuir microdatos individuales.
+
+Leaflet y una versión reducida de Plotly se sirven desde el mismo sitio para evitar que un bloqueo o demora de servidores externos deje vacío el mapa. Solo las teselas cartográficas de fondo requieren conexión; los polígonos comunales y los datos permanecen disponibles en el archivo publicado.
