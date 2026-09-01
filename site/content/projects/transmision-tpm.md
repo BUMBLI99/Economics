@@ -21,6 +21,11 @@ El proyecto combina tres ejercicios complementarios:
 
 ## Canales principales
 
+<div class="interactive-card" data-project-chart="transmission" data-url="../assets/data/project_charts.json">
+  <div class="chart-controls"><label for="transmission-dataset">Vista</label><select id="transmission-dataset" data-dataset-select></select></div>
+  <div class="interactive-chart" data-generic-chart aria-live="polite"></div><div class="chart-legend" data-chart-legend></div>
+</div>
+
 <figure class="chart-figure">
   <a href="../assets/img/charts/transmission_key_rates.svg" target="_blank"><img src="../assets/img/charts/transmission_key_rates.svg" alt="TPM y tasas bancarias clave en Chile"></a>
   <figcaption class="chart-caption">Las tasas comerciales responden más rápido; vivienda y captaciones muestran dinámicas distintas por plazo y unidad de denominación.</figcaption>

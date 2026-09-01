@@ -21,6 +21,11 @@ El proyecto se construye como un sistema de **vintages**. Cada actualización re
 
 ## Resultado vigente
 
+<div class="interactive-card" data-project-chart="imacec" data-url="../assets/data/project_charts.json">
+  <div class="chart-controls"><label for="imacec-dataset">Serie</label><select id="imacec-dataset" data-dataset-select></select></div>
+  <div class="interactive-chart" data-generic-chart aria-live="polite"></div><div class="chart-legend" data-chart-legend></div>
+</div>
+
 La estimación para **{{ imacec.target }}** apunta a una variación anual de **{{ imacec.total }}%** en el IMACEC total y de **{{ imacec.nonmining }}%** en el componente no minero. La divergencia sugiere una lectura de actividad agregada débil, pero con mejor desempeño fuera del componente minero.
 
 Estas cifras deben interpretarse junto con sus intervalos y con el estado del ciclo informativo. No son una publicación oficial ni una estimación en tiempo real libre de revisiones.

@@ -104,22 +104,37 @@
     container.appendChild(svg);
     container.appendChild(tooltip);
 
-    series.forEach((s) => {
+    const prepared = series.map((s) => ({
+      ...s,
+      values: s.values.filter((p) => Number.isFinite(p.value)).sort((a, b) => new Date(a.date) - new Date(b.date))
+    }));
+    prepared.forEach((s) => {
       const points = s.values.filter((p) => Number.isFinite(p.value)).sort((a, b) => new Date(a.date) - new Date(b.date));
       const d = points.map((p, i) => `${i ? 'L' : 'M'}${sx(new Date(p.date).getTime()).toFixed(2)},${sy(p.value).toFixed(2)}`).join(' ');
       add('path', { d, fill: 'none', stroke: s.color, 'stroke-width': s.width || 2.4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', 'stroke-dasharray': s.dash || '' });
-      points.forEach((p) => {
-        const circle = add('circle', { cx: sx(new Date(p.date).getTime()), cy: sy(p.value), r: options.points ? 3.4 : 7, fill: options.points ? s.color : 'transparent', stroke: options.points ? '#fff' : 'transparent', 'stroke-width': 1 });
-        circle.addEventListener('mouseenter', (event) => {
-          tooltip.style.display = 'block';
-          tooltip.innerHTML = `<strong>${s.name}</strong><br>${p.date}: ${p.value.toFixed(options.yDigits ?? 2)}`;
-          const rect = container.getBoundingClientRect();
-          tooltip.style.left = `${event.clientX - rect.left + 12}px`;
-          tooltip.style.top = `${event.clientY - rect.top - 18}px`;
-        });
-        circle.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
-      });
+      if (options.points) points.forEach((p) => add('circle', { cx: sx(new Date(p.date).getTime()), cy: sy(p.value), r: 3.4, fill: s.color, stroke: '#fff', 'stroke-width': 1 }));
     });
+
+    const focusLine = add('line', { y1: margin.top, y2: margin.top + innerH, stroke: palette.muted, 'stroke-width': 1, 'stroke-dasharray': '3 4', visibility: 'hidden' });
+    const overlay = add('rect', { x: margin.left, y: margin.top, width: innerW, height: innerH, fill: 'transparent', tabindex: 0, 'aria-label': 'Recorre el gráfico para consultar valores' });
+    const nearest = (points, target) => points.reduce((best, point) => Math.abs(new Date(point.date).getTime() - target) < Math.abs(new Date(best.date).getTime() - target) ? point : best);
+    overlay.addEventListener('pointermove', (event) => {
+      const bounds = svg.getBoundingClientRect();
+      const viewX = ((event.clientX - bounds.left) / bounds.width) * width;
+      const target = minX + Math.max(0, Math.min(1, (viewX - margin.left) / innerW)) * (maxX - minX);
+      const points = prepared.filter((s) => s.values.length).map((s) => ({ series: s, point: nearest(s.values, target) }));
+      if (!points.length) return;
+      const anchor = points.reduce((best, item) => Math.abs(new Date(item.point.date).getTime() - target) < Math.abs(new Date(best.point.date).getTime() - target) ? item : best);
+      const x = sx(new Date(anchor.point.date).getTime());
+      focusLine.setAttribute('x1', x); focusLine.setAttribute('x2', x); focusLine.setAttribute('visibility', 'visible');
+      tooltip.innerHTML = `<strong>${anchor.point.label || anchor.point.date}</strong>${points.map(({ series: s, point }) => `<br><span style="color:${s.color}">●</span> ${s.name}: ${point.value.toFixed(options.yDigits ?? 2)}`).join('')}`;
+      tooltip.style.display = 'block';
+      const containerRect = container.getBoundingClientRect();
+      const tooltipX = event.clientX - containerRect.left;
+      tooltip.style.left = `${Math.min(containerRect.width - 210, Math.max(8, tooltipX + 12))}px`;
+      tooltip.style.top = `${Math.max(8, event.clientY - containerRect.top - 24)}px`;
+    });
+    overlay.addEventListener('pointerleave', () => { tooltip.style.display = 'none'; focusLine.setAttribute('visibility', 'hidden'); });
   }
 
   async function loadJSON(url) {
@@ -198,6 +213,43 @@
     }
   }
 
+  async function initProjectCharts() {
+    const roots = $$('[data-project-chart]');
+    if (!roots.length) return;
+    let catalog;
+    try { catalog = await loadJSON(roots[0].dataset.url); }
+    catch (_) { roots.forEach((root) => root.classList.add('chart-load-error')); return; }
+    roots.forEach((root) => {
+      const config = catalog[root.dataset.projectChart];
+      if (!config?.datasets?.length) return;
+      const select = $('[data-dataset-select]', root);
+      const chart = $('[data-generic-chart]', root);
+      const legend = $('[data-chart-legend]', root);
+      config.datasets.forEach((dataset) => {
+        const option = document.createElement('option');
+        option.value = dataset.id; option.textContent = dataset.label; select.appendChild(option);
+      });
+      const render = () => {
+        const dataset = config.datasets.find((item) => item.id === select.value) || config.datasets[0];
+        const xTicks = dataset.xTicks?.map((tick) => ({ value: new Date(tick.date).getTime(), label: tick.label }));
+        lineChart(chart, dataset.series, { ariaLabel: `${config.ariaLabel}: ${dataset.label}`, yDigits: dataset.yDigits ?? 2, zeroLine: Boolean(dataset.zeroLine), xTicks });
+        legend.innerHTML = dataset.series.map((series) => `<span class="legend-item"><span class="legend-swatch" style="background:${series.color}"></span>${series.name}</span>`).join('');
+      };
+      select.addEventListener('change', render); render(); root.classList.add('chart-ready');
+    });
+  }
+
+  function enhanceStaticFigures() {
+    $$('.chart-figure').forEach((figure) => {
+      const link = $('a[href$=".svg"]', figure); if (!link) return;
+      link.setAttribute('aria-label', `Abrir gráfico ampliado: ${$('img', link)?.alt || 'visualización'}`);
+      link.setAttribute('title', 'Abrir SVG en tamaño completo');
+      const badge = document.createElement('span'); badge.className = 'figure-action'; badge.textContent = 'Ampliar ↗'; link.appendChild(badge);
+    });
+  }
+
   initExchangeDashboard();
   initYieldCurve();
+  initProjectCharts();
+  enhanceStaticFigures();
 })();

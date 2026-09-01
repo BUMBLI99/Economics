@@ -205,9 +205,11 @@ button, input, select { font: inherit; }
 .callout p:last-child { margin-bottom: 0; }
 
 .chart-figure { margin: 1.35rem 0 2.2rem; padding: .7rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); overflow: hidden; }
-.chart-figure a { display: block; text-decoration: none; }
+.chart-figure a { position: relative; display: block; text-decoration: none; }
 .chart-figure img { display: block; width: 100%; height: auto; border-radius: 13px; }
 .chart-caption { padding: .55rem .45rem .2rem; color: var(--muted); font-size: .84rem; }
+.figure-action { position: absolute; top: .75rem; right: .75rem; padding: .35rem .58rem; border: 1px solid rgba(255,255,255,.72); border-radius: 999px; color: #fff; background: rgba(25,48,68,.86); box-shadow: 0 5px 16px rgba(25,48,68,.18); font-size: .72rem; font-weight: 780; opacity: 0; transform: translateY(-3px); transition: opacity .18s ease, transform .18s ease; }
+.chart-figure a:hover .figure-action, .chart-figure a:focus-visible .figure-action { opacity: 1; transform: translateY(0); }
 .figure-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; }
 .figure-grid .chart-figure { margin: 0; }
 
@@ -227,6 +229,9 @@ tr:hover td { background: #fbfaf7; }
 .download span { display: block; color: var(--muted); font-size: .78rem; }
 
 .interactive-card { margin: 1.35rem 0 2rem; padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); }
+.interactive-card::before { content: "Explorador interactivo"; display: block; margin-bottom: .65rem; color: var(--terracotta); font-size: .7rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+.interactive-card.chart-ready { border-color: rgba(43,119,119,.34); box-shadow: 0 18px 46px rgba(30,42,53,.075); }
+.chart-load-error { display: none; }
 .chart-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem; margin-bottom: .9rem; }
 .chart-controls label { color: var(--muted); font-size: .82rem; font-weight: 760; }
 .chart-controls select, .chart-controls input[type="range"] { accent-color: var(--terracotta); }

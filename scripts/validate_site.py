@@ -16,6 +16,7 @@ EXPECTED = {
     "proyectos/imacec.html", "proyectos/ipom-iris.html", "proyectos/transmision-tpm.html",
     "proyectos/exchange.html", "proyectos/estres-financiero.html", "proyectos/curva-rendimiento.html",
     "proyectos/estres-externo.html", "assets/css/site.css", "assets/js/site.js",
+    "assets/data/project_charts.json",
     "assets/files/cv-mauricio-ulloa.pdf", ".nojekyll", "sitemap.xml", "robots.txt",
 }
 SKIP_SCHEMES = {"http", "https", "mailto", "tel", "javascript", "data"}
@@ -107,6 +108,17 @@ def main() -> int:
         for p in DOCS.rglob("*"):
             if p.is_file() and p.suffix.lower() in forbidden_ext:
                 errors.append(f"Código fuente filtrado a docs/: {p.relative_to(DOCS)}")
+
+        chart_catalog = DOCS / "assets/data/project_charts.json"
+        if chart_catalog.exists():
+            import json
+            try:
+                charts = json.loads(chart_catalog.read_text(encoding="utf-8"))
+                for key in ["imacec", "ipom", "transmission", "stress"]:
+                    if not charts.get(key, {}).get("datasets"):
+                        errors.append(f"Catálogo interactivo incompleto: {key}")
+            except (json.JSONDecodeError, OSError) as exc:
+                errors.append(f"Catálogo interactivo inválido: {exc}")
 
         # Keep large downloads visible but flag extreme accidental files.
         for p in DOCS.rglob("*"):

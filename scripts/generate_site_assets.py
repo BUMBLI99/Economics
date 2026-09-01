@@ -53,6 +53,7 @@ plt.rcParams.update({
     "grid.color": COLORS["grid"],
     "grid.alpha": 0.72,
     "legend.frameon": False,
+    "svg.hashsalt": "economics-portfolio",
 })
 
 
@@ -78,6 +79,60 @@ def save(fig: plt.Figure, stem: str, height: int = 760) -> None:
 
 def add_source(fig: plt.Figure, text: str) -> None:
     fig.text(0.012, 0.006, text, ha="left", va="bottom", fontsize=8.2, color=COLORS["muted"])
+
+
+def web_series(name: str, color: str, frame: pd.DataFrame, date: str, value: str,
+               dash: str = "") -> dict:
+    """Compact, null-safe series consumed by the dependency-free web charts."""
+    clean = frame[[date, value]].dropna().sort_values(date)
+    return {
+        "name": name, "color": color, "dash": dash,
+        "values": [{"date": pd.Timestamp(d).strftime("%Y-%m-%d"), "value": round(float(v), 5)}
+                   for d, v in clean.itertuples(index=False, name=None)],
+    }
+
+
+def interactive_assets() -> None:
+    """Build a coherent interactive explorer for every published project."""
+    charts: dict[str, dict] = {}
+    hist = pd.read_csv(ROOT / "data/processed/imacec_nowcast_history_all_models.csv", parse_dates=["Periodo"])
+    hist = hist[hist["Periodo"] >= "2019-01-01"]
+    imacec_sets = []
+    for ident, label, actual_col, fit_col in [("total", "IMACEC total", "imacec", "imacec_fit"), ("nonmining", "IMACEC no minero", "imacec_nm", "imacec_nm_fit")]:
+        actual = hist[["Periodo", actual_col]].drop_duplicates("Periodo")
+        series = [web_series("Efectivo", COLORS["navy"], actual, "Periodo", actual_col)]
+        for key, name, color, dash in [("base", "Modelo experimental", COLORS["terracotta"], "7 5"), ("ine", "Modelo sectorial INE", COLORS["teal"], "3 4")]:
+            block = hist[(hist["model_key"] == key) & (hist["tipo"].isin(["Histórico", "Nowcast"]))]
+            series.append(web_series(name, color, block, "Periodo", fit_col, dash))
+        imacec_sets.append({"id": ident, "label": label, "series": series, "zeroLine": True, "yDigits": 1})
+    charts["imacec"] = {"ariaLabel": "Evolución interactiva del IMACEC", "datasets": imacec_sets}
+
+    ipom = pd.read_csv(ROOT / "data/processed/ipom/ipom_scenarios_long.csv", parse_dates=["date"])
+    ipom = ipom[(ipom["scenario_id"].isin(["baseline_ipom", "tpm45_2026"])) & (ipom["date"] >= "2024-01-01")]
+    ipom_sets = []
+    for var, label in [("TPM", "TPM"), ("D4L_CPI", "Inflación total"), ("D4L_CPIXFE", "Inflación subyacente"), ("L_GDP_GAP", "Brecha de actividad")]:
+        series = [web_series(name, color, ipom[(ipom["variable"] == var) & (ipom["scenario_id"] == sid)], "date", "value", dash)
+                  for sid, name, color, dash in [("baseline_ipom", "Escenario base", COLORS["navy"], ""), ("tpm45_2026", "TPM 4,5% en 2026", COLORS["terracotta"], "7 5")]]
+        ipom_sets.append({"id": var.lower(), "label": label, "series": series, "zeroLine": True, "yDigits": 2})
+    charts["ipom"] = {"ariaLabel": "Escenarios interactivos del modelo IPoM", "datasets": ipom_sets}
+
+    rates = pd.read_csv(ROOT / "data/processed/transmision_tpm/monthly_panel_rates.csv", parse_dates=["date"])
+    rates = rates[rates["date"] >= "2014-01-01"]
+    rate_series = [web_series(name, color, rates, "date", col) for col, name, color in [("tpm", "TPM", COLORS["navy"]), ("comercial_total", "Crédito comercial", COLORS["terracotta"]), ("vivienda_uf", "Vivienda UF >3 años", COLORS["purple"]), ("cap_90_1y", "Captación 90d–1a", COLORS["teal"])]]
+    cum = pd.read_csv(ROOT / "outputs/tables/transmision_tpm/pass_through_cumulative.csv")
+    cum["chart_date"] = pd.to_datetime("2000-01-01") + cum["horizon"].map(lambda value: pd.DateOffset(months=int(value)))
+    cum_series = [web_series(label, color, cum[cum["product"] == product], "chart_date", "cumulative") for product, label, color in [("comercial_total", "Comercial", COLORS["terracotta"]), ("consumo_total", "Consumo", COLORS["teal"]), ("vivienda_uf", "Vivienda UF", COLORS["purple"]), ("cap_90_1y", "Captaciones", COLORS["gold"])]]
+    horizon_by_date = {pd.Timestamp(row.chart_date).strftime("%Y-%m-%d"): f"Horizonte: {int(row.horizon)} meses" for row in cum[["chart_date", "horizon"]].drop_duplicates().itertuples(index=False)}
+    for series in cum_series:
+        for point in series["values"]:
+            point["label"] = horizon_by_date[point["date"]]
+    horizon_ticks = [{"date": date, "label": label.removeprefix("Horizonte: ")} for date, label in horizon_by_date.items()]
+    charts["transmission"] = {"ariaLabel": "Transmisión interactiva de la TPM", "datasets": [{"id": "rates", "label": "TPM y tasas bancarias", "series": rate_series, "yDigits": 2}, {"id": "pass", "label": "Pass-through acumulado", "series": cum_series, "xTicks": horizon_ticks, "yDigits": 3}]}
+
+    stress = pd.read_csv(ROOT / "data/processed/estres_financiero/stress_index_chile.csv", parse_dates=["date"])
+    stress = stress[stress["date"] >= "2013-01-01"].set_index("date").resample("W-FRI").last().reset_index()
+    charts["stress"] = {"ariaLabel": "Índice interactivo de estrés financiero", "datasets": [{"id": "index", "label": "Índice agregado", "zeroLine": True, "yDigits": 2, "series": [web_series("Índice (cierre semanal)", COLORS["blue"], stress, "date", "stress_market"), web_series("Media móvil 30 días", COLORS["navy"], stress, "date", "stress_market_30d")]}, {"id": "components", "label": "Componentes", "zeroLine": True, "yDigits": 2, "series": [web_series("Componente FX", COLORS["terracotta"], stress, "date", "stress_fx_30d"), web_series("Componente tasa 10Y", COLORS["teal"], stress, "date", "stress_y10_30d")]}]}
+    (DATA_OUT / "project_charts.json").write_text(json.dumps(charts, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
 
 def imacec_assets() -> None:
@@ -456,6 +511,7 @@ def main() -> None:
     financial_stress_assets()
     exchange_assets()
     yield_curve_assets()
+    interactive_assets()
     project_thumbnails()
     print(f"Generated site assets in {OUT}")
 
