@@ -4,7 +4,7 @@
   category: Actividad económica
   status: Activo
   status_class: active
-  description: Modelo mensual para anticipar el IMACEC total y no minero con vintages de información, variables calendario y evaluación pseudo out-of-sample.
+  description: Nowcast mensual del IMACEC total con M4 para el corte experimental y M8P con IVS real para el corte INE, comparados con la EEE correctamente alineada.
   image: assets/img/projects/imacec.jpg
   tags: [R, IMACEC, Nowcasting, Series de tiempo]
   featured: true

@@ -1,46 +1,56 @@
 # ============================================================
 # imacec_config.R
-# Parámetros y códigos de series para nowcasting IMACEC
+# Parámetros y fuentes del nowcast IMACEC
 # ============================================================
 
-# Nunca escribas credenciales reales dentro de scripts versionados en GitHub.
-# Define estas variables en tu archivo .Renviron local:
-# BCCH_USER=tu_usuario
-# BCCH_PASS=tu_password
-
+# Las credenciales nunca deben tener valores por defecto en código versionado.
+# En local se leen desde .Renviron; en GitHub Actions, desde Repository Secrets.
 USER_BCCH <- Sys.getenv("BCCH_USER")
 PASS_BCCH <- Sys.getenv("BCCH_PASS")
 
 first_date <- Sys.getenv("IMACEC_FIRST_DATE", unset = "2017-01-01")
 last_date  <- Sys.getenv("IMACEC_LAST_DATE", unset = format(Sys.Date(), "%Y-%m-%d"))
-
-# El archivo debe existir localmente para correr la actualización real.
-# Déjalo en data/raw/cal_1985_2030.xlsx o cambia la ruta con variable de entorno.
-cal_path <- Sys.getenv("IMACEC_CAL_PATH", unset = "data/raw/cal_1985_2030.xlsx")
-
-# Códigos BCCh / INE usados en la versión actual del prototipo.
-# Validar periódicamente en la BDE si cambia la codificación o definición de una serie.
-codes <- list(
-  imacec_nm      = "F032.IMC.IND.Z.Z.EP18.N03.Z.0.M",
-  imacec         = "F032.IMC.IND.Z.Z.EP18.Z.Z.0.M",
-  ivdcm_yoy      = "F034.VDCM.TAS12M.DBC.2018.0.M",
-  credito_monto  = "F034.ICCEM.FLU.Z.Z.D00T.M",
-  credito_cant   = "F034.ICCEF.FLU.Z.Z.D00T.M",
-  uf_daily       = "F073.UFF.PRE.Z.D",
-  desempleo      = "F049.DES.TAS.INE9.10.M",
-  cobre          = "F019.PPB.PRE.40.M",
-  petroleo       = "F019.PPB.PRE.41AB.M",
-
-  # Encuesta de Expectativas Económicas: expectativas de IMACEC
-  # La serie se publica en el mes de encuesta y se alinea al mes objetivo t-1.
-  eee_imacec    = "F089.IMC.V12.10.M",
-  eee_imacec_nm = "F089.IMCNM.V12.10.M"
+cal_path   <- Sys.getenv("IMACEC_CAL_PATH", unset = "data/raw/cal_1985_2030.xlsx")
+ivs_path   <- Sys.getenv(
+  "IMACEC_IVS_FILE",
+  unset = "data/raw/series_mensuales_desde_enero_2018_a_la_fecha.xlsx"
+)
+ivs_url <- Sys.getenv("IMACEC_IVS_URL", unset = "")
+ivs_page <- paste0(
+  "https://www.ine.gob.cl/estadisticas-por-tema/",
+  "comercio-y-servicios/ventas-mensuales-de-servicios"
 )
 
+model_start_date <- as.Date(Sys.getenv("IMACEC_MODEL_START_DATE", unset = "2019-01-01"))
+oos_start_date   <- as.Date(Sys.getenv("IMACEC_EVAL_START_DATE", unset = "2022-01-01"))
+interval_level   <- as.numeric(Sys.getenv("IMACEC_INTERVAL_LEVEL", unset = "0.80"))
+min_training_obs <- 48L
+min_residual_df  <- 24L
+
+codes <- list(
+  imacec           = "F032.IMC.IND.Z.Z.EP18.Z.Z.0.M",
+  venta_minorista  = "F034.VDCM.TAS12M.DBC.2018.0.M",
+  credito_monto    = "F034.ICCEM.FLU.Z.Z.D00T.M",
+  credito_cantidad = "F034.ICCEF.FLU.Z.Z.D00T.M",
+  avisos_laborales = "F049.AVS.IND.BCC1.01.M",
+  uf_diaria        = "F073.UFF.PRE.Z.D",
+  ipc_servicios    = "F074.IPCS.IND.Z.EP23.Z.M",
+  eee_imacec       = "F089.IMC.V12.10.M"
+)
+
+# M8P usa indicadores originales (sufijo 0.M), no desestacionalizados.
 codes_ine <- list(
-  mineria      = "F034.PMI.IND.INE.2018.1.M",
-  manufactura  = "F034.PRM.IND.INE.2018.1.M",
-  comercio     = "F034.VCC.IND.INE.2018.1.M",
-  electricidad = "F034.PEGA.IND.INE.2018.1.M",
-  desempleo    = "F049.DES.TAS.INE9.10.M"
+  mineria      = "F034.PMI.IND.INE.2018.0.M",
+  manufactura  = "F034.PRM.IND.INE.2018.0.M",
+  comercio     = "F034.VCC.IND.INE.2018.0.M",
+  electricidad = "F034.PEGA.IND.INE.2018.0.M"
+)
+
+ivs_columns <- c(
+  ivs_transporte_nivel = 3L,
+  ivs_alojamiento_comidas_nivel = 7L,
+  ivs_informacion_comunicaciones_nivel = 11L,
+  ivs_inmobiliarias_nivel = 15L,
+  ivs_profesionales_nivel = 19L,
+  ivs_administrativos_apoyo_nivel = 23L
 )
