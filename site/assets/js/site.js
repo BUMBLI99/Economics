@@ -248,8 +248,41 @@
     });
   }
 
+  function initAtlasEmbed() {
+    const frame = $('[data-atlas-frame]');
+    if (!frame) return;
+    const status = $('[data-atlas-status]');
+    let resizeObserver;
+
+    const syncHeight = () => {
+      try {
+        const doc = frame.contentDocument;
+        if (!doc?.documentElement || !doc.body) return;
+        const height = Math.max(doc.documentElement.scrollHeight, doc.body.scrollHeight);
+        if (height > 500) frame.style.height = `${Math.ceil(height + 2)}px`;
+      } catch (_) {
+        // La altura inicial permite usar el panel si el navegador restringe el acceso al iframe.
+      }
+    };
+
+    frame.addEventListener('load', () => {
+      frame.classList.add('loaded');
+      if (status) status.hidden = true;
+      syncHeight();
+      try {
+        resizeObserver?.disconnect();
+        resizeObserver = new ResizeObserver(syncHeight);
+        resizeObserver.observe(frame.contentDocument.documentElement);
+        resizeObserver.observe(frame.contentDocument.body);
+      } catch (_) { /* Mantener la altura de respaldo. */ }
+    });
+
+    window.addEventListener('resize', syncHeight, { passive: true });
+  }
+
   initExchangeDashboard();
   initYieldCurve();
   initProjectCharts();
   enhanceStaticFigures();
+  initAtlasEmbed();
 })();

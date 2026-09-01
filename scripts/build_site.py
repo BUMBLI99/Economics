@@ -315,10 +315,7 @@ def copy_public_assets(contexts: dict[str, Any]) -> None:
 def project_actions(slug: str) -> str:
     github_base = "https://github.com/mulloav3007/Economics/tree/main"
     if slug == "atlas-metropolitano":
-        dashboard = "../assets/dashboards/atlas-metropolitano.html"
-        source = f"{github_base}/site/assets/dashboards/atlas-metropolitano.html"
-        return (f'<a class="button button-primary" href="{dashboard}" target="_blank" rel="noopener">Abrir explorador ↗</a>'
-                f'<a class="button button-secondary" href="{source}" target="_blank" rel="noopener">Ver HTML ↗</a>')
+        return ""
     source_map = {
         "imacec": f"{github_base}/R",
         "ipom-iris": f"{github_base}/matlab/ipom",
@@ -429,7 +426,8 @@ def build_pages(contexts: dict[str, Any]) -> None:
             "tools": tools,
             "actions": project_actions(p["slug"]),
         }
-        rendered = env.get_template("project.html").render(
+        template_name = "project_atlas.html" if p["slug"] == "atlas-metropolitano" else "project.html"
+        rendered = env.get_template(template_name).render(
             title=p["short_title"],
             description=p["description"],
             canonical_url=SITE_URL + f"proyectos/{p['slug']}.html",
