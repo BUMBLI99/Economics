@@ -15,6 +15,8 @@ EXPECTED = {
     "index.html", "proyectos.html", "cv.html", "contacto.html", "404.html",
     "proyectos/imacec.html", "proyectos/ipom-iris.html", "proyectos/transmision-tpm.html",
     "proyectos/exchange.html", "proyectos/estres-financiero.html", "proyectos/curva-rendimiento.html",
+    "proyectos/atlas-metropolitano.html", "assets/dashboards/atlas-metropolitano.html",
+    "assets/img/projects/atlas.jpg",
     "proyectos/estres-externo.html", "assets/css/site.css", "assets/js/site.js",
     "assets/data/project_charts.json",
     "assets/files/cv-mauricio-ulloa.pdf", ".nojekyll", "sitemap.xml", "robots.txt",
@@ -82,7 +84,7 @@ def main() -> int:
                 if not img.get("alt", "").strip():
                     errors.append(f"{rel}: imagen sin texto alternativo ({img.get('src', '?')})")
 
-            for tag, attr in [("a", "href"), ("img", "src"), ("script", "src"), ("link", "href")]:
+            for tag, attr in [("a", "href"), ("img", "src"), ("iframe", "src"), ("script", "src"), ("link", "href")]:
                 for node in soup.find_all(tag):
                     raw = node.get(attr)
                     if raw is None:
