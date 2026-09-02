@@ -82,11 +82,12 @@ def add_source(fig: plt.Figure, text: str) -> None:
 
 
 def web_series(name: str, color: str, frame: pd.DataFrame, date: str, value: str,
-               dash: str = "") -> dict:
+               dash: str = "", line: bool = True, marker: str = "", width: float = 2.4) -> dict:
     """Compact, null-safe series consumed by the dependency-free web charts."""
     clean = frame[[date, value]].dropna().sort_values(date)
     return {
-        "name": name, "color": color, "dash": dash,
+        "name": name, "color": color, "dash": dash, "line": line,
+        "marker": marker, "width": width,
         "values": [{"date": pd.Timestamp(d).strftime("%Y-%m-%d"), "value": round(float(v), 5)}
                    for d, v in clean.itertuples(index=False, name=None)],
     }
@@ -97,23 +98,101 @@ def interactive_assets() -> None:
     charts: dict[str, dict] = {}
     hist = pd.read_csv(ROOT / "data/processed/imacec_nowcast_history_all_models.csv", parse_dates=["Periodo"])
     hist = hist[hist["Periodo"] >= "2019-01-01"]
-    actual = hist[["Periodo", "imacec"]].dropna().drop_duplicates("Periodo")
-    imacec_sets = []
-    winner_meta = [
-        ("m4", "Corte experimental · M4", "M4 · Dinámico", COLORS["terracotta"]),
-        ("m8p", "Corte INE · M8P", "M8P · INE + IVS real", COLORS["teal"]),
-    ]
-    ready = {"m4", "m8p"}.issubset(set(hist.get("model_key", pd.Series(dtype=str))))
-    for key, dataset_label, model_label, color in winner_meta:
-        series = [web_series("IMACEC efectivo", COLORS["navy"], actual, "Periodo", "imacec")]
-        if ready:
-            block = hist[(hist["model_key"] == key) & (hist["tipo"].isin(["Ajuste", "Nowcast"]))]
-            series.append(web_series(model_label, color, block, "Periodo", "imacec_fit", "7 5"))
-            if "eee_imacec" in block.columns:
-                eee = block[["Periodo", "eee_imacec"]].dropna().drop_duplicates("Periodo")
-                series.append(web_series("EEE (encuesta M para IMACEC M-1)", COLORS["gold"], eee, "Periodo", "eee_imacec", "2 5"))
-        imacec_sets.append({"id": key, "label": dataset_label, "series": series, "zeroLine": True, "yDigits": 1})
-    charts["imacec"] = {"ariaLabel": "Evolución interactiva del IMACEC", "datasets": imacec_sets}
+    projections = pd.read_csv(ROOT / "data/processed/imacec_projection_all_models.csv", parse_dates=["Periodo"])
+    status = pd.read_csv(ROOT / "data/processed/imacec_update_status.csv")
+    archive_path = ROOT / "data/processed/imacec_projection_archive.csv"
+    archive = pd.read_csv(archive_path, parse_dates=["Periodo"]) if archive_path.exists() else pd.DataFrame()
+    new_schema = {"target_key", "observed", "fitted", "model_key"}.issubset(hist.columns)
+    projection_schema = {"target_key", "forecast", "eee_value", "model_key"}.issubset(projections.columns)
+    cycle_schema = {"ciclo_estado", "modelo_principal", "periodo_objetivo"}.issubset(status.columns)
+    stage = str(status.iloc[-1]["ciclo_estado"]) if cycle_schema else "pending"
+    default_key = str(status.iloc[-1]["modelo_principal"]) if cycle_schema else "summary"
+    target_period = pd.to_datetime(status.iloc[-1]["periodo_objetivo"]) if cycle_schema else None
+    model_meta = {
+        "proxy": ("Señal inicial · AR(1)", "AR(1) provisional", COLORS["gold"], "circle"),
+        "m4": ("Corte experimental · M4", "M4 · Dinámico", COLORS["terracotta"], "circle"),
+        "m8p": ("Corte INE · M8P", "M8P · INE + IVS real", COLORS["teal"], "diamond"),
+    }
+
+    def actual_series(target_key: str) -> pd.DataFrame:
+        if new_schema:
+            return (hist[(hist["target_key"] == target_key) & (hist["tipo"] == "Efectivo")]
+                    [["Periodo", "observed"]].dropna().drop_duplicates("Periodo").sort_values("Periodo"))
+        value = "imacec" if target_key == "total" else "imacec_nm"
+        if value not in hist.columns:
+            return pd.DataFrame(columns=["Periodo", "observed"])
+        return (hist[["Periodo", value]].dropna().drop_duplicates("Periodo")
+                .rename(columns={value: "observed"}).sort_values("Periodo"))
+
+    def current_dataset(target_key: str, model_key: str, actual: pd.DataFrame) -> dict | None:
+        if not (new_schema and projection_schema) or model_key not in model_meta:
+            return None
+        block = hist[(hist["target_key"] == target_key) & (hist["model_key"] == model_key)]
+        point = projections[(projections["target_key"] == target_key) & (projections["model_key"] == model_key)]
+        valid_archive = {"target_key", "model_key", "forecast", "eee_value", "run_timestamp"}.issubset(archive.columns)
+        if stage == "official_review" and valid_archive and target_period is not None:
+            archived = archive[
+                (archive["target_key"] == target_key) &
+                (archive["model_key"] == model_key) &
+                (archive["Periodo"] == target_period)
+            ].sort_values("run_timestamp").tail(1)
+            if not archived.empty:
+                point = archived
+        if block.empty and point.empty:
+            return None
+        dataset_label, model_label, color, marker = model_meta[model_key]
+        series = [web_series("IMACEC efectivo", COLORS["navy"], actual, "Periodo", "observed", width=2.7)]
+        fit = block[block["tipo"] == "Ajuste"]
+        if not fit.empty:
+            series.append(web_series("Ajuste histórico", color, fit, "Periodo", "fitted", "7 5", width=2.0))
+        if not point.empty:
+            series.append(web_series(f"Proyección {model_label}", color, point, "Periodo", "forecast",
+                                     line=False, marker=marker, width=0))
+            series.append(web_series("EEE comparable", COLORS["purple"], point, "Periodo", "eee_value",
+                                     line=False, marker="triangle", width=0))
+        return {"id": model_key, "label": dataset_label, "series": series, "zeroLine": True, "yDigits": 1}
+
+    def summary_dataset(target_key: str, actual: pd.DataFrame) -> dict:
+        series = [web_series("IMACEC efectivo", COLORS["navy"], actual, "Periodo", "observed", width=2.7)]
+        valid_archive = {"target_key", "model_key", "forecast", "eee_value", "run_timestamp"}.issubset(archive.columns)
+        if valid_archive and target_period is not None:
+            block = archive[(archive["target_key"] == target_key) & (archive["Periodo"] == target_period)].copy()
+            block = block.sort_values("run_timestamp").groupby("model_key", as_index=False).tail(1)
+            for key in ["m4", "m8p"]:
+                point = block[block["model_key"] == key]
+                if not point.empty:
+                    _, model_label, color, marker = model_meta[key]
+                    series.append(web_series(f"Proyección {model_label}", color, point, "Periodo", "forecast",
+                                             line=False, marker=marker, width=0))
+            eee = block.dropna(subset=["eee_value"]).tail(1)
+            if not eee.empty:
+                series.append(web_series("EEE comparable", COLORS["purple"], eee, "Periodo", "eee_value",
+                                         line=False, marker="triangle", width=0))
+        return {"id": "summary", "label": "Resumen del período", "series": series, "zeroLine": True, "yDigits": 1}
+
+    for target_key, chart_key in [("total", "imacec-total"), ("no_minero", "imacec-nonmining")]:
+        actual = actual_series(target_key)
+        datasets: list[dict] = []
+        if stage == "official_review" or not projection_schema:
+            datasets.append(summary_dataset(target_key, actual))
+            for key in ["m8p", "m4"]:
+                dataset = current_dataset(target_key, key, actual)
+                if dataset is not None:
+                    datasets.append(dataset)
+            selected = "summary"
+        else:
+            order = [default_key] + [key for key in ["m8p", "m4", "proxy"] if key != default_key]
+            for key in order:
+                dataset = current_dataset(target_key, key, actual)
+                if dataset is not None:
+                    datasets.append(dataset)
+            if not datasets:
+                datasets.append(summary_dataset(target_key, actual))
+            selected = default_key if any(d["id"] == default_key for d in datasets) else datasets[0]["id"]
+        charts[chart_key] = {
+            "ariaLabel": f"Evolución interactiva del {'IMACEC total' if target_key == 'total' else 'IMACEC no minero'}",
+            "defaultDataset": selected, "datasets": datasets,
+        }
 
     ipom = pd.read_csv(ROOT / "data/processed/ipom/ipom_scenarios_long.csv", parse_dates=["date"])
     ipom = ipom[(ipom["scenario_id"].isin(["baseline_ipom", "tpm45_2026"])) & (ipom["date"] >= "2024-01-01")]
@@ -145,59 +224,43 @@ def interactive_assets() -> None:
 
 def imacec_assets() -> None:
     hist = pd.read_csv(ROOT / "data/processed/imacec_nowcast_history_all_models.csv", parse_dates=["Periodo"])
-    oos = pd.read_csv(ROOT / "data/processed/imacec_pseudo_oos_metrics.csv")
-    ready = {"m4", "m8p"}.issubset(set(hist.get("model_key", pd.Series(dtype=str))))
-    actual = hist[["Periodo", "imacec"]].dropna().drop_duplicates("Periodo").sort_values("Periodo")
+    projections = pd.read_csv(ROOT / "data/processed/imacec_projection_all_models.csv", parse_dates=["Periodo"])
+    new_schema = {"target_key", "observed", "fitted", "model_key"}.issubset(hist.columns)
 
-    def history_plot(key: str, stem: str, title: str, color: str) -> None:
-        fig, ax = plt.subplots(figsize=(12.6, 6.0))
-        ax.plot(actual["Periodo"], actual["imacec"], color=COLORS["navy"], linewidth=2.25, label="IMACEC efectivo")
-        if ready:
-            d = hist[(hist["model_key"] == key) & (hist["tipo"].isin(["Ajuste", "Nowcast"]))].sort_values("Periodo")
-            ax.plot(d["Periodo"], d["imacec_fit"], color=color, linewidth=1.55, linestyle="--", label="Ajuste / nowcast")
-            now = d[d["tipo"] == "Nowcast"]
-            if not now.empty:
-                y = now["imacec_fit"].iloc[-1]
-                ax.scatter(now["Periodo"].iloc[-1], y, s=82, color=color, zorder=7,
-                           edgecolor="white", linewidth=1.4, label="Punto del corte")
-                ax.annotate(f"{y:.1f}%", (now["Periodo"].iloc[-1], y), xytext=(10, 10),
-                            textcoords="offset points", color=color, fontweight="bold")
-            if "eee_imacec" in d.columns:
-                eee = d[["Periodo", "eee_imacec"]].dropna().drop_duplicates("Periodo")
-                ax.scatter(eee["Periodo"], eee["eee_imacec"], marker="x", s=34,
-                           color=COLORS["gold"], label="EEE alineada a M-1", zorder=6)
-            target = max(d["Periodo"].max(), actual["Periodo"].max())
-            subtitle = "La EEE de la encuesta M se compara con el IMACEC de M-1."
+    for target_key, legacy_col, stem, title in [
+        ("total", "imacec", "imacec_total_history", "IMACEC total: efectivo y proyección vigente"),
+        ("no_minero", "imacec_nm", "imacec_nonmining_history", "IMACEC no minero: efectivo y proyección vigente"),
+    ]:
+        if new_schema:
+            actual = (hist[(hist["target_key"] == target_key) & (hist["tipo"] == "Efectivo")]
+                      [["Periodo", "observed"]].dropna().drop_duplicates("Periodo").sort_values("Periodo"))
+        elif legacy_col in hist.columns:
+            actual = (hist[["Periodo", legacy_col]].dropna().drop_duplicates("Periodo")
+                      .rename(columns={legacy_col: "observed"}).sort_values("Periodo"))
         else:
-            target = actual["Periodo"].max()
-            subtitle = "La nueva proyección se publicará tras la primera ejecución segura de M4 y M8P."
+            actual = pd.DataFrame(columns=["Periodo", "observed"])
+
+        fig, ax = plt.subplots(figsize=(12.6, 6.0))
+        if not actual.empty:
+            ax.plot(actual["Periodo"], actual["observed"], color=COLORS["navy"],
+                    linewidth=2.35, label="IMACEC efectivo")
+        if {"target_key", "forecast", "model_key"}.issubset(projections.columns):
+            points = projections[projections["target_key"] == target_key]
+            for key, color, marker in [("m4", COLORS["terracotta"], "o"), ("m8p", COLORS["teal"], "D")]:
+                point = points[points["model_key"] == key]
+                if not point.empty:
+                    ax.scatter(point["Periodo"], point["forecast"], color=color, marker=marker,
+                               s=72, zorder=6, edgecolor="white", linewidth=1.2, label=key.upper())
         ax.axhline(0, color=COLORS["slate"], linewidth=0.9)
         ax.set_ylabel("Variación anual, %")
-        ax.set_xlim(pd.Timestamp("2019-01-01"), target + pd.offsets.MonthBegin(2))
+        if not actual.empty:
+            ax.set_xlim(pd.Timestamp("2019-01-01"), actual["Periodo"].max() + pd.offsets.MonthBegin(2))
         ax.xaxis.set_major_locator(mdates.YearLocator(1))
         ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
-        style_ax(ax, title, subtitle)
-        ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.13), ncol=2, fontsize=9.2)
+        style_ax(ax, title, "El sitio interactivo conserva por separado efectivo, ajuste, nowcast y EEE.")
+        ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.13), ncol=3, fontsize=9.2)
         add_source(fig, "Fuente: Banco Central de Chile, INE y elaboración propia.")
         save(fig, stem)
-
-    history_plot("m4", "imacec_m4_history", "Corte experimental · M4 Dinámico", COLORS["terracotta"])
-    history_plot("m8p", "imacec_m8p_history", "Corte INE · M8P con IVS real", COLORS["teal"])
-
-    fig, ax = plt.subplots(figsize=(10.2, 5.7))
-    winners = oos[oos["modelo"].isin(["M4 · Dinámico", "M8P · INE + IVS real parsimonioso"])].copy() if ready else oos.iloc[0:0]
-    if not winners.empty:
-        winners = winners.sort_values("RMSE", ascending=False)
-        colors = [COLORS["teal"] if "M8P" in x else COLORS["terracotta"] for x in winners["modelo"]]
-        bars = ax.barh(winners["modelo"], winners["RMSE"], color=colors)
-        for bar, rmse, n in zip(bars, winners["RMSE"], winners["N"]):
-            ax.text(bar.get_width() + .05, bar.get_y() + bar.get_height()/2, f"{rmse:.2f} · n={int(n)}", va="center")
-    else:
-        ax.text(.5, .5, "Primera evaluación M4/M8P pendiente", ha="center", va="center", transform=ax.transAxes, color=COLORS["muted"])
-    style_ax(ax, "Evaluación pseudo out-of-sample", "Solo se publican las dos especificaciones fijadas por corte.")
-    ax.set_xlabel("RMSE")
-    add_source(fig, "Fuente: imacec_pseudo_oos_metrics.csv.")
-    save(fig, "imacec_oos_rmse")
 
 
 def ipom_assets() -> None:
@@ -481,7 +544,7 @@ def project_thumbnails() -> None:
         fig.savefig(OUT / "atlas_poverty_2024.png", dpi=160, bbox_inches="tight")
         plt.close(fig)
     mapping = {
-        "imacec": "imacec_m4_history.png",
+        "imacec": "imacec_total_history.png",
         "ipom": "ipom_tpm.png",
         "transmission": "transmission_cumulative.png",
         "stress": "stress_index_chile.png",
