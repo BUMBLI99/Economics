@@ -110,7 +110,17 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/processed/imacec_* assets/img/imacec site/assets/data/project_charts.json site/assets/img/charts/imacec_* site/assets/img/projects/imacec.jpg
+          git add \
+            data/processed/imacec_* \
+            assets/img/imacec \
+            site/assets/data/project_charts.json \
+            site/assets/img/charts/imacec_* \
+            site/assets/img/projects/imacec.jpg \
+            docs/proyectos/imacec.html \
+            docs/assets/data/project_charts.json \
+            docs/assets/img/charts/imacec_* \
+            docs/assets/img/projects/imacec.jpg \
+            docs/assets/files/imacec-*.csv
           if git diff --cached --quiet; then
             echo "No hay cambios analíticos para publicar."
           else
