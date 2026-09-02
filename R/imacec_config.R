@@ -28,14 +28,16 @@ min_training_obs <- 48L
 min_residual_df  <- 24L
 
 codes <- list(
-  imacec           = "F032.IMC.IND.Z.Z.EP18.Z.Z.0.M",
+  imacec_total     = "F032.IMC.IND.Z.Z.EP18.Z.Z.0.M",
+  imacec_no_minero = "F032.IMC.IND.Z.Z.EP18.N03.Z.0.M",
   venta_minorista  = "F034.VDCM.TAS12M.DBC.2018.0.M",
   credito_monto    = "F034.ICCEM.FLU.Z.Z.D00T.M",
   credito_cantidad = "F034.ICCEF.FLU.Z.Z.D00T.M",
   avisos_laborales = "F049.AVS.IND.BCC1.01.M",
   uf_diaria        = "F073.UFF.PRE.Z.D",
   ipc_servicios    = "F074.IPCS.IND.Z.EP23.Z.M",
-  eee_imacec       = "F089.IMC.V12.10.M"
+  eee_imacec       = "F089.IMC.V12.10.M",
+  eee_imacec_nm    = "F089.IMCNM.V12.10.M"
 )
 
 # M8P usa indicadores originales (sufijo 0.M), no desestacionalizados.

@@ -108,11 +108,20 @@
       ...s,
       values: s.values.filter((p) => Number.isFinite(p.value)).sort((a, b) => new Date(a.date) - new Date(b.date))
     }));
+    const drawMarker = (shape, x, y, color) => {
+      if (shape === 'triangle') {
+        add('polygon', { points: `${x},${y - 6} ${x - 6},${y + 5} ${x + 6},${y + 5}`, fill: color, stroke: '#fff', 'stroke-width': 1.4 });
+      } else if (shape === 'diamond') {
+        add('rect', { x: x - 4.8, y: y - 4.8, width: 9.6, height: 9.6, fill: color, stroke: '#fff', 'stroke-width': 1.4, transform: `rotate(45 ${x} ${y})` });
+      } else {
+        add('circle', { cx: x, cy: y, r: 5.2, fill: color, stroke: '#fff', 'stroke-width': 1.4 });
+      }
+    };
     prepared.forEach((s) => {
       const points = s.values.filter((p) => Number.isFinite(p.value)).sort((a, b) => new Date(a.date) - new Date(b.date));
       const d = points.map((p, i) => `${i ? 'L' : 'M'}${sx(new Date(p.date).getTime()).toFixed(2)},${sy(p.value).toFixed(2)}`).join(' ');
-      add('path', { d, fill: 'none', stroke: s.color, 'stroke-width': s.width || 2.4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', 'stroke-dasharray': s.dash || '' });
-      if (options.points) points.forEach((p) => add('circle', { cx: sx(new Date(p.date).getTime()), cy: sy(p.value), r: 3.4, fill: s.color, stroke: '#fff', 'stroke-width': 1 }));
+      if (s.line !== false && points.length) add('path', { d, fill: 'none', stroke: s.color, 'stroke-width': s.width || 2.4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', 'stroke-dasharray': s.dash || '' });
+      if (s.marker || options.points) points.forEach((p) => drawMarker(s.marker || 'circle', sx(new Date(p.date).getTime()), sy(p.value), s.color));
     });
 
     const focusLine = add('line', { y1: margin.top, y2: margin.top + innerH, stroke: palette.muted, 'stroke-width': 1, 'stroke-dasharray': '3 4', visibility: 'hidden' });
@@ -229,11 +238,14 @@
         const option = document.createElement('option');
         option.value = dataset.id; option.textContent = dataset.label; select.appendChild(option);
       });
+      if (config.defaultDataset && config.datasets.some((item) => item.id === config.defaultDataset)) {
+        select.value = config.defaultDataset;
+      }
       const render = () => {
         const dataset = config.datasets.find((item) => item.id === select.value) || config.datasets[0];
         const xTicks = dataset.xTicks?.map((tick) => ({ value: new Date(tick.date).getTime(), label: tick.label }));
         lineChart(chart, dataset.series, { ariaLabel: `${config.ariaLabel}: ${dataset.label}`, yDigits: dataset.yDigits ?? 2, zeroLine: Boolean(dataset.zeroLine), xTicks });
-        legend.innerHTML = dataset.series.map((series) => `<span class="legend-item"><span class="legend-swatch" style="background:${series.color}"></span>${series.name}</span>`).join('');
+        legend.innerHTML = dataset.series.map((series) => `<span class="legend-item"><span class="legend-swatch${series.marker ? ` marker-${series.marker}` : ''}" style="background:${series.color};color:${series.color}"></span>${series.name}</span>`).join('');
       };
       select.addEventListener('change', render); render(); root.classList.add('chart-ready');
     });

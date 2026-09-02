@@ -118,9 +118,14 @@ def main() -> int:
             import json
             try:
                 charts = json.loads(chart_catalog.read_text(encoding="utf-8"))
-                for key in ["imacec", "ipom", "transmission", "stress"]:
+                for key in ["imacec-total", "imacec-nonmining", "ipom", "transmission", "stress"]:
                     if not charts.get(key, {}).get("datasets"):
                         errors.append(f"Catálogo interactivo incompleto: {key}")
+                for key in ["imacec-total", "imacec-nonmining"]:
+                    chart = charts.get(key, {})
+                    ids = {item.get("id") for item in chart.get("datasets", [])}
+                    if chart.get("defaultDataset") not in ids:
+                        errors.append(f"Selector IMACEC sin opción predeterminada válida: {key}")
             except (json.JSONDecodeError, OSError) as exc:
                 errors.append(f"Catálogo interactivo inválido: {exc}")
 

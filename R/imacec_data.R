@@ -24,23 +24,35 @@ monthly_series <- function(code, name, transform = identity) {
 }
 
 get_eee_expectations <- function() {
-  raw <- fetch_series_optional(codes$eee_imacec, "EEE IMACEC")
+  series <- list(
+    eee_imacec = codes$eee_imacec,
+    eee_imacec_nm = codes$eee_imacec_nm
+  )
+  raw <- purrr::imap_dfr(series, function(code, name) {
+    fetch_series_optional(code, name) |>
+      dplyr::mutate(variable = name)
+  })
   if (!nrow(raw)) {
     return(tibble::tibble(
-      survey_period = as.Date(character()), Periodo = as.Date(character()), eee_imacec = numeric()
+      survey_period = as.Date(character()), Periodo = as.Date(character()),
+      eee_imacec = numeric(), eee_imacec_nm = numeric()
     ))
   }
 
-  raw |>
+  out <- raw |>
     dplyr::filter(!is.na(date), !is.na(value)) |>
     dplyr::mutate(
       survey_period = lubridate::floor_date(date, "month"),
       # La EEE publicada en M pregunta por el IMACEC de M-1.
       Periodo = survey_period %m-% lubridate::months(1)
     ) |>
-    dplyr::group_by(survey_period, Periodo) |>
-    dplyr::summarise(eee_imacec = dplyr::last(value), .groups = "drop") |>
+    dplyr::group_by(variable, survey_period, Periodo) |>
+    dplyr::summarise(value = dplyr::last(value), .groups = "drop") |>
+    tidyr::pivot_wider(names_from = variable, values_from = value) |>
     dplyr::arrange(Periodo)
+  if (!"eee_imacec" %in% names(out)) out$eee_imacec <- NA_real_
+  if (!"eee_imacec_nm" %in% names(out)) out$eee_imacec_nm <- NA_real_
+  out
 }
 
 get_uf_monthly <- function() {
@@ -152,9 +164,25 @@ read_ivs_official <- function(path = resolve_ivs_file()) {
     dplyr::arrange(Periodo)
 }
 
+read_ivs_optional <- function() {
+  tryCatch(
+    read_ivs_official(),
+    error = function(e) {
+      warning(
+        "El IVS oficial no está disponible; el ciclo EEE/M4 continuará y M8P quedará pendiente: ",
+        conditionMessage(e), call. = FALSE
+      )
+      out <- tibble::tibble(Periodo = as.Date(character()))
+      for (name in names(ivs_columns)) out[[name]] <- numeric()
+      out
+    }
+  )
+}
+
 get_base_levels <- function() {
   series <- list(
-    imacec_nivel = codes$imacec,
+    imacec_total_nivel = codes$imacec_total,
+    imacec_no_minero_nivel = codes$imacec_no_minero,
     venta_minorista = codes$venta_minorista,
     credito_monto_nivel = codes$credito_monto,
     credito_cantidad_nivel = codes$credito_cantidad,
@@ -177,11 +205,12 @@ build_imacec_dataset <- function() {
   ivs_names <- names(ivs_columns)
   data <- get_base_levels() |>
     dplyr::full_join(get_ine_levels(), by = "Periodo") |>
-    dplyr::full_join(read_ivs_official(), by = "Periodo") |>
+    dplyr::full_join(read_ivs_optional(), by = "Periodo") |>
     dplyr::left_join(read_calendar(), by = "Periodo") |>
     dplyr::arrange(Periodo) |>
     dplyr::mutate(
-      imacec = yoy(imacec_nivel),
+      imacec_total = yoy(imacec_total_nivel),
+      imacec_no_minero = yoy(imacec_no_minero_nivel),
       monto_credito = yoy(credito_monto_nivel),
       cantidad_credito = yoy(credito_cantidad_nivel),
       monto_credito_real = yoy(credito_monto_nivel / uf_nivel),
@@ -202,7 +231,8 @@ build_imacec_dataset <- function() {
         rowMeans(dplyr::pick(dplyr::all_of(real_names)), na.rm = TRUE),
         NA_real_
       ),
-      imacec_lag1 = dplyr::lag(imacec),
+      imacec_total_lag1 = dplyr::lag(imacec_total),
+      imacec_no_minero_lag1 = dplyr::lag(imacec_no_minero),
       avisos_laborales_lag1 = dplyr::lag(avisos_laborales),
       mes_numero = lubridate::month(Periodo),
       mes_factor = factor(mes_numero, levels = 1:12, labels = c(

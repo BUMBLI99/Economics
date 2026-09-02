@@ -10,7 +10,7 @@ Repositorio y sitio público de **Mauricio Andrés Ulloa Valdivia**. Reúne proy
 
 | Proyecto | Pregunta principal | Pipeline |
 |---|---|---|
-| Nowcasting IMACEC | ¿Cómo anticipar el IMACEC total con M4 en el corte experimental y M8P en el corte INE? | R |
+| Nowcasting IMACEC | ¿Cómo evoluciona la señal para el IMACEC total y no minero desde la EEE hasta los cortes M4/M8P y el dato efectivo? | R |
 | Escenarios tipo IPoM | ¿Cómo cambian inflación, TPM y brecha bajo trayectorias condicionales? | Matlab · IRIS · R |
 | Transmisión de la TPM | ¿Con qué velocidad y heterogeneidad se transmite la TPM a tasas bancarias? | R |
 | FX, tasas 10Y y riesgo LatAm | ¿Qué parte de los movimientos financieros excede lo explicado por factores globales? | R |
@@ -65,8 +65,11 @@ Las credenciales se mantienen exclusivamente en un archivo local `.Renviron`. Co
 ### IMACEC
 
 La publicación usa exclusivamente **M4 · Dinámico** para el corte experimental y
-**M8P · INE + IVS real parsimonioso** para el corte INE. La EEE fechada en `M`
-se conserva con su fecha de encuesta y se compara con el IMACEC de `M-1`.
+**M8P · INE + IVS real parsimonioso** para el corte INE, estimados por separado
+para IMACEC total y no minero. La EEE fechada en `M` se conserva con su fecha de
+encuesta y se compara con el IMACEC de `M-1`. Antes de M4 se publica solamente
+un AR(1) provisional; al aparecer el dato efectivo, el archivo de vintages permite
+comparar EEE, M4 y M8P sin reestimarlos retrospectivamente.
 
 Además de `BCCH_USER` y `BCCH_PASS`, deja el Excel histórico IVS oficial en
 `data/raw/series_mensuales_desde_enero_2018_a_la_fecha.xlsx`, o define

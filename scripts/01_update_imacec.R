@@ -1,48 +1,47 @@
 # ============================================================
 # 01_update_imacec.R
-# Actualiza datos, estima modelos y exporta resultados del proyecto IMACEC
-# ============================================================
-# Uso desde la raíz del repositorio Economics:
-#   Rscript scripts/01_update_imacec.R
-#
-# Requisitos locales:
-#   1) .Renviron con BCCH_USER y BCCH_PASS
-#   2) data/raw/cal_1985_2030.xlsx
-#   3) Excel IVS oficial o IMACEC_IVS_URL para descargarlo
+# Ejecuta el ciclo EEE -> M4 -> M8P -> dato efectivo
 # ============================================================
 
 source("R/imacec_run_all.R", encoding = "UTF-8")
 
-message("Iniciando actualización IMACEC...")
+message("Iniciando actualización mensual IMACEC...")
 message("Rango de descarga: ", first_date, " a ", last_date)
-message("Evaluación pseudo-OOS desde: ", format(oos_start_date))
-message("Construyendo base común y factor IVS real...")
+message("Construyendo base común para IMACEC total y no minero...")
 data_imacec <- build_imacec_dataset()
 
-message("Descargando y alineando EEE: encuesta M -> IMACEC M-1...")
+message("Descargando EEE y alineando encuesta M con IMACEC M-1...")
 eee <- get_eee_expectations()
 
-message("Estimando únicamente M4 (experimental) y M8P (INE + IVS real)...")
-resultados <- run_winner_models(data_imacec, eee)
+cycle <- build_cycle_state(data_imacec, eee)
+message("Estado detectado: ", cycle$ciclo_estado_label[1])
+message("Período objetivo: ", format(cycle$periodo_objetivo[1], "%Y-%m"))
 
-if (!all(c("m4", "m8p") %in% names(resultados))) {
-  stop("La actualización exige resultados válidos para ambos cortes: M4 y M8P.")
+results <- run_cycle_models(data_imacec, eee, cycle)
+if (!length(results) && cycle$ciclo_estado[1] != "official_review") {
+  stop("El ciclo activo no produjo una estimación publicable.")
 }
 
 exports <- export_imacec_outputs(
-  resultados,
+  results = results,
+  data = data_imacec,
   eee = eee,
+  cycle = cycle,
   output_dir = "data/processed",
   fig_dir = "assets/img/imacec"
 )
 
-purrr::walk(resultados, function(result) {
-  p <- result$proyeccion
-  message(
-    result$model_label, " · ", format(p$Periodo[1], "%Y-%m"), ": ",
-    round(p$imacec_predicho[1], 2), "%",
-    if (!is.na(p$eee_imacec[1])) paste0(" · EEE: ", round(p$eee_imacec[1], 2), "%") else " · EEE no disponible"
+if (nrow(exports$projections)) {
+  purrr::pwalk(
+    exports$projections[, c("variable", "modelo", "Periodo", "forecast", "eee_value")],
+    function(variable, modelo, Periodo, forecast, eee_value) {
+      message(
+        variable, " · ", modelo, " · ", format(Periodo, "%Y-%m"), ": ",
+        round(forecast, 2), "%",
+        if (!is.na(eee_value)) paste0(" · EEE: ", round(eee_value, 2), "%") else " · EEE no disponible"
+      )
+    }
   )
-})
+}
 
-message("Actualización finalizada: dos cortes, gráficos y comparación EEE exportados.")
+message("Actualización finalizada. El vintage quedó archivado sin sobrescribir cortes anteriores.")
