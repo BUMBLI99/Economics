@@ -1,3 +1,1 @@
-Periodo,imacec_predicho,imacec_lwr,imacec_upr,imacec_nm_predicho,imacec_nm_lwr,imacec_nm_upr,modelo,model_key,fecha_actualizacion
-2026-05-01,-0.9031553411366247,-3.098484998364002,1.2921743160907528,0.7856314696254261,-1.277042110006592,2.848305049257444,Modelo con estadísticas experimentales,base,2026-06-30
-2026-05-01,-3.1638532716240384,-5.211243784534733,-1.116462758713344,-1.4409925084469069,-3.535814647593548,0.6538296306997342,Modelo con indicadores sectoriales INE,ine,2026-06-30
+Periodo,target_key,variable,corte,model_key,modelo,estado,forecast,lwr,upr,nivel_intervalo,eee_value,eee_survey_period,observed,fecha_actualizacion,run_timestamp

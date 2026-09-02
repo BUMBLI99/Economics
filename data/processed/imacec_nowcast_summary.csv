@@ -1,7 +1,1 @@
-Periodo,IMACEC,IMACEC_no_minero,Tipo,Modelo
-2025-12-01,1.27,2.64,Observado,NA
-2026-01-01,-0.93,-0.81,Observado,NA
-2026-02-01,-0.31,-0.21,Observado,NA
-2026-03-01,-0.2,0.95,Observado,NA
-2026-04-01,-1.18,0.42,Observado,NA
-2026-05-01,-0.9,0.79,Nowcast,Modelo con estadísticas experimentales
+Periodo,target_key,variable,corte,model_key,modelo,estado,forecast,lwr,upr,nivel_intervalo,eee_value,eee_survey_period,observed,fecha_actualizacion,run_timestamp

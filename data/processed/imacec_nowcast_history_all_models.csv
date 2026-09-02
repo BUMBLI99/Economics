@@ -1,179 +1,183 @@
-Periodo,imacec,imacec_nm,imacec_fit,imacec_nm_fit,tipo,modelo,model_key
-2019-01-01,1.9659919484973587,2.7341152560787396,1.1531077495843118,1.5957472961997397,Histórico,Modelo con estadísticas experimentales,base
-2019-02-01,0.4024410183006255,1.6595585372416455,-0.052969097755861894,1.1867982377519217,Histórico,Modelo con estadísticas experimentales,base
-2019-03-01,1.347042473024107,2.0466527540109025,0.06647087353383058,1.2627079470624747,Histórico,Modelo con estadísticas experimentales,base
-2019-04-01,1.7820940125048201,1.854854981195575,1.5634513631166038,1.8259362605546052,Histórico,Modelo con estadísticas experimentales,base
-2019-05-01,1.8589031828119662,2.3594432769310947,1.413637501740583,1.418202331824435,Histórico,Modelo con estadísticas experimentales,base
-2019-06-01,0.880313809166644,1.1635809008067488,-0.3621561666015749,0.1468346520084749,Histórico,Modelo con estadísticas experimentales,base
-2019-07-01,2.7653306128001987,3.699210497436334,2.62245994578863,3.352664687203402,Histórico,Modelo con estadísticas experimentales,base
-2019-08-01,3.1909427561596093,3.367958748266986,1.211307676395624,1.5746186507692235,Histórico,Modelo con estadísticas experimentales,base
-2019-09-01,2.7842901635932282,3.484051165327595,3.010931307073147,3.362348094006272,Histórico,Modelo con estadísticas experimentales,base
-2019-10-01,-4.534436503098838,-4.712059303855154,-0.11219129190842453,-0.24162124220702486,Histórico,Modelo con estadísticas experimentales,base
-2019-11-01,-4.988669054665129,-4.351675091891083,-3.476332785138449,-2.7077490223959475,Histórico,Modelo con estadísticas experimentales,base
-2019-12-01,0.9258849701172522,1.228133832481304,-0.45088513270875324,0.43189859214967763,Histórico,Modelo con estadísticas experimentales,base
-2020-01-01,0.9300521010913165,1.0520356730939318,0.426735075458714,0.0699880680633369,Histórico,Modelo con estadísticas experimentales,base
-2020-02-01,2.7210597729153907,2.332493148386061,2.8472340552923234,2.284369750693406,Histórico,Modelo con estadísticas experimentales,base
-2020-03-01,-4.349724855185732,-4.6573727980858575,0.8545426688817391,0.957582588686575,Histórico,Modelo con estadísticas experimentales,base
-2020-04-01,-15.088301570672291,-16.253706219075205,-15.08830157067232,-16.253706219075237,Histórico,Modelo con estadísticas experimentales,base
-2020-05-01,-15.97711767892427,-17.51663250266762,-15.977117678924335,-17.516632502667637,Histórico,Modelo con estadísticas experimentales,base
-2020-06-01,-13.962357751796306,-15.45518696546634,-10.39466185007727,-12.202781000208473,Histórico,Modelo con estadísticas experimentales,base
-2020-07-01,-11.717591602160715,-13.156314088362864,-9.819055156500752,-11.513282664458051,Histórico,Modelo con estadísticas experimentales,base
-2020-08-01,-11.011337841146728,-12.018710106610374,-7.875229847022044,-8.986158153011583,Histórico,Modelo con estadísticas experimentales,base
-2020-09-01,-4.9506576054560885,-5.4415880935850485,-4.496857100497063,-4.611809434628721,Histórico,Modelo con estadísticas experimentales,base
-2020-10-01,-1.3585290872647038,-1.7617207822021141,-2.1774773985773184,-2.062806809978563,Histórico,Modelo con estadísticas experimentales,base
-2020-11-01,1.012732990849563,1.0157142703611788,1.9198070932524862,1.753643310531882,Histórico,Modelo con estadísticas experimentales,base
-2020-12-01,0.5689922284684901,1.3347235420328785,0.8478267117953067,0.48296416063379727,Histórico,Modelo con estadísticas experimentales,base
-2021-01-01,-3.4287687132994904,-3.350273769976153,-1.021449500154129,-0.498123552579817,Histórico,Modelo con estadísticas experimentales,base
-2021-02-01,-2.1666510508181247,-1.3854611211324586,-2.4844846227328676,-1.4451067636693473,Histórico,Modelo con estadísticas experimentales,base
-2021-03-01,6.6327425250128025,7.68507855505729,3.2388191692887216,3.9474205434108898,Histórico,Modelo con estadísticas experimentales,base
-2021-04-01,15.285035960989358,16.734270191563038,12.317735539386373,13.396234993065095,Histórico,Modelo con estadísticas experimentales,base
-2021-05-01,19.551829417289813,22.13975263630448,19.762216231506848,22.0893605555086,Histórico,Modelo con estadísticas experimentales,base
-2021-06-01,20.382431879961494,23.407318658335143,19.142354112130004,23.055265230308635,Histórico,Modelo con estadísticas experimentales,base
-2021-07-01,17.42490393209195,20.76463937480795,20.39239816617765,24.01976436430737,Histórico,Modelo con estadísticas experimentales,base
-2021-08-01,17.966595780594965,21.657203493350764,17.409544408909063,21.73476659103829,Histórico,Modelo con estadísticas experimentales,base
-2021-09-01,13.463442930231295,16.849040783117687,15.716880846975972,18.31975921027787,Histórico,Modelo con estadísticas experimentales,base
-2021-10-01,13.261557495479682,15.655913827209456,11.254168422164904,13.331048628472287,Histórico,Modelo con estadísticas experimentales,base
-2021-11-01,13.33203729920507,15.7452903795817,11.885876110489557,14.177331251413591,Histórico,Modelo con estadísticas experimentales,base
-2021-12-01,8.751161872273826,10.477766339800976,13.283125034605836,14.916815572295281,Histórico,Modelo con estadísticas experimentales,base
-2022-01-01,7.209596697608389,10.22222540329465,10.139612328631216,12.611740611430376,Histórico,Modelo con estadísticas experimentales,base
-2022-02-01,5.005438687016195,7.808978207744599,7.507275743521414,10.003876777971932,Histórico,Modelo con estadísticas experimentales,base
-2022-03-01,5.669655027882148,7.994692106551549,6.351108777941796,8.564438330002243,Histórico,Modelo con estadísticas experimentales,base
-2022-04-01,5.904856300445971,9.085282350398138,5.904856300445968,9.085282350398101,Histórico,Modelo con estadísticas experimentales,base
-2022-05-01,5.588591818479638,7.123730100359338,5.19337919409082,7.870542216530054,Histórico,Modelo con estadísticas experimentales,base
-2022-06-01,2.7970632563766307,4.404975133900391,1.7403765199924688,2.7169347807848565,Histórico,Modelo con estadísticas experimentales,base
-2022-07-01,-0.43808421788794627,1.2528044069725075,0.8472836435689658,1.78319237973052,Histórico,Modelo con estadísticas experimentales,base
-2022-08-01,0.6349071225385083,2.5916980923111455,-1.2585677960982558,-0.2878404441234095,Histórico,Modelo con estadísticas experimentales,base
-2022-09-01,0.17856372039597446,1.1620904191933956,-0.48818738808788953,0.03478165741558903,Histórico,Modelo con estadísticas experimentales,base
-2022-10-01,-1.8790917978623423,-2.3643191172496913,-1.2104860098678478,-0.7103933519296783,Histórico,Modelo con estadísticas experimentales,base
-2022-11-01,-2.866486420366976,-2.537906042892557,-1.7894296943113654,-1.2677169103072141,Histórico,Modelo con estadísticas experimentales,base
-2022-12-01,-1.2635246838221925,-1.3300179238098009,-1.443787081304953,-1.1439471370671563,Histórico,Modelo con estadísticas experimentales,base
-2023-01-01,1.359126237823327,0.5845919328884674,-0.18604574070182012,-0.20421988731763974,Histórico,Modelo con estadísticas experimentales,base
-2023-02-01,0.16342433643201648,0.5722515823792129,0.8603373849602494,1.218262595400083,Histórico,Modelo con estadísticas experimentales,base
-2023-03-01,-1.4905514158231825,-0.06153635370935717,0.3251622696883021,1.039970000813744,Histórico,Modelo con estadísticas experimentales,base
-2023-04-01,-0.497119351657882,-0.628578866738827,-0.4091850881468406,-0.05681341159536024,Histórico,Modelo con estadísticas experimentales,base
-2023-05-01,-0.599359494821039,0.765823394874432,-0.06782431917377818,-0.35262081286930913,Histórico,Modelo con estadísticas experimentales,base
-2023-06-01,0.02746104306026176,-0.15502564733940183,-0.6516188184809357,0.13374003309326832,Histórico,Modelo con estadísticas experimentales,base
-2023-07-01,2.915341321974929,2.330988389425115,0.5890540503543159,0.489850962406306,Histórico,Modelo con estadísticas experimentales,base
-2023-08-01,0.418336336923697,-0.48439612663464526,1.7668902951153815,1.1593458139909596,Histórico,Modelo con estadísticas experimentales,base
-2023-09-01,0.9023618496374564,-0.9565011146409841,-0.3968308468532973,-1.0246676579715124,Histórico,Modelo con estadísticas experimentales,base
-2023-10-01,2.3886867770460896,3.136077145990246,1.9127398940877738,1.7405955135603253,Histórico,Modelo con estadísticas experimentales,base
-2023-11-01,2.281348596189936,2.167097326798406,2.209059632712905,2.4711086120401466,Histórico,Modelo con estadísticas experimentales,base
-2023-12-01,0.5421059316974342,0.7938512913761464,0.9588637607282257,0.9831592547729676,Histórico,Modelo con estadísticas experimentales,base
-2024-01-01,3.744961609875319,4.1128471186122395,0.305349162808191,1.255063689948797,Histórico,Modelo con estadísticas experimentales,base
-2024-02-01,5.836527826096916,4.628470622877567,5.710353543720009,4.676594020570305,Histórico,Modelo con estadísticas experimentales,base
-2024-03-01,1.184659965776258,-0.2650223798154494,0.4468837219544346,-1.4553565758297848,Histórico,Modelo con estadísticas experimentales,base
-2024-04-01,3.8954766293294307,4.2313298983302605,4.452469689729612,4.670926918873005,Histórico,Modelo con estadísticas experimentales,base
-2024-05-01,0.3278935451245246,-0.21752102603829204,1.9116986048723181,1.3661493743605875,Histórico,Modelo con estadísticas experimentales,base
-2024-06-01,-0.7129540412657787,-1.2529263884246133,-0.6935378521869224,-1.2357167812722798,Histórico,Modelo con estadísticas experimentales,base
-2024-07-01,4.491494430948828,4.6495518840197425,0.26456361754739494,0.6243022408919038,Histórico,Modelo con estadísticas experimentales,base
-2024-08-01,2.2341186703822347,1.5667466901213345,2.0532949496730417,1.7222784357847982,Histórico,Modelo con estadísticas experimentales,base
-2024-09-01,0.5088925620504003,0.8477262615004033,-0.3410646723159567,-0.278283098693726,Histórico,Modelo con estadísticas experimentales,base
-2024-10-01,2.893919855317506,2.9737865888798565,0.7825718216028488,1.0236593629522863,Histórico,Modelo con estadísticas experimentales,base
-2024-11-01,2.431240856349004,2.4453500701363318,0.6218596668931177,0.318227115301393,Histórico,Modelo con estadísticas experimentales,base
-2024-12-01,6.790041427242954,5.8056759175583394,3.8616051812371808,3.9105345381076013,Histórico,Modelo con estadísticas experimentales,base
-2025-01-01,3.3277451570978167,3.7667226031889323,4.057052103912438,3.6971244425437675,Histórico,Modelo con estadísticas experimentales,base
-2025-02-01,0.31195371691388196,1.2705337021299723,-1.0677069847165952,-0.25223186108565654,Histórico,Modelo con estadísticas experimentales,base
-2025-03-01,4.927883606216077,4.880608001916276,1.8122786341821495,3.2437674367356046,Histórico,Modelo con estadísticas experimentales,base
-2025-04-01,3.8776905480138346,2.692860351031956,3.8591026793142116,3.0818136369173024,Histórico,Modelo con estadísticas experimentales,base
-2025-05-01,3.933046812718355,2.506905661515213,2.44779806856633,2.286500378591652,Histórico,Modelo con estadísticas experimentales,base
-2025-06-01,3.375601478984036,4.9721635080541615,4.006803729711093,4.470622285151386,Histórico,Modelo con estadísticas experimentales,base
-2025-07-01,1.5968501075468655,2.240705074317506,2.141540318377695,3.0250935685346634,Histórico,Modelo con estadísticas experimentales,base
-2025-08-01,0.2696093831863422,1.3299898699509427,0.3959325216656267,1.093479766307595,Histórico,Modelo con estadísticas experimentales,base
-2025-09-01,3.2961209339912534,4.257546154405323,3.1781424081484344,4.400236804912334,Histórico,Modelo con estadísticas experimentales,base
-2025-10-01,2.0572659006846905,2.838327035510746,2.3800472028000472,2.6855232934134916,Histórico,Modelo con estadísticas experimentales,base
-2025-11-01,1.3711953861016202,2.2056769858848746,1.202559629764699,1.9447035413947322,Histórico,Modelo con estadísticas experimentales,base
-2025-12-01,1.2666989233431902,2.6444701441954432,0.5246121949679105,1.3731781627429518,Histórico,Modelo con estadísticas experimentales,base
-2026-01-01,-0.9305299439559045,-0.8052722740887308,-0.696186084801417,-0.21032872519693974,Histórico,Modelo con estadísticas experimentales,base
-2026-02-01,-0.30968774441596514,-0.20696452402412246,-1.3555334598479412,-0.9927026020304077,Histórico,Modelo con estadísticas experimentales,base
-2026-03-01,-0.20042612820599937,0.9532149341167528,0.6260150832252824,1.0157845491601487,Histórico,Modelo con estadísticas experimentales,base
-2026-04-01,-1.178072826626786,0.4159187323826474,1.381530789152718,2.3825568899497958,Histórico,Modelo con estadísticas experimentales,base
-2026-05-01,NA,NA,-0.9031553411366247,0.7856314696254261,Nowcast,Modelo con estadísticas experimentales,base
-2019-01-01,1.9659919484973587,2.7341152560787396,2.6232115798329403,3.3244021881794055,Histórico,Modelo con indicadores sectoriales INE,ine
-2019-02-01,0.4024410183006255,1.6595585372416455,-0.28620273772401106,1.7540171214997855,Histórico,Modelo con indicadores sectoriales INE,ine
-2019-03-01,1.347042473024107,2.0466527540109025,0.59836797057842,2.0433775702650463,Histórico,Modelo con indicadores sectoriales INE,ine
-2019-04-01,1.7820940125048201,1.854854981195575,3.30760062886781,3.706695402752562,Histórico,Modelo con indicadores sectoriales INE,ine
-2019-05-01,1.8589031828119662,2.3594432769310947,1.515886940407011,2.1029127798027827,Histórico,Modelo con indicadores sectoriales INE,ine
-2019-06-01,0.880313809166644,1.1635809008067488,-0.16346417220558518,0.5599464900962667,Histórico,Modelo con indicadores sectoriales INE,ine
-2019-07-01,2.7653306128001987,3.699210497436334,3.6250265534931603,4.712223846582781,Histórico,Modelo con indicadores sectoriales INE,ine
-2019-08-01,3.1909427561596093,3.367958748266986,1.9552891861122474,2.062026651790974,Histórico,Modelo con indicadores sectoriales INE,ine
-2019-09-01,2.7842901635932282,3.484051165327595,2.91503274726042,3.3167021260979683,Histórico,Modelo con indicadores sectoriales INE,ine
-2019-10-01,-4.534436503098838,-4.712059303855154,-3.5222629272602983,-3.598957669099308,Histórico,Modelo con indicadores sectoriales INE,ine
-2019-11-01,-4.988669054665129,-4.351675091891083,-4.211695009122715,-3.2353542322472872,Histórico,Modelo con indicadores sectoriales INE,ine
-2019-12-01,0.9258849701172522,1.228133832481304,-0.16853258127617987,0.36756016575257294,Histórico,Modelo con indicadores sectoriales INE,ine
-2020-01-01,0.9300521010913165,1.0520356730939318,-0.1555351501920086,0.23208546927246232,Histórico,Modelo con indicadores sectoriales INE,ine
-2020-02-01,2.7210597729153907,2.332493148386061,3.339401416056404,2.390498255208726,Histórico,Modelo con indicadores sectoriales INE,ine
-2020-03-01,-4.349724855185732,-4.6573727980858575,-1.6584762654874394,-2.2469836466380615,Histórico,Modelo con indicadores sectoriales INE,ine
-2020-04-01,-15.088301570672291,-16.253706219075205,-15.088301570672353,-16.253706219075223,Histórico,Modelo con indicadores sectoriales INE,ine
-2020-05-01,-15.97711767892427,-17.51663250266762,-15.97711767892433,-17.516632502667633,Histórico,Modelo con indicadores sectoriales INE,ine
-2020-06-01,-13.962357751796306,-15.45518696546634,-13.408620172751434,-15.41259401335357,Histórico,Modelo con indicadores sectoriales INE,ine
-2020-07-01,-11.717591602160715,-13.156314088362864,-12.957024137824515,-15.070671396772077,Histórico,Modelo con indicadores sectoriales INE,ine
-2020-08-01,-11.011337841146728,-12.018710106610374,-9.63978342933479,-10.584985474848478,Histórico,Modelo con indicadores sectoriales INE,ine
-2020-09-01,-4.9506576054560885,-5.4415880935850485,-2.8173095870011826,-3.101610241015021,Histórico,Modelo con indicadores sectoriales INE,ine
-2020-10-01,-1.3585290872647038,-1.7617207822021141,1.328276404710836,1.0427328610892326,Histórico,Modelo con indicadores sectoriales INE,ine
-2020-11-01,1.012732990849563,1.0157142703611788,1.4784611597651667,1.5713975943922254,Histórico,Modelo con indicadores sectoriales INE,ine
-2020-12-01,0.5689922284684901,1.3347235420328785,-1.4868619271885688,-0.8201530372432788,Histórico,Modelo con indicadores sectoriales INE,ine
-2021-01-01,-3.4287687132994904,-3.350273769976153,-2.0562490020793405,-2.304681050600152,Histórico,Modelo con indicadores sectoriales INE,ine
-2021-02-01,-2.1666510508181247,-1.3854611211324586,-2.504793529565461,-2.2677079990344,Histórico,Modelo con indicadores sectoriales INE,ine
-2021-03-01,6.6327425250128025,7.68507855505729,4.718989244859199,5.210201136348682,Histórico,Modelo con indicadores sectoriales INE,ine
-2021-04-01,15.285035960989358,16.734270191563038,12.087901382827646,12.904224182501185,Histórico,Modelo con indicadores sectoriales INE,ine
-2021-05-01,19.551829417289813,22.13975263630448,18.145112592324818,20.83715984970623,Histórico,Modelo con indicadores sectoriales INE,ine
-2021-06-01,20.382431879961494,23.407318658335143,20.519943462829552,24.00069318666172,Histórico,Modelo con indicadores sectoriales INE,ine
-2021-07-01,17.42490393209195,20.76463937480795,20.035314611803745,23.532510698394724,Histórico,Modelo con indicadores sectoriales INE,ine
-2021-08-01,17.966595780594965,21.657203493350764,17.58105063980667,20.68067335738172,Histórico,Modelo con indicadores sectoriales INE,ine
-2021-09-01,13.463442930231295,16.849040783117687,13.342832256673226,16.35007243370379,Histórico,Modelo con indicadores sectoriales INE,ine
-2021-10-01,13.261557495479682,15.655913827209456,10.820691341270164,12.907502450732308,Histórico,Modelo con indicadores sectoriales INE,ine
-2021-11-01,13.33203729920507,15.7452903795817,12.077572776640231,14.28118250847382,Histórico,Modelo con indicadores sectoriales INE,ine
-2021-12-01,8.751161872273826,10.477766339800976,12.169349070761358,14.032552441941172,Histórico,Modelo con indicadores sectoriales INE,ine
-2022-01-01,7.209596697608389,10.22222540329465,7.476562564125828,9.996501050060573,Histórico,Modelo con indicadores sectoriales INE,ine
-2022-02-01,5.005438687016195,7.808978207744599,4.906260206912549,7.889638562428601,Histórico,Modelo con indicadores sectoriales INE,ine
-2022-03-01,5.669655027882148,7.994692106551549,6.347401169055655,8.936375220847705,Histórico,Modelo con indicadores sectoriales INE,ine
-2022-04-01,5.904856300445971,9.085282350398138,5.904856300445926,9.085282350398108,Histórico,Modelo con indicadores sectoriales INE,ine
-2022-05-01,5.588591818479638,7.123730100359338,5.910260521522911,7.950162626320581,Histórico,Modelo con indicadores sectoriales INE,ine
-2022-06-01,2.7970632563766307,4.404975133900391,2.1808158449481363,3.60611248984742,Histórico,Modelo con indicadores sectoriales INE,ine
-2022-07-01,-0.43808421788794627,1.2528044069725075,0.2713930609788977,1.8159761816742663,Histórico,Modelo con indicadores sectoriales INE,ine
-2022-08-01,0.6349071225385083,2.5916980923111455,-1.1399138494550187,0.7611300655805466,Histórico,Modelo con indicadores sectoriales INE,ine
-2022-09-01,0.17856372039597446,1.1620904191933956,-1.1947834984615389,-0.3495661354620805,Histórico,Modelo con indicadores sectoriales INE,ine
-2022-10-01,-1.8790917978623423,-2.3643191172496913,-2.038615309284749,-1.769806880115839,Histórico,Modelo con indicadores sectoriales INE,ine
-2022-11-01,-2.866486420366976,-2.537906042892557,-2.21483054650387,-2.043758581461331,Histórico,Modelo con indicadores sectoriales INE,ine
-2022-12-01,-1.2635246838221925,-1.3300179238098009,-0.07592274686468936,-0.33564988340707796,Histórico,Modelo con indicadores sectoriales INE,ine
-2023-01-01,1.359126237823327,0.5845919328884674,0.6710398417042711,0.422405076189321,Histórico,Modelo con indicadores sectoriales INE,ine
-2023-02-01,0.16342433643201648,0.5722515823792129,0.7429472213331394,0.6740648566082825,Histórico,Modelo con indicadores sectoriales INE,ine
-2023-03-01,-1.4905514158231825,-0.06153635370935717,-0.024226649413480794,1.0429683442079876,Histórico,Modelo con indicadores sectoriales INE,ine
-2023-04-01,-0.497119351657882,-0.628578866738827,0.7817983128228931,0.7712591437762804,Histórico,Modelo con indicadores sectoriales INE,ine
-2023-05-01,-0.599359494821039,0.765823394874432,-0.697918703462239,0.3202507447986887,Histórico,Modelo con indicadores sectoriales INE,ine
-2023-06-01,0.02746104306026176,-0.15502564733940183,-0.7234734045995088,-0.2956140389534445,Histórico,Modelo con indicadores sectoriales INE,ine
-2023-07-01,2.915341321974929,2.330988389425115,0.5224540987012918,0.02795173279773916,Histórico,Modelo con indicadores sectoriales INE,ine
-2023-08-01,0.418336336923697,-0.48439612663464526,0.01712672525038654,-0.7246615914635568,Histórico,Modelo con indicadores sectoriales INE,ine
-2023-09-01,0.9023618496374564,-0.9565011146409841,0.005726557202586413,-1.4268485822373518,Histórico,Modelo con indicadores sectoriales INE,ine
-2023-10-01,2.3886867770460896,3.136077145990246,1.7905343063548018,1.7630021792544974,Histórico,Modelo con indicadores sectoriales INE,ine
-2023-11-01,2.281348596189936,2.167097326798406,1.6681639031870281,1.4483644883968925,Histórico,Modelo con indicadores sectoriales INE,ine
-2023-12-01,0.5421059316974342,0.7938512913761464,-0.9722262358709609,-0.8611673257928689,Histórico,Modelo con indicadores sectoriales INE,ine
-2024-01-01,3.744961609875319,4.1128471186122395,1.463890190462962,1.9573129035196928,Histórico,Modelo con indicadores sectoriales INE,ine
-2024-02-01,5.836527826096916,4.628470622877567,5.218186182955719,4.570465516054753,Histórico,Modelo con indicadores sectoriales INE,ine
-2024-03-01,1.184659965776258,-0.2650223798154494,-0.1621413943658067,-1.3910008464600212,Histórico,Modelo con indicadores sectoriales INE,ine
-2024-04-01,3.8954766293294307,4.2313298983302605,3.6832796043717266,4.242388439480099,Histórico,Modelo con indicadores sectoriales INE,ine
-2024-05-01,0.3278935451245246,-0.21752102603829204,1.7104022920251616,0.966673136339058,Histórico,Modelo con indicadores sectoriales INE,ine
-2024-06-01,-0.7129540412657787,-1.2529263884246133,-0.7129540412658376,-1.252926388424667,Histórico,Modelo con indicadores sectoriales INE,ine
-2024-07-01,4.491494430948828,4.6495518840197425,1.8075350857048593,2.058452286729484,Histórico,Modelo con indicadores sectoriales INE,ine
-2024-08-01,2.2341186703822347,1.5667466901213345,4.0123981983637345,3.4493976024172652,Histórico,Modelo con indicadores sectoriales INE,ine
-2024-09-01,0.5088925620504003,0.8477262615004033,0.5019008949602659,0.512833297237083,Histórico,Modelo con indicadores sectoriales INE,ine
-2024-10-01,2.893919855317506,2.9737865888798565,1.729730502835851,1.8742928438573168,Histórico,Modelo con indicadores sectoriales INE,ine
-2024-11-01,2.431240856349004,2.4453500701363318,1.7578277664068116,1.9754594627318642,Histórico,Modelo con indicadores sectoriales INE,ine
-2024-12-01,6.790041427242954,5.8056759175583394,6.47632809433283,5.8070244337440835,Histórico,Modelo con indicadores sectoriales INE,ine
-2025-01-01,3.3277451570978167,3.7667226031889323,4.226755056798254,4.202991965133165,Histórico,Modelo con indicadores sectoriales INE,ine
-2025-02-01,0.31195371691388196,1.2705337021299723,1.4969726506807888,2.1121575096149314,Histórico,Modelo con indicadores sectoriales INE,ine
-2025-03-01,4.927883606216077,4.880608001916276,4.343395735655787,4.511569880239686,Histórico,Modelo con indicadores sectoriales INE,ine
-2025-04-01,3.8776905480138346,2.692860351031956,5.009971354419882,3.6042361514607,Histórico,Modelo con indicadores sectoriales INE,ine
-2025-05-01,3.933046812718355,2.506905661515213,4.077161638785309,2.5009749069786165,Histórico,Modelo con indicadores sectoriales INE,ine
-2025-06-01,3.375601478984036,4.9721635080541615,5.095312157531191,5.87928147399201,Histórico,Modelo con indicadores sectoriales INE,ine
-2025-07-01,1.5968501075468655,2.240705074317506,3.7335453124561186,4.705142189208992,Histórico,Modelo con indicadores sectoriales INE,ine
-2025-08-01,0.2696093831863422,1.3299898699509427,0.9170047378948366,2.3669100498974003,Histórico,Modelo con indicadores sectoriales INE,ine
-2025-09-01,3.2961209339912534,4.257546154405323,3.4296151838093403,4.900782676993703,Histórico,Modelo con indicadores sectoriales INE,ine
-2025-10-01,2.0572659006846905,2.838327035510746,2.7210183216750767,3.5472396085648352,Histórico,Modelo con indicadores sectoriales INE,ine
-2025-11-01,1.3711953861016202,2.2056769858848746,2.017899603289968,2.6922566576923845,Histórico,Modelo con indicadores sectoriales INE,ine
-2025-12-01,1.2666989233431902,2.6444701441954432,1.6392269954267693,2.764436348640382,Histórico,Modelo con indicadores sectoriales INE,ine
-2026-01-01,-0.9305299439559045,-0.8052722740887308,-0.0714999859158354,0.4859743413369273,Histórico,Modelo con indicadores sectoriales INE,ine
-2026-02-01,-0.30968774441596514,-0.20696452402412246,-0.9482648482087086,-0.4432736667784809,Histórico,Modelo con indicadores sectoriales INE,ine
-2026-03-01,-0.20042612820599937,0.9532149341167528,-0.442028612186351,0.46980716123074284,Histórico,Modelo con indicadores sectoriales INE,ine
-2026-04-01,-1.178072826626786,0.4159187323826474,-1.7054463107575728,0.07185196779358094,Histórico,Modelo con indicadores sectoriales INE,ine
-2026-05-01,NA,NA,-3.1638532716240384,-1.4409925084469069,Nowcast,Modelo con indicadores sectoriales INE,ine
+Periodo,target_key,variable,observed,fitted,model_key,modelo,corte,tipo
+2019-01-01,no_minero,IMACEC no minero,2.7341152560787396,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-02-01,no_minero,IMACEC no minero,1.6595585372416455,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-03-01,no_minero,IMACEC no minero,2.0466527540109025,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-04-01,no_minero,IMACEC no minero,1.854854981195575,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-05-01,no_minero,IMACEC no minero,2.3594432769310947,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-06-01,no_minero,IMACEC no minero,1.1635809008067488,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-07-01,no_minero,IMACEC no minero,3.699210497436334,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-08-01,no_minero,IMACEC no minero,3.367958748266986,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-09-01,no_minero,IMACEC no minero,3.484051165327595,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-10-01,no_minero,IMACEC no minero,-4.712059303855154,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-11-01,no_minero,IMACEC no minero,-4.351675091891083,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-12-01,no_minero,IMACEC no minero,1.228133832481304,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-01-01,no_minero,IMACEC no minero,1.0520356730939318,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-02-01,no_minero,IMACEC no minero,2.332493148386061,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-03-01,no_minero,IMACEC no minero,-4.6573727980858575,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-04-01,no_minero,IMACEC no minero,-16.253706219075205,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-05-01,no_minero,IMACEC no minero,-17.51663250266762,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-06-01,no_minero,IMACEC no minero,-15.45518696546634,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-07-01,no_minero,IMACEC no minero,-13.156314088362864,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-08-01,no_minero,IMACEC no minero,-12.018710106610374,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-09-01,no_minero,IMACEC no minero,-5.4415880935850485,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-10-01,no_minero,IMACEC no minero,-1.7617207822021141,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-11-01,no_minero,IMACEC no minero,1.0157142703611788,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-12-01,no_minero,IMACEC no minero,1.3347235420328785,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-01-01,no_minero,IMACEC no minero,-3.350273769976153,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-02-01,no_minero,IMACEC no minero,-1.3854611211324586,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-03-01,no_minero,IMACEC no minero,7.68507855505729,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-04-01,no_minero,IMACEC no minero,16.734270191563038,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-05-01,no_minero,IMACEC no minero,22.13975263630448,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-06-01,no_minero,IMACEC no minero,23.407318658335143,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-07-01,no_minero,IMACEC no minero,20.76463937480795,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-08-01,no_minero,IMACEC no minero,21.657203493350764,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-09-01,no_minero,IMACEC no minero,16.849040783117687,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-10-01,no_minero,IMACEC no minero,15.655913827209456,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-11-01,no_minero,IMACEC no minero,15.7452903795817,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-12-01,no_minero,IMACEC no minero,10.477766339800976,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-01-01,no_minero,IMACEC no minero,10.22222540329465,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-02-01,no_minero,IMACEC no minero,7.808978207744599,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-03-01,no_minero,IMACEC no minero,7.994692106551549,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-04-01,no_minero,IMACEC no minero,9.085282350398138,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-05-01,no_minero,IMACEC no minero,7.123730100359338,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-06-01,no_minero,IMACEC no minero,4.404975133900391,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-07-01,no_minero,IMACEC no minero,1.2528044069725075,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-08-01,no_minero,IMACEC no minero,2.5916980923111455,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-09-01,no_minero,IMACEC no minero,1.1620904191933956,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-10-01,no_minero,IMACEC no minero,-2.3643191172496913,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-11-01,no_minero,IMACEC no minero,-2.537906042892557,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-12-01,no_minero,IMACEC no minero,-1.3300179238098009,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-01-01,no_minero,IMACEC no minero,0.5845919328884674,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-02-01,no_minero,IMACEC no minero,0.5722515823792129,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-03-01,no_minero,IMACEC no minero,-0.06153635370935717,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-04-01,no_minero,IMACEC no minero,-0.628578866738827,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-05-01,no_minero,IMACEC no minero,0.765823394874432,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-06-01,no_minero,IMACEC no minero,-0.15502564733940183,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-07-01,no_minero,IMACEC no minero,2.330988389425115,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-08-01,no_minero,IMACEC no minero,-0.48439612663464526,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-09-01,no_minero,IMACEC no minero,-0.9565011146409841,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-10-01,no_minero,IMACEC no minero,3.136077145990246,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-11-01,no_minero,IMACEC no minero,2.167097326798406,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-12-01,no_minero,IMACEC no minero,0.7938512913761464,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-01-01,no_minero,IMACEC no minero,4.1128471186122395,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-02-01,no_minero,IMACEC no minero,4.628470622877567,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-03-01,no_minero,IMACEC no minero,-0.2650223798154494,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-04-01,no_minero,IMACEC no minero,4.2313298983302605,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-05-01,no_minero,IMACEC no minero,-0.21752102603829204,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-06-01,no_minero,IMACEC no minero,-1.2529263884246133,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-07-01,no_minero,IMACEC no minero,4.6495518840197425,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-08-01,no_minero,IMACEC no minero,1.5667466901213345,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-09-01,no_minero,IMACEC no minero,0.8477262615004033,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-10-01,no_minero,IMACEC no minero,2.9737865888798565,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-11-01,no_minero,IMACEC no minero,2.4453500701363318,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-12-01,no_minero,IMACEC no minero,5.8056759175583394,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-01-01,no_minero,IMACEC no minero,3.7667226031889323,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-02-01,no_minero,IMACEC no minero,1.2705337021299723,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-03-01,no_minero,IMACEC no minero,4.880608001916276,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-04-01,no_minero,IMACEC no minero,2.692860351031956,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-05-01,no_minero,IMACEC no minero,2.506905661515213,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-06-01,no_minero,IMACEC no minero,4.9721635080541615,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-07-01,no_minero,IMACEC no minero,2.240705074317506,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-08-01,no_minero,IMACEC no minero,1.3299898699509427,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-09-01,no_minero,IMACEC no minero,4.257546154405323,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-10-01,no_minero,IMACEC no minero,2.838327035510746,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-11-01,no_minero,IMACEC no minero,2.2056769858848746,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-12-01,no_minero,IMACEC no minero,2.6444701441954432,NA,actual,IMACEC efectivo,oficial,Efectivo
+2026-01-01,no_minero,IMACEC no minero,-0.7596509074593527,NA,actual,IMACEC efectivo,oficial,Efectivo
+2026-02-01,no_minero,IMACEC no minero,-0.14106910741275014,NA,actual,IMACEC efectivo,oficial,Efectivo
+2026-03-01,no_minero,IMACEC no minero,1.2533594134531256,NA,actual,IMACEC efectivo,oficial,Efectivo
+2026-04-01,no_minero,IMACEC no minero,0.6898526641451186,NA,actual,IMACEC efectivo,oficial,Efectivo
+2026-05-01,no_minero,IMACEC no minero,0.30523196607576963,NA,actual,IMACEC efectivo,oficial,Efectivo
+2026-06-01,no_minero,IMACEC no minero,1.199968515136729,NA,actual,IMACEC efectivo,oficial,Efectivo
+2026-07-01,no_minero,IMACEC no minero,-0.30982965559617215,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-01-01,total,IMACEC total,1.9659919484973587,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-02-01,total,IMACEC total,0.4024410183006255,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-03-01,total,IMACEC total,1.347042473024107,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-04-01,total,IMACEC total,1.7820940125048201,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-05-01,total,IMACEC total,1.8589031828119662,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-06-01,total,IMACEC total,0.880313809166644,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-07-01,total,IMACEC total,2.7653306128001987,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-08-01,total,IMACEC total,3.1909427561596093,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-09-01,total,IMACEC total,2.7842901635932282,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-10-01,total,IMACEC total,-4.534436503098838,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-11-01,total,IMACEC total,-4.988669054665129,NA,actual,IMACEC efectivo,oficial,Efectivo
+2019-12-01,total,IMACEC total,0.9258849701172522,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-01-01,total,IMACEC total,0.9300521010913165,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-02-01,total,IMACEC total,2.7210597729153907,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-03-01,total,IMACEC total,-4.349724855185732,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-04-01,total,IMACEC total,-15.088301570672291,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-05-01,total,IMACEC total,-15.97711767892427,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-06-01,total,IMACEC total,-13.962357751796306,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-07-01,total,IMACEC total,-11.717591602160715,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-08-01,total,IMACEC total,-11.011337841146728,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-09-01,total,IMACEC total,-4.9506576054560885,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-10-01,total,IMACEC total,-1.3585290872647038,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-11-01,total,IMACEC total,1.012732990849563,NA,actual,IMACEC efectivo,oficial,Efectivo
+2020-12-01,total,IMACEC total,0.5689922284684901,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-01-01,total,IMACEC total,-3.4287687132994904,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-02-01,total,IMACEC total,-2.1666510508181247,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-03-01,total,IMACEC total,6.6327425250128025,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-04-01,total,IMACEC total,15.285035960989358,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-05-01,total,IMACEC total,19.551829417289813,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-06-01,total,IMACEC total,20.382431879961494,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-07-01,total,IMACEC total,17.42490393209195,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-08-01,total,IMACEC total,17.966595780594965,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-09-01,total,IMACEC total,13.463442930231295,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-10-01,total,IMACEC total,13.261557495479682,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-11-01,total,IMACEC total,13.33203729920507,NA,actual,IMACEC efectivo,oficial,Efectivo
+2021-12-01,total,IMACEC total,8.751161872273826,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-01-01,total,IMACEC total,7.209596697608389,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-02-01,total,IMACEC total,5.005438687016195,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-03-01,total,IMACEC total,5.669655027882148,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-04-01,total,IMACEC total,5.904856300445971,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-05-01,total,IMACEC total,5.588591818479638,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-06-01,total,IMACEC total,2.7970632563766307,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-07-01,total,IMACEC total,-0.43808421788794627,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-08-01,total,IMACEC total,0.6349071225385083,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-09-01,total,IMACEC total,0.17856372039597446,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-10-01,total,IMACEC total,-1.8790917978623423,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-11-01,total,IMACEC total,-2.866486420366976,NA,actual,IMACEC efectivo,oficial,Efectivo
+2022-12-01,total,IMACEC total,-1.2635246838221925,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-01-01,total,IMACEC total,1.359126237823327,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-02-01,total,IMACEC total,0.16342433643201648,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-03-01,total,IMACEC total,-1.4905514158231825,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-04-01,total,IMACEC total,-0.497119351657882,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-05-01,total,IMACEC total,-0.599359494821039,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-06-01,total,IMACEC total,0.02746104306026176,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-07-01,total,IMACEC total,2.915341321974929,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-08-01,total,IMACEC total,0.418336336923697,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-09-01,total,IMACEC total,0.9023618496374564,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-10-01,total,IMACEC total,2.3886867770460896,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-11-01,total,IMACEC total,2.281348596189936,NA,actual,IMACEC efectivo,oficial,Efectivo
+2023-12-01,total,IMACEC total,0.5421059316974342,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-01-01,total,IMACEC total,3.744961609875319,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-02-01,total,IMACEC total,5.836527826096916,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-03-01,total,IMACEC total,1.184659965776258,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-04-01,total,IMACEC total,3.8954766293294307,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-05-01,total,IMACEC total,0.3278935451245246,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-06-01,total,IMACEC total,-0.7129540412657787,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-07-01,total,IMACEC total,4.491494430948828,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-08-01,total,IMACEC total,2.2341186703822347,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-09-01,total,IMACEC total,0.5088925620504003,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-10-01,total,IMACEC total,2.893919855317506,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-11-01,total,IMACEC total,2.431240856349004,NA,actual,IMACEC efectivo,oficial,Efectivo
+2024-12-01,total,IMACEC total,6.790041427242954,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-01-01,total,IMACEC total,3.3277451570978167,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-02-01,total,IMACEC total,0.31195371691388196,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-03-01,total,IMACEC total,4.927883606216077,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-04-01,total,IMACEC total,3.8776905480138346,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-05-01,total,IMACEC total,3.933046812718355,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-06-01,total,IMACEC total,3.375601478984036,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-07-01,total,IMACEC total,1.5968501075468655,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-08-01,total,IMACEC total,0.2696093831863422,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-09-01,total,IMACEC total,3.2961209339912534,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-10-01,total,IMACEC total,2.0572659006846905,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-11-01,total,IMACEC total,1.3711953861016202,NA,actual,IMACEC efectivo,oficial,Efectivo
+2025-12-01,total,IMACEC total,1.2666989233431902,NA,actual,IMACEC efectivo,oficial,Efectivo
+2026-01-01,total,IMACEC total,-0.8658742743165249,NA,actual,IMACEC efectivo,oficial,Efectivo
+2026-02-01,total,IMACEC total,-0.220585400383988,NA,actual,IMACEC efectivo,oficial,Efectivo
+2026-03-01,total,IMACEC total,0.09162416465238188,NA,actual,IMACEC efectivo,oficial,Efectivo
+2026-04-01,total,IMACEC total,-1.070155907885062,NA,actual,IMACEC efectivo,oficial,Efectivo
+2026-05-01,total,IMACEC total,-1.387178647812548,NA,actual,IMACEC efectivo,oficial,Efectivo
+2026-06-01,total,IMACEC total,2.015280488360527,NA,actual,IMACEC efectivo,oficial,Efectivo
+2026-07-01,total,IMACEC total,-1.487117150040529,NA,actual,IMACEC efectivo,oficial,Efectivo
