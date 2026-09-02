@@ -72,9 +72,11 @@ un AR(1) provisional; al aparecer el dato efectivo, el archivo de vintages permi
 comparar EEE, M4 y M8P sin reestimarlos retrospectivamente.
 
 Además de `BCCH_USER` y `BCCH_PASS`, deja el Excel histórico IVS oficial en
-`data/raw/series_mensuales_desde_enero_2018_a_la_fecha.xlsx`, o define
-`IMACEC_IVS_URL`. En GitHub, las credenciales deben ser Repository Secrets;
-`IMACEC_IVS_URL` puede ser una Repository Variable.
+`data/raw/series_mensuales_desde_enero_2018_a_la_fecha.xls`, o define
+`IMACEC_IVS_URL`. El pipeline usa por defecto el enlace público oficial del INE
+compartido para esta serie y acepta tanto `.xls` como `.xlsx`. En GitHub, las
+credenciales deben ser Repository Secrets; `IMACEC_IVS_URL` puede usarse como
+Repository Variable para reemplazar la URL si el INE la cambia.
 
 ```bash
 Rscript scripts/01_update_imacec.R

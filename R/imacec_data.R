@@ -121,13 +121,19 @@ download_ivs_file <- function(url, destination = ivs_path) {
     httr::timeout(120), httr::user_agent("Economics-IMACEC/2.0")
   )
   httr::stop_for_status(response)
-  writeBin(httr::content(response, as = "raw"), destination)
-  if (file.info(destination)$size < 10000) stop("El archivo IVS descargado no parece un Excel válido.")
-  signature <- readBin(destination, what = "raw", n = 2L)
-  if (length(signature) < 2L || rawToChar(signature) != "PK") {
-    stop("La descarga IVS no devolvió un Excel .xlsx válido.")
-  }
-  destination
+  content <- httr::content(response, as = "raw")
+  if (length(content) < 10000L) stop("El archivo IVS descargado no parece un Excel válido.")
+
+  is_xlsx <- length(content) >= 2L && rawToChar(content[1:2]) == "PK"
+  ole_signature <- as.raw(c(0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1))
+  is_xls <- length(content) >= 8L && identical(content[1:8], ole_signature)
+  if (!is_xlsx && !is_xls) stop("La descarga IVS no devolvió un Excel .xls o .xlsx válido.")
+
+  extension <- if (is_xlsx) ".xlsx" else ".xls"
+  stem <- sub("[.](xlsx|xls)$", "", destination, ignore.case = TRUE)
+  resolved_destination <- paste0(stem, extension)
+  writeBin(content, resolved_destination)
+  resolved_destination
 }
 
 extract_ivs_urls <- function(page) {
@@ -171,6 +177,12 @@ find_ivs_urls <- function() {
 
 resolve_ivs_file <- function() {
   if (file.exists(ivs_path)) return(ivs_path)
+  alternate <- if (grepl("[.]xlsx$", ivs_path, ignore.case = TRUE)) {
+    sub("[.]xlsx$", ".xls", ivs_path, ignore.case = TRUE)
+  } else {
+    sub("[.]xls$", ".xlsx", ivs_path, ignore.case = TRUE)
+  }
+  if (file.exists(alternate)) return(alternate)
   urls <- find_ivs_urls()
   for (url in urls) {
     downloaded <- tryCatch(
