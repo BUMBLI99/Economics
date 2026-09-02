@@ -265,6 +265,17 @@ tr:hover td { background: #fbfaf7; }
 .chart-legend { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: .45rem; color: var(--muted); font-size: .8rem; }
 .legend-item { display: inline-flex; align-items: center; gap: .35rem; }
 .legend-swatch { width: 18px; height: 3px; border-radius: 2px; }
+.legend-swatch.marker-circle { width: 9px; height: 9px; border-radius: 50%; }
+.legend-swatch.marker-diamond { width: 8px; height: 8px; border-radius: 1px; transform: rotate(45deg); margin-inline: 2px; }
+.legend-swatch.marker-triangle { width: 0; height: 0; border-right: 6px solid transparent; border-bottom: 10px solid currentColor; border-left: 6px solid transparent; border-radius: 0; background: transparent !important; }
+.chart-help { margin: .7rem 0 .1rem; padding-top: .7rem; border-top: 1px solid var(--line); color: var(--muted-2); font-size: .78rem; }
+.imacec-panel { padding: clamp(.85rem,2vw,1.25rem); }
+.imacec-panel::before { content: "Panel interactivo · actualización por vintage"; }
+.imacec-status { border-left-color: var(--navy); background: linear-gradient(90deg,rgba(25,48,68,.055),rgba(255,255,255,.65)); }
+.imacec-status[data-cycle-stage="eee_proxy"] { border-left-color: var(--gold); }
+.imacec-status[data-cycle-stage="experimental"] { border-left-color: var(--terracotta); }
+.imacec-status[data-cycle-stage="ine"] { border-left-color: var(--teal); }
+.imacec-cycle-kpis .kpi-value { font-size: clamp(1.08rem,2vw,1.42rem); }
 
 .cv-timeline { display: grid; gap: .8rem; }
 .cv-item { display: grid; grid-template-columns: 150px 1fr; gap: 1.2rem; padding: 1.15rem 0; border-bottom: 1px solid var(--line); }
