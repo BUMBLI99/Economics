@@ -105,51 +105,60 @@ def build_contexts() -> dict[str, Any]:
     # IMACEC
     projections = pd.read_csv(ROOT / "data/processed/imacec_projection_all_models.csv")
     oos = pd.read_csv(ROOT / "data/processed/imacec_pseudo_oos_metrics.csv")
-    ready = set(projections.get("model_key", pd.Series(dtype=str))) >= {"m4", "m8p"}
+    status = pd.read_csv(ROOT / "data/processed/imacec_update_status.csv")
+    new_schema = {"target_key", "forecast", "model_key"}.issubset(projections.columns)
+    cycle_schema = {"ciclo_estado", "modelo_principal", "periodo_objetivo"}.issubset(status.columns)
+    ready = new_schema and cycle_schema
 
     if ready:
-        status = pd.read_csv(ROOT / "data/processed/imacec_update_status.csv")
-        m4 = projections.loc[projections["model_key"].eq("m4")].iloc[0]
-        m8p = projections.loc[projections["model_key"].eq("m8p")].iloc[0]
-
-        def cutoff_context(row: pd.Series) -> dict[str, str]:
-            survey = "—" if pd.isna(row.get("eee_survey_period")) else fmt_month(row["eee_survey_period"])
-            return {
-                "target": fmt_month(row["Periodo"]),
-                "forecast": fmt_pct(row["imacec_predicho"], 2, True),
-                "lwr": fmt_pct(row["imacec_lwr"], 2, True),
-                "upr": fmt_pct(row["imacec_upr"], 2, True),
-                "eee": fmt_pct(row.get("eee_imacec"), 2, True),
-                "eee_survey": survey,
-                "state": str(row.get("estado", "Nowcast")),
-            }
-
+        row = status.iloc[-1]
+        stage = str(row["ciclo_estado"])
+        default_key = str(row["modelo_principal"])
+        default_labels = {
+            "summary": "Resumen del ciclo cerrado", "proxy": "AR(1) provisional",
+            "m4": "M4 · Dinámico", "m8p": "M8P · INE + IVS real",
+        }
+        as_bool = lambda value: str(value).strip().lower() in {"true", "1", "yes"}
+        current = projections[
+            projections["target_key"].eq("total") & projections["model_key"].eq(default_key)
+        ]
+        principal = "—" if current.empty else f"{fmt_pct(current.iloc[-1]['forecast'], 2, True)}%"
         preferred = ["M4 · Dinámico", "M8P · INE + IVS real parsimonioso"]
-        oos = oos[oos["modelo"].isin(preferred)].copy()
-        oos["orden"] = pd.Categorical(oos["modelo"], categories=preferred, ordered=True)
-        oos = oos.sort_values("orden")
+        oos_view = oos[oos["modelo"].isin(preferred)].copy()
+        oos_view["orden"] = pd.Categorical(oos_view["modelo"], categories=preferred, ordered=True)
+        oos_view = oos_view.sort_values(["variable", "orden"])
         oos_table = table_html(
-            oos,
-            ["modelo", "N", "RMSE", "MAE", "Periodo"],
-            {"modelo": "Especificación", "N": "N", "RMSE": "RMSE", "MAE": "MAE", "Periodo": "Ventana evaluada"},
+            oos_view,
+            ["variable", "modelo", "N", "RMSE", "MAE", "Periodo"],
+            {"variable": "Serie", "modelo": "Especificación", "N": "N", "RMSE": "RMSE", "MAE": "MAE", "Periodo": "Ventana"},
             {"N": lambda x: str(int(x)), "RMSE": lambda x: fmt_num(x, 2), "MAE": lambda x: fmt_num(x, 2)},
         )
         imacec = {
             "ready": True,
-            "experimental": cutoff_context(m4),
-            "ine": cutoff_context(m8p),
-            "updated": fmt_date(status["fecha_actualizacion"].max()),
+            "stage": stage,
+            "stage_label": str(row["ciclo_estado_label"]),
+            "last_actual": fmt_month(row["ultima_observacion_imacec"]),
+            "target": fmt_month(row["periodo_objetivo"]),
+            "default_label": default_labels.get(default_key, default_key),
+            "principal": principal,
+            "has_eee": as_bool(row["tiene_eee"]),
+            "has_m4": as_bool(row["tiene_experimentales"]),
+            "has_m8p": as_bool(row["tiene_ine"]),
+            "updated": fmt_date(row["fecha_actualizacion"]),
             "oos_table": oos_table,
         }
     else:
-        # Nunca relabelar como M4/M8P cifras producidas por las especificaciones antiguas.
-        pending = {"target": "Pendiente", "forecast": "—", "lwr": "—", "upr": "—", "eee": "—", "eee_survey": "—", "state": "Primera ejecución segura pendiente"}
         imacec = {
             "ready": False,
-            "experimental": pending,
-            "ine": pending,
-            "updated": "pendiente de la primera ejecución M4/M8P",
-            "oos_table": '<div class="callout">Las métricas se publicarán con la primera ejecución reproducible de las dos especificaciones fijadas.</div>',
+            "stage": "pending",
+            "stage_label": "Primera ejecución del ciclo profesional pendiente",
+            "last_actual": "Último dato disponible",
+            "target": "—",
+            "default_label": "Dato efectivo",
+            "principal": "—",
+            "has_eee": False, "has_m4": False, "has_m8p": False,
+            "updated": "pendiente de la primera ejecución del nuevo ciclo",
+            "oos_table": '<div class="callout">Las métricas se publicarán después de la primera actualización reproducible.</div>',
         }
 
     # IPoM / IRIS
@@ -424,7 +433,7 @@ def build_pages(contexts: dict[str, Any]) -> None:
 
     # Project pages
     project_meta_overrides = {
-        "imacec": ("30 de junio de 2026", "Mensual", "R"),
+        "imacec": ("Septiembre de 2026", "Mensual", "R"),
         "ipom-iris": ("2026", "Trimestral", "Matlab · IRIS · R"),
         "transmision-tpm": ("Mayo de 2026", "Mensual", "R"),
         "exchange": ("1 de junio de 2026", "Diaria", "R"),
