@@ -105,7 +105,7 @@ build_cycle_state <- function(data, eee) {
     fecha_hora_actualizacion = format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"),
     ultima_observacion_imacec = last_actual,
     periodo_objetivo = as.Date(target),
-    siguiente_periodo_imacec = last_actual %m+% lubridate::months(1),
+    siguiente_periodo_imacec = last_actual %m+% lubridate::period(months = 1),
     ciclo_estado = stage,
     ciclo_estado_label = label,
     modelo_principal = default_model,
