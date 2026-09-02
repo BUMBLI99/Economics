@@ -6,7 +6,7 @@
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2026-09-02T05:11:54.796306</dc:date>
+    <dc:date>2026-09-02T05:37:48.404889</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
@@ -1698,14 +1698,14 @@ z
    </g>
    <g id="legend_1">
     <g id="line2d_27">
-     <path d="M 422.441983 383.854814 
-L 431.641983 383.854814 
-L 440.841983 383.854814 
+     <path d="M 393.466295 383.854814 
+L 402.666295 383.854814 
+L 411.866295 383.854814 
 " style="fill: none; stroke: #193044; stroke-width: 2.35; stroke-linecap: square"/>
     </g>
     <g id="text_20">
      <!-- IMACEC efectivo -->
-     <g transform="translate(448.201983 387.074814) scale(0.092 -0.092)">
+     <g transform="translate(419.226295 387.074814) scale(0.092 -0.092)">
       <defs>
        <path id="DejaVuSans-2c" d="M 628 4666 
 L 1259 4666 
@@ -1785,9 +1785,39 @@ z
       <use xlink:href="#DejaVuSans-52" transform="translate(756.484375 0)"/>
      </g>
     </g>
+    <g id="PathCollection_1">
+     <defs>
+      <path id="m8c3553c6ea" d="M 0 4.242641 
+C 1.125161 4.242641 2.204391 3.795609 3 3 
+C 3.795609 2.204391 4.242641 1.125161 4.242641 0 
+C 4.242641 -1.125161 3.795609 -2.204391 3 -3 
+C 2.204391 -3.795609 1.125161 -4.242641 0 -4.242641 
+C -1.125161 -4.242641 -2.204391 -3.795609 -3 -3 
+C -3.795609 -2.204391 -4.242641 -1.125161 -4.242641 0 
+C -4.242641 1.125161 -3.795609 2.204391 -3 3 
+C -2.204391 3.795609 -1.125161 4.242641 0 4.242641 
+z
+" style="stroke: #ffffff; stroke-width: 1.2"/>
+     </defs>
+     <g>
+      <use xlink:href="#m8c3553c6ea" x="522.052108" y="384.659814" style="fill: #b4573d; stroke: #ffffff; stroke-width: 1.2"/>
+     </g>
+    </g>
+    <g id="text_21">
+     <!-- M4 -->
+     <g transform="translate(538.612108 387.074814) scale(0.092 -0.092)">
+      <use xlink:href="#DejaVuSans-30"/>
+      <use xlink:href="#DejaVuSans-17" transform="translate(86.28125 0)"/>
+     </g>
+    </g>
+   </g>
+   <g id="PathCollection_2">
+    <g clip-path="url(#p7436f4b608)">
+     <use xlink:href="#m8c3553c6ea" x="865.521971" y="208.532018" style="fill: #b4573d; stroke: #ffffff; stroke-width: 1.2"/>
+    </g>
    </g>
   </g>
-  <g id="text_21">
+  <g id="text_22">
    <!-- Fuente: Banco Central de Chile, INE y elaboración propia. -->
    <g style="fill: #65717e" transform="translate(7.2 414.755422) scale(0.082 -0.082)">
     <defs>

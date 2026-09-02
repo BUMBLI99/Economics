@@ -1,1 +1,3 @@
 Periodo,target_key,variable,corte,model_key,modelo,estado,forecast,lwr,upr,nivel_intervalo,eee_value,eee_survey_period,observed,fecha_actualizacion,run_timestamp
+2026-07-01,total,IMACEC total,experimental,m4,M4 · Dinámico,Reestimación de referencia; el dato efectivo ya existe,-0.4290071722506964,-2.6398951642643986,1.781880819763006,0.8,1.1,2026-08-01,-1.487117150040529,2026-09-02,2026-09-02 05:37:43 UTC
+2026-07-01,no_minero,IMACEC no minero,experimental,m4,M4 · Dinámico,Reestimación de referencia; el dato efectivo ya existe,-0.6960329744214482,-2.7626808625819876,1.3706149137390913,0.8,1,2026-08-01,-0.30982965559617215,2026-09-02,2026-09-02 05:37:44 UTC
