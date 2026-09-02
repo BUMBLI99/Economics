@@ -13,9 +13,15 @@ last_date  <- Sys.getenv("IMACEC_LAST_DATE", unset = format(Sys.Date(), "%Y-%m-%
 cal_path   <- Sys.getenv("IMACEC_CAL_PATH", unset = "data/raw/cal_1985_2030.xlsx")
 ivs_path   <- Sys.getenv(
   "IMACEC_IVS_FILE",
-  unset = "data/raw/series_mensuales_desde_enero_2018_a_la_fecha.xlsx"
+  unset = "data/raw/series_mensuales_desde_enero_2018_a_la_fecha.xls"
 )
-ivs_url <- Sys.getenv("IMACEC_IVS_URL", unset = "")
+official_ivs_url <- paste0(
+  "https://www.ine.gob.cl/docs/default-source/ventas-de-servicios/",
+  "cuadro-estadisticos/base-promedio-a%C3%B1o-2018-100/",
+  "series_mensuales_desde_enero_2018_a_la_fecha.xls?sfvrsn=1ff3a838_74"
+)
+ivs_url <- trimws(Sys.getenv("IMACEC_IVS_URL", unset = ""))
+if (!nzchar(ivs_url)) ivs_url <- official_ivs_url
 ivs_page <- paste0(
   "https://www.ine.gob.cl/estadisticas-por-tema/",
   "comercio-y-servicios/ventas-mensuales-de-servicios"
