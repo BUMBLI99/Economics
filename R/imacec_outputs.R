@@ -64,7 +64,15 @@ read_archive_safe <- function(path) {
   old |>
     dplyr::mutate(
       Periodo = as.Date(Periodo), fecha_actualizacion = as.Date(fecha_actualizacion),
-      eee_survey_period = as.Date(eee_survey_period)
+      eee_survey_period = as.Date(eee_survey_period),
+      dplyr::across(
+        dplyr::any_of(c("forecast", "lwr", "upr", "nivel_intervalo", "eee_value", "observed")),
+        ~ suppressWarnings(as.numeric(.x))
+      ),
+      dplyr::across(
+        dplyr::any_of(c("target_key", "variable", "corte", "model_key", "modelo", "estado", "run_timestamp")),
+        as.character
+      )
     )
 }
 
