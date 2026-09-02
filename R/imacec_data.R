@@ -115,23 +115,54 @@ parse_ivs_period <- function(x) {
 
 download_ivs_file <- function(url, destination = ivs_path) {
   dir.create(dirname(destination), recursive = TRUE, showWarnings = FALSE)
-  response <- httr::GET(url, httr::timeout(90), httr::user_agent("Economics-IMACEC/2.0"))
+  response <- httr::RETRY(
+    "GET", url, times = 4, pause_base = 1, pause_cap = 8,
+    terminate_on = c(400, 401, 403, 404),
+    httr::timeout(120), httr::user_agent("Economics-IMACEC/2.0")
+  )
   httr::stop_for_status(response)
   writeBin(httr::content(response, as = "raw"), destination)
   if (file.info(destination)$size < 10000) stop("El archivo IVS descargado no parece un Excel válido.")
+  signature <- readBin(destination, what = "raw", n = 2L)
+  if (length(signature) < 2L || rawToChar(signature) != "PK") {
+    stop("La descarga IVS no devolvió un Excel .xlsx válido.")
+  }
   destination
 }
 
-find_ivs_url <- function() {
+extract_ivs_urls <- function(page) {
+  page <- gsub("\\\\/", "/", page)
+  page <- gsub("&amp;", "&", page, fixed = TRUE)
+  page <- gsub("\\\\u0026", "&", page, fixed = TRUE)
+  pattern <- paste0(
+    "(https?:)?//[^\\\"'<>[:space:]]+\\.(xlsx|xls)(\\?[^\\\"'<>[:space:]]*)?|",
+    "/[^\\\"'<>[:space:]]+\\.(xlsx|xls)(\\?[^\\\"'<>[:space:]]*)?"
+  )
+  hits <- regmatches(page, gregexpr(pattern, page, perl = TRUE, ignore.case = TRUE))[[1]]
+  if (!length(hits) || identical(hits, character(0))) return(character())
+  hits <- unique(URLdecode(hits))
+  hits <- gsub("^//", "https://", hits)
+  relative <- startsWith(hits, "/")
+  hits[relative] <- paste0("https://www.ine.gob.cl", hits[relative])
+  hits
+}
+
+find_ivs_urls <- function() {
   if (nzchar(ivs_url)) return(ivs_url)
-  response <- httr::GET(ivs_page, httr::timeout(60), httr::user_agent("Economics-IMACEC/2.0"))
+  response <- httr::RETRY(
+    "GET", ivs_page, times = 3, pause_base = 1,
+    httr::timeout(60), httr::user_agent("Economics-IMACEC/2.0")
+  )
   httr::stop_for_status(response)
   page <- httr::content(response, as = "text", encoding = "UTF-8")
-  links <- stringr::str_extract_all(page, "https?://[^\\\"' ]+\\.xlsx(?:\\?[^\\\"' ]*)?")[[1]]
-  links <- unique(gsub("&amp;", "&", links, fixed = TRUE))
-  preferred <- links[grepl("serie|mensual|servicio|ivs", links, ignore.case = TRUE)]
-  if (length(preferred)) return(preferred[1])
-  if (length(links)) return(links[1])
+  links <- extract_ivs_urls(page)
+  relevant <- links[grepl("ventas|servicios|ivs|serie", normalize_ivs_text(links))]
+  if (length(relevant)) links <- relevant
+  if (length(links)) {
+    priority <- 10L * grepl("cuadro|serie|histor|base", normalize_ivs_text(links)) +
+      5L * grepl("xlsx", tolower(links), fixed = TRUE)
+    return(links[order(priority, decreasing = TRUE)])
+  }
   stop(
     "No se encontró automáticamente el Excel histórico IVS. Define IMACEC_IVS_URL ",
     "o IMACEC_IVS_FILE con el archivo oficial del INE."
@@ -140,7 +171,15 @@ find_ivs_url <- function() {
 
 resolve_ivs_file <- function() {
   if (file.exists(ivs_path)) return(ivs_path)
-  download_ivs_file(find_ivs_url(), ivs_path)
+  urls <- find_ivs_urls()
+  for (url in urls) {
+    downloaded <- tryCatch(
+      download_ivs_file(url, ivs_path),
+      error = function(e) NULL
+    )
+    if (!is.null(downloaded)) return(downloaded)
+  }
+  stop("El INE publicó enlaces de IVS, pero ninguno devolvió el Excel histórico esperado.")
 }
 
 read_ivs_official <- function(path = resolve_ivs_file()) {
