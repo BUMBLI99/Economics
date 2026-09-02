@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Nowcasting IMACEC · Mauricio Ulloa</title>
-  <meta name="description" content="Modelo mensual para anticipar el IMACEC total y no minero con vintages de información, variables calendario y evaluación pseudo out-of-sample.">
+  <meta name="description" content="Monitor mensual del IMACEC total y no minero que avanza desde la EEE y un AR(1) provisional hacia M4 experimental, M8P INE y la evaluación con el dato efectivo.">
   <meta name="author" content="Mauricio Andrés Ulloa Valdivia">
   <meta name="theme-color" content="#f4f1eb">
   <link rel="canonical" href="https://mulloav3007.github.io/Economics/proyectos/imacec.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Nowcasting IMACEC · Mauricio Ulloa">
-  <meta property="og:description" content="Modelo mensual para anticipar el IMACEC total y no minero con vintages de información, variables calendario y evaluación pseudo out-of-sample.">
+  <meta property="og:description" content="Monitor mensual del IMACEC total y no minero que avanza desde la EEE y un AR(1) provisional hacia M4 experimental, M8P INE y la evaluación con el dato efectivo.">
   <meta property="og:url" content="https://mulloav3007.github.io/Economics/proyectos/imacec.html">
   <meta property="og:image" content="https://mulloav3007.github.io/Economics/assets/img/projects/imacec.jpg">
   <meta name="twitter:card" content="summary_large_image">
@@ -42,13 +42,13 @@
     <div>
       <p class="eyebrow">Actividad económica</p>
       <h1 class="project-title">Nowcasting de actividad económica en Chile</h1>
-      <p class="project-deck">Modelo mensual para anticipar el IMACEC total y no minero con vintages de información, variables calendario y evaluación pseudo out-of-sample.</p>
+      <p class="project-deck">Monitor mensual del IMACEC total y no minero que avanza desde la EEE y un AR(1) provisional hacia M4 experimental, M8P INE y la evaluación con el dato efectivo.</p>
       <div class="tag-row">
 <span class="tag">R</span><span class="tag">IMACEC</span><span class="tag">Nowcasting</span><span class="tag">Series de tiempo</span>      </div>
 <div class="actions"><a class="button button-secondary" href="https://github.com/mulloav3007/Economics/tree/main/R" target="_blank" rel="noopener">Ver código ↗</a></div>    </div>
     <dl class="project-meta">
       <div><dt>Estado</dt><dd>Activo</dd></div>
-      <div><dt>Última actualización</dt><dd>30 de junio de 2026</dd></div>
+      <div><dt>Última actualización</dt><dd>Septiembre de 2026</dd></div>
       <div><dt>Frecuencia</dt><dd>Mensual</dd></div>
       <div><dt>Herramientas</dt><dd>R</dd></div>
     </dl>
@@ -57,74 +57,94 @@
 <section class="section-tight">
   <div class="container project-layout">
     <article class="project-content">
-      <div class="kpi-grid">
-<div class="kpi"><div class="kpi-label">Mes objetivo</div><div class="kpi-value">mayo de 2026</div><div class="kpi-note">siguiente IMACEC por publicar</div></div>
-<div class="kpi"><div class="kpi-label">IMACEC total</div><div class="kpi-value">-0,90%</div><div class="kpi-note">intervalo 95%: -3,10 a +1,29</div></div>
-<div class="kpi"><div class="kpi-label">No minero</div><div class="kpi-value">+0,79%</div><div class="kpi-note">intervalo 95%: -1,28 a +2,85</div></div>
-<div class="kpi"><div class="kpi-label">Vintage vigente</div><div class="kpi-value">Experimental</div><div class="kpi-note">indicadores sectoriales INE aún no disponibles</div></div>
+      <div class="kpi-grid imacec-cycle-kpis">
+<div class="kpi"><div class="kpi-label">Último dato efectivo</div><div class="kpi-value">Último dato disponible</div><div class="kpi-note">Total y no minero publicados por el BCCh</div></div>
+<div class="kpi"><div class="kpi-label">Período en seguimiento</div><div class="kpi-value">—</div><div class="kpi-note">La EEE de M corresponde al IMACEC de M−1</div></div>
+<div class="kpi"><div class="kpi-label">Señal principal</div><div class="kpi-value">Dato efectivo</div><div class="kpi-note">Cambia solo cuando el corte informativo está completo</div></div>
+<div class="kpi"><div class="kpi-label">Nowcast total vigente</div><div class="kpi-value">—</div><div class="kpi-note">No se muestra una proyección si todavía no corresponde</div></div>
+</div>
+<div class="callout imacec-status" data-cycle-stage="pending">
+<strong>Estado del ciclo:</strong> Primera ejecución del ciclo profesional pendiente.
 </div>
 <div class="callout callout-warning">
-<strong>Lectura de estado.</strong> Para mayo de 2026, el pipeline dispone de estadísticas experimentales, pero no del bloque sectorial INE completo. Por eso la página publica únicamente el nowcast efectivamente disponible y no presenta la proyección INE como si estuviera operativa.
+<strong>Transición segura pendiente.</strong> La interfaz conserva únicamente el IMACEC efectivo hasta que GitHub Actions genere por primera vez el nuevo archivo de estados; ninguna cifra antigua se presenta como M4 o M8P.
 </div>
-<h2 id="pregunta-economica">Pregunta económica</h2>
-<p>¿Es posible anticipar el crecimiento anual del <strong>IMACEC total</strong> y del <strong>IMACEC no minero</strong> antes de la publicación oficial, respetando el conjunto de información que realmente estaba disponible en cada momento del ciclo mensual?</p>
-<p>El proyecto se construye como un sistema de <strong>vintages</strong>. Cada actualización reconoce tres estados distintos:</p>
-<ol>
-<li><strong>Primera señal:</strong> estadísticas experimentales y variables de alta frecuencia.</li>
-<li><strong>Información sectorial:</strong> minería, manufactura, comercio, servicios y electricidad cuando el INE ha publicado el bloque necesario.</li>
-<li><strong>Cierre del ciclo:</strong> dato efectivo del IMACEC, que reemplaza la proyección y permite evaluar el error.</li>
-</ol>
-<h2 id="resultado-vigente">Resultado vigente</h2>
-<div class="interactive-card" data-project-chart="imacec" data-url="../assets/data/project_charts.json">
-<div class="chart-controls"><label for="imacec-dataset">Serie</label><select data-dataset-select="" id="imacec-dataset"></select></div>
-<div aria-live="polite" class="interactive-chart" data-generic-chart=""></div><div class="chart-legend" data-chart-legend=""></div>
+<h2 id="seguimiento-mensual">Seguimiento mensual</h2>
+<p>Los dos paneles responden al mismo calendario de publicación. El selector ofrece únicamente las estimaciones realmente disponibles y deja por defecto la más informativa: señal AR(1), M4 experimental, M8P INE o resumen ex post.</p>
+<h3>IMACEC total</h3>
+<div class="interactive-card imacec-panel" data-project-chart="imacec-total" data-url="../assets/data/project_charts.json">
+<div class="chart-controls"><label for="imacec-total-dataset">Corte o resumen</label><select data-dataset-select="" id="imacec-total-dataset"></select></div>
+<div aria-live="polite" class="interactive-chart" data-generic-chart=""></div>
+<div class="chart-legend" data-chart-legend=""></div>
+<p class="chart-help">Pasa el cursor sobre el gráfico para consultar el IMACEC efectivo, el ajuste histórico, la proyección vigente y la EEE comparable.</p>
 </div>
-<p>La estimación para <strong>mayo de 2026</strong> apunta a una variación anual de <strong>-0,90%</strong> en el IMACEC total y de <strong>+0,79%</strong> en el componente no minero. La divergencia sugiere una lectura de actividad agregada débil, pero con mejor desempeño fuera del componente minero.</p>
-<p>Estas cifras deben interpretarse junto con sus intervalos y con el estado del ciclo informativo. No son una publicación oficial ni una estimación en tiempo real libre de revisiones.</p>
-<figure class="chart-figure">
-<a href="../assets/img/charts/imacec_total_history.svg" rel="noopener noreferrer" target="_blank"><img alt="IMACEC total efectivo, ajustes de modelos y nowcast vigente" decoding="async" loading="lazy" src="../assets/img/charts/imacec_total_history.svg"/></a>
-<figcaption class="chart-caption">Serie completa disponible. El punto de proyección corresponde solo al modelo activo para el vintage actual.</figcaption>
-</figure>
-<figure class="chart-figure">
-<a href="../assets/img/charts/imacec_nonmining_history.svg" rel="noopener noreferrer" target="_blank"><img alt="IMACEC no minero efectivo, ajustes de modelos y nowcast vigente" decoding="async" loading="lazy" src="../assets/img/charts/imacec_nonmining_history.svg"/></a>
-<figcaption class="chart-caption">El ajuste histórico de ambos modelos puede compararse, pero una proyección solo se publica cuando sus insumos existen.</figcaption>
-</figure>
-<h2 id="arquitectura-del-nowcast">Arquitectura del nowcast</h2>
-<div class="equation"><span class="equation-label">Especificación general</span>y<sub>t</sub> = α + β′X<sub>t,v</sub> + γ′Calendario<sub>t</sub> + μ<sub>mes</sub> + ε<sub>t</sub></div>
-<p>El vector <strong>X<sub>t,v</sub></strong> cambia con el vintage <strong>v</strong>. La especificación temprana usa estadísticas experimentales, crédito, ventas, UF y variables calendario. La especificación sectorial incorpora indicadores INE únicamente cuando están disponibles para el mes objetivo. Esta separación evita el uso implícito de información futura.</p>
-<p>Los dos modelos se estiman para IMACEC total y no minero. Además del ajuste interno, se comparan con benchmarks simples: AR(1), promedio móvil de tres meses y regla estacional a doce meses.</p>
+<h3>IMACEC no minero</h3>
+<div class="interactive-card imacec-panel" data-project-chart="imacec-nonmining" data-url="../assets/data/project_charts.json">
+<div class="chart-controls"><label for="imacec-nonmining-dataset">Corte o resumen</label><select data-dataset-select="" id="imacec-nonmining-dataset"></select></div>
+<div aria-live="polite" class="interactive-chart" data-generic-chart=""></div>
+<div class="chart-legend" data-chart-legend=""></div>
+<p class="chart-help">La serie no minera se estima de forma independiente, manteniendo el conjunto fijo de predictores de M4 o M8P.</p>
+</div>
+<h2 id="como-se-actualiza">Cómo se actualiza</h2>
+<table>
+<thead>
+<tr>
+<th>Momento del mes</th>
+<th>Publicación visible</th>
+<th>Opción predeterminada</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dato efectivo recién publicado, antes de la nueva EEE</td>
+<td>IMACEC efectivo del último mes; si existen vintages válidos, resumen ex post con EEE, M4 y M8P</td>
+<td>Resumen del período</td>
+</tr>
+<tr>
+<td>Nueva EEE, antes de estadísticas experimentales</td>
+<td>EEE alineada al mes anterior y una señal mínima AR(1)</td>
+<td>AR(1) provisional</td>
+</tr>
+<tr>
+<td>Estadísticas experimentales completas</td>
+<td>Efectivo, ajuste M4, nowcast M4 y punto EEE</td>
+<td>M4 · Dinámico</td>
+</tr>
+<tr>
+<td>Indicadores INE e IVS completos</td>
+<td>M4 sigue elegible y se añade M8P</td>
+<td>M8P · INE + IVS real</td>
+</tr>
+<tr>
+<td>Publicación del IMACEC objetivo</td>
+<td>Efectivo y los puntos archivados de EEE, M4 y M8P, sin reestimarlos retrospectivamente</td>
+<td>Resumen del período</td>
+</tr>
+</tbody>
+</table>
+<p>El archivo de vintages conserva cada proyección antes de que el dato oficial la sustituya. Así, la comparación ex post utiliza lo que el proyecto publicó realmente en cada corte y no una reconstrucción posterior con información revisada.</p>
+<h2 id="especificaciones-publicadas">Especificaciones publicadas</h2>
+<div class="equation"><span class="equation-label">M4 · Dinámico — corte experimental</span>IMACEC<sub>t</sub> = f(ventas<sub>t</sub>, crédito monto<sub>t</sub>, crédito cantidad<sub>t</sub>, IMACEC<sub>t−1</sub>, calendario)</div>
+<div class="equation"><span class="equation-label">M8P · INE + IVS real parsimonioso</span>IMACEC<sub>t</sub> = f(crédito cantidad<sub>t</sub>, IMACEC<sub>t−1</sub>, avisos<sub>t−1</sub>, sectores INE<sub>t</sub>, IVS real<sub>t</sub>, crédito real<sub>t</sub>, calendario)</div>
+<p>Las dos fórmulas se reestiman por separado para <strong>IMACEC total</strong> e <strong>IMACEC no minero</strong>. El factor IVS real promedia seis índices de ventas de servicios deflactados por el IPC de Servicios y M8P solo se habilita con cobertura contemporánea completa.</p>
 <h2 id="evaluacion-pseudo-out-of-sample">Evaluación pseudo out-of-sample</h2>
-<figure class="chart-figure">
-<a href="../assets/img/charts/imacec_oos_rmse.svg" rel="noopener noreferrer" target="_blank"><img alt="RMSE pseudo out-of-sample para modelos IMACEC y benchmarks" decoding="async" loading="lazy" src="../assets/img/charts/imacec_oos_rmse.svg"/></a>
-<figcaption class="chart-caption">La evaluación comienza en 2021, pero el número de pronósticos difiere según la fecha desde la cual cada bloque de datos puede reconstruirse.</figcaption>
-</figure>
-<div class="table-wrap"><table><thead><tr><th>Variable</th><th>Modelo</th><th>N</th><th>RMSE</th><th>MAE</th><th>Ventana evaluada</th></tr></thead><tbody><tr><td>IMACEC total</td><td>Modelo con indicadores sectoriales INE</td><td>28</td><td>1,75</td><td>1,40</td><td>2024-01 a 2026-04</td></tr><tr><td>IMACEC total</td><td>Modelo con estadísticas experimentales</td><td>40</td><td>2,43</td><td>1,78</td><td>2023-01 a 2026-04</td></tr><tr><td>IMACEC total</td><td>Benchmark AR(1)</td><td>64</td><td>2,77</td><td>2,05</td><td>2021-01 a 2026-04</td></tr><tr><td>IMACEC total</td><td>Promedio móvil 3m</td><td>64</td><td>3,59</td><td>2,38</td><td>2021-01 a 2026-04</td></tr><tr><td>IMACEC total</td><td>Naive estacional t-12</td><td>64</td><td>11,66</td><td>7,90</td><td>2021-01 a 2026-04</td></tr><tr><td>IMACEC no minero</td><td>Modelo con indicadores sectoriales INE</td><td>28</td><td>1,79</td><td>1,46</td><td>2024-01 a 2026-04</td></tr><tr><td>IMACEC no minero</td><td>Modelo con estadísticas experimentales</td><td>40</td><td>2,18</td><td>1,56</td><td>2023-01 a 2026-04</td></tr><tr><td>IMACEC no minero</td><td>Benchmark AR(1)</td><td>64</td><td>3,02</td><td>2,26</td><td>2021-01 a 2026-04</td></tr><tr><td>IMACEC no minero</td><td>Promedio móvil 3m</td><td>64</td><td>3,83</td><td>2,49</td><td>2021-01 a 2026-04</td></tr><tr><td>IMACEC no minero</td><td>Naive estacional t-12</td><td>64</td><td>13,19</td><td>8,78</td><td>2021-01 a 2026-04</td></tr></tbody></table></div>
-<p>El modelo sectorial INE presenta el menor RMSE en la muestra donde puede evaluarse, pero esa comparación no es perfectamente homogénea porque cuenta con menos observaciones. La conclusión profesional no es que “gana” sin condiciones, sino que <strong>agrega información útil cuando el bloque sectorial está efectivamente disponible</strong>.</p>
-<h2 id="que-se-corrigio-en-esta-version">Qué se corrigió en esta versión</h2>
+<div class="callout">Las métricas se publicarán después de la primera actualización reproducible.</div>
+<p>La evaluación es recursiva y mantiene fijas M4 y M8P, pero usa la base final disponible; por ello mide capacidad predictiva comparable, no reproduce todas las revisiones de cada vintage histórico.</p>
+<h2 id="reproducibilidad-y-publicacion">Reproducibilidad y publicación</h2>
 <ul>
-<li>La página ya no mezcla proyecciones de meses anteriores con el vintage vigente.</li>
-<li>El modelo INE desaparece del bloque de proyección cuando sus insumos no están disponibles.</li>
-<li>Los gráficos distinguen efectivo, ajuste de cada modelo y nowcast con formas y trazos diferentes.</li>
-<li>La evaluación pseudo out-of-sample informa el tamaño muestral de cada comparación.</li>
-<li>La publicación consume archivos procesados; una falla de descarga no destruye el sitio completo.</li>
+<li>Las credenciales del BCCh se leen exclusivamente desde GitHub Actions Secrets.</li>
+<li>La EEE publicada en <strong>M</strong> se asigna al IMACEC de <strong>M−1</strong>.</li>
+<li>El proxy AR(1) aparece solamente entre la EEE y el primer corte de datos; nunca compite con M4 o M8P.</li>
+<li>El modelo principal cambia por disponibilidad verificable, no por cuál arroje la cifra más conveniente.</li>
+<li>La tarea programada revisa datos cada día hábil y solo versiona salidas cuando existe un cambio.</li>
 </ul>
-<h2 id="limites-de-interpretacion">Límites de interpretación</h2>
-<ul>
-<li>La evaluación es <strong>pseudo</strong> out-of-sample: utiliza la base final reconstruida y no todos los vintages históricos en tiempo real.</li>
-<li>Los intervalos reflejan incertidumbre estadística condicional al modelo, no toda la incertidumbre de revisión de datos.</li>
-<li>Quiebres extraordinarios, como la pandemia, pueden dominar métricas agregadas.</li>
-<li>La disponibilidad y oportunidad de los indicadores sectoriales deben revisarse en cada actualización.</li>
-</ul>
+<p>Última ejecución publicada: <strong>pendiente de la primera ejecución del nuevo ciclo</strong>.</p>
 <h2 id="archivos-principales">Archivos principales</h2>
-<div class="download-grid">
-<a class="download" href="../assets/files/imacec-nowcast-summary.csv"><div><strong>Resumen del nowcast</strong><span>CSV · proyección vigente</span></div><span>↓</span></a>
-<a class="download" href="../assets/files/imacec-oos-metrics.csv"><div><strong>Métricas pseudo OOS</strong><span>CSV · modelos y benchmarks</span></div><span>↓</span></a>
-</div>
 
     </article>
     <aside class="project-toc" aria-label="Contenido de la página">
       <p class="project-toc-title">En esta página</p>
-<a href="#pregunta-economica">Pregunta económica</a><a href="#resultado-vigente">Resultado vigente</a><a href="#arquitectura-del-nowcast">Arquitectura del nowcast</a><a href="#evaluacion-pseudo-out-of-sample">Evaluación pseudo out-of-sample</a><a href="#que-se-corrigio-en-esta-version">Qué se corrigió en esta versión</a><a href="#limites-de-interpretacion">Límites de interpretación</a><a href="#archivos-principales">Archivos principales</a>    </aside>
+<a href="#seguimiento-mensual">Seguimiento mensual</a><a href="#como-se-actualiza">Cómo se actualiza</a><a href="#especificaciones-publicadas">Especificaciones publicadas</a><a href="#evaluacion-pseudo-out-of-sample">Evaluación pseudo out-of-sample</a><a href="#reproducibilidad-y-publicacion">Reproducibilidad y publicación</a><a href="#archivos-principales">Archivos principales</a>    </aside>
   </div>
 </section>
   </main>
