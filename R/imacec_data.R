@@ -44,7 +44,7 @@ get_eee_expectations <- function() {
     dplyr::mutate(
       survey_period = lubridate::floor_date(date, "month"),
       # La EEE publicada en M pregunta por el IMACEC de M-1.
-      Periodo = survey_period %m-% lubridate::months(1)
+      Periodo = survey_period %m-% lubridate::period(months = 1)
     ) |>
     dplyr::group_by(variable, survey_period, Periodo) |>
     dplyr::summarise(value = dplyr::last(value), .groups = "drop") |>
