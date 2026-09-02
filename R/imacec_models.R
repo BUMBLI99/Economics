@@ -144,6 +144,11 @@ run_nowcast <- function(model_key, target_key, target_period, data, eee) {
   }
   fitted <- fit_winner(data, model_key, target_key, target_period)
   response <- target_specs[[target_key]]$response
+  target_key_value <- target_key
+  target_label <- target_specs[[target_key]]$label
+  model_key_value <- model_key
+  model_label <- model_specs[[model_key]]$label
+  model_cut <- model_specs[[model_key]]$corte
   newdata <- data |>
     dplyr::filter(Periodo == as.Date(target_period)) |>
     dplyr::slice_head(n = 1)
@@ -153,16 +158,16 @@ run_nowcast <- function(model_key, target_key, target_period, data, eee) {
 
   history <- fitted$train |>
     dplyr::transmute(
-      Periodo, target_key = target_key, variable = target_specs[[target_key]]$label,
+      Periodo, target_key = target_key_value, variable = target_label,
       observed = .data[[response]], fitted = as.numeric(stats::predict(fitted$model)),
-      model_key = model_key, modelo = model_specs[[model_key]]$label,
-      corte = model_specs[[model_key]]$corte, tipo = "Ajuste"
+      model_key = model_key_value, modelo = model_label,
+      corte = model_cut, tipo = "Ajuste"
     )
 
   projection <- tibble::tibble(
-    Periodo = as.Date(target_period), target_key = target_key,
-    variable = target_specs[[target_key]]$label, corte = model_specs[[model_key]]$corte,
-    model_key = model_key, modelo = model_specs[[model_key]]$label,
+    Periodo = as.Date(target_period), target_key = target_key_value,
+    variable = target_label, corte = model_cut,
+    model_key = model_key_value, modelo = model_label,
     estado = if (is.na(observed)) "Nowcast activo" else "Reestimación de referencia; el dato efectivo ya existe",
     forecast = as.numeric(prediction$fit), lwr = as.numeric(prediction$lwr),
     upr = as.numeric(prediction$upr), nivel_intervalo = interval_level,
@@ -173,9 +178,9 @@ run_nowcast <- function(model_key, target_key, target_period, data, eee) {
   )
 
   list(
-    model_key = model_key, target_key = target_key,
-    model_label = model_specs[[model_key]]$label,
-    target_label = target_specs[[target_key]]$label, model = fitted$model,
+    model_key = model_key_value, target_key = target_key_value,
+    model_label = model_label,
+    target_label = target_label, model = fitted$model,
     Data = data, train = fitted$train, history = history,
     proyeccion = projection, newdata = newdata
   )
@@ -183,6 +188,8 @@ run_nowcast <- function(model_key, target_key, target_period, data, eee) {
 
 run_proxy <- function(target_key, target_period, data, eee) {
   response <- target_specs[[target_key]]$response
+  target_key_value <- target_key
+  target_label <- target_specs[[target_key]]$label
   train <- data |>
     dplyr::filter(Periodo < as.Date(target_period), !is.na(.data[[response]])) |>
     dplyr::arrange(Periodo) |>
@@ -200,13 +207,13 @@ run_proxy <- function(target_key, target_period, data, eee) {
 
   history <- train |>
     dplyr::transmute(
-      Periodo, target_key = target_key, variable = target_specs[[target_key]]$label,
+      Periodo, target_key = target_key_value, variable = target_label,
       observed = value, fitted = as.numeric(stats::predict(fit)),
       model_key = "proxy", modelo = "AR(1) provisional", corte = "eee", tipo = "Ajuste"
     )
   projection <- tibble::tibble(
-    Periodo = as.Date(target_period), target_key = target_key,
-    variable = target_specs[[target_key]]$label, corte = "eee", model_key = "proxy",
+    Periodo = as.Date(target_period), target_key = target_key_value,
+    variable = target_label, corte = "eee", model_key = "proxy",
     modelo = "AR(1) provisional", estado = "Señal temprana; no sustituye M4 ni M8P",
     forecast = as.numeric(prediction$fit), lwr = as.numeric(prediction$lwr),
     upr = as.numeric(prediction$upr), nivel_intervalo = interval_level,
@@ -215,8 +222,8 @@ run_proxy <- function(target_key, target_period, data, eee) {
     fecha_actualizacion = Sys.Date(), run_timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")
   )
   list(
-    model_key = "proxy", target_key = target_key, model_label = "AR(1) provisional",
-    target_label = target_specs[[target_key]]$label, model = fit, Data = data,
+    model_key = "proxy", target_key = target_key_value, model_label = "AR(1) provisional",
+    target_label = target_label, model = fit, Data = data,
     train = train, history = history, proyeccion = projection, newdata = NULL
   )
 }

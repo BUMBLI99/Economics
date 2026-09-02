@@ -21,8 +21,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: imacec-update
@@ -119,18 +117,3 @@ jobs:
             git commit -m "Actualiza ciclo mensual IMACEC"
             git push
           fi
-
-      - name: Configure GitHub Pages
-        if: steps.credentials.outputs.configured == 'true' && github.event_name != 'pull_request'
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        if: steps.credentials.outputs.configured == 'true' && github.event_name != 'pull_request'
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: docs
-
-      - name: Deploy GitHub Pages
-        if: steps.credentials.outputs.configured == 'true' && github.event_name != 'pull_request'
-        id: deployment
-        uses: actions/deploy-pages@v4
