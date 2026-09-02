@@ -1,3 +1,3 @@
 variable,modelo,model_key,n,rmse,mae,nota
-IMACEC no minero,M4 · Dinámico,m4,90,1.3136643265962789,1.0031765130739774,Ajuste interno; no equivale a desempeño predictivo fuera de muestra.
+IMACEC no minero,M4 · Dinámico,m4,90,1.313664326596279,1.0031765130739776,Ajuste interno; no equivale a desempeño predictivo fuera de muestra.
 IMACEC total,M4 · Dinámico,m4,90,1.4008735723445662,1.121646948486064,Ajuste interno; no equivale a desempeño predictivo fuera de muestra.
