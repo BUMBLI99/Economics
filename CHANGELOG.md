@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09 — Ciclo mensual IMACEC
+
+- Se incorporaron paneles interactivos separados para IMACEC total y no minero.
+- El estado publicado avanza automáticamente por EEE/AR(1), M4 experimental, M8P INE y evaluación con el dato efectivo.
+- M4 y M8P mantienen predictores fijos y se estiman por separado para ambas series.
+- Las proyecciones se archivan por vintage para compararlas ex post sin reestimación retrospectiva.
+- La EEE de la encuesta `M` se alinea estrictamente con el IMACEC de `M-1`.
+
 ## 2026-07 — Reconstrucción profesional del portafolio
 
 ### Arquitectura
