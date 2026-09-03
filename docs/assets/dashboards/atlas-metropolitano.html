@@ -476,8 +476,8 @@ const map=L.map('map',{
   worldCopyJump:false
 }).setView([-33.55,-70.65],9);
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
-  attribution:'&copy; OpenStreetMap &copy; CARTO',
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
   maxZoom:19,
   noWrap:true
 }).addTo(map);
