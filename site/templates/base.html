@@ -15,7 +15,7 @@
   <meta property="og:image" content="{{ og_image_url }}">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="{{ base_path }}assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="{{ base_path }}assets/css/site.css">
+  <link rel="stylesheet" href="{{ base_path }}assets/css/site.css?v=20260903">
   {% block extra_head %}{% endblock %}
 </head>
 <body class="{{ body_class|default('') }}">
@@ -49,7 +49,7 @@
     </div>
   </footer>
   <button class="back-to-top" type="button" aria-label="Volver arriba">↑</button>
-  <script src="{{ base_path }}assets/js/site.js" defer></script>
+  <script src="{{ base_path }}assets/js/site.js?v=20260903" defer></script>
   {% block extra_scripts %}{% endblock %}
 </body>
 </html>
