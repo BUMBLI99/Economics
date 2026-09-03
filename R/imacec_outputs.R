@@ -9,7 +9,8 @@ empty_projection_table <- function() {
     corte = character(), model_key = character(), modelo = character(), estado = character(),
     forecast = numeric(), lwr = numeric(), upr = numeric(), nivel_intervalo = numeric(),
     eee_value = numeric(), eee_survey_period = as.Date(character()), observed = numeric(),
-    fecha_actualizacion = as.Date(character()), run_timestamp = character()
+    fecha_actualizacion = as.Date(character()), run_timestamp = character(),
+    is_realtime = logical(), provenance = character()
   )
 }
 
@@ -61,6 +62,14 @@ read_archive_safe <- function(path) {
     if (!file.exists(backup)) file.copy(path, backup)
     return(NULL)
   }
+  if (!"is_realtime" %in% names(old)) old$is_realtime <- is.na(old$observed)
+  if (!"provenance" %in% names(old)) {
+    old$provenance <- ifelse(
+      old$is_realtime,
+      "Archivo histórico automático",
+      "Reestimación de referencia"
+    )
+  }
   old |>
     dplyr::mutate(
       Periodo = as.Date(Periodo), fecha_actualizacion = as.Date(fecha_actualizacion),
@@ -72,23 +81,28 @@ read_archive_safe <- function(path) {
       dplyr::across(
         dplyr::any_of(c("target_key", "variable", "corte", "model_key", "modelo", "estado", "run_timestamp")),
         as.character
-      )
+      ),
+      is_realtime = as.logical(is_realtime),
+      provenance = as.character(provenance)
     )
 }
 
 append_projection_archive <- function(projections, output_dir) {
   path <- file.path(output_dir, "imacec_projection_archive.csv")
   old <- read_archive_safe(path)
-  active <- projections |>
-    dplyr::filter(is.na(observed), model_key %in% c("proxy", "m4", "m8p"))
-  combined <- dplyr::bind_rows(old, active)
+  eligible <- projections |>
+    dplyr::filter(model_key %in% c("ar1", "ma3", "m4", "m8p"))
+  combined <- dplyr::bind_rows(old, eligible)
   if (!nrow(combined)) {
     out <- empty_projection_table()
     readr::write_csv(out, path)
     return(out)
   }
   out <- combined |>
-    dplyr::distinct(Periodo, target_key, model_key, run_timestamp, .keep_all = TRUE) |>
+    dplyr::distinct(
+      Periodo, target_key, model_key, forecast, lwr, upr, eee_value,
+      is_realtime, provenance, .keep_all = TRUE
+    ) |>
     dplyr::arrange(Periodo, target_key, model_key, run_timestamp)
   readr::write_csv(out, path)
   out
