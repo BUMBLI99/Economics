@@ -1,0 +1,3 @@
+Periodo,target_key,variable,corte,model_key,modelo,estado,forecast,lwr,upr,nivel_intervalo,eee_value,eee_survey_period,observed,fecha_actualizacion,run_timestamp,is_realtime,provenance
+2026-07-01,total,IMACEC total,ine,m8p,M8P · INE + IVS real parsimonioso,Vintage operativo anterior al dato efectivo,-1.86,,,,1.1,2026-08-01,-1.487117150040529,2026-08-31,2026-08-31 13:42:46 CLT,TRUE,Salida operativa proporcionada por el autor el 31-08-2026
+2026-07-01,no_minero,IMACEC no minero,ine,m8p,M8P · INE + IVS real parsimonioso,Vintage operativo anterior al dato efectivo,-1.09,,,,1.0,2026-08-01,-0.30982965559617215,2026-08-31,2026-08-31 13:42:46 CLT,TRUE,Salida operativa proporcionada por el autor el 31-08-2026
