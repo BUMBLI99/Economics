@@ -1,3 +1,7 @@
 variable,modelo,model_key,n,rmse,mae,nota
+IMACEC no minero,AR(1) de referencia,ar1,89,3.1731125255871184,2.2217726543150187,Ajuste interno; no equivale a desempeño predictivo fuera de muestra.
 IMACEC no minero,M4 · Dinámico,m4,90,1.3136643265962789,1.0031765130739774,Ajuste interno; no equivale a desempeño predictivo fuera de muestra.
+IMACEC no minero,Promedio móvil 3 meses,ma3,87,4.445624779354245,2.9779406498465564,Ajuste interno; no equivale a desempeño predictivo fuera de muestra.
+IMACEC total,AR(1) de referencia,ar1,89,2.9697752467332332,2.0993422386867,Ajuste interno; no equivale a desempeño predictivo fuera de muestra.
 IMACEC total,M4 · Dinámico,m4,90,1.4008735723445662,1.121646948486064,Ajuste interno; no equivale a desempeño predictivo fuera de muestra.
+IMACEC total,Promedio móvil 3 meses,ma3,87,4.17720622642284,2.8536437903640475,Ajuste interno; no equivale a desempeño predictivo fuera de muestra.

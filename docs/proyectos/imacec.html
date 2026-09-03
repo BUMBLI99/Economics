@@ -31,7 +31,6 @@
         <a href="../proyectos.html" aria-current="page">Proyectos</a>
         <a href="../cv.html" >CV</a>
         <a href="../contacto.html" >Contacto</a>
-        <a class="nav-external" href="https://github.com/mulloav3007" target="_blank" rel="noopener">GitHub ↗</a>
       </nav>
     </div>
   </header>
@@ -45,7 +44,7 @@
       <p class="project-deck">Monitor mensual del IMACEC total y no minero que avanza desde la EEE y un AR(1) provisional hacia M4 experimental, M8P INE y la evaluación con el dato efectivo.</p>
       <div class="tag-row">
 <span class="tag">R</span><span class="tag">IMACEC</span><span class="tag">Nowcasting</span><span class="tag">Series de tiempo</span>      </div>
-<div class="actions"><a class="button button-secondary" href="https://github.com/mulloav3007/Economics/tree/main/R" target="_blank" rel="noopener">Ver código ↗</a></div>    </div>
+    </div>
     <dl class="project-meta">
       <div><dt>Estado</dt><dd>Activo</dd></div>
       <div><dt>Última actualización</dt><dd>Septiembre de 2026</dd></div>
@@ -67,19 +66,29 @@
 <strong>Estado del ciclo:</strong> Dato efectivo publicado · esperando la EEE del siguiente período.
 </div>
 <h2 id="seguimiento-mensual">Seguimiento mensual</h2>
-<p>Los dos paneles responden al mismo calendario de publicación. El selector ofrece únicamente las estimaciones realmente disponibles y deja por defecto la más informativa: señal AR(1), M4 experimental, M8P INE o resumen ex post.</p>
+<p>Los dos paneles responden al mismo calendario de publicación. Antes de la nueva EEE, el resumen conserva el último dato efectivo y compara los puntos de M4, M8P, AR(1), media móvil y EEE disponibles. Después, el selector deja por defecto el corte más informativo que ya esté completo.</p>
 <h3>IMACEC total</h3>
 <div class="interactive-card imacec-panel" data-project-chart="imacec-total" data-url="../assets/data/project_charts.json">
-<div class="chart-controls"><label for="imacec-total-dataset">Corte o resumen</label><select data-dataset-select="" id="imacec-total-dataset"></select></div>
+<div class="chart-controls">
+<label for="imacec-total-dataset">Corte o resumen</label><select data-dataset-select="" id="imacec-total-dataset"></select>
+<label for="imacec-total-range">Ventana</label><select data-range-select="" id="imacec-total-range"><option value="0">Historia completa</option><option value="36">Últimos 36 meses</option><option value="24">Últimos 24 meses</option><option value="12">Últimos 12 meses</option></select>
+</div>
 <div aria-live="polite" class="interactive-chart" data-generic-chart=""></div>
 <div class="chart-legend" data-chart-legend=""></div>
+<p class="chart-note" data-chart-note=""></p>
+<div data-chart-table=""></div>
 <p class="chart-help">Pasa el cursor sobre el gráfico para consultar el IMACEC efectivo, el ajuste histórico, la proyección vigente y la EEE comparable.</p>
 </div>
 <h3>IMACEC no minero</h3>
 <div class="interactive-card imacec-panel" data-project-chart="imacec-nonmining" data-url="../assets/data/project_charts.json">
-<div class="chart-controls"><label for="imacec-nonmining-dataset">Corte o resumen</label><select data-dataset-select="" id="imacec-nonmining-dataset"></select></div>
+<div class="chart-controls">
+<label for="imacec-nonmining-dataset">Corte o resumen</label><select data-dataset-select="" id="imacec-nonmining-dataset"></select>
+<label for="imacec-nonmining-range">Ventana</label><select data-range-select="" id="imacec-nonmining-range"><option value="0">Historia completa</option><option value="36">Últimos 36 meses</option><option value="24">Últimos 24 meses</option><option value="12">Últimos 12 meses</option></select>
+</div>
 <div aria-live="polite" class="interactive-chart" data-generic-chart=""></div>
 <div class="chart-legend" data-chart-legend=""></div>
+<p class="chart-note" data-chart-note=""></p>
+<div data-chart-table=""></div>
 <p class="chart-help">La serie no minera se estima de forma independiente, manteniendo el conjunto fijo de predictores de M4 o M8P.</p>
 </div>
 <h2 id="como-se-actualiza">Cómo se actualiza</h2>
@@ -94,27 +103,27 @@
 <tbody>
 <tr>
 <td>Dato efectivo recién publicado, antes de la nueva EEE</td>
-<td>IMACEC efectivo del último mes; si existen vintages válidos, resumen ex post con EEE, M4 y M8P</td>
+<td>Historia, efectivo del último mes, M4, M8P, AR(1), media móvil y EEE comparables</td>
 <td>Resumen del período</td>
 </tr>
 <tr>
 <td>Nueva EEE, antes de estadísticas experimentales</td>
-<td>EEE alineada al mes anterior y una señal mínima AR(1)</td>
-<td>AR(1) provisional</td>
+<td>EEE alineada al mes anterior y dos referencias simples</td>
+<td>AR(1) de referencia</td>
 </tr>
 <tr>
 <td>Estadísticas experimentales completas</td>
-<td>Efectivo, ajuste M4, nowcast M4 y punto EEE</td>
+<td>Efectivo, ajuste M4, nowcast M4, proxies y punto EEE</td>
 <td>M4 · Dinámico</td>
 </tr>
 <tr>
 <td>Indicadores INE e IVS completos</td>
-<td>M4 sigue elegible y se añade M8P</td>
+<td>M4 y proxies siguen elegibles y se añade M8P</td>
 <td>M8P · INE + IVS real</td>
 </tr>
 <tr>
 <td>Publicación del IMACEC objetivo</td>
-<td>Efectivo y los puntos archivados de EEE, M4 y M8P, sin reestimarlos retrospectivamente</td>
+<td>Efectivo y puntos archivados de cada corte; las reconstrucciones quedan rotuladas aparte</td>
 <td>Resumen del período</td>
 </tr>
 </tbody>
@@ -131,7 +140,7 @@
 <ul>
 <li>Las credenciales del BCCh se leen exclusivamente desde GitHub Actions Secrets.</li>
 <li>La EEE publicada en <strong>M</strong> se asigna al IMACEC de <strong>M−1</strong>.</li>
-<li>El proxy AR(1) aparece solamente entre la EEE y el primer corte de datos; nunca compite con M4 o M8P.</li>
+<li>AR(1) y media móvil de tres meses son referencias transparentes; nunca sustituyen a M4 o M8P.</li>
 <li>El modelo principal cambia por disponibilidad verificable, no por cuál arroje la cifra más conveniente.</li>
 <li>La tarea programada revisa datos cada día hábil y solo versiona salidas cuando existe un cambio.</li>
 </ul>
@@ -155,7 +164,6 @@
       <div>© <span data-current-year>2026</span> Mauricio Ulloa · Portafolio personal.</div>
       <div class="footer-links">
         <a href="../contacto.html">Contacto</a>
-        <a href="https://github.com/mulloav3007/Economics" target="_blank" rel="noopener">Código fuente ↗</a>
       </div>
     </div>
   </footer>
