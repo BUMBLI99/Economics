@@ -116,11 +116,7 @@ jobs:
             site/assets/data/project_charts.json \
             site/assets/img/charts/imacec_* \
             site/assets/img/projects/imacec.jpg \
-            docs/proyectos/imacec.html \
-            docs/assets/data/project_charts.json \
-            docs/assets/img/charts/imacec_* \
-            docs/assets/img/projects/imacec.jpg \
-            docs/assets/files/imacec-*.csv
+            docs
           if git diff --cached --quiet; then
             echo "No hay cambios analíticos para publicar."
           else
