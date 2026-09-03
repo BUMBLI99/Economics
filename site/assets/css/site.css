@@ -269,6 +269,11 @@ tr:hover td { background: #fbfaf7; }
 .legend-swatch.marker-diamond { width: 8px; height: 8px; border-radius: 1px; transform: rotate(45deg); margin-inline: 2px; }
 .legend-swatch.marker-triangle { width: 0; height: 0; border-right: 6px solid transparent; border-bottom: 10px solid currentColor; border-left: 6px solid transparent; border-radius: 0; background: transparent !important; }
 .chart-help { margin: .7rem 0 .1rem; padding-top: .7rem; border-top: 1px solid var(--line); color: var(--muted-2); font-size: .78rem; }
+.chart-note { margin: .75rem 0 0; color: var(--muted-2); font-size: .78rem; }
+.chart-data-table { margin: .9rem 0 .2rem; box-shadow: none; }
+.chart-data-table table { font-size: .8rem; }
+.chart-data-table th { padding: .58rem .65rem; font-size: .67rem; }
+.chart-data-table td { padding: .58rem .65rem; vertical-align: top; }
 .imacec-panel { padding: clamp(.85rem,2vw,1.25rem); }
 .imacec-panel::before { content: "Panel interactivo · actualización por vintage"; }
 .imacec-status { border-left-color: var(--navy); background: linear-gradient(90deg,rgba(25,48,68,.055),rgba(255,255,255,.65)); }

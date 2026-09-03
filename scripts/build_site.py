@@ -115,7 +115,8 @@ def build_contexts() -> dict[str, Any]:
         stage = str(row["ciclo_estado"])
         default_key = str(row["modelo_principal"])
         default_labels = {
-            "summary": "Resumen del ciclo cerrado", "proxy": "AR(1) provisional",
+            "summary": "Resumen del ciclo cerrado", "ar1": "AR(1) de referencia",
+            "ma3": "Media móvil 3 meses",
             "m4": "M4 · Dinámico", "m8p": "M8P · INE + IVS real",
         }
         as_bool = lambda value: str(value).strip().lower() in {"true", "1", "yes"}
@@ -339,19 +340,7 @@ def copy_public_assets(contexts: dict[str, Any]) -> None:
 
 
 def project_actions(slug: str) -> str:
-    github_base = "https://github.com/mulloav3007/Economics/tree/main"
-    if slug == "atlas-metropolitano":
-        return ""
-    source_map = {
-        "imacec": f"{github_base}/R",
-        "ipom-iris": f"{github_base}/matlab/ipom",
-        "transmision-tpm": f"{github_base}/R/transmision_tpm",
-        "exchange": f"{github_base}/modelos/exchange",
-        "estres-financiero": f"{github_base}/R/estres_financiero",
-        "curva-rendimiento": f"{github_base}/R/transmision_tpm",
-    }
-    source = source_map[slug]
-    return f'<a class="button button-secondary" href="{source}" target="_blank" rel="noopener">Ver código ↗</a>'
+    return ""
 
 
 def write_text(path: Path, text: str) -> None:

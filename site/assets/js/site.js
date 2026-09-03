@@ -232,8 +232,11 @@
       const config = catalog[root.dataset.projectChart];
       if (!config?.datasets?.length) return;
       const select = $('[data-dataset-select]', root);
+      const rangeSelect = $('[data-range-select]', root);
       const chart = $('[data-generic-chart]', root);
       const legend = $('[data-chart-legend]', root);
+      const note = $('[data-chart-note]', root);
+      const table = $('[data-chart-table]', root);
       config.datasets.forEach((dataset) => {
         const option = document.createElement('option');
         option.value = dataset.id; option.textContent = dataset.label; select.appendChild(option);
@@ -241,13 +244,42 @@
       if (config.defaultDataset && config.datasets.some((item) => item.id === config.defaultDataset)) {
         select.value = config.defaultDataset;
       }
+      const escapeHTML = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+      }[char]));
+      const visibleSeries = (series) => {
+        const months = Number(rangeSelect?.value || 0);
+        if (!months) return series;
+        const dates = series.flatMap((item) => item.values.map((point) => new Date(point.date)))
+          .filter((date) => Number.isFinite(date.getTime()));
+        if (!dates.length) return series;
+        const maxDate = new Date(Math.max(...dates.map((date) => date.getTime())));
+        const cutoff = new Date(maxDate.getFullYear(), maxDate.getMonth() - months + 1, 1);
+        return series.map((item) => ({
+          ...item,
+          values: item.values.filter((point) => new Date(point.date) >= cutoff)
+        }));
+      };
+      const renderTable = (rows = []) => {
+        if (!table) return;
+        if (!rows.length) { table.innerHTML = ''; table.hidden = true; return; }
+        const headers = ['Dato', 'Período', 'Valor (%)', 'Intervalo', 'Vintage', 'Procedencia'];
+        const cells = ['concept', 'period', 'value', 'interval', 'vintage', 'status'];
+        table.hidden = false;
+        table.innerHTML = `<div class="table-wrap chart-data-table"><table><thead><tr>${headers.map((label) => `<th>${label}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr>${cells.map((key) => `<td>${key === 'value' && Number.isFinite(row[key]) ? Number(row[key]).toFixed(2) : escapeHTML(row[key] ?? '—')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+      };
       const render = () => {
         const dataset = config.datasets.find((item) => item.id === select.value) || config.datasets[0];
         const xTicks = dataset.xTicks?.map((tick) => ({ value: new Date(tick.date).getTime(), label: tick.label }));
-        lineChart(chart, dataset.series, { ariaLabel: `${config.ariaLabel}: ${dataset.label}`, yDigits: dataset.yDigits ?? 2, zeroLine: Boolean(dataset.zeroLine), xTicks });
+        const series = visibleSeries(dataset.series);
+        lineChart(chart, series, { ariaLabel: `${config.ariaLabel}: ${dataset.label}`, yDigits: dataset.yDigits ?? 2, zeroLine: Boolean(dataset.zeroLine), xTicks });
         legend.innerHTML = dataset.series.map((series) => `<span class="legend-item"><span class="legend-swatch${series.marker ? ` marker-${series.marker}` : ''}" style="background:${series.color};color:${series.color}"></span>${series.name}</span>`).join('');
+        if (note) note.textContent = dataset.note || '';
+        renderTable(dataset.table);
       };
-      select.addEventListener('change', render); render(); root.classList.add('chart-ready');
+      select.addEventListener('change', render);
+      rangeSelect?.addEventListener('change', render);
+      render(); root.classList.add('chart-ready');
     });
   }
 

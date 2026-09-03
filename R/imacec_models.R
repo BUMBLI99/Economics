@@ -22,6 +22,11 @@ model_specs <- list(
   )
 )
 
+proxy_specs <- list(
+  ar1 = list(label = "AR(1) de referencia", corte = "proxy"),
+  ma3 = list(label = "Promedio móvil 3 meses", corte = "proxy")
+)
+
 model_formula <- function(model_key, target_key) {
   response <- target_specs[[target_key]]$response
   rhs <- gsub("{lag1}", paste0(response, "_lag1"), model_specs[[model_key]]$rhs, fixed = TRUE)
@@ -67,6 +72,20 @@ target_has_information <- function(data, model_key, target_key, period) {
     stats::complete.cases(row[, required, drop = FALSE])
 }
 
+missing_information_variables <- function(data, model_key, target_key, period) {
+  required <- c("Periodo", model_required_variables(model_key, target_key))
+  absent <- setdiff(required, names(data))
+  row <- data |>
+    dplyr::filter(Periodo == as.Date(period)) |>
+    dplyr::slice_head(n = 1)
+  if (!nrow(row)) return(c("fila_del_periodo", absent))
+  present <- intersect(required, names(row))
+  missing_values <- present[vapply(row[, present, drop = FALSE], function(x) {
+    length(x) == 0L || is.na(x[[1]])
+  }, logical(1))]
+  unique(c(absent, missing_values))
+}
+
 build_cycle_state <- function(data, eee) {
   last_actual <- latest_observed_period(data)
   future_eee <- eee |>
@@ -96,8 +115,8 @@ build_cycle_state <- function(data, eee) {
     default_model <- "m4"
   } else {
     stage <- "eee_proxy"
-    label <- "EEE publicada · señal provisional AR(1) hasta el corte experimental"
-    default_model <- "proxy"
+    label <- "EEE publicada · proxies AR(1) y media móvil hasta el corte experimental"
+    default_model <- "ar1"
   }
 
   tibble::tibble(
@@ -140,7 +159,12 @@ predict_interval <- function(model, newdata, level = interval_level) {
 
 run_nowcast <- function(model_key, target_key, target_period, data, eee) {
   if (!target_has_information(data, model_key, target_key, target_period)) {
-    stop("El corte ", model_key, " no está completo para ", format(as.Date(target_period), "%Y-%m"), ".")
+    missing <- missing_information_variables(data, model_key, target_key, target_period)
+    stop(
+      "El corte ", model_key, " no está completo para ",
+      format(as.Date(target_period), "%Y-%m"), ". Faltan: ",
+      paste(missing, collapse = ", "), "."
+    )
   }
   fitted <- fit_winner(data, model_key, target_key, target_period)
   response <- target_specs[[target_key]]$response
@@ -174,7 +198,13 @@ run_nowcast <- function(model_key, target_key, target_period, data, eee) {
     eee_value = as.numeric(eee_target$eee_value[1]),
     eee_survey_period = as.Date(eee_target$survey_period[1]),
     observed = as.numeric(observed), fecha_actualizacion = Sys.Date(),
-    run_timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")
+    run_timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"),
+    is_realtime = is.na(observed),
+    provenance = if (is.na(observed)) {
+      "Ejecución automática anterior al dato efectivo"
+    } else {
+      "Reestimación de referencia posterior al dato efectivo"
+    }
   )
 
   list(
@@ -186,51 +216,82 @@ run_nowcast <- function(model_key, target_key, target_period, data, eee) {
   )
 }
 
-run_proxy <- function(target_key, target_period, data, eee) {
+run_proxy <- function(model_key, target_key, target_period, data, eee) {
   response <- target_specs[[target_key]]$response
   target_key_value <- target_key
   target_label <- target_specs[[target_key]]$label
-  train <- data |>
+  model_label <- proxy_specs[[model_key]]$label
+  raw <- data |>
     dplyr::filter(Periodo < as.Date(target_period), !is.na(.data[[response]])) |>
     dplyr::arrange(Periodo) |>
-    dplyr::transmute(Periodo, value = .data[[response]], lag_value = dplyr::lag(.data[[response]])) |>
-    tidyr::drop_na()
-  if (nrow(train) < 24) stop("Muestra insuficiente para el AR(1) provisional.")
-  fit <- stats::lm(value ~ lag_value, data = train)
-  last_value <- data |>
-    dplyr::filter(Periodo < as.Date(target_period), !is.na(.data[[response]])) |>
-    dplyr::arrange(Periodo) |>
-    dplyr::slice_tail(n = 1) |>
-    dplyr::pull(.data[[response]])
-  prediction <- predict_interval(fit, data.frame(lag_value = as.numeric(last_value)))
+    dplyr::transmute(Periodo, value = .data[[response]])
+  train <- raw |>
+    dplyr::mutate(
+      lag1 = dplyr::lag(value), lag2 = dplyr::lag(value, 2), lag3 = dplyr::lag(value, 3)
+    )
+  if (nrow(train) < 24) stop("Muestra insuficiente para el proxy ", model_label, ".")
+  if (model_key == "ar1") {
+    estimation <- train |> tidyr::drop_na(lag1)
+    fit <- stats::lm(value ~ lag1, data = estimation)
+    prediction <- predict_interval(fit, data.frame(lag1 = as.numeric(dplyr::last(raw$value))))
+    fitted_values <- as.numeric(stats::predict(fit))
+  } else if (model_key == "ma3") {
+    estimation <- train |>
+      dplyr::mutate(fitted = (lag1 + lag2 + lag3) / 3) |>
+      tidyr::drop_na(fitted)
+    forecast <- mean(utils::tail(raw$value, 3))
+    residual_sd <- stats::sd(estimation$value - estimation$fitted)
+    critical <- stats::qt((1 + interval_level) / 2, df = max(1, nrow(estimation) - 1))
+    margin <- critical * residual_sd * sqrt(1 + 1 / 3)
+    prediction <- tibble::tibble(fit = forecast, lwr = forecast - margin, upr = forecast + margin)
+    fitted_values <- estimation$fitted
+    fit <- NULL
+  } else {
+    stop("Proxy desconocido: ", model_key, ".")
+  }
   eee_target <- eee_for_period(eee, target_period, target_key)
+  target_row <- data |>
+    dplyr::filter(Periodo == as.Date(target_period)) |>
+    dplyr::slice_head(n = 1)
+  observed <- if (nrow(target_row) && response %in% names(target_row)) {
+    target_row[[response]][1]
+  } else {
+    NA_real_
+  }
 
-  history <- train |>
+  history <- estimation |>
     dplyr::transmute(
       Periodo, target_key = target_key_value, variable = target_label,
-      observed = value, fitted = as.numeric(stats::predict(fit)),
-      model_key = "proxy", modelo = "AR(1) provisional", corte = "eee", tipo = "Ajuste"
+      observed = value, fitted = .env$fitted_values,
+      model_key = model_key, modelo = model_label, corte = "proxy", tipo = "Ajuste"
     )
   projection <- tibble::tibble(
     Periodo = as.Date(target_period), target_key = target_key_value,
-    variable = target_label, corte = "eee", model_key = "proxy",
-    modelo = "AR(1) provisional", estado = "Señal temprana; no sustituye M4 ni M8P",
+    variable = target_label, corte = "proxy", model_key = model_key,
+    modelo = model_label,
+    estado = if (is.na(observed)) "Benchmark simple activo" else "Benchmark retrospectivo de referencia",
     forecast = as.numeric(prediction$fit), lwr = as.numeric(prediction$lwr),
     upr = as.numeric(prediction$upr), nivel_intervalo = interval_level,
     eee_value = as.numeric(eee_target$eee_value[1]),
-    eee_survey_period = as.Date(eee_target$survey_period[1]), observed = NA_real_,
-    fecha_actualizacion = Sys.Date(), run_timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")
+    eee_survey_period = as.Date(eee_target$survey_period[1]), observed = as.numeric(observed),
+    fecha_actualizacion = Sys.Date(), run_timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"),
+    is_realtime = is.na(observed),
+    provenance = if (is.na(observed)) {
+      "Ejecución automática anterior al dato efectivo"
+    } else {
+      "Benchmark de referencia posterior al dato efectivo"
+    }
   )
   list(
-    model_key = "proxy", target_key = target_key_value, model_label = "AR(1) provisional",
+    model_key = model_key, target_key = target_key_value, model_label = model_label,
     target_label = target_label, model = fit, Data = data,
-    train = train, history = history, proyeccion = projection, newdata = NULL
+    train = estimation, history = history, proyeccion = projection, newdata = NULL
   )
 }
 
 run_model_safe <- function(model_key, target_key, target_period, data, eee) {
   tryCatch(
-    if (model_key == "proxy") run_proxy(target_key, target_period, data, eee)
+    if (model_key %in% names(proxy_specs)) run_proxy(model_key, target_key, target_period, data, eee)
     else run_nowcast(model_key, target_key, target_period, data, eee),
     error = function(e) {
       warning("No se pudo estimar ", model_key, " / ", target_key, ": ", conditionMessage(e), call. = FALSE)
@@ -241,8 +302,12 @@ run_model_safe <- function(model_key, target_key, target_period, data, eee) {
 
 run_cycle_models <- function(data, eee, cycle) {
   keys <- switch(
-    cycle$ciclo_estado[1], eee_proxy = "proxy", experimental = "m4",
-    ine = c("m4", "m8p"), official_review = c("m4", "m8p"), character()
+    cycle$ciclo_estado[1],
+    eee_proxy = c("ar1", "ma3"),
+    experimental = c("ar1", "ma3", "m4"),
+    ine = c("ar1", "ma3", "m4", "m8p"),
+    official_review = c("ar1", "ma3", "m4", "m8p"),
+    character()
   )
   results <- list()
   for (model_key in keys) {

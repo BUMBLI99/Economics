@@ -102,6 +102,11 @@ def interactive_assets() -> None:
     status = pd.read_csv(ROOT / "data/processed/imacec_update_status.csv")
     archive_path = ROOT / "data/processed/imacec_projection_archive.csv"
     archive = pd.read_csv(archive_path, parse_dates=["Periodo"]) if archive_path.exists() else pd.DataFrame()
+    manual_path = ROOT / "data/processed/imacec_manual_vintages.csv"
+    manual = pd.read_csv(manual_path, parse_dates=["Periodo"]) if manual_path.exists() else pd.DataFrame()
+    archive_frames = [frame for frame in [archive, manual] if not frame.empty]
+    archived_points = (pd.concat(archive_frames, ignore_index=True, sort=False)
+                       if archive_frames else pd.DataFrame())
     new_schema = {"target_key", "observed", "fitted", "model_key"}.issubset(hist.columns)
     projection_schema = {"target_key", "forecast", "eee_value", "model_key"}.issubset(projections.columns)
     cycle_schema = {"ciclo_estado", "modelo_principal", "periodo_objetivo"}.issubset(status.columns)
@@ -109,7 +114,8 @@ def interactive_assets() -> None:
     default_key = str(status.iloc[-1]["modelo_principal"]) if cycle_schema else "summary"
     target_period = pd.to_datetime(status.iloc[-1]["periodo_objetivo"]) if cycle_schema else None
     model_meta = {
-        "proxy": ("Señal inicial · AR(1)", "AR(1) provisional", COLORS["gold"], "circle"),
+        "ar1": ("Proxy · AR(1)", "AR(1) de referencia", COLORS["gold"], "circle"),
+        "ma3": ("Proxy · media móvil 3m", "Media móvil 3 meses", COLORS["sage"], "diamond"),
         "m4": ("Corte experimental · M4", "M4 · Dinámico", COLORS["terracotta"], "circle"),
         "m8p": ("Corte INE · M8P", "M8P · INE + IVS real", COLORS["teal"], "diamond"),
     }
@@ -124,20 +130,80 @@ def interactive_assets() -> None:
         return (hist[["Periodo", value]].dropna().drop_duplicates("Periodo")
                 .rename(columns={value: "observed"}).sort_values("Periodo"))
 
+    def is_true(value: object) -> bool:
+        return str(value).strip().lower() in {"true", "1", "yes"}
+
+    def best_point(target_key: str, model_key: str) -> pd.DataFrame:
+        current = projections[
+            (projections["target_key"] == target_key) &
+            (projections["model_key"] == model_key)
+        ].copy() if projection_schema else pd.DataFrame()
+        required = {"target_key", "model_key", "forecast", "run_timestamp", "Periodo"}
+        if not required.issubset(archived_points.columns) or target_period is None:
+            return current.tail(1)
+        historical = archived_points[
+            (archived_points["target_key"] == target_key) &
+            (archived_points["model_key"] == model_key) &
+            (archived_points["Periodo"] == target_period)
+        ].copy()
+        if not historical.empty:
+            realtime = historical[historical.get("is_realtime", False).map(is_true)] if "is_realtime" in historical else pd.DataFrame()
+            chosen = realtime if not realtime.empty else historical
+            return chosen.sort_values("run_timestamp").tail(1)
+        return current.tail(1)
+
+    def actual_target_row(actual: pd.DataFrame) -> pd.DataFrame:
+        if target_period is None:
+            return pd.DataFrame(columns=["Periodo", "observed"])
+        return actual[actual["Periodo"] == target_period].tail(1)
+
+    def row_table(label: str, point: pd.DataFrame, value_col: str,
+                  status: str = "", source: str = "") -> dict | None:
+        if point.empty or value_col not in point or pd.isna(point.iloc[-1][value_col]):
+            return None
+        row = point.iloc[-1]
+        interval = "—"
+        if value_col == "forecast" and pd.notna(row.get("lwr")) and pd.notna(row.get("upr")):
+            interval = f"[{float(row['lwr']):.2f}; {float(row['upr']):.2f}]"
+        timestamp = str(row.get("run_timestamp", row.get("fecha_actualizacion", "—")))
+        if value_col == "eee_value" and pd.notna(row.get("eee_survey_period")):
+            timestamp = str(row["eee_survey_period"])
+        vintage = timestamp[:10] if len(timestamp) >= 10 and timestamp[4:5] == "-" else timestamp
+        return {
+            "concept": label,
+            "period": pd.Timestamp(row["Periodo"]).strftime("%Y-%m"),
+            "value": round(float(row[value_col]), 4),
+            "interval": interval,
+            "vintage": vintage,
+            "status": source or status or str(row.get("provenance", row.get("estado", ""))),
+        }
+
+    def effective_table_row(actual: pd.DataFrame) -> dict | None:
+        point = actual_target_row(actual)
+        if point.empty:
+            return None
+        publication = str(status.iloc[-1].get("fecha_actualizacion", "Dato oficial"))
+        point = point.assign(run_timestamp=publication, provenance="Banco Central de Chile")
+        return row_table("IMACEC efectivo", point, "observed", source="Dato oficial publicado")
+
+    def eee_table_row(point: pd.DataFrame) -> dict | None:
+        return row_table("EEE comparable", point, "eee_value", source="EEE publicada un mes después del período objetivo")
+
+    def model_table_row(model_key: str, point: pd.DataFrame) -> dict | None:
+        if point.empty:
+            return None
+        _, model_label, _, _ = model_meta[model_key]
+        source = str(point.iloc[-1].get("provenance", point.iloc[-1].get("estado", "")))
+        return row_table(f"Proyección {model_label}", point, "forecast", source=source)
+
+    def compact_rows(rows: list[dict | None]) -> list[dict]:
+        return [row for row in rows if row is not None]
+
     def current_dataset(target_key: str, model_key: str, actual: pd.DataFrame) -> dict | None:
         if not (new_schema and projection_schema) or model_key not in model_meta:
             return None
         block = hist[(hist["target_key"] == target_key) & (hist["model_key"] == model_key)]
-        point = projections[(projections["target_key"] == target_key) & (projections["model_key"] == model_key)]
-        valid_archive = {"target_key", "model_key", "forecast", "eee_value", "run_timestamp"}.issubset(archive.columns)
-        if stage == "official_review" and valid_archive and target_period is not None:
-            archived = archive[
-                (archive["target_key"] == target_key) &
-                (archive["model_key"] == model_key) &
-                (archive["Periodo"] == target_period)
-            ].sort_values("run_timestamp").tail(1)
-            if not archived.empty:
-                point = archived
+        point = best_point(target_key, model_key)
         if block.empty and point.empty:
             return None
         dataset_label, model_label, color, marker = model_meta[model_key]
@@ -150,38 +216,56 @@ def interactive_assets() -> None:
                                      line=False, marker=marker, width=0))
             series.append(web_series("EEE comparable", COLORS["purple"], point, "Periodo", "eee_value",
                                      line=False, marker="triangle", width=0))
-        return {"id": model_key, "label": dataset_label, "series": series, "zeroLine": True, "yDigits": 1}
+        realtime = bool(not point.empty and is_true(point.iloc[-1].get("is_realtime", False)))
+        note = ("Vintage guardado antes de conocerse el dato efectivo." if realtime else
+                "Referencia reestimada con la base disponible al cierre; no se presenta como vintage en tiempo real.")
+        rows = compact_rows([
+            effective_table_row(actual), model_table_row(model_key, point), eee_table_row(point)
+        ])
+        return {
+            "id": model_key, "label": dataset_label, "series": series,
+            "zeroLine": True, "yDigits": 1, "table": rows, "note": note,
+        }
 
     def summary_dataset(target_key: str, actual: pd.DataFrame) -> dict:
         series = [web_series("IMACEC efectivo", COLORS["navy"], actual, "Periodo", "observed", width=2.7)]
-        valid_archive = {"target_key", "model_key", "forecast", "eee_value", "run_timestamp"}.issubset(archive.columns)
-        if valid_archive and target_period is not None:
-            block = archive[(archive["target_key"] == target_key) & (archive["Periodo"] == target_period)].copy()
-            block = block.sort_values("run_timestamp").groupby("model_key", as_index=False).tail(1)
-            for key in ["m4", "m8p"]:
-                point = block[block["model_key"] == key]
-                if not point.empty:
-                    _, model_label, color, marker = model_meta[key]
-                    series.append(web_series(f"Proyección {model_label}", color, point, "Periodo", "forecast",
-                                             line=False, marker=marker, width=0))
-            eee = block.dropna(subset=["eee_value"]).tail(1)
-            if not eee.empty:
-                series.append(web_series("EEE comparable", COLORS["purple"], eee, "Periodo", "eee_value",
-                                         line=False, marker="triangle", width=0))
-        return {"id": "summary", "label": "Resumen del período", "series": series, "zeroLine": True, "yDigits": 1}
+        effective = actual_target_row(actual)
+        if not effective.empty:
+            series.append(web_series("Dato efectivo del período", COLORS["navy"], effective,
+                                     "Periodo", "observed", line=False, marker="circle", width=0))
+        points = {key: best_point(target_key, key) for key in ["m8p", "m4", "ar1", "ma3"]}
+        for key, point in points.items():
+            if point.empty:
+                continue
+            _, model_label, color, marker = model_meta[key]
+            series.append(web_series(f"Proyección {model_label}", color, point, "Periodo", "forecast",
+                                     line=False, marker=marker, width=0))
+        eee = next((point for point in points.values()
+                    if not point.empty and "eee_value" in point and point["eee_value"].notna().any()), pd.DataFrame())
+        if not eee.empty:
+            series.append(web_series("EEE comparable", COLORS["purple"], eee, "Periodo", "eee_value",
+                                     line=False, marker="triangle", width=0))
+        rows = [effective_table_row(actual)]
+        rows.extend(model_table_row(key, points[key]) for key in ["m8p", "m4", "ar1", "ma3"])
+        rows.append(eee_table_row(eee))
+        return {
+            "id": "summary", "label": "Resumen del período", "series": series,
+            "zeroLine": True, "yDigits": 1, "table": compact_rows(rows),
+            "note": "El resumen prioriza vintages guardados antes del dato efectivo; las referencias reconstruidas quedan identificadas en la tabla.",
+        }
 
     for target_key, chart_key in [("total", "imacec-total"), ("no_minero", "imacec-nonmining")]:
         actual = actual_series(target_key)
         datasets: list[dict] = []
         if stage == "official_review" or not projection_schema:
             datasets.append(summary_dataset(target_key, actual))
-            for key in ["m8p", "m4"]:
+            for key in ["m8p", "m4", "ar1", "ma3"]:
                 dataset = current_dataset(target_key, key, actual)
                 if dataset is not None:
                     datasets.append(dataset)
             selected = "summary"
         else:
-            order = [default_key] + [key for key in ["m8p", "m4", "proxy"] if key != default_key]
+            order = [default_key] + [key for key in ["m8p", "m4", "ar1", "ma3"] if key != default_key]
             for key in order:
                 dataset = current_dataset(target_key, key, actual)
                 if dataset is not None:

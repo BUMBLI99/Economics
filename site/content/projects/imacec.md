@@ -17,23 +17,33 @@
 
 ## Seguimiento mensual
 
-Los dos paneles responden al mismo calendario de publicación. El selector ofrece únicamente las estimaciones realmente disponibles y deja por defecto la más informativa: señal AR(1), M4 experimental, M8P INE o resumen ex post.
+Los dos paneles responden al mismo calendario de publicación. Antes de la nueva EEE, el resumen conserva el último dato efectivo y compara los puntos de M4, M8P, AR(1), media móvil y EEE disponibles. Después, el selector deja por defecto el corte más informativo que ya esté completo.
 
 ### IMACEC total
 
 <div class="interactive-card imacec-panel" data-project-chart="imacec-total" data-url="../assets/data/project_charts.json">
-  <div class="chart-controls"><label for="imacec-total-dataset">Corte o resumen</label><select id="imacec-total-dataset" data-dataset-select></select></div>
+  <div class="chart-controls">
+    <label for="imacec-total-dataset">Corte o resumen</label><select id="imacec-total-dataset" data-dataset-select></select>
+    <label for="imacec-total-range">Ventana</label><select id="imacec-total-range" data-range-select><option value="0">Historia completa</option><option value="36">Últimos 36 meses</option><option value="24">Últimos 24 meses</option><option value="12">Últimos 12 meses</option></select>
+  </div>
   <div class="interactive-chart" data-generic-chart aria-live="polite"></div>
   <div class="chart-legend" data-chart-legend></div>
+  <p class="chart-note" data-chart-note></p>
+  <div data-chart-table></div>
   <p class="chart-help">Pasa el cursor sobre el gráfico para consultar el IMACEC efectivo, el ajuste histórico, la proyección vigente y la EEE comparable.</p>
 </div>
 
 ### IMACEC no minero
 
 <div class="interactive-card imacec-panel" data-project-chart="imacec-nonmining" data-url="../assets/data/project_charts.json">
-  <div class="chart-controls"><label for="imacec-nonmining-dataset">Corte o resumen</label><select id="imacec-nonmining-dataset" data-dataset-select></select></div>
+  <div class="chart-controls">
+    <label for="imacec-nonmining-dataset">Corte o resumen</label><select id="imacec-nonmining-dataset" data-dataset-select></select>
+    <label for="imacec-nonmining-range">Ventana</label><select id="imacec-nonmining-range" data-range-select><option value="0">Historia completa</option><option value="36">Últimos 36 meses</option><option value="24">Últimos 24 meses</option><option value="12">Últimos 12 meses</option></select>
+  </div>
   <div class="interactive-chart" data-generic-chart aria-live="polite"></div>
   <div class="chart-legend" data-chart-legend></div>
+  <p class="chart-note" data-chart-note></p>
+  <div data-chart-table></div>
   <p class="chart-help">La serie no minera se estima de forma independiente, manteniendo el conjunto fijo de predictores de M4 o M8P.</p>
 </div>
 
@@ -41,11 +51,11 @@ Los dos paneles responden al mismo calendario de publicación. El selector ofrec
 
 | Momento del mes | Publicación visible | Opción predeterminada |
 |---|---|---|
-| Dato efectivo recién publicado, antes de la nueva EEE | IMACEC efectivo del último mes; si existen vintages válidos, resumen ex post con EEE, M4 y M8P | Resumen del período |
-| Nueva EEE, antes de estadísticas experimentales | EEE alineada al mes anterior y una señal mínima AR(1) | AR(1) provisional |
-| Estadísticas experimentales completas | Efectivo, ajuste M4, nowcast M4 y punto EEE | M4 · Dinámico |
-| Indicadores INE e IVS completos | M4 sigue elegible y se añade M8P | M8P · INE + IVS real |
-| Publicación del IMACEC objetivo | Efectivo y los puntos archivados de EEE, M4 y M8P, sin reestimarlos retrospectivamente | Resumen del período |
+| Dato efectivo recién publicado, antes de la nueva EEE | Historia, efectivo del último mes, M4, M8P, AR(1), media móvil y EEE comparables | Resumen del período |
+| Nueva EEE, antes de estadísticas experimentales | EEE alineada al mes anterior y dos referencias simples | AR(1) de referencia |
+| Estadísticas experimentales completas | Efectivo, ajuste M4, nowcast M4, proxies y punto EEE | M4 · Dinámico |
+| Indicadores INE e IVS completos | M4 y proxies siguen elegibles y se añade M8P | M8P · INE + IVS real |
+| Publicación del IMACEC objetivo | Efectivo y puntos archivados de cada corte; las reconstrucciones quedan rotuladas aparte | Resumen del período |
 
 El archivo de vintages conserva cada proyección antes de que el dato oficial la sustituya. Así, la comparación ex post utiliza lo que el proyecto publicó realmente en cada corte y no una reconstrucción posterior con información revisada.
 
@@ -67,7 +77,7 @@ La evaluación es recursiva y mantiene fijas M4 y M8P, pero usa la base final di
 
 - Las credenciales del BCCh se leen exclusivamente desde GitHub Actions Secrets.
 - La EEE publicada en **M** se asigna al IMACEC de **M−1**.
-- El proxy AR(1) aparece solamente entre la EEE y el primer corte de datos; nunca compite con M4 o M8P.
+- AR(1) y media móvil de tres meses son referencias transparentes; nunca sustituyen a M4 o M8P.
 - El modelo principal cambia por disponibilidad verificable, no por cuál arroje la cifra más conveniente.
 - La tarea programada revisa datos cada día hábil y solo versiona salidas cuando existe un cambio.
 
