@@ -252,6 +252,26 @@ get_ine_levels <- function() {
     dplyr::arrange(Periodo)
 }
 
+apply_ine_yoy_fallback <- function(data, path = "data/raw/imacec_ine_yoy_fallback.csv", as_of = Sys.Date()) {
+  data$ine_fallback <- ""
+  if (!file.exists(path)) return(data)
+  fallback <- readr::read_csv(path, show_col_types = FALSE) |>
+    dplyr::mutate(Periodo = as.Date(Periodo), publication_date = as.Date(publication_date)) |>
+    dplyr::filter(publication_date <= as.Date(as_of))
+  stopifnot(!anyDuplicated(fallback[c("Periodo", "variable")]),
+    all(fallback$variable %in% names(codes_ine)), all(is.finite(fallback$value)))
+  for (i in seq_len(nrow(fallback))) {
+    variable <- fallback$variable[i]
+    hit <- which(data$Periodo == fallback$Periodo[i] & is.na(data[[variable]]))
+    if (length(hit)) {
+      data[[variable]][hit] <- fallback$value[i]
+      data$ine_fallback[hit] <- paste(data$ine_fallback[hit], variable)
+    }
+  }
+  data$ine_fallback <- trimws(data$ine_fallback)
+  data
+}
+
 build_imacec_dataset <- function() {
   ivs_names <- names(ivs_columns)
   data <- get_base_levels() |>
@@ -270,7 +290,8 @@ build_imacec_dataset <- function() {
       manufactura = yoy(manufactura),
       comercio = yoy(comercio),
       electricidad = yoy(electricidad)
-    )
+    ) |>
+    apply_ine_yoy_fallback(as_of = as.Date(last_date))
 
   real_names <- sub("_nivel$", "_real", ivs_names)
   for (i in seq_along(ivs_names)) data[[real_names[i]]] <- yoy(data[[ivs_names[i]]] / data$ipc_servicios_nivel)

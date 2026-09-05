@@ -128,7 +128,7 @@ Para una actualización integrada en Windows existe `scripts/07_update_portfolio
 
 ## Publicación
 
-El workflow `.github/workflows/pages.yml` construye, valida y despliega `docs/` en cada `push` a `main`. La primera vez se debe seleccionar **GitHub Actions** como fuente en `Settings → Pages`.
+El workflow `.github/workflows/pages.yml` construye, valida y despliega `docs/` en cada `push` a `main` y después de una actualización IMACEC exitosa en `main`. Este segundo disparador publica los datos guardados por el bot, cuyo commit no dispara otro workflow de `push`. La primera vez se debe seleccionar **GitHub Actions** como fuente en `Settings → Pages`.
 
 Las instrucciones exactas están en [DEPLOY.md](DEPLOY.md).
 

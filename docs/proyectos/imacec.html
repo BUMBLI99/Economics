@@ -15,7 +15,7 @@
   <meta property="og:image" content="https://mulloav3007.github.io/Economics/assets/img/projects/imacec.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../assets/css/site.css?v=27b1a22ca380">
+  <link rel="stylesheet" href="../assets/css/site.css?v=403a4caabd1e">
 </head>
 <body class="project project-imacec">
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -128,11 +128,13 @@
 </tr>
 </tbody>
 </table>
-<p>El archivo de vintages conserva cada proyección antes de que el dato oficial la sustituya. Así, la comparación ex post utiliza lo que el proyecto publicó realmente en cada corte y no una reconstrucción posterior con información revisada.</p>
+<p>El archivo de vintages conserva las proyecciones disponibles con su fecha y procedencia. Para julio de 2026, el punto M8P corresponde a la salida operativa aportada por el autor el 31 de agosto. La curva de ajuste histórico se reestima con la base disponible en cada ejecución: es un ajuste dentro de muestra y no reconstruye el historial de pronósticos emitidos en tiempo real.</p>
+<p>La estimación histórica utiliza exclusivamente períodos anteriores al mes objetivo. Si faltan indicadores contemporáneos, puede mostrarse ese ajuste aunque no exista una nueva proyección automática. La nota del gráfico identifica la disponibilidad de ambos resultados.</p>
 <h2 id="especificaciones-publicadas">Especificaciones publicadas</h2>
 <div class="equation"><span class="equation-label">M4 · Dinámico — corte experimental</span>IMACEC<sub>t</sub> = f(ventas<sub>t</sub>, crédito monto<sub>t</sub>, crédito cantidad<sub>t</sub>, IMACEC<sub>t−1</sub>, calendario)</div>
 <div class="equation"><span class="equation-label">M8P · INE + IVS real parsimonioso</span>IMACEC<sub>t</sub> = f(crédito cantidad<sub>t</sub>, IMACEC<sub>t−1</sub>, avisos<sub>t−1</sub>, sectores INE<sub>t</sub>, IVS real<sub>t</sub>, crédito real<sub>t</sub>, calendario)</div>
 <p>Las dos fórmulas se reestiman por separado para <strong>IMACEC total</strong> e <strong>IMACEC no minero</strong>. El factor IVS real promedia seis índices de ventas de servicios deflactados por el IPC de Servicios y M8P solo se habilita con cobertura contemporánea completa.</p>
+<p>La fuente principal de los sectores es la BDE. Para julio de 2026 existe un respaldo de las variaciones oficiales del INE publicadas el 31 de agosto: minería −7,2%, manufactura −4,9% y electricidad, gas y agua +0,3%. Solo cubre valores ausentes en la BDE, utiliza el redondeo oficial a un decimal y se reemplaza automáticamente cuando la BDE dispone del dato. <a href="https://www.ine.gob.cl/estadisticas-por-tema/industria-energia-y-construccion/indice-de-produccion-industrial">Fuente: INE, Índice de Producción Industrial</a>.</p>
 <h2 id="evaluacion-pseudo-out-of-sample">Evaluación pseudo out-of-sample</h2>
 <div class="table-wrap"><table><thead><tr><th>Serie</th><th>Especificación</th><th>N</th><th>RMSE</th><th>MAE</th><th>Ventana</th></tr></thead><tbody><tr><td>IMACEC no minero</td><td>M4 · Dinámico</td><td>43</td><td>1,18</td><td>0,94</td><td>2023-01 a 2026-07</td></tr><tr><td>IMACEC no minero</td><td>M8P · INE + IVS real parsimonioso</td><td>42</td><td>0,99</td><td>0,81</td><td>2023-01 a 2026-06</td></tr><tr><td>IMACEC total</td><td>M4 · Dinámico</td><td>43</td><td>1,61</td><td>1,35</td><td>2023-01 a 2026-07</td></tr><tr><td>IMACEC total</td><td>M8P · INE + IVS real parsimonioso</td><td>42</td><td>1,06</td><td>0,80</td><td>2023-01 a 2026-06</td></tr></tbody></table></div>
 <p>La evaluación es recursiva y mantiene fijas M4 y M8P, pero usa la base final disponible; por ello mide capacidad predictiva comparable, no reproduce todas las revisiones de cada vintage histórico.</p>
@@ -168,6 +170,6 @@
     </div>
   </footer>
   <button class="back-to-top" type="button" aria-label="Volver arriba">↑</button>
-  <script src="../assets/js/site.js?v=27b1a22ca380" defer></script>
+  <script src="../assets/js/site.js?v=403a4caabd1e" defer></script>
 </body>
 </html>

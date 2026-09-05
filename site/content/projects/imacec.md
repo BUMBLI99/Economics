@@ -57,7 +57,9 @@ Los dos paneles responden al mismo calendario de publicación. Antes de la nueva
 | Indicadores INE e IVS completos | M4 y proxies siguen elegibles y se añade M8P | M8P · INE + IVS real |
 | Publicación del IMACEC objetivo | Efectivo y puntos archivados de cada corte; las reconstrucciones quedan rotuladas aparte | Resumen del período |
 
-El archivo de vintages conserva cada proyección antes de que el dato oficial la sustituya. Así, la comparación ex post utiliza lo que el proyecto publicó realmente en cada corte y no una reconstrucción posterior con información revisada.
+El archivo de vintages conserva las proyecciones disponibles con su fecha y procedencia. Para julio de 2026, el punto M8P corresponde a la salida operativa aportada por el autor el 31 de agosto. La curva de ajuste histórico se reestima con la base disponible en cada ejecución: es un ajuste dentro de muestra y no reconstruye el historial de pronósticos emitidos en tiempo real.
+
+La estimación histórica utiliza exclusivamente períodos anteriores al mes objetivo. Si faltan indicadores contemporáneos, puede mostrarse ese ajuste aunque no exista una nueva proyección automática. La nota del gráfico identifica la disponibilidad de ambos resultados.
 
 ## Especificaciones publicadas
 
@@ -66,6 +68,8 @@ El archivo de vintages conserva cada proyección antes de que el dato oficial la
 <div class="equation"><span class="equation-label">M8P · INE + IVS real parsimonioso</span>IMACEC<sub>t</sub> = f(crédito cantidad<sub>t</sub>, IMACEC<sub>t−1</sub>, avisos<sub>t−1</sub>, sectores INE<sub>t</sub>, IVS real<sub>t</sub>, crédito real<sub>t</sub>, calendario)</div>
 
 Las dos fórmulas se reestiman por separado para **IMACEC total** e **IMACEC no minero**. El factor IVS real promedia seis índices de ventas de servicios deflactados por el IPC de Servicios y M8P solo se habilita con cobertura contemporánea completa.
+
+La fuente principal de los sectores es la BDE. Para julio de 2026 existe un respaldo de las variaciones oficiales del INE publicadas el 31 de agosto: minería −7,2%, manufactura −4,9% y electricidad, gas y agua +0,3%. Solo cubre valores ausentes en la BDE, utiliza el redondeo oficial a un decimal y se reemplaza automáticamente cuando la BDE dispone del dato. [Fuente: INE, Índice de Producción Industrial](https://www.ine.gob.cl/estadisticas-por-tema/industria-energia-y-construccion/indice-de-produccion-industrial).
 
 ## Evaluación pseudo out-of-sample
 

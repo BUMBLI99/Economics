@@ -169,6 +169,8 @@ def interactive_assets() -> None:
         if value_col == "eee_value" and pd.notna(row.get("eee_survey_period")):
             timestamp = str(row["eee_survey_period"])
         vintage = timestamp[:10] if len(timestamp) >= 10 and timestamp[4:5] == "-" else timestamp
+        if value_col == "eee_value" and pd.notna(row.get("eee_survey_period")):
+            vintage = str(row["eee_survey_period"])[:7] + " (encuesta)"
         return {
             "concept": label,
             "period": pd.Timestamp(row["Periodo"]).strftime("%Y-%m"),
@@ -210,7 +212,7 @@ def interactive_assets() -> None:
         series = [web_series("IMACEC efectivo", COLORS["navy"], actual, "Periodo", "observed", width=2.7)]
         fit = block[block["tipo"] == "Ajuste"]
         if not fit.empty:
-            series.append(web_series("Ajuste histórico", color, fit, "Periodo", "fitted", "7 5", width=2.0))
+            series.append(web_series("Ajuste histórico reestimado", color, fit, "Periodo", "fitted", "7 5", width=2.0))
         if not point.empty:
             series.append(web_series(f"Proyección {model_label}", color, point, "Periodo", "forecast",
                                      line=False, marker=marker, width=0))
@@ -219,12 +221,27 @@ def interactive_assets() -> None:
         realtime = bool(not point.empty and is_true(point.iloc[-1].get("is_realtime", False)))
         note = ("Vintage guardado antes de conocerse el dato efectivo." if realtime else
                 "Referencia reestimada con la base disponible al cierre; no se presenta como vintage en tiempo real.")
+        if not fit.empty:
+            fit_date = str(status.iloc[-1].get("fecha_actualizacion", ""))[:10]
+            note += f" Ajuste histórico reestimado al {fit_date}: dentro de muestra, distinto del pronóstico archivado."
+        else:
+            note += " Ajuste histórico no disponible en la última ejecución; el punto archivado no acredita que el modelo automático se haya estimado."
+        diagnostics_path = ROOT / "data/processed/imacec_model_status.csv"
+        if diagnostics_path.exists():
+            diagnostics = pd.read_csv(diagnostics_path).fillna("")
+            diagnostic = diagnostics[(diagnostics.model_key == model_key) & (diagnostics.target_key == target_key)]
+            if not diagnostic.empty:
+                missing = diagnostic.iloc[-1].missing_variables
+                if missing:
+                    note += f" Faltan datos del corte actual: {missing}."
+                if diagnostic.iloc[-1].ine_fallback and model_key == "m8p":
+                    note += " Reestimación actual con respaldo INE a un decimal para indicadores ausentes en BDE."
         rows = compact_rows([
             effective_table_row(actual), model_table_row(model_key, point), eee_table_row(point)
         ])
         return {
             "id": model_key, "label": dataset_label, "series": series,
-            "zeroLine": True, "yDigits": 1, "table": rows, "note": note,
+            "zeroLine": True, "yDigits": 1, "table": rows, "note": note, "exactDates": True,
         }
 
     def summary_dataset(target_key: str, actual: pd.DataFrame) -> dict:
@@ -250,7 +267,7 @@ def interactive_assets() -> None:
         rows.append(eee_table_row(eee))
         return {
             "id": "summary", "label": "Resumen del período", "series": series,
-            "zeroLine": True, "yDigits": 1, "table": compact_rows(rows),
+            "zeroLine": True, "yDigits": 1, "table": compact_rows(rows), "exactDates": True,
             "note": "El resumen prioriza vintages guardados antes del dato efectivo; las referencias reconstruidas quedan identificadas en la tabla.",
         }
 

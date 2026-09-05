@@ -135,6 +135,20 @@ export_imacec_outputs <- function(results, data, eee, cycle,
   dir.create(fig_dir, recursive = TRUE, showWarnings = FALSE)
 
   projections <- projection_rows(results)
+  diagnostics <- purrr::map_dfr(names(model_specs), function(model_key) {
+    purrr::map_dfr(names(target_specs), function(target_key) {
+      result <- results[[paste(model_key, target_key, sep = "_")]]
+      missing <- missing_information_variables(data, model_key, target_key, cycle$periodo_objetivo[1])
+      target <- data[data$Periodo == cycle$periodo_objetivo[1], , drop = FALSE]
+      tibble::tibble(model_key = model_key, target_key = target_key,
+        Periodo = cycle$periodo_objetivo[1], run_timestamp = cycle$fecha_hora_actualizacion[1],
+        fit_available = !is.null(result) && nrow(result$history) > 0,
+        forecast_available = !is.null(result) && nrow(result$proyeccion) > 0,
+        missing_variables = paste(missing, collapse = ", "),
+        ine_fallback = if (nrow(target) && "ine_fallback" %in% names(target)) target$ine_fallback[1] else "")
+    })
+  })
+  readr::write_csv(diagnostics, file.path(output_dir, "imacec_model_status.csv"))
   history <- history_rows(results, data)
   metrics <- fit_metrics(history)
   oos <- compute_pseudo_oos(data)
