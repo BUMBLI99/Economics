@@ -59,13 +59,22 @@ La dinámica se expresa como:
 
 {{ debt.summary_table|safe }}
 
-## Qué mejora respecto del prototipo
+## Qué analiza el ejercicio
 
-- Se separan datos, cuentas fiscales, motor de proyección y publicación web.
-- La identidad de necesidades de financiamiento detiene el pipeline si usos y fuentes no cierran.
-- El shock de tasa distingue costo marginal de financiamiento y costo efectivo del stock.
-- La página distingue resultados oficiales, calibraciones necesarias y supuestos propios.
-- Los resultados pueden inspeccionarse con tooltip y descargarse en formatos reutilizables.
+El proyecto transforma las proyecciones fiscales en un análisis de sostenibilidad de deuda: parte del stock de deuda observado y reconstruye su evolución anual a partir del crecimiento nominal, el costo efectivo de los intereses, el balance primario y los ajustes stock-flujo. Así, la deuda deja de ser solamente un resultado final y puede identificarse cuánto aporta cada componente a su aumento o disminución.
+
+El contraste central enfrenta dos trayectorias publicadas en el IFP 2T 2026. La primera corresponde a una senda de balances compatible con la meta fiscal; la segunda mantiene el gasto ya comprometido. La distancia entre ambas permite dimensionar el esfuerzo fiscal necesario para evitar que la deuda supere el nivel prudente de 45% del PIB, sin interpretar ese umbral como un límite legal ni como una predicción de crisis.
+
+Para 2031–2035 se extiende el ejercicio con supuestos propios y explícitos. Ese horizonte permite estudiar la persistencia de los desequilibrios: un desvío pequeño puede parecer acotado en 2030, pero acumularse cuando el crecimiento permanece bajo, el refinanciamiento encarece gradualmente el stock de deuda o el balance primario tarda en corregirse.
+
+Los escenarios y el simulador responden cuatro preguntas concretas:
+
+- ¿Qué ocurre con la deuda si el crecimiento nominal resulta menor al previsto?
+- ¿Con qué velocidad un aumento de las tasas de mercado se transmite al costo efectivo del stock?
+- ¿Cuánto cambia la trayectoria si el esfuerzo fiscal es menor o aparecen ajustes stock-flujo adicionales?
+- ¿En qué año se cruza el nivel prudente cuando estos riesgos actúan por separado o en conjunto?
+
+La herramienta permite modificar esos supuestos, comparar la trayectoria resultante con el escenario base y descargar las series utilizadas. Los resultados son ejercicios condicionales: muestran la mecánica y magnitud de los riesgos, no la probabilidad de que cada escenario ocurra.
 
 ## Límites
 
