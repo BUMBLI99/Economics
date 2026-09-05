@@ -6,6 +6,8 @@
 - Se modularizaron lectura, conciliación contable y motor de proyección en `R/sostenibilidad_deuda/`.
 - Se incorporaron trayectorias y descomposición interactivas, además de un simulador de cuatro shocks.
 - Los shocks de tasas de mercado ahora se transmiten gradualmente al costo efectivo del stock.
+- El libro de insumos fiscales no se publica: fue sustituido por siete CSV UTF-8 y un diccionario de campos.
+- Se mantienen correo, teléfono y LinkedIn como canales públicos de contacto profesional.
 - Las antiguas URLs de estrés financiero redirigen al nuevo proyecto para no romper enlaces externos.
 
 ## 2026-09 — Ciclo mensual IMACEC
