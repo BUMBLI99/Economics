@@ -4,6 +4,7 @@
     <h2>Canales directos</h2>
     <p class="muted">Para comentarios sobre los proyectos, oportunidades de investigación o colaboración en economía aplicada.</p>
     <a class="contact-link" href="mailto:mulloav@fen.uchile.cl"><span>Email</span><span>mulloav@fen.uchile.cl ↗</span></a>
+    <a class="contact-link" href="tel:+56993103278"><span>Teléfono</span><span>+56 9 9310 3278 ↗</span></a>
     <a class="contact-link" href="https://www.linkedin.com/in/mauricio-andr%C3%A9s-ulloa-valdivia" target="_blank" rel="noopener"><span>LinkedIn</span><span>Perfil profesional ↗</span></a>
   </section>
   <section class="contact-card">

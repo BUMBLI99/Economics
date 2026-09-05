@@ -1,0 +1,63 @@
+file,column,unit,description,nature
+deuda_historica.csv,year,año,Año calendario.,oficial_o_calculo_reproducido
+deuda_historica.csv,debt,proporción_pib,Deuda bruta del Gobierno Central.,oficial_o_calculo_reproducido
+deuda_historica.csv,status,texto,Condición del dato.,oficial_o_calculo_reproducido
+deuda_historica.csv,source,texto,Referencia de fuente.,oficial_o_calculo_reproducido
+deuda_historica.csv,note,texto,Nota de cobertura.,oficial_o_calculo_reproducido
+macro_ifp.csv,year,año,Año calendario.,oficial_o_calculo_reproducido
+macro_ifp.csv,nominal_gdp,mm_clp,PIB nominal corriente.,oficial_o_calculo_reproducido
+macro_ifp.csv,real_growth,proporción,Crecimiento anual del PIB real.,oficial_o_calculo_reproducido
+macro_ifp.csv,average_cpi,proporción,Variación anual promedio del IPC.,oficial_o_calculo_reproducido
+macro_ifp.csv,nominal_growth_excel,proporción,Crecimiento derivado del PIB nominal publicado.,oficial_o_calculo_reproducido
+macro_ifp.csv,exchange_rate,clp_usd,Tipo de cambio nominal.,oficial_o_calculo_reproducido
+macro_ifp.csv,copper_price,usc_libra,Precio del cobre.,oficial_o_calculo_reproducido
+macro_ifp.csv,lithium_price,usd_kg,Precio del carbonato de litio.,oficial_o_calculo_reproducido
+macro_ifp.csv,status,texto,Condición del dato.,oficial_o_calculo_reproducido
+macro_ifp.csv,source,texto,Referencia de fuente.,oficial_o_calculo_reproducido
+deuda_oficial.csv,year,año,Año calendario.,oficial_o_calculo_reproducido
+deuda_oficial.csv,committed_debt,proporción_pib,Deuda con gasto comprometido.,oficial_o_calculo_reproducido
+deuda_oficial.csv,target_debt,proporción_pib,Deuda compatible con la meta fiscal.,oficial_o_calculo_reproducido
+deuda_oficial.csv,prudent_level,proporción_pib,Nivel prudente de deuda de la regla dual.,oficial_o_calculo_reproducido
+deuda_oficial.csv,nominal_gdp,mm_clp,PIB nominal corriente.,oficial_o_calculo_reproducido
+deuda_oficial.csv,committed_stock,mm_clp,Stock implícito de deuda comprometida.,oficial_o_calculo_reproducido
+deuda_oficial.csv,target_stock,mm_clp,Stock implícito de deuda compatible.,oficial_o_calculo_reproducido
+deuda_oficial.csv,status,texto,Condición del dato.,oficial_o_calculo_reproducido
+balance_ifp.csv,year,año,Año calendario.,oficial_o_calculo_reproducido
+balance_ifp.csv,revenue,mm_clp,Ingresos efectivos.,oficial_o_calculo_reproducido
+balance_ifp.csv,committed_spending,mm_clp,Gasto comprometido.,oficial_o_calculo_reproducido
+balance_ifp.csv,target_spending,mm_clp,Gasto compatible con la meta.,oficial_o_calculo_reproducido
+balance_ifp.csv,committed_balance_mm,mm_clp,Balance efectivo con gasto comprometido.,oficial_o_calculo_reproducido
+balance_ifp.csv,target_balance,proporción_pib,Balance efectivo compatible.,oficial_o_calculo_reproducido
+balance_ifp.csv,interest_mm,mm_clp,Gasto por intereses.,oficial_o_calculo_reproducido
+balance_ifp.csv,interest_gdp_excel,proporción_pib,Intereses como proporción del PIB.,oficial_o_calculo_reproducido
+balance_ifp.csv,committed_primary_excel,proporción_pib,Balance primario comprometido.,oficial_o_calculo_reproducido
+balance_ifp.csv,target_primary_excel,proporción_pib,Balance primario compatible.,oficial_o_calculo_reproducido
+balance_ifp.csv,structural_target,proporción_pib,Meta de balance cíclicamente ajustado.,oficial_o_calculo_reproducido
+balance_ifp.csv,fiscal_space,proporción_pib,Holgura de gasto compatible.,oficial_o_calculo_reproducido
+balance_ifp.csv,nominal_gdp_excel,mm_clp,PIB nominal usado en los cálculos.,oficial_o_calculo_reproducido
+balance_ifp.csv,source,texto,Referencia de fuente.,oficial_o_calculo_reproducido
+financiamiento_ifp.csv,type,texto,Uso o fuente de financiamiento.,oficial_o_calculo_reproducido
+financiamiento_ifp.csv,component,texto,Componente presupuestario.,oficial_o_calculo_reproducido
+financiamiento_ifp.csv,y2026,mm_clp,Monto de 2026.,oficial_o_calculo_reproducido
+financiamiento_ifp.csv,y2027,mm_clp,Monto de 2027.,oficial_o_calculo_reproducido
+financiamiento_ifp.csv,y2028,mm_clp,Monto de 2028.,oficial_o_calculo_reproducido
+financiamiento_ifp.csv,y2029,mm_clp,Monto de 2029.,oficial_o_calculo_reproducido
+financiamiento_ifp.csv,y2030,mm_clp,Monto de 2030.,oficial_o_calculo_reproducido
+financiamiento_ifp.csv,dsa_class,texto,Clasificación usada por el modelo DSA.,oficial_o_calculo_reproducido
+supuestos_2031_2035.csv,year,año,Año calendario.,supuesto_autor
+supuestos_2031_2035.csv,nominal_growth,proporción,Crecimiento nominal supuesto.,supuesto_autor
+supuestos_2031_2035.csv,effective_rate,proporción,Tasa efectiva promedio del stock.,supuesto_autor
+supuestos_2031_2035.csv,primary_balance,proporción_pib,Balance primario supuesto.,supuesto_autor
+supuestos_2031_2035.csv,identified_sfa,proporción_pib,Ajuste stock-flujo identificado.,supuesto_autor
+supuestos_2031_2035.csv,valuation_other,proporción_pib,Valorización y otros ajustes.,supuesto_autor
+supuestos_2031_2035.csv,total_sfa_excel,proporción_pib,Suma de ajustes stock-flujo.,supuesto_autor
+supuestos_2031_2035.csv,nature,texto,Naturaleza institucional del valor.,supuesto_autor
+supuestos_2031_2035.csv,justification,texto,Justificación del supuesto.,supuesto_autor
+escenarios.csv,scenario,texto,Nombre del escenario.,supuesto_autor
+escenarios.csv,growth_shock,puntos_porcentuales,Shock persistente al crecimiento nominal.,supuesto_autor
+escenarios.csv,market_rate_shock,puntos_porcentuales,Shock permanente a la tasa de mercado.,supuesto_autor
+escenarios.csv,primary_shock,puntos_porcentuales_pib,Shock al balance primario.,supuesto_autor
+escenarios.csv,sfa_shock,puntos_porcentuales_pib,Shock al ajuste stock-flujo.,supuesto_autor
+escenarios.csv,refinancing_share,proporción,Fracción del stock refinanciada cada año.,supuesto_autor
+escenarios.csv,special_treatment,texto,Tratamiento o calibración especial.,supuesto_autor
+escenarios.csv,interpretation,texto,Lectura económica del escenario.,supuesto_autor

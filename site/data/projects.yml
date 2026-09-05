@@ -42,16 +42,16 @@
   tags: [R, FX, Tasas 10Y, LatAm]
   featured: true
   order: 4
-- slug: estres-financiero
-  title: Índice de estrés financiero de mercado para Chile
-  short_title: Estrés financiero Chile
-  category: Condiciones financieras
-  status: Activo
+- slug: sostenibilidad-deuda
+  title: Sostenibilidad de la deuda pública de Chile
+  short_title: Sostenibilidad fiscal
+  category: Política fiscal
+  status: Nota técnica interactiva
   status_class: active
-  description: Indicador sintético basado en residuos estandarizados del USD/CLP y la tasa soberana a 10 años respecto de fundamentos externos observables.
-  image: assets/img/projects/stress.jpg
-  tags: [R, Chile, USD/CLP, Riesgo]
-  featured: false
+  description: Reconstrucción contable de la deuda bruta del Gobierno Central, escenarios macrofiscales y simulador de crecimiento, tasas, balance primario y ajustes stock-flujo.
+  image: assets/img/projects/debt.jpg
+  tags: [R, Política fiscal, Deuda pública, Escenarios]
+  featured: true
   order: 5
 - slug: curva-rendimiento
   title: Curva soberana chilena y compensación inflacionaria

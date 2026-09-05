@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sostenibilidad fiscal · Mauricio Ulloa</title>
+  <meta name="description" content="Reconstrucción contable de la deuda bruta del Gobierno Central, escenarios macrofiscales y simulador de crecimiento, tasas, balance primario y ajustes stock-flujo.">
+  <meta name="author" content="Mauricio Andrés Ulloa Valdivia">
+  <meta name="theme-color" content="#f4f1eb">
+  <link rel="canonical" href="https://mulloav3007.github.io/Economics/proyectos/sostenibilidad-deuda.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Sostenibilidad fiscal · Mauricio Ulloa">
+  <meta property="og:description" content="Reconstrucción contable de la deuda bruta del Gobierno Central, escenarios macrofiscales y simulador de crecimiento, tasas, balance primario y ajustes stock-flujo.">
+  <meta property="og:url" content="https://mulloav3007.github.io/Economics/proyectos/sostenibilidad-deuda.html">
+  <meta property="og:image" content="https://mulloav3007.github.io/Economics/assets/img/projects/debt.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/css/site.css?v=27b1a22ca380">
+</head>
+<body class="project project-sostenibilidad-deuda">
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="../index.html" aria-label="Ir al inicio">
+        <span class="brand-mark">MU</span>
+        <span>Mauricio Ulloa</span>
+      </a>
+      <button class="menu-toggle" type="button" aria-label="Abrir navegación" aria-expanded="false">☰</button>
+      <nav class="site-nav" aria-label="Navegación principal">
+        <a href="../index.html" >Inicio</a>
+        <a href="../proyectos.html" aria-current="page">Proyectos</a>
+        <a href="../cv.html" >CV</a>
+        <a href="../contacto.html" >Contacto</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido" class="site-main">
+<section class="project-hero">
+  <div class="container project-hero-grid">
+    <div>
+      <p class="eyebrow">Política fiscal</p>
+      <h1 class="project-title">Sostenibilidad de la deuda pública de Chile</h1>
+      <p class="project-deck">Reconstrucción contable de la deuda bruta del Gobierno Central, escenarios macrofiscales y simulador de crecimiento, tasas, balance primario y ajustes stock-flujo.</p>
+      <div class="tag-row">
+<span class="tag">R</span><span class="tag">Política fiscal</span><span class="tag">Deuda pública</span><span class="tag">Escenarios</span>      </div>
+    </div>
+    <dl class="project-meta">
+      <div><dt>Estado</dt><dd>Nota técnica interactiva</dd></div>
+      <div><dt>Última actualización</dt><dd>29 de julio de 2026</dd></div>
+      <div><dt>Frecuencia</dt><dd>Por IFP</dd></div>
+      <div><dt>Herramientas</dt><dd>R · JavaScript</dd></div>
+    </dl>
+  </div>
+</section>
+<section class="section-tight">
+  <div class="container project-layout">
+    <article class="project-content">
+      <div class="callout"><strong>Pregunta central.</strong> ¿Qué combinación de crecimiento nominal, costo efectivo de la deuda, balance primario y ajustes stock-flujo mantiene la deuda bruta bajo el nivel prudente de 45% del PIB?</div>
+<div class="kpi-grid">
+<div class="kpi"><div class="kpi-label">Senda compatible · 2030</div><div class="kpi-value">44,1%</div><div class="kpi-note">deuda bruta del Gobierno Central</div></div>
+<div class="kpi"><div class="kpi-label">Gasto comprometido · 2030</div><div class="kpi-value">45,5%</div><div class="kpi-note">supera el nivel prudente</div></div>
+<div class="kpi"><div class="kpi-label">Margen base · 2030</div><div class="kpi-value">+0,9 pp</div><div class="kpi-note">respecto de 45% del PIB</div></div>
+</div>
+<h2 id="resultado-principal">Resultado principal</h2>
+<p>La trayectoria compatible con la meta llega a <strong>44,1% del PIB en 2030</strong>, mientras la senda asociada al gasto comprometido alcanza <strong>45,5%</strong>. La diferencia no es una previsión independiente: organiza las dos trayectorias del IFP 2T 2026 dentro de una identidad común y hace visibles sus supuestos.</p>
+<div class="callout callout-critical"><strong>Lectura correcta.</strong> El 45% es el nivel prudente utilizado por la regla fiscal dual, no un techo legal que active automáticamente una crisis. Los escenarios son condicionales y no tienen probabilidades asignadas.</div>
+<h2 id="escenarios-interactivos">Escenarios interactivos</h2>
+<div class="interactive-card" data-project-chart="debt" data-url="../assets/data/project_charts.json">
+<div class="chart-controls">
+<label>Vista<select data-dataset-select=""></select></label>
+<label>Horizonte<select data-range-select=""><option value="0">Completo</option></select></label>
+</div>
+<div class="chart-legend" data-chart-legend=""></div>
+<div class="interactive-chart" data-generic-chart=""></div>
+<p class="chart-note" data-chart-note=""></p>
+<div data-chart-table="" hidden=""></div>
+</div>
+<p>El escenario de mayor tasa incluido en el archivo original es una sensibilidad mecánica. Para una lectura más realista, el simulador siguiente transmite gradualmente un shock de mercado al costo promedio del stock conforme se refinancia la deuda.</p>
+<h2 id="simulador-de-politica-fiscal">Simulador de política fiscal</h2>
+<div class="debt-simulator" data-debt-simulator="" data-url="../assets/data/debt_simulator.json">
+<div class="simulator-controls">
+<label>Crecimiento nominal<select data-debt-growth=""><option value="0">Base</option><option value="-1">−1,0 pp</option><option value="-2">−2,0 pp</option><option value="1">+1,0 pp</option></select></label>
+<label>Tasa de mercado<select data-debt-rate=""><option value="0">Base</option><option value="1">+1,0 pp</option><option value="2">+2,0 pp</option><option value="3">+3,0 pp</option></select></label>
+<label>Balance primario<select data-debt-primary=""><option value="0">Base</option><option value="-0.5">−0,5 pp</option><option value="-1">−1,0 pp</option><option value="0.5">+0,5 pp</option></select></label>
+<label>Ajuste stock-flujo<select data-debt-sfa=""><option value="0">Base</option><option value="0.25">+0,25 pp</option><option value="0.5">+0,50 pp</option></select></label>
+</div>
+<div class="kpi-grid simulator-output">
+<div class="kpi"><div class="kpi-label">Deuda simulada · 2030</div><div class="kpi-value" data-debt-2030="">—</div></div>
+<div class="kpi"><div class="kpi-label">Máximo del horizonte</div><div class="kpi-value" data-debt-max="">—</div></div>
+<div class="kpi"><div class="kpi-label">Primer año sobre 45%</div><div class="kpi-value" data-debt-cross="">—</div></div>
+</div>
+<div class="interactive-chart" data-debt-chart=""></div>
+<p class="chart-note">Supuesto de traspaso: 25% del shock de tasa de mercado se incorpora al costo efectivo cada año. El resultado es ilustrativo.</p>
+</div>
+<h2 id="metodo-y-trazabilidad">Método y trazabilidad</h2>
+<p>La dinámica se expresa como:</p>
+<div class="equation"><span class="equation-label">Identidad de deuda</span>d<sub>t</sub> = [(1+i<sub>t</sub>)/(1+g<sub>t</sub>)] d<sub>t−1</sub> − pb<sub>t</sub> + sfa<sub>t</sub></div>
+<ul>
+<li><strong>Crecimiento nominal:</strong> se obtiene del PIB nominal publicado, evitando aproximarlo como PIB real más IPC.</li>
+<li><strong>Tasa efectiva:</strong> intereses sobre el stock inicial. En sensibilidades de mercado, el shock se incorpora gradualmente.</li>
+<li><strong>Balance primario:</strong> positivo cuando existe superávit.</li>
+<li><strong>Ajuste stock-flujo:</strong> separa operaciones financieras netas, valorización y una conciliación explícita de la senda compatible.</li>
+<li><strong>Horizonte:</strong> datos efectivos hasta 2025, marco oficial hasta 2030 y extensión propia —claramente diferenciada— entre 2031 y 2035.</li>
+</ul>
+<div class="table-wrap"><table><thead><tr><th>Escenario</th><th>Deuda 2030</th><th>Deuda 2035</th><th>Primer año &gt;45%</th></tr></thead><tbody><tr><td>Base compatible con la meta</td><td>44,1%</td><td>43,3%</td><td>No supera</td></tr><tr><td>Gasto comprometido (oficial)</td><td>45,5%</td><td>—</td><td>2029</td></tr><tr><td>Menor crecimiento</td><td>45,7%</td><td>46,9%</td><td>2029</td></tr><tr><td>Mayor tasa de interés</td><td>45,3%</td><td>47,1%</td><td>2030</td></tr><tr><td>Menor esfuerzo fiscal</td><td>45,3%</td><td>45,8%</td><td>2030</td></tr><tr><td>Combinación adversa</td><td>50,0%</td><td>58,0%</td><td>2028</td></tr></tbody></table></div>
+<h2 id="que-mejora-respecto-del-prototipo">Qué mejora respecto del prototipo</h2>
+<ul>
+<li>Se separan datos, cuentas fiscales, motor de proyección y publicación web.</li>
+<li>La identidad de necesidades de financiamiento detiene el pipeline si usos y fuentes no cierran.</li>
+<li>El shock de tasa distingue costo marginal de financiamiento y costo efectivo del stock.</li>
+<li>La página distingue resultados oficiales, calibraciones necesarias y supuestos propios.</li>
+<li>Los resultados pueden inspeccionarse con tooltip y descargarse en formatos reutilizables.</li>
+</ul>
+<h2 id="limites">Límites</h2>
+<ul>
+<li>Es una DSA de deuda bruta, no un balance soberano neto de activos.</li>
+<li>No modela por instrumento la moneda, UF, vencimiento ni cobertura; el traspaso de 25% es configurable, no una estimación estructural.</li>
+<li>La valorización residual puede agrupar efectos heterogéneos que las tablas públicas no identifican por separado.</li>
+<li>No incorpora pasivos contingentes, empresas públicas ni una función de reacción fiscal estimada.</li>
+<li>La extensión 2031–2035 no pertenece a Dipres, Hacienda ni al CFA.</li>
+</ul>
+<h2 id="descargas">Descargas</h2>
+<div class="download-grid">
+<a class="download" href="../assets/files/debt-summary.csv"><div><strong>Resumen de escenarios</strong><span>CSV · principales resultados</span></div><span>↓</span></a>
+<a class="download" href="../assets/files/debt-scenarios.csv"><div><strong>Trayectorias completas</strong><span>CSV · supuestos y descomposición</span></div><span>↓</span></a>
+<a class="download" href="../assets/files/debt-sensitivity.csv"><div><strong>Matriz de sensibilidad</strong><span>CSV · crecimiento y balance</span></div><span>↓</span></a>
+</div>
+<h2 id="fuentes">Fuentes</h2>
+<ul>
+<li>Dirección de Presupuestos, <em>Informe de Finanzas Públicas, segundo trimestre de 2026</em> y anexos Excel.</li>
+<li>Ministerio de Hacienda, Oficina de la Deuda Pública.</li>
+<li>Consejo Fiscal Autónomo, estadísticas de deuda bruta y nivel prudente.</li>
+</ul>
+
+    </article>
+    <aside class="project-toc" aria-label="Contenido de la página">
+      <p class="project-toc-title">En esta página</p>
+<a href="#resultado-principal">Resultado principal</a><a href="#escenarios-interactivos">Escenarios interactivos</a><a href="#simulador-de-politica-fiscal">Simulador de política fiscal</a><a href="#metodo-y-trazabilidad">Método y trazabilidad</a><a href="#que-mejora-respecto-del-prototipo">Qué mejora respecto del prototipo</a><a href="#limites">Límites</a><a href="#descargas">Descargas</a><a href="#fuentes">Fuentes</a>    </aside>
+  </div>
+</section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© <span data-current-year>2026</span> Mauricio Ulloa · Portafolio personal.</div>
+      <div class="footer-links">
+        <a href="../contacto.html">Contacto</a>
+      </div>
+    </div>
+  </footer>
+  <button class="back-to-top" type="button" aria-label="Volver arriba">↑</button>
+  <script src="../assets/js/site.js?v=27b1a22ca380" defer></script>
+</body>
+</html>

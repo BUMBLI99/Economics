@@ -8,6 +8,7 @@ artifacts, generates publication assets, and produces a deterministic static sit
 from __future__ import annotations
 
 import argparse
+import hashlib
 import html
 import json
 import math
@@ -186,22 +187,24 @@ def build_contexts() -> dict[str, Any]:
         "summary_table": trans_table,
     }
 
-    # Chile financial stress
-    snap = pd.read_csv(ROOT / "data/processed/estres_financiero/latest_snapshot.csv").iloc[0]
-    diagnostics = pd.read_csv(ROOT / "data/processed/estres_financiero/model_diagnostics.csv")
-    diagnostics_table = table_html(
-        diagnostics,
-        ["model", "n_obs", "r_squared", "adj_r_squared", "sample_start", "sample_end", "residual_sd"],
-        {"model": "Bloque", "n_obs": "N", "r_squared": "R²", "adj_r_squared": "R² ajustado", "sample_start": "Inicio", "sample_end": "Fin", "residual_sd": "σ residuo"},
-        {"n_obs": lambda x: str(int(x)), "r_squared": lambda x: fmt_num(x, 3), "adj_r_squared": lambda x: fmt_num(x, 3), "residual_sd": lambda x: fmt_num(x, 3)},
-    )
-    stress = {
-        "date": fmt_date(snap["date"]),
-        "index_30d": fmt_num(snap["stress_market_30d"], 2, True),
-        "fx_30d": fmt_num(snap["stress_fx_30d"], 2, True),
-        "y10_30d": fmt_num(snap["stress_y10_30d"], 2, True),
-        "regime": str(snap["regime"]),
-        "diagnostics_table": diagnostics_table,
+    # Public-debt sustainability
+    debt_summary = pd.read_csv(ROOT / "data/processed/sostenibilidad_deuda/resumen_escenarios.csv")
+    debt_summary["escenario"] = debt_summary["escenario"].astype(str)
+    base_debt = debt_summary.loc[debt_summary["escenario"].eq("Base compatible con la meta")].iloc[0]
+    committed_debt = debt_summary.loc[debt_summary["escenario"].eq("Gasto comprometido (oficial)")].iloc[0]
+    debt = {
+        "base_2030": fmt_pct(100 * base_debt["deuda_2030"], 1),
+        "committed_2030": fmt_pct(100 * committed_debt["deuda_2030"], 1),
+        "base_margin": fmt_pct(100 * base_debt["distancia_45_en_2030"], 1, True),
+        "summary_table": table_html(
+            debt_summary,
+            ["escenario", "deuda_2030", "deuda_2035", "primer_anio_sobre_45"],
+            {"escenario": "Escenario", "deuda_2030": "Deuda 2030", "deuda_2035": "Deuda 2035",
+             "primer_anio_sobre_45": "Primer año >45%"},
+            {"deuda_2030": lambda x: f"{fmt_pct(100 * x, 1)}%",
+             "deuda_2035": lambda x: "—" if pd.isna(x) else f"{fmt_pct(100 * x, 1)}%",
+             "primer_anio_sobre_45": lambda x: "No supera" if pd.isna(x) else str(int(x))},
+        ),
     }
 
     # Regional exchange models
@@ -244,7 +247,7 @@ def build_contexts() -> dict[str, Any]:
         "imacec": imacec,
         "ipom": ipom,
         "transmission": transmission,
-        "stress": stress,
+        "debt": debt,
         "exchange": exchange,
         "yield_curve": yield_curve,
         "yield_curve_df": curve,
@@ -320,8 +323,9 @@ def copy_public_assets(contexts: dict[str, Any]) -> None:
         ROOT / "data/processed/imacec_pseudo_oos_metrics.csv": files_out / "imacec-oos-metrics.csv",
         ROOT / "outputs/tables/transmision_tpm/pass_through_summary.csv": files_out / "transmission-pass-through-summary.csv",
         ROOT / "outputs/tables/transmision_tpm/local_projections.csv": files_out / "transmission-local-projections.csv",
-        ROOT / "data/processed/estres_financiero/latest_snapshot.csv": files_out / "stress-latest-snapshot.csv",
-        ROOT / "outputs/tables/estres_financiero/episodios_estres.csv": files_out / "stress-episodes.csv",
+        ROOT / "data/processed/sostenibilidad_deuda/trayectorias_escenarios.csv": files_out / "debt-scenarios.csv",
+        ROOT / "data/processed/sostenibilidad_deuda/resumen_escenarios.csv": files_out / "debt-summary.csv",
+        ROOT / "data/processed/sostenibilidad_deuda/sensibilidad_crecimiento_balance.csv": files_out / "debt-sensitivity.csv",
         ROOT / "assets/files/exchange_model_report.pdf": files_out / "exchange_model_report.pdf",
         ROOT / "assets/files/exchange_model_outputs_2025.xlsx": files_out / "exchange_model_outputs_2025.xlsx",
     }
@@ -348,6 +352,13 @@ def write_text(path: Path, text: str) -> None:
     path.write_text(text, encoding="utf-8")
 
 
+def asset_version(*paths: Path) -> str:
+    digest = hashlib.sha256()
+    for path in paths:
+        digest.update(path.read_bytes())
+    return digest.hexdigest()[:12]
+
+
 def build_pages(contexts: dict[str, Any]) -> None:
     projects = yaml.safe_load((SITE / "data/projects.yml").read_text(encoding="utf-8"))
     projects = sorted(projects, key=lambda p: p["order"])
@@ -357,6 +368,9 @@ def build_pages(contexts: dict[str, Any]) -> None:
         undefined=StrictUndefined,
         trim_blocks=True,
         lstrip_blocks=True,
+    )
+    env.globals["asset_version"] = asset_version(
+        SITE / "assets/css/site.css", SITE / "assets/js/site.js"
     )
     markdown = mistune.create_markdown(escape=False, plugins=["table", "strikethrough"])
 
@@ -426,7 +440,7 @@ def build_pages(contexts: dict[str, Any]) -> None:
         "ipom-iris": ("2026", "Trimestral", "Matlab · IRIS · R"),
         "transmision-tpm": ("Mayo de 2026", "Mensual", "R"),
         "exchange": ("1 de junio de 2026", "Diaria", "R"),
-        "estres-financiero": ("18 de mayo de 2026", "Diaria", "R"),
+        "sostenibilidad-deuda": ("29 de julio de 2026", "Por IFP", "R · JavaScript"),
         "curva-rendimiento": ("Mayo de 2026", "Mensual", "R"),
         "atlas-metropolitano": ("Agosto de 2026", "2017 · 2022 · 2024", "R · JavaScript · Leaflet · Plotly"),
     }
@@ -456,8 +470,9 @@ def build_pages(contexts: dict[str, Any]) -> None:
         )
         write_text(DOCS / f"proyectos/{p['slug']}.html", rendered)
 
-    # Compatibility redirect for an old public URL.
-    redirect = """<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0; url=estres-financiero.html"><link rel="canonical" href="estres-financiero.html"><title>Redirigiendo…</title></head><body><p>Este proyecto cambió de dirección. <a href="estres-financiero.html">Abrir índice de estrés financiero</a>.</p></body></html>"""
+    # Compatibility redirects preserve links to the retired financial-stress page.
+    redirect = """<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0; url=sostenibilidad-deuda.html"><link rel="canonical" href="sostenibilidad-deuda.html"><title>Redirigiendo…</title></head><body><p>Este proyecto fue reemplazado. <a href="sostenibilidad-deuda.html">Abrir sostenibilidad de la deuda pública</a>.</p></body></html>"""
+    write_text(DOCS / "proyectos/estres-financiero.html", redirect)
     write_text(DOCS / "proyectos/estres-externo.html", redirect)
 
     # 404 page.

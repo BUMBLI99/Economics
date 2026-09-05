@@ -22,7 +22,7 @@ $Rscript = Find-Rscript
 $steps = @(
   @{ Name = "IMACEC"; Script = "scripts/01_update_imacec.R" },
   @{ Name = "Transmisión TPM"; Script = "scripts/05_update_transmision_tpm.R" },
-  @{ Name = "Estrés financiero Chile"; Script = "scripts/06_update_estres_financiero.R" },
+  @{ Name = "Sostenibilidad de deuda"; Script = "scripts/06_update_sostenibilidad_deuda.R" },
   @{ Name = "Procesamiento IPoM/IRIS"; Script = "scripts/03_build_ipom_outputs.R" },
   @{ Name = "Exchange LatAm"; Script = "scripts/exchange/build_exchange_outputs.R" }
 )

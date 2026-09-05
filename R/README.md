@@ -6,7 +6,7 @@ Esta carpeta contiene módulos analíticos; no contiene la fuente del sitio púb
 
 - `imacec_*.R`: descarga, calendario, modelos, vintages, evaluación pseudo out-of-sample y exportación del nowcast.
 - `transmision_tpm/`: panel mensual, rezagos distribuidos, asimetrías y local projections.
-- `estres_financiero/`: fuentes diarias, modelos de USD/CLP y tasa 10Y, componentes e índice agregado.
+- `sostenibilidad_deuda/`: fuentes fiscales, conciliación contable, dinámica de deuda y sensibilidades.
 - `ipom_*.R`: lectura y normalización de salidas Matlab/IRIS.
 
 ## Convención de salidas

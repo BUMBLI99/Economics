@@ -14,7 +14,7 @@ Repositorio y sitio público de **Mauricio Andrés Ulloa Valdivia**. Reúne proy
 | Escenarios tipo IPoM | ¿Cómo cambian inflación, TPM y brecha bajo trayectorias condicionales? | Matlab · IRIS · R |
 | Transmisión de la TPM | ¿Con qué velocidad y heterogeneidad se transmite la TPM a tasas bancarias? | R |
 | FX, tasas 10Y y riesgo LatAm | ¿Qué parte de los movimientos financieros excede lo explicado por factores globales? | R |
-| Estrés financiero Chile | ¿Cómo resumir presiones anómalas en USD/CLP y tasa soberana 10Y? | R |
+| Sostenibilidad fiscal | ¿Qué combinación de crecimiento, tasas, balance primario y ajustes stock-flujo mantiene la deuda bajo el nivel prudente? | R · JavaScript |
 | Curva soberana chilena | ¿Qué muestran nivel, pendiente y compensación inflacionaria de BCP y BCU? | R |
 
 ## Arquitectura
@@ -56,7 +56,7 @@ El constructor:
 3. limpia completamente `docs/`;
 4. construye todas las páginas con diseño común;
 5. copia solo las descargas públicas autorizadas;
-6. mantiene una redirección para la antigua URL `estres-externo.html`.
+6. mantiene redirecciones para las antiguas URLs del proyecto de estrés financiero.
 
 ## Actualizar análisis
 
@@ -108,10 +108,10 @@ python scripts/build_site.py
 python scripts/validate_site.py
 ```
 
-### Estrés financiero Chile
+### Sostenibilidad de la deuda pública
 
 ```bash
-Rscript scripts/06_update_estres_financiero.R
+Rscript scripts/06_update_sostenibilidad_deuda.R
 python scripts/build_site.py
 python scripts/validate_site.py
 ```
