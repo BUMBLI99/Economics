@@ -25,15 +25,19 @@ La trayectoria compatible con la meta llega a **{{ debt.base_2030 }}% del PIB en
   <div data-chart-table hidden></div>
 </div>
 
-El escenario de mayor tasa incluido en el archivo original es una sensibilidad mecánica. Para una lectura más realista, el simulador siguiente transmite gradualmente un shock de mercado al costo promedio del stock conforme se refinancia la deuda.
+La vista inicial reúne la historia efectiva desde 1990 y los escenarios hasta 2035. El selector permite ampliar el período de proyección, descomponer el cambio anual de la deuda y comparar el balance primario con el que estabilizaría la razón deuda/PIB. La línea de 45% representa el nivel prudente actual: no implica que esta referencia rigiera durante toda la historia.
+
+Los escenarios de riesgo y el simulador parten de la proyección de deuda de cierre de 2026 y aplican shocks permanentes desde 2027. El shock de tasas se transmite gradualmente al costo efectivo: cada año se incorpora el 25% de la diferencia pendiente respecto del shock total. Es una aproximación al refinanciamiento, no una estimación de la estructura de vencimientos.
 
 ## Simulador de política fiscal
+
+Los escenarios predefinidos usan shocks distintos: menor crecimiento (−1 pp), mayor tasa de mercado (+1,5 pp), menor balance primario (−0,3 pp del PIB) y combinación adversa (−1 pp de crecimiento, +1,5 pp de tasa, −0,5 pp de balance y +0,25 pp de ajustes stock-flujo). La combinación adversa no es la suma exacta de los tres escenarios individuales, porque supone un deterioro primario mayor y añade un ajuste stock-flujo.
 
 <div class="debt-simulator" data-debt-simulator data-url="../assets/data/debt_simulator.json">
   <div class="simulator-controls">
     <label>Crecimiento nominal<select data-debt-growth><option value="0">Base</option><option value="-1">−1,0 pp</option><option value="-2">−2,0 pp</option><option value="1">+1,0 pp</option></select></label>
-    <label>Tasa de mercado<select data-debt-rate><option value="0">Base</option><option value="1">+1,0 pp</option><option value="2">+2,0 pp</option><option value="3">+3,0 pp</option></select></label>
-    <label>Balance primario<select data-debt-primary><option value="0">Base</option><option value="-0.5">−0,5 pp</option><option value="-1">−1,0 pp</option><option value="0.5">+0,5 pp</option></select></label>
+    <label>Tasa de mercado<select data-debt-rate><option value="0">Base</option><option value="1">+1,0 pp</option><option value="1.5">+1,5 pp</option><option value="2">+2,0 pp</option><option value="3">+3,0 pp</option></select></label>
+    <label>Balance primario<select data-debt-primary><option value="0">Base</option><option value="-0.3">−0,3 pp</option><option value="-0.5">−0,5 pp</option><option value="-1">−1,0 pp</option><option value="0.5">+0,5 pp</option></select></label>
     <label>Ajuste stock-flujo<select data-debt-sfa><option value="0">Base</option><option value="0.25">+0,25 pp</option><option value="0.5">+0,50 pp</option></select></label>
   </div>
   <div class="kpi-grid simulator-output">
@@ -42,7 +46,7 @@ El escenario de mayor tasa incluido en el archivo original es una sensibilidad m
     <div class="kpi"><div class="kpi-label">Primer año sobre 45%</div><div class="kpi-value" data-debt-cross>—</div></div>
   </div>
   <div class="interactive-chart" data-debt-chart></div>
-  <p class="chart-note">Supuesto de traspaso: 25% del shock de tasa de mercado se incorpora al costo efectivo cada año. El resultado es ilustrativo.</p>
+  <p class="chart-note">Shocks desde 2027. Traspaso de tasas: 25% de la diferencia pendiente por año (25% el primero, 43,75% acumulado el segundo). El resultado es ilustrativo.</p>
 </div>
 
 ## Método y trazabilidad
@@ -63,7 +67,7 @@ La dinámica se expresa como:
 
 El proyecto transforma las proyecciones fiscales en un análisis de sostenibilidad de deuda: parte del stock de deuda observado y reconstruye su evolución anual a partir del crecimiento nominal, el costo efectivo de los intereses, el balance primario y los ajustes stock-flujo. Así, la deuda deja de ser solamente un resultado final y puede identificarse cuánto aporta cada componente a su aumento o disminución.
 
-El contraste central enfrenta dos trayectorias publicadas en el IFP 2T 2026. La primera corresponde a una senda de balances compatible con la meta fiscal; la segunda mantiene el gasto ya comprometido. La distancia entre ambas permite dimensionar el esfuerzo fiscal necesario para evitar que la deuda supere el nivel prudente de 45% del PIB, sin interpretar ese umbral como un límite legal ni como una predicción de crisis.
+El contraste central enfrenta dos trayectorias publicadas en el IFP 2T 2026. La primera corresponde a una senda de balances compatible con la meta fiscal; la segunda mantiene el gasto ya comprometido. Su distancia mide la diferencia de deuda acumulada entre ambas sendas, no el ajuste fiscal anual mínimo necesario para permanecer bajo 45%. El ejercicio tampoco interpreta ese nivel prudente como una predicción de crisis.
 
 Para 2031–2035 se extiende el ejercicio con supuestos propios y explícitos. Ese horizonte permite estudiar la persistencia de los desequilibrios: un desvío pequeño puede parecer acotado en 2030, pero acumularse cuando el crecimiento permanece bajo, el refinanciamiento encarece gradualmente el stock de deuda o el balance primario tarda en corregirse.
 
@@ -94,6 +98,6 @@ La herramienta permite modificar esos supuestos, comparar la trayectoria resulta
 
 ## Fuentes
 
-- Dirección de Presupuestos, *Informe de Finanzas Públicas, segundo trimestre de 2026* y anexos Excel.
+- Dirección de Presupuestos, [*Informe de Finanzas Públicas, segundo trimestre de 2026*](https://www.dipres.gob.cl/598/articles-419241_Informe_PDF.pdf?ts=1786041894), capítulo II, y anexos Excel. Corte del ejercicio: 29 de julio de 2026; no representa una actualización diaria.
 - Ministerio de Hacienda, Oficina de la Deuda Pública.
 - Consejo Fiscal Autónomo, estadísticas de deuda bruta y nivel prudente.
