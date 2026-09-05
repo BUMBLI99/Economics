@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09 — Sostenibilidad de la deuda pública
+
+- El proyecto de estrés financiero fue reemplazado por una DSA de la deuda bruta del Gobierno Central.
+- Se modularizaron lectura, conciliación contable y motor de proyección en `R/sostenibilidad_deuda/`.
+- Se incorporaron trayectorias y descomposición interactivas, además de un simulador de cuatro shocks.
+- Los shocks de tasas de mercado ahora se transmiten gradualmente al costo efectivo del stock.
+- Las antiguas URLs de estrés financiero redirigen al nuevo proyecto para no romper enlaces externos.
+
 ## 2026-09 — Ciclo mensual IMACEC
 
 - Se incorporaron paneles interactivos separados para IMACEC total y no minero.

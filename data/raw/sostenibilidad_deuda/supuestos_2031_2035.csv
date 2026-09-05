@@ -1,0 +1,6 @@
+year,nominal_growth,effective_rate,primary_balance,identified_sfa,valuation_other,total_sfa_excel,nature,justification
+2031,0.051,0.032,0.001,0.005,0.0045,0.0095,Supuesto editable,Convergencia gradual tras 2030; no corresponde a proyección oficial.
+2032,0.051,0.033,0.0015,0.0045,0.004,0.0085,Supuesto editable,Mejora primaria gradual y reducción de requerimientos bajo la línea.
+2033,0.051,0.034,0.002,0.004,0.0035,0.0075,Supuesto editable,La tasa efectiva sube lentamente por refinanciamiento del stock.
+2034,0.051,0.035,0.0025,0.0035,0.003,0.006500000000000001,Supuesto editable,Supuesto conservador de estabilización fiscal.
+2035,0.051,0.036,0.003,0.003,0.0025,0.0055,Supuesto editable,Horizonte ilustrativo; modificar para ejercicios alternativos.

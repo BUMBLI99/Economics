@@ -292,6 +292,55 @@
     });
   }
 
+  async function initDebtSimulator() {
+    const root = $('[data-debt-simulator]');
+    if (!root) return;
+    try {
+      const base = await loadJSON(root.dataset.url);
+      const controls = {
+        growth: $('[data-debt-growth]', root), rate: $('[data-debt-rate]', root),
+        primary: $('[data-debt-primary]', root), sfa: $('[data-debt-sfa]', root)
+      };
+      const chart = $('[data-debt-chart]', root);
+      const output2030 = $('[data-debt-2030]', root);
+      const outputMax = $('[data-debt-max]', root);
+      const outputCross = $('[data-debt-cross]', root);
+      const calculate = () => {
+        const growthShock = Number(controls.growth.value) / 100;
+        const marketRateShock = Number(controls.rate.value) / 100;
+        const primaryShock = Number(controls.primary.value) / 100;
+        const sfaShock = Number(controls.sfa.value) / 100;
+        let debt = Number(base[0].deuda_rezagada);
+        const simulated = base.map((row, index) => {
+          const passThrough = 1 - Math.pow(0.75, index + 1);
+          const growth = Number(row.crecimiento_nominal) + growthShock;
+          const rate = Number(row.tasa_efectiva) + marketRateShock * passThrough;
+          debt = ((1 + rate) / (1 + growth)) * debt
+            - (Number(row.balance_primario) + primaryShock)
+            + (Number(row.sfa_total) + sfaShock);
+          return { date: `${row.anio}-01-01`, value: 100 * debt, label: String(row.anio) };
+        });
+        const baseline = base.map((row) => ({
+          date: `${row.anio}-01-01`, value: 100 * Number(row.deuda_pib), label: String(row.anio)
+        }));
+        const at2030 = simulated.find((point) => point.label === '2030');
+        const maximum = simulated.reduce((a, b) => b.value > a.value ? b : a);
+        const crossing = simulated.find((point) => point.value > 45);
+        output2030.textContent = at2030 ? `${at2030.value.toFixed(1).replace('.', ',')}%` : '—';
+        outputMax.textContent = `${maximum.value.toFixed(1).replace('.', ',')}% · ${maximum.label}`;
+        outputCross.textContent = crossing ? crossing.label : 'No supera';
+        lineChart(chart, [
+          { name: 'Base compatible', color: palette.navy, width: 2.5, values: baseline },
+          { name: 'Simulación', color: palette.terracotta, width: 2.8, values: simulated }
+        ], { ariaLabel: 'Resultado del simulador de deuda', yDigits: 1, points: true });
+      };
+      Object.values(controls).forEach((control) => control.addEventListener('change', calculate));
+      calculate();
+    } catch (error) {
+      root.innerHTML = `<div class="callout callout-critical"><strong>Simulador no disponible.</strong> ${error.message}</div>`;
+    }
+  }
+
   function initAtlasEmbed() {
     const frame = $('[data-atlas-frame]');
     if (!frame) return;
@@ -327,6 +376,7 @@
   initExchangeDashboard();
   initYieldCurve();
   initProjectCharts();
+  initDebtSimulator();
   enhanceStaticFigures();
   initAtlasEmbed();
 })();

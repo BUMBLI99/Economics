@@ -1,0 +1,6 @@
+scenario,growth_shock,market_rate_shock,primary_shock,sfa_shock,refinancing_share,special_treatment,interpretation
+Base compatible con la meta,0,0,0,0,0.25,Calibrado a trayectoria oficial 2026-2030,Cumplimiento de la senda fiscal y extensión ilustrativa.
+Menor crecimiento,-0.01,0,0,0,0.25,Ninguno,Crecimiento nominal persistentemente 1 pp menor.
+Mayor tasa de interés,0,0.015,0,0,0.25,Ninguno,Shock permanente de 1.5 pp con transmisión gradual por refinanciamiento.
+Menor esfuerzo fiscal,0,0,-0.003,0,0.25,Ninguno,Deterioro persistente de 0.3 pp del PIB en el balance primario.
+Combinación adversa,-0.01,0.015,-0.005,0.0025,0.25,Ninguno,"Shock conjunto de actividad, tasa, esfuerzo fiscal y SFA."

@@ -1,4 +1,0 @@
-timestamp: 2026-06-01 16:24:56 -04
-error: Too Many Requests (RFC 6585) (HTTP 429).
-
-Si el error viene de BCCh/BIS, revisar tambien data/raw/estres_financiero/diagnostics/.

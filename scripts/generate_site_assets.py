@@ -300,9 +300,51 @@ def interactive_assets() -> None:
     horizon_ticks = [{"date": date, "label": label.removeprefix("Horizonte: ")} for date, label in horizon_by_date.items()]
     charts["transmission"] = {"ariaLabel": "Transmisión interactiva de la TPM", "datasets": [{"id": "rates", "label": "TPM y tasas bancarias", "series": rate_series, "yDigits": 2}, {"id": "pass", "label": "Pass-through acumulado", "series": cum_series, "xTicks": horizon_ticks, "yDigits": 3}]}
 
-    stress = pd.read_csv(ROOT / "data/processed/estres_financiero/stress_index_chile.csv", parse_dates=["date"])
-    stress = stress[stress["date"] >= "2013-01-01"].set_index("date").resample("W-FRI").last().reset_index()
-    charts["stress"] = {"ariaLabel": "Índice interactivo de estrés financiero", "datasets": [{"id": "index", "label": "Índice agregado", "zeroLine": True, "yDigits": 2, "series": [web_series("Índice (cierre semanal)", COLORS["blue"], stress, "date", "stress_market"), web_series("Media móvil 30 días", COLORS["navy"], stress, "date", "stress_market_30d")]}, {"id": "components", "label": "Componentes", "zeroLine": True, "yDigits": 2, "series": [web_series("Componente FX", COLORS["terracotta"], stress, "date", "stress_fx_30d"), web_series("Componente tasa 10Y", COLORS["teal"], stress, "date", "stress_y10_30d")]}]}
+    debt = pd.read_csv(ROOT / "data/processed/sostenibilidad_deuda/trayectorias_escenarios.csv")
+    debt["chart_date"] = pd.to_datetime(debt["anio"].astype(int).astype(str) + "-01-01")
+    debt_order = [
+        ("Base compatible con la meta", COLORS["navy"], ""),
+        ("Gasto comprometido (oficial)", COLORS["gold"], "5 4"),
+        ("Menor crecimiento", COLORS["teal"], ""),
+        ("Mayor tasa de interés", COLORS["purple"], ""),
+        ("Menor esfuerzo fiscal", COLORS["blue"], ""),
+        ("Combinación adversa", COLORS["terracotta"], ""),
+    ]
+    debt_series = [
+        web_series(name, color, debt[debt["escenario"].eq(name)], "chart_date", "deuda_pib", dash)
+        for name, color, dash in debt_order
+    ]
+    # Express debt ratios as percentage points for a natural web tooltip.
+    for series in debt_series:
+        for point in series["values"]:
+            point["value"] = round(100 * point["value"], 4)
+            point["label"] = point["date"][:4]
+    base = debt[debt["escenario"].eq("Base compatible con la meta")].copy()
+    decomposition = [
+        web_series(label, color, base, "chart_date", col)
+        for col, label, color in [
+            ("efecto_interes_crecimiento", "Interés-crecimiento", COLORS["navy"]),
+            ("efecto_balance_primario", "Balance primario", COLORS["terracotta"]),
+            ("efecto_sfa", "Ajustes stock-flujo", COLORS["teal"]),
+        ]
+    ]
+    for series in decomposition:
+        for point in series["values"]:
+            point["value"] = round(100 * point["value"], 4)
+            point["label"] = point["date"][:4]
+    charts["debt"] = {
+        "ariaLabel": "Escenarios interactivos de deuda pública",
+        "defaultDataset": "trajectories",
+        "datasets": [
+            {"id": "trajectories", "label": "Trayectorias de deuda", "series": debt_series,
+             "yDigits": 1, "note": "Porcentaje del PIB. Desde 2031 las trayectorias son extensiones ilustrativas propias."},
+            {"id": "decomposition", "label": "Descomposición del escenario base", "series": decomposition,
+             "zeroLine": True, "yDigits": 2, "note": "Contribución anual en puntos porcentuales del PIB."},
+        ],
+    }
+    simulator = base[["anio", "crecimiento_nominal", "tasa_efectiva", "balance_primario",
+                      "sfa_total", "deuda_rezagada", "deuda_pib"]].copy()
+    simulator.to_json(DATA_OUT / "debt_simulator.json", orient="records", force_ascii=False)
     (DATA_OUT / "project_charts.json").write_text(json.dumps(charts, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
 
@@ -450,53 +492,6 @@ def transmission_assets() -> None:
     save(fig, "transmission_local_projections")
 
 
-def financial_stress_assets() -> None:
-    d = pd.read_csv(ROOT / "data/processed/estres_financiero/stress_index_chile.csv", parse_dates=["date"])
-    d = d[d["date"] >= "2013-01-01"].sort_values("date")
-    fig, ax = plt.subplots(figsize=(13.2, 5.8))
-    ax.plot(d["date"], d["stress_market"], color=COLORS["blue"], alpha=0.22, linewidth=0.8, label="Índice diario")
-    ax.plot(d["date"], d["stress_market_30d"], color=COLORS["navy"], linewidth=2.25, label="Media móvil 30 días")
-    ax.axhspan(1.5, max(3.5, float(d["stress_market_30d"].max()) + 0.2), color=COLORS["terracotta"], alpha=0.06)
-    ax.axhspan(0.75, 1.5, color=COLORS["gold"], alpha=0.07)
-    for v in [0, 0.75, 1.5]:
-        ax.axhline(v, color=COLORS["slate"], linestyle="--" if v else "-", linewidth=0.8)
-    ax.set_ylabel("Z-score agregado")
-    ax.xaxis.set_major_locator(mdates.YearLocator(2))
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
-    style_ax(ax, "Índice de estrés financiero de mercado para Chile", "Promedio de residuos estandarizados de USD/CLP y tasa soberana 10Y.")
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=2)
-    add_source(fig, "Fuente: modelo diario del proyecto de estrés financiero.")
-    save(fig, "stress_index_chile")
-
-    fig, ax = plt.subplots(figsize=(13.2, 5.8))
-    ax.plot(d["date"], d["stress_fx_30d"], color=COLORS["terracotta"], linewidth=1.9, label="Componente FX")
-    ax.plot(d["date"], d["stress_y10_30d"], color=COLORS["teal"], linewidth=1.9, label="Componente tasa 10Y")
-    ax.axhline(0, color=COLORS["slate"], linewidth=0.8)
-    ax.set_ylabel("Z-score, media móvil 30 días")
-    ax.xaxis.set_major_locator(mdates.YearLocator(2))
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
-    style_ax(ax, "Componentes del índice de estrés", "Valores positivos indican presión superior a la explicada por los factores externos del modelo.")
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=2)
-    add_source(fig, "Fuente: residuos de primera etapa del proyecto.")
-    save(fig, "stress_components_chile")
-
-    market = d[d["date"] >= "2018-01-01"].copy().sort_values("date")
-    for actual, fitted, stem, title, ylabel in [
-        ("clp", "fitted_clp", "stress_fx_fit", "USD/CLP: efectivo y valor ajustado", "Pesos por dólar"),
-        ("y10_clp", "fitted_y10_clp", "stress_y10_fit", "Tasa soberana 10Y: efectiva y ajustada", "Tasa, %"),
-    ]:
-        fig, ax = plt.subplots(figsize=(12.6, 5.6))
-        ax.plot(market["date"], market[actual], color=COLORS["navy"], linewidth=1.75, label="Efectivo")
-        ax.plot(market["date"], market[fitted], color=COLORS["terracotta"], linewidth=1.55, linestyle="--", label="Ajustado")
-        ax.set_ylabel(ylabel)
-        ax.xaxis.set_major_locator(mdates.YearLocator())
-        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
-        style_ax(ax, title, "El residuo mide la desviación respecto de fundamentos globales observables.")
-        ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=2)
-        add_source(fig, "Fuente: modelo diario del proyecto de estrés financiero.")
-        save(fig, stem)
-
-
 def exchange_assets() -> None:
     residuals = pd.read_csv(ROOT / "data/processed/exchange/residuals_long.csv", parse_dates=["date"])
     residuals = residuals[residuals["date"] >= "2018-01-01"].sort_values("date")
@@ -631,7 +626,7 @@ def project_thumbnails() -> None:
         "imacec": "imacec_total_history.png",
         "ipom": "ipom_tpm.png",
         "transmission": "transmission_cumulative.png",
-        "stress": "stress_index_chile.png",
+        "debt": "debt_trajectories.png",
         "exchange": "exchange_fx_residuals.png",
         "yield": "yield_curve_latest.png",
         "atlas": "atlas_poverty_2024.png",
@@ -661,7 +656,6 @@ def main() -> None:
     imacec_assets()
     ipom_assets()
     transmission_assets()
-    financial_stress_assets()
     exchange_assets()
     yield_curve_assets()
     interactive_assets()

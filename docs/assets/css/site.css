@@ -262,6 +262,12 @@ tr:hover td { background: #fbfaf7; }
 .chart-controls select { padding: .5rem .7rem; border: 1px solid var(--line-strong); border-radius: 10px; background: #fff; color: var(--navy); }
 .interactive-chart { min-height: 360px; width: 100%; overflow: hidden; }
 .interactive-chart svg { display: block; width: 100%; height: auto; }
+.debt-simulator { margin: 1.5rem 0 2.25rem; padding: 1.25rem; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); box-shadow: var(--shadow-sm); }
+.simulator-controls { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .8rem; margin-bottom: 1rem; }
+.simulator-controls label { display: grid; gap: .35rem; color: var(--muted); font-size: .78rem; font-weight: 760; }
+.simulator-controls select { width: 100%; padding: .62rem .7rem; border: 1px solid var(--line-strong); border-radius: 9px; background: #fff; color: var(--navy); }
+.simulator-output { margin: .7rem 0 1rem; }
+.debt-simulator svg { display: block; width: 100%; height: auto; }
 .chart-legend { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: .45rem; color: var(--muted); font-size: .8rem; }
 .legend-item { display: inline-flex; align-items: center; gap: .35rem; }
 .legend-swatch { width: 18px; height: 3px; border-radius: 2px; }
@@ -351,6 +357,7 @@ tr:hover td { background: #fbfaf7; }
   .cv-item { grid-template-columns: 1fr; gap: .35rem; }
   .chart-figure { padding: .35rem; border-radius: 14px; }
   .interactive-chart { min-height: 290px; }
+  .simulator-controls { grid-template-columns: 1fr; }
 }
 
 @media print {

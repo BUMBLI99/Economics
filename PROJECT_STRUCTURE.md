@@ -6,7 +6,7 @@
 Economics/
 ├─ .github/workflows/pages.yml   construcción y despliegue automático
 ├─ R/                            código analítico reutilizable
-│  ├─ estres_financiero/
+│  ├─ sostenibilidad_deuda/
 │  └─ transmision_tpm/
 ├─ matlab/ipom/                  modelo y escenarios Matlab/IRIS
 │  ├─ data/                      entradas del flujo auditado

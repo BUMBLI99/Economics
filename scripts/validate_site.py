@@ -14,7 +14,7 @@ DOCS = ROOT / "docs"
 EXPECTED = {
     "index.html", "proyectos.html", "cv.html", "contacto.html", "404.html",
     "proyectos/imacec.html", "proyectos/ipom-iris.html", "proyectos/transmision-tpm.html",
-    "proyectos/exchange.html", "proyectos/estres-financiero.html", "proyectos/curva-rendimiento.html",
+    "proyectos/exchange.html", "proyectos/sostenibilidad-deuda.html", "proyectos/curva-rendimiento.html",
     "proyectos/atlas-metropolitano.html", "assets/dashboards/atlas-metropolitano.html",
     "assets/img/projects/atlas.jpg",
     "assets/vendor/leaflet/leaflet.css", "assets/vendor/leaflet/leaflet.js",
@@ -74,7 +74,7 @@ def main() -> int:
             soup = BeautifulSoup(text, "html.parser")
             if not soup.title or not soup.title.get_text(strip=True):
                 errors.append(f"{rel}: falta <title>")
-            if not soup.find("meta", attrs={"name": "description"}) and rel.name != "estres-externo.html":
+            if not soup.find("meta", attrs={"name": "description"}) and rel.name not in {"estres-externo.html", "estres-financiero.html"}:
                 errors.append(f"{rel}: falta meta description")
 
             ids = [tag.get("id") for tag in soup.find_all(attrs={"id": True})]
@@ -118,7 +118,7 @@ def main() -> int:
             import json
             try:
                 charts = json.loads(chart_catalog.read_text(encoding="utf-8"))
-                for key in ["imacec-total", "imacec-nonmining", "ipom", "transmission", "stress"]:
+                for key in ["imacec-total", "imacec-nonmining", "ipom", "transmission", "debt"]:
                     if not charts.get(key, {}).get("datasets"):
                         errors.append(f"Catálogo interactivo incompleto: {key}")
                 for key in ["imacec-total", "imacec-nonmining"]:
