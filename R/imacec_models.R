@@ -158,15 +158,16 @@ predict_interval <- function(model, newdata, level = interval_level) {
 }
 
 run_nowcast <- function(model_key, target_key, target_period, data, eee) {
+  # Historical estimation does not require contemporaneous predictors for the target.
+  fitted <- fit_winner(data, model_key, target_key, target_period)
+  history <- model_fit_history(fitted, model_key, target_key)
   if (!target_has_information(data, model_key, target_key, target_period)) {
     missing <- missing_information_variables(data, model_key, target_key, target_period)
-    stop(
-      "El corte ", model_key, " no está completo para ",
-      format(as.Date(target_period), "%Y-%m"), ". Faltan: ",
-      paste(missing, collapse = ", "), "."
-    )
+    return(list(model_key = model_key, target_key = target_key,
+      model = fitted$model, train = fitted$train, history = history,
+      proyeccion = empty_projection_table(),
+      diagnostic = paste("Corte incompleto. Faltan:", paste(missing, collapse = ", "))))
   }
-  fitted <- fit_winner(data, model_key, target_key, target_period)
   response <- target_specs[[target_key]]$response
   target_key_value <- target_key
   target_label <- target_specs[[target_key]]$label
@@ -179,14 +180,6 @@ run_nowcast <- function(model_key, target_key, target_period, data, eee) {
   prediction <- predict_interval(fitted$model, newdata)
   eee_target <- eee_for_period(eee, target_period, target_key)
   observed <- newdata[[response]][1]
-
-  history <- fitted$train |>
-    dplyr::transmute(
-      Periodo, target_key = target_key_value, variable = target_label,
-      observed = .data[[response]], fitted = as.numeric(stats::predict(fitted$model)),
-      model_key = model_key_value, modelo = model_label,
-      corte = model_cut, tipo = "Ajuste"
-    )
 
   projection <- tibble::tibble(
     Periodo = as.Date(target_period), target_key = target_key_value,
@@ -214,6 +207,18 @@ run_nowcast <- function(model_key, target_key, target_period, data, eee) {
     Data = data, train = fitted$train, history = history,
     proyeccion = projection, newdata = newdata
   )
+}
+
+model_fit_history <- function(fitted, model_key, target_key) {
+  response <- target_specs[[target_key]]$response
+  fitted$train |>
+    dplyr::transmute(Periodo, target_key = .env$target_key,
+      variable = target_specs[[.env$target_key]]$label,
+      observed = .data[[response]], fitted = as.numeric(stats::predict(.env$fitted$model)),
+      model_key = .env$model_key, modelo = model_specs[[.env$model_key]]$label,
+      corte = model_specs[[.env$model_key]]$corte, tipo = "Ajuste",
+      fit_timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"),
+      estimation_end = max(.env$fitted$train$Periodo))
 }
 
 run_proxy <- function(model_key, target_key, target_period, data, eee) {

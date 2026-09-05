@@ -390,7 +390,7 @@ def build_pages(contexts: dict[str, Any]) -> None:
         active_nav="inicio",
         body_class="home",
         project_count=len(projects),
-        featured_projects=[p for p in projects if p.get("featured")],
+        featured_projects=sorted([p for p in projects if p.get("featured")], key=lambda p: p.get("featured_order", p["order"])),
     )
     write_text(DOCS / "index.html", home)
 

@@ -18,7 +18,7 @@
   description: Modelo semi-estructural para identificar un escenario base y comparar trayectorias condicionales de TPM, inflación y brecha de actividad.
   image: assets/img/projects/ipom.jpg
   tags: [Matlab, IRIS, Inflación, Política monetaria]
-  featured: true
+  featured: false
   order: 2
 - slug: transmision-tpm
   title: Transmisión de la TPM a tasas de mercado
@@ -29,7 +29,7 @@
   description: Evidencia dinámica y heterogénea sobre el traspaso de la TPM a tasas bancarias mediante rezagos distribuidos, asimetrías y local projections.
   image: assets/img/projects/transmission.jpg
   tags: [R, TPM, Pass-through, Local projections]
-  featured: true
+  featured: false
   order: 3
 - slug: exchange
   title: Tipo de cambio, tasas largas y riesgo soberano en LatAm
@@ -40,7 +40,7 @@
   description: Modelos diarios para CLP, BRL, MXN, PEN y COP que separan movimientos asociados a factores globales de desvíos específicos por mercado.
   image: assets/img/projects/exchange.jpg
   tags: [R, FX, Tasas 10Y, LatAm]
-  featured: true
+  featured: false
   order: 4
 - slug: sostenibilidad-deuda
   title: Sostenibilidad de la deuda pública de Chile
@@ -52,6 +52,7 @@
   image: assets/img/projects/debt.jpg
   tags: [R, Política fiscal, Deuda pública, Escenarios]
   featured: true
+  featured_order: 3
   order: 5
 - slug: curva-rendimiento
   title: Curva soberana chilena y compensación inflacionaria
@@ -74,4 +75,5 @@
   image: assets/img/projects/atlas.jpg
   tags: [R, Datos territoriales, Santiago, Visualización]
   featured: true
+  featured_order: 2
   order: 7

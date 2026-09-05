@@ -11,12 +11,16 @@ on:
       - 'R/imacec_*.R'
       - 'R/00_packages.R'
       - 'scripts/01_update_imacec.R'
+      - 'scripts/test_imacec.R'
+      - 'data/raw/imacec_ine_yoy_fallback.csv'
       - '.github/workflows/update-imacec.yml'
   pull_request:
     branches: [main]
     paths:
       - 'R/imacec_*.R'
       - 'scripts/01_update_imacec.R'
+      - 'scripts/test_imacec.R'
+      - 'data/raw/imacec_ine_yoy_fallback.csv'
       - '.github/workflows/update-imacec.yml'
 
 permissions:
@@ -58,7 +62,6 @@ jobs:
         run: Rscript -e 'invisible(lapply(c(list.files("R", pattern = "^imacec_.*[.]R$", full.names = TRUE), "scripts/01_update_imacec.R"), parse))'
 
       - name: Install R dependencies
-        if: steps.credentials.outputs.configured == 'true' && github.event_name != 'pull_request'
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           packages: |
@@ -78,6 +81,9 @@ jobs:
             any::plotly
             any::httr
             any::jsonlite
+
+      - name: Test incomplete cuts and historical fits
+        run: Rscript scripts/test_imacec.R
 
       - name: Set up Python
         if: steps.credentials.outputs.configured == 'true' && github.event_name != 'pull_request'

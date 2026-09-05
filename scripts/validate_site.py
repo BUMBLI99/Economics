@@ -60,6 +60,13 @@ def main() -> int:
     if not DOCS.exists():
         errors.append("docs/ no existe; ejecuta scripts/build_site.py")
     else:
+        home = BeautifulSoup((DOCS / "index.html").read_text(encoding="utf-8"), "html.parser")
+        title = home.select_one("h1.display-title")
+        if not title or title.get_text(strip=True) != "Macroeconomía aplicada, proyecciones y política pública.":
+            errors.append("La portada no conserva el título aprobado.")
+        featured = [a.get('href') for a in home.select('.project-card .card-title a')]
+        if featured != ['proyectos/imacec.html', 'proyectos/atlas-metropolitano.html', 'proyectos/sostenibilidad-deuda.html']:
+            errors.append("La portada debe destacar IMACEC, Atlas y sostenibilidad en ese orden.")
         existing = {str(p.relative_to(DOCS)).replace("\\", "/") for p in DOCS.rglob("*") if p.is_file()}
         for rel in sorted(EXPECTED - existing):
             errors.append(f"Falta archivo esperado: {rel}")
