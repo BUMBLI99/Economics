@@ -14,7 +14,12 @@ debt_export_results <- function(model, root = debt_find_root()) {
       crecimiento_nominal = nominal_growth, tasa_efectiva = effective_rate,
       balance_primario = primary_balance, sfa_identificado = identified_sfa,
       valorizacion_otros = valuation_other, ajuste_conciliacion = reconciliation,
-      sfa_total = total_sfa)
+      sfa_total = total_sfa,
+      cambio_deuda = debt_change,
+      balance_primario_estabilizador = stabilising_primary_balance,
+      brecha_primaria = primary_gap,
+      distancia_nivel_prudente = prudent_margin,
+      naturaleza = nature)
   summary <- results |>
     dplyr::group_by(escenario) |>
     dplyr::summarise(

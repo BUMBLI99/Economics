@@ -345,6 +345,8 @@ def interactive_assets() -> None:
     simulator = base[["anio", "crecimiento_nominal", "tasa_efectiva", "balance_primario",
                       "sfa_total", "deuda_rezagada", "deuda_pib"]].copy()
     simulator.to_json(DATA_OUT / "debt_simulator.json", orient="records", force_ascii=False)
+    from debt_web_assets import enrich_debt_chart
+    enrich_debt_chart(charts, debt)
     (DATA_OUT / "project_charts.json").write_text(json.dumps(charts, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
 

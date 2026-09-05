@@ -54,12 +54,13 @@
     const allPoints = series.flatMap((s) => s.values.filter((p) => Number.isFinite(p.value)));
     if (!allPoints.length) return;
     const dates = allPoints.map((p) => new Date(p.date).getTime());
-    let values = allPoints.map((p) => p.value);
+    let values = [...allPoints.map((p) => p.value), ...(options.referenceLines || []).map((r) => r.value)];
     let minY = options.minY ?? Math.min(...values);
     let maxY = options.maxY ?? Math.max(...values);
     if (minY === maxY) { minY -= 1; maxY += 1; }
     const pad = (maxY - minY) * 0.1;
-    minY -= pad; maxY += pad;
+    if (options.minY === undefined) minY -= pad;
+    if (options.maxY === undefined) maxY += pad;
     const minX = Math.min(...dates); const maxX = Math.max(...dates);
     const sx = (x) => margin.left + ((x - minX) / Math.max(1, maxX - minX)) * innerW;
     const sy = (y) => margin.top + innerH - ((y - minY) / (maxY - minY)) * innerH;
@@ -78,19 +79,33 @@
       return el;
     };
 
-    for (let i = 0; i <= 5; i++) {
-      const yVal = minY + (i / 5) * (maxY - minY);
+    (options.regions || []).forEach((region) => {
+      const start = Math.max(minX, new Date(region.start).getTime());
+      const end = Math.min(maxX, new Date(region.end).getTime());
+      if (end <= start) return;
+      add('rect', { x: sx(start), y: margin.top, width: sx(end) - sx(start), height: innerH, fill: region.color || '#f5f2ec' });
+      add('text', { x: (sx(start) + sx(end)) / 2, y: 18, 'text-anchor': 'middle', fill: palette.muted, 'font-size': 11 }, region.label);
+    });
+
+    const yValues = options.yTicks || Array.from({length: 6}, (_, i) => minY + (i / 5) * (maxY - minY));
+    for (const yVal of yValues) {
       const y = sy(yVal);
       add('line', { x1: margin.left, x2: width - margin.right, y1: y, y2: y, stroke: palette.grid, 'stroke-width': 1 });
       add('text', { x: margin.left - 10, y: y + 4, 'text-anchor': 'end', fill: palette.muted, 'font-size': 12 }, yVal.toFixed(options.yDigits ?? 1));
     }
     const xTicks = options.xTicks || Array.from({ length: 6 }, (_, i) => {
       const t = minX + (i / 5) * (maxX - minX);
-      return { value: t, label: String(new Date(t).getFullYear()) };
+      return { value: t, label: String(new Date(t).getUTCFullYear()) };
     });
     xTicks.forEach((tick) => {
+      if (tick.value < minX || tick.value > maxX) return;
       const x = sx(tick.value);
       add('text', { x, y: height - 20, 'text-anchor': 'middle', fill: palette.muted, 'font-size': 12 }, tick.label);
+    });
+    (options.referenceLines || []).forEach((ref) => {
+      const y = sy(ref.value);
+      add('line', { x1: margin.left, x2: width - margin.right, y1: y, y2: y, stroke: palette.terracotta, 'stroke-width': 2, 'stroke-dasharray': '8 5' });
+      add('text', { x: margin.left + 8, y: y - 8, fill: palette.terracotta, 'font-size': 13, 'font-weight': 700 }, ref.label);
     });
     if (options.zeroLine && minY < 0 && maxY > 0) {
       const y = sy(0);
@@ -136,11 +151,14 @@
       const anchor = points.reduce((best, item) => Math.abs(new Date(item.point.date).getTime() - target) < Math.abs(new Date(best.point.date).getTime() - target) ? item : best);
       const x = sx(new Date(anchor.point.date).getTime());
       focusLine.setAttribute('x1', x); focusLine.setAttribute('x2', x); focusLine.setAttribute('visibility', 'visible');
-      tooltip.innerHTML = `<strong>${anchor.point.label || anchor.point.date}</strong>${points.map(({ series: s, point }) => `<br><span style="color:${s.color}">●</span> ${s.name}: ${point.value.toFixed(options.yDigits ?? 2)}`).join('')}`;
+      const shown = options.exactDates ? points.filter(({point}) => point.date === anchor.point.date) : points;
+      tooltip.innerHTML = `<strong>${anchor.point.label || anchor.point.date}</strong>${shown.map(({ series: s, point }) => `<br><span style="color:${s.color}">●</span> ${s.name}: ${point.value.toFixed(options.yDigits ?? 2)}`).join('')}`;
       tooltip.style.display = 'block';
       const containerRect = container.getBoundingClientRect();
       const tooltipX = event.clientX - containerRect.left;
-      tooltip.style.left = `${Math.min(containerRect.width - 210, Math.max(8, tooltipX + 12))}px`;
+      tooltip.style.maxWidth = `${Math.max(180, containerRect.width - 16)}px`;
+      tooltip.style.whiteSpace = 'normal';
+      tooltip.style.left = `${Math.max(8, Math.min(containerRect.width - tooltip.offsetWidth - 8, tooltipX + 12))}px`;
       tooltip.style.top = `${Math.max(8, event.clientY - containerRect.top - 24)}px`;
     });
     overlay.addEventListener('pointerleave', () => { tooltip.style.display = 'none'; focusLine.setAttribute('visibility', 'hidden'); });
@@ -272,7 +290,7 @@
         const dataset = config.datasets.find((item) => item.id === select.value) || config.datasets[0];
         const xTicks = dataset.xTicks?.map((tick) => ({ value: new Date(tick.date).getTime(), label: tick.label }));
         const series = visibleSeries(dataset.series);
-        lineChart(chart, series, { ariaLabel: `${config.ariaLabel}: ${dataset.label}`, yDigits: dataset.yDigits ?? 2, zeroLine: Boolean(dataset.zeroLine), xTicks });
+        lineChart(chart, series, { ariaLabel: `${config.ariaLabel}: ${dataset.label}`, yDigits: dataset.yDigits ?? 2, zeroLine: Boolean(dataset.zeroLine), xTicks, minY: dataset.minY, maxY: dataset.maxY, yTicks: dataset.yTicks, exactDates: dataset.exactDates, referenceLines: dataset.referenceLines, regions: dataset.regions, height: dataset.height });
         legend.innerHTML = dataset.series.map((series) => `<span class="legend-item"><span class="legend-swatch${series.marker ? ` marker-${series.marker}` : ''}" style="background:${series.color};color:${series.color}"></span>${series.name}</span>`).join('');
         if (note) note.textContent = dataset.note || '';
         renderTable(dataset.table);
@@ -332,7 +350,9 @@
         lineChart(chart, [
           { name: 'Base compatible', color: palette.navy, width: 2.5, values: baseline },
           { name: 'Simulación', color: palette.terracotta, width: 2.8, values: simulated }
-        ], { ariaLabel: 'Resultado del simulador de deuda', yDigits: 1, points: true });
+        ], { ariaLabel: 'Resultado del simulador de deuda', yDigits: 1, points: true,
+          xTicks: base.map((row) => ({value: Date.UTC(row.anio, 0, 1), label: String(row.anio)})),
+          referenceLines: [{value: 45, label: 'Nivel prudente · 45% del PIB'}] });
       };
       Object.values(controls).forEach((control) => control.addEventListener('change', calculate));
       calculate();
