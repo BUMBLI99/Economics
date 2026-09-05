@@ -136,7 +136,7 @@
 <p>Las dos fórmulas se reestiman por separado para <strong>IMACEC total</strong> e <strong>IMACEC no minero</strong>. El factor IVS real promedia seis índices de ventas de servicios deflactados por el IPC de Servicios y M8P solo se habilita con cobertura contemporánea completa.</p>
 <p>La fuente principal de los sectores es la BDE. Para julio de 2026 existe un respaldo de las variaciones oficiales del INE publicadas el 31 de agosto: minería −7,2%, manufactura −4,9% y electricidad, gas y agua +0,3%. Solo cubre valores ausentes en la BDE, utiliza el redondeo oficial a un decimal y se reemplaza automáticamente cuando la BDE dispone del dato. <a href="https://www.ine.gob.cl/estadisticas-por-tema/industria-energia-y-construccion/indice-de-produccion-industrial">Fuente: INE, Índice de Producción Industrial</a>.</p>
 <h2 id="evaluacion-pseudo-out-of-sample">Evaluación pseudo out-of-sample</h2>
-<div class="table-wrap"><table><thead><tr><th>Serie</th><th>Especificación</th><th>N</th><th>RMSE</th><th>MAE</th><th>Ventana</th></tr></thead><tbody><tr><td>IMACEC no minero</td><td>M4 · Dinámico</td><td>43</td><td>1,18</td><td>0,94</td><td>2023-01 a 2026-07</td></tr><tr><td>IMACEC no minero</td><td>M8P · INE + IVS real parsimonioso</td><td>42</td><td>0,99</td><td>0,81</td><td>2023-01 a 2026-06</td></tr><tr><td>IMACEC total</td><td>M4 · Dinámico</td><td>43</td><td>1,61</td><td>1,35</td><td>2023-01 a 2026-07</td></tr><tr><td>IMACEC total</td><td>M8P · INE + IVS real parsimonioso</td><td>42</td><td>1,06</td><td>0,80</td><td>2023-01 a 2026-06</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>Serie</th><th>Especificación</th><th>N</th><th>RMSE</th><th>MAE</th><th>Ventana</th></tr></thead><tbody><tr><td>IMACEC no minero</td><td>M4 · Dinámico</td><td>43</td><td>1,18</td><td>0,94</td><td>2023-01 a 2026-07</td></tr><tr><td>IMACEC no minero</td><td>M8P · INE + IVS real parsimonioso</td><td>43</td><td>0,99</td><td>0,81</td><td>2023-01 a 2026-07</td></tr><tr><td>IMACEC total</td><td>M4 · Dinámico</td><td>43</td><td>1,61</td><td>1,35</td><td>2023-01 a 2026-07</td></tr><tr><td>IMACEC total</td><td>M8P · INE + IVS real parsimonioso</td><td>43</td><td>1,05</td><td>0,79</td><td>2023-01 a 2026-07</td></tr></tbody></table></div>
 <p>La evaluación es recursiva y mantiene fijas M4 y M8P, pero usa la base final disponible; por ello mide capacidad predictiva comparable, no reproduce todas las revisiones de cada vintage histórico.</p>
 <h2 id="reproducibilidad-y-publicacion">Reproducibilidad y publicación</h2>
 <ul>
@@ -146,7 +146,7 @@
 <li>El modelo principal cambia por disponibilidad verificable, no por cuál arroje la cifra más conveniente.</li>
 <li>La tarea programada revisa datos cada día hábil y solo versiona salidas cuando existe un cambio.</li>
 </ul>
-<p>Última ejecución publicada: <strong>4 de septiembre de 2026</strong>.</p>
+<p>Última ejecución publicada: <strong>5 de septiembre de 2026</strong>.</p>
 <h2 id="archivos-principales">Archivos principales</h2>
 <div class="download-grid">
 <a class="download" href="../assets/files/imacec-nowcast-summary.csv"><div><strong>Estado y proyecciones vigentes</strong><span>CSV · total, no minero, M4, M8P y EEE</span></div><span>↓</span></a>

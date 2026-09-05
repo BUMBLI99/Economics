@@ -1,0 +1,5 @@
+model_key,target_key,Periodo,run_timestamp,fit_available,forecast_available,missing_variables,ine_fallback
+m4,total,2026-07-01,2026-09-05 16:50:10 UTC,TRUE,TRUE,,mineria manufactura electricidad
+m4,no_minero,2026-07-01,2026-09-05 16:50:10 UTC,TRUE,TRUE,,mineria manufactura electricidad
+m8p,total,2026-07-01,2026-09-05 16:50:10 UTC,TRUE,TRUE,,mineria manufactura electricidad
+m8p,no_minero,2026-07-01,2026-09-05 16:50:10 UTC,TRUE,TRUE,,mineria manufactura electricidad
