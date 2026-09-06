@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block extra_head %}
+<meta property="article:author" content="Mauricio Ulloa">
+<meta property="article:section" content="{{ article.category }}">
+{% endblock %}
+{% block main %}
+<article class="analysis-article">
+  <header class="analysis-article-header">
+    <a class="text-link" href="../analisis.html">← Análisis</a>
+    <p class="eyebrow">{{ article.category }}</p>
+    <h1>{{ article.title }}</h1>
+    <p class="analysis-deck">{{ article.deck }}</p>
+    <div class="analysis-byline"><strong>Mauricio Ulloa</strong><span><time datetime="{{ article.date }}">{{ article.date_label }}</time> · {{ article.reading_minutes }} min de lectura</span></div>
+  </header>
+  {% if article.toc %}
+  <details class="analysis-contents">
+    <summary>En esta columna</summary>
+    <nav aria-label="Contenido de la columna"><ol>{% for item in article.toc %}<li><a href="#{{ item.id }}">{{ item.text }}</a></li>{% endfor %}</ol></nav>
+  </details>
+  {% endif %}
+  <div class="analysis-prose">{{ article.content_html|safe }}</div>
+  <footer class="analysis-sources" aria-labelledby="fuentes">
+    <h2 id="fuentes">Fuentes y referencias</h2>
+    <p>Las cifras y los antecedentes se presentan en el contexto de la fecha de la columna.</p>
+    <ul>{% for source in article.sources %}<li><a href="{{ source.url }}">{{ source.label }}</a></li>{% endfor %}</ul>
+  </footer>
+  <aside class="analysis-related" aria-labelledby="mas-columnas">
+    <h2 id="mas-columnas">Seguir leyendo</h2>
+    {% for a in related_articles %}<a href="{{ a.slug }}.html">{{ a.title }} <span aria-hidden="true">→</span></a>{% endfor %}
+    <a class="text-link" href="../analisis.html">Todas las columnas</a>
+  </aside>
+</article>
+{% endblock %}

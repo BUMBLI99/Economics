@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block main %}
+<section class="section analysis-index">
+  <div class="container">
+    <header class="analysis-heading">
+      <p class="eyebrow">Economía · Instituciones · Política pública</p>
+      <h1>Análisis</h1>
+      <p class="lead">Ideas para mirar más allá de la cifra.</p>
+      <p>Columnas sobre las decisiones económicas que moldean el desarrollo de Chile: los incentivos, las capacidades del Estado y las condiciones para crear valor.</p>
+    </header>
+    {% include "analysis_cards.html" %}
+    <p class="analysis-index-note">Por Mauricio Ulloa · Las columnas conservan su fecha de elaboración y el contexto al que se refieren.</p>
+  </div>
+</section>
+{% endblock %}
