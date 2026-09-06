@@ -23,7 +23,7 @@ EXPECTED = {
     "assets/vendor/plotly/plotly-basic-2.35.2.min.js",
     "proyectos/estres-externo.html", "assets/css/site.css", "assets/js/site.js",
     "assets/data/project_charts.json",
-    "assets/files/cv-mauricio-ulloa.pdf", ".nojekyll", "sitemap.xml", "robots.txt",
+    "assets/files/Curriculum_Vitae__08_26_", ".nojekyll", "sitemap.xml", "robots.txt",
 }
 SKIP_SCHEMES = {"http", "https", "mailto", "tel", "javascript", "data"}
 PLACEHOLDERS = ["{{", "{%", "TODO", "FIXME", "tu_correo", "localhost:"]
