@@ -17,10 +17,10 @@ DATA = yaml.safe_load((ROOT / 'site/data/cv.yml').read_text(encoding='utf-8'))
 OUT = ROOT / 'site/assets/files/cv-mauricio-ulloa.pdf'
 OUT.parent.mkdir(parents=True, exist_ok=True)
 
-FONT = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
-FONT_B = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
-pdfmetrics.registerFont(TTFont('DejaVu', FONT))
-pdfmetrics.registerFont(TTFont('DejaVu-Bold', FONT_B))
+FONT = "C:/Windows/Fonts/segoeui.ttf"
+FONT_B = "C:/Windows/Fonts/segoeuib.ttf"
+pdfmetrics.registerFont(TTFont('Segoe', FONT))
+pdfmetrics.registerFont(TTFont('Segoe-Bold', FONT_B))
 
 INK = HexColor('#1f2b36')
 NAVY = HexColor('#193044')
@@ -30,13 +30,13 @@ TERR = HexColor('#b4573d')
 SOFT = HexColor('#f4f1eb')
 
 styles = getSampleStyleSheet()
-base = ParagraphStyle('Base', parent=styles['BodyText'], fontName='DejaVu', fontSize=8.35, leading=11.15, textColor=INK, spaceAfter=5)
+base = ParagraphStyle('Base', parent=styles['BodyText'], fontName='Segoe', fontSize=8.35, leading=11.15, textColor=INK, spaceAfter=5)
 small = ParagraphStyle('Small', parent=base, fontSize=7.25, leading=9.2, textColor=MUTED)
-name = ParagraphStyle('Name', parent=base, fontName='DejaVu-Bold', fontSize=19, leading=20.5, textColor=NAVY, spaceAfter=3)
-headline = ParagraphStyle('Headline', parent=base, fontName='DejaVu-Bold', fontSize=9.5, leading=11.5, textColor=TERR, spaceAfter=7)
-section = ParagraphStyle('Section', parent=base, fontName='DejaVu-Bold', fontSize=9.8, leading=11.5, textColor=NAVY, spaceBefore=5, spaceAfter=3, uppercase=True)
-item_title = ParagraphStyle('ItemTitle', parent=base, fontName='DejaVu-Bold', fontSize=8.5, leading=10.4, textColor=NAVY, spaceAfter=1)
-period = ParagraphStyle('Period', parent=base, fontName='DejaVu-Bold', fontSize=7.3, leading=8.8, textColor=MUTED)
+name = ParagraphStyle('Name', parent=base, fontName='Segoe-Bold', fontSize=19, leading=20.5, textColor=NAVY, spaceAfter=3)
+headline = ParagraphStyle('Headline', parent=base, fontName='Segoe-Bold', fontSize=9.5, leading=11.5, textColor=TERR, spaceAfter=7)
+section = ParagraphStyle('Section', parent=base, fontName='Segoe-Bold', fontSize=9.8, leading=11.5, textColor=NAVY, spaceBefore=5, spaceAfter=3, uppercase=True)
+item_title = ParagraphStyle('ItemTitle', parent=base, fontName='Segoe-Bold', fontSize=8.5, leading=10.4, textColor=NAVY, spaceAfter=1)
+period = ParagraphStyle('Period', parent=base, fontName='Segoe-Bold', fontSize=7.3, leading=8.8, textColor=MUTED)
 
 
 def footer(canvas, doc):
@@ -44,7 +44,7 @@ def footer(canvas, doc):
     w, _ = A4
     canvas.setStrokeColor(LINE)
     canvas.line(18*mm, 14*mm, w-18*mm, 14*mm)
-    canvas.setFont('DejaVu', 7.5)
+    canvas.setFont('Segoe', 7.5)
     canvas.setFillColor(MUTED)
     canvas.drawString(18*mm, 9*mm, 'CV público · Mauricio Ulloa · Portafolio personal')
     canvas.drawRightString(w-18*mm, 9*mm, str(doc.page))

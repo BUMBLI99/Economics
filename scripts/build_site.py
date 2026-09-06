@@ -298,8 +298,8 @@ def make_brand_assets() -> None:
     draw = ImageDraw.Draw(im)
     draw.ellipse((-160, -210, 430, 380), fill="#dfe7ec")
     draw.ellipse((930, -140, 1360, 290), fill="#eadbd5")
-    font_bold = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-    font_reg = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+    font_bold = "C:/Windows/Fonts/segoeui.ttf"
+    font_reg = "C:/Windows/Fonts/segoeuib.ttf"
     title_font = ImageFont.truetype(font_bold, 66)
     sub_font = ImageFont.truetype(font_reg, 31)
     eyebrow_font = ImageFont.truetype(font_bold, 23)
