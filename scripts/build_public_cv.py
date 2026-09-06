@@ -14,7 +14,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = yaml.safe_load((ROOT / 'site/data/cv.yml').read_text(encoding='utf-8'))
-OUT = ROOT / 'site/assets/files/cv-mauricio-ulloa.pdf'
+OUT = ROOT / 'site/assets/files/Curriculum_Vitae__08_26_.pdf'
 OUT.parent.mkdir(parents=True, exist_ok=True)
 
 FONT = "C:/Windows/Fonts/segoeui.ttf"
@@ -46,7 +46,7 @@ def footer(canvas, doc):
     canvas.line(18*mm, 14*mm, w-18*mm, 14*mm)
     canvas.setFont('Segoe', 7.5)
     canvas.setFillColor(MUTED)
-    canvas.drawString(18*mm, 9*mm, 'CV público · Mauricio Ulloa · Portafolio personal')
+    canvas.drawString(18*mm, 9*mm, 'Curriculum Vitae · Joaquín Zaragoza López · Portafolio personal')
     canvas.drawRightString(w-18*mm, 9*mm, str(doc.page))
     canvas.restoreState()
 
@@ -86,7 +86,7 @@ header.setStyle(TableStyle([
     ('BOTTOMPADDING', (0,-1), (-1,-1), 9),
 ]))
 story += [header, Spacer(1, 5), Paragraph(DATA['summary'], base)]
-story += section_title('Experiencia profesional y de investigación')
+story += section_title('Professional & Research Experience')
 for item in DATA['experience']:
     story.append(exp_block(item))
 
@@ -105,13 +105,13 @@ edu.setStyle(TableStyle([
 ]))
 story.append(edu)
 
-story += section_title('Tesis de Magíster')
-story.append(KeepTogether([
+story += section_title('Master \'s thesis')
+story.append(KeepTogether([ 
     Paragraph(DATA['thesis']['title'], item_title),
     Paragraph(DATA['thesis']['details'], base)
 ]))
 
-story += section_title('Competencias técnicas')
+story += section_title('Technical skills')
 skill_rows = []
 for entry in DATA['skills']:
     key, value = next(iter(entry.items()))
@@ -125,10 +125,11 @@ skills.setStyle(TableStyle([
     ('BOTTOMPADDING', (0,0), (-1,-1), 3),
 ]))
 story.append(skills)
-story += section_title('Áreas de interés')
+story += section_title('Research interests')
 story.append(Paragraph(DATA['interests'], base))
 
 doc = SimpleDocTemplate(str(OUT), pagesize=A4, rightMargin=18*mm, leftMargin=18*mm, topMargin=11*mm, bottomMargin=15*mm,
-                        title='CV público - Mauricio Andrés Ulloa Valdivia', author='Mauricio Andrés Ulloa Valdivia')
+                        title='Curriculum Vitae - Joaquín Zaragoza López', author='Joaquín Zaragoza López')
 doc.build(story, onFirstPage=footer, onLaterPages=footer)
+
 print(OUT)

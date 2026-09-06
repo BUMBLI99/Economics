@@ -32,7 +32,7 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
 DOCS = ROOT / "docs"
-SITE_URL = "https://mulloav3007.github.io/Economics/"
+SITE_URL = "https://bumbli99.github.io/Economics/"
 
 MONTHS_ES = {
     1: "enero", 2: "febrero", 3: "marzo", 4: "abril", 5: "mayo", 6: "junio",
@@ -402,12 +402,12 @@ def build_pages(contexts: dict[str, Any]) -> None:
 
     # Home
     home = env.get_template("home.html").render(
-        title="Inicio",
-        description="Portafolio de economía aplicada de Mauricio Ulloa: macroeconomía, política monetaria, actividad y macrofinanzas para Chile y América Latina.",
+        title="Home",
+        description="Economics Portafolio: Empirical Macroeconomics, Econometrics, Monetary & Fiscal Policy, and more of Latin America and Europe.",
         canonical_url=SITE_URL,
         og_image_url=SITE_URL + "assets/img/og-cover.png",
         base_path="",
-        active_nav="inicio",
+        active_nav="home",
         body_class="home",
         project_count=len(projects),
         articles=articles,
@@ -418,7 +418,7 @@ def build_pages(contexts: dict[str, Any]) -> None:
     # Standard pages
     page_specs = {
         "proyectos": {
-            "title": "Proyectos",
+            "title": "Projects",
             "description": "Proyectos de nowcasting, política monetaria, tasas, tipo de cambio y condiciones financieras.",
             "eyebrow": "Portafolio",
             "page_title": "Proyectos",
@@ -426,19 +426,19 @@ def build_pages(contexts: dict[str, Any]) -> None:
             "active_nav": "proyectos",
         },
         "cv": {
-            "title": "Currículum",
-            "description": "Trayectoria académica y profesional de Mauricio Ulloa, economista y Magíster en Análisis Económico.",
-            "eyebrow": "Trayectoria",
-            "page_title": "Currículum",
-            "subtitle": "Formación, experiencia de investigación y herramientas para economía aplicada.",
+            "title": "Curriculum Vitae",
+            "description": "Professional & Academic Career, Economist and prospective PhD.",
+            "eyebrow": "Career",
+            "page_title": "Curriculum Vitae",
+            "subtitle": "Background, research experience and tools for economic analysis.",
             "active_nav": "cv",
         },
         "contacto": {
-            "title": "Contacto",
-            "description": "Contacto profesional de Mauricio Ulloa.",
-            "eyebrow": "Contacto",
-            "page_title": "Conversemos",
-            "subtitle": "Comentarios sobre los proyectos, investigación aplicada y colaboración profesional.",
+            "title": "Contact",
+            "description": "Contact information.",
+            "eyebrow": "Contact",
+            "page_title": "",
+            "subtitle": "Inquiries about projects, research or collaboration.",
             "active_nav": "contacto",
         },
     }
@@ -499,16 +499,16 @@ def build_pages(contexts: dict[str, Any]) -> None:
     # 404 page.
     not_found_content = """<div class="panel reading"><p class="eyebrow">Error 404</p><h2>La página no existe o cambió de dirección.</h2><p>Regresa al índice de proyectos para continuar navegando.</p><a class="button button-primary" href="/Economics/proyectos.html">Ver proyectos</a></div>"""
     not_found = env.get_template("page.html").render(
-        title="Página no encontrada",
-        description="Página no encontrada.",
+        title="",
+        description="Page not found.",
         canonical_url=SITE_URL + "404.html",
         og_image_url=SITE_URL + "assets/img/og-cover.png",
         base_path="",
         active_nav="",
         body_class="page-404",
         eyebrow="404",
-        page_title="Página no encontrada",
-        subtitle="El enlace puede haber cambiado durante la reorganización del portafolio.",
+        page_title="Page not found",
+        subtitle="The link cannot be found. It may have changed during an update of the portfolio.",
         actions="",
         content_html=not_found_content,
     )
