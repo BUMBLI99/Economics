@@ -39,6 +39,10 @@ MONTHS_ES = {
     7: "julio", 8: "agosto", 9: "septiembre", 10: "octubre", 11: "noviembre", 12: "diciembre",
 }
 
+MONTHS_EN = {
+    1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June",
+    7: "July", 8: "August", 9: "September", 10: "Octuber", 11: "November", 12: "December",
+}
 
 def run_script(path: Path) -> None:
     subprocess.run([sys.executable, str(path)], cwd=ROOT, check=True)
@@ -67,12 +71,12 @@ def fmt_pct(value: Any, digits: int = 2, signed: bool = False) -> str:
 
 def fmt_month(value: Any) -> str:
     dt = pd.to_datetime(value)
-    return f"{MONTHS_ES[dt.month]} de {dt.year}"
+    return f"{MONTHS_EN[dt.month]} de {dt.year}"
 
 
 def fmt_date(value: Any) -> str:
     dt = pd.to_datetime(value)
-    return f"{dt.day} de {MONTHS_ES[dt.month]} de {dt.year}"
+    return f"{dt.day} de {MONTHS_EN[dt.month]} de {dt.year}"
 
 
 def slugify(text: str) -> str:
