@@ -1,47 +1,87 @@
-name: Joaquín Zaragoza López
-headline: Economist · Research Assistant & Prospective PhD 
-email: joaquin.zaragozalopez@student.kuleuven.be
-phone: "+56 9 9310 3278"
-github: github.com/bumbli99
-linkedin: linkedin.com/in/joaquinzaragozalopez
-summary: >-
-  Economista y Magíster en Análisis Económico por la Universidad de Chile. Experiencia en seguimiento
-  macroeconómico, proyecciones, econometría aplicada, construcción de bases y modelos macrofinancieros.
-  Manejo de R, Matlab/IRIS, Python y Stata, con énfasis en resultados reproducibles y comunicación técnica.
-experience:
-  - period: 2024–2026
-    role: Ayudante de investigación
-    institution: Pablo García Silva
-    details: Procesos reproducibles con BCCh/BDE, FRED y otras fuentes para seguimiento de actividad, tipo de cambio, tasas y proyecciones.
-  - period: 2025–2026
-    role: Ayudante de investigación
-    institution: Alfie Ulloa Urrutia
-    details: Integración de grandes bases, indicadores de conectividad con RIPE Atlas y estimaciones sobre infraestructura digital y comercio de servicios.
-  - period: 2024
-    role: Ayudante de investigación
-    institution: Universidad Adolfo Ibáñez
-    details: Análisis de datos de energía e hidrógeno verde, estimaciones econométricas y productos técnicos en Stata.
-  - period: 2022–2023
-    role: Practicante, División Anti-Carteles
-    institution: Fiscalía Nacional Económica
-    details: Construcción y análisis de bases para investigaciones de libre competencia, participaciones de mercado y licitaciones.
+title: "CV"
+name: "Joaquín Zaragoza López"
+position: "M.Sc. Student in Economics | Research Assistant"
+email: "joaquinzarlop@gmail.com"
+phone: "+34 644 78 77 66"
+address: "Parkstraat 54, 3000 Leuven, Belgium"
+linkedin: "https://linkedin.com/in/joaquinzaragozalopez"
+github: "https://github.com/BUMBLI99"
+research_interests:
+  - "Macroeconometrics"
+  - "Time Series Econometrics"
+  - "Macroeconomic Forecasting"
+  - "Monetary Economics"
+  - "Inflation-at-Risk & Growth-at-Risk"
+  - "Bayesian VARs & DSGE Models"
 education:
-  - period: 2024–2026
-    degree: Magíster en Análisis Económico
-    institution: Universidad de Chile
-  - period: 2018–2024
-    degree: Ingeniería Comercial, mención Economía
-    institution: Universidad de Chile
-thesis:
-  title: "Fluctuaciones cambiarias y reacción de política monetaria: ¿cuándo y cómo?"
-  details: >-
-    Modelo de brechas para Chile, 1996–2024, con tres especificaciones cambiarias y simulaciones para evaluar
-    volatilidad de inflación y actividad. Nota final 6,0; Seminario de Investigación Aplicada 7,0; examen de grado 7,0.
-skills:
-  - R: tidyverse, ggplot2, series de tiempo, Quarto/RMarkdown
-  - Matlab / IRIS: modelos semi-estructurales y simulación macroeconómica
-  - Python: automatización, APIs, bases de gran escala y visualización
-  - Stata: econometría aplicada y datos de panel
-  - Datos: BCCh/BDE, FRED, BIS, RIPE Atlas, CMF
-  - Otros: Excel avanzado, Git/GitHub, LaTeX
-interests: Macroeconomía aplicada · Política monetaria · Tipo de cambio · Actividad e inflación · Políticas públicas
+  - degree: "M.Sc. in Economics"
+    institution: "KU Leuven"
+    location: "Leuven, Belgium"
+    period: "September 2025 - Present"
+    details:
+      - "Relevant coursework: Advanced Macroeconomics I (DSGE & RBC Models), Advanced Macroeconomics II (VAR/SVAR Methods), and Advanced Microeconomics I."
+  - degree: "Erasmus Exchange in Economics"
+    institution: "KU Leuven"
+    location: "Leuven, Belgium"
+    period: "September 2024 - July 2025"
+    details:
+      - "One-year exchange with graduate-level coursework. GPA: 14.5/20."
+  - degree: "B.Sc. in Economics"
+    institution: "Universitat de València"
+    location: "Valencia, Spain"
+    period: "September 2021 - July 2025"
+    details:
+      - "GPA: 3.51/4.0 equivalent, with 13 Honorary Mentions."
+      - "Honorary Mentions included Mathematics I & II, Statistics I & II, Econometrics I & II, Microeconomics I & II, and Macroeconomics II."
+      - "Academic excellence award for best academic record; Premi Extraordinari de Grau 2024/2025."
+experience:
+  - position: "Research Assistant"
+    institution: "Economic Research Group, KU Leuven"
+    location: "Leuven, Belgium"
+    period: "November 2025 - July 2026"
+    details:
+      - "Assisted Prof. Lukas Mahler with research on Lifestyle Behaviors and Wealth-Health Gaps in Germany (DOI: 10.3982/ECTA20603) through literature synthesis and replication of microeconometric code."
+      - "Cleaned, curated, and harmonized complex regional panel datasets covering demographic and socioeconomic indicators across Germany using Stata."
+      - "Supported empirical modeling by developing reproducible workflows for data analysis, statistical visualization, and regional geospatial mapping."
+papers:
+  - title: "Latin America as a Monetary Union: A Reassessment of the Viability in the Context of Optimal Currency Area Theory"
+    year: "2025"
+    type: "Undergraduate Thesis, Universitat de València"
+    details:
+      - "Empirical assessment of trade integration and economic openness, factor mobility (labor and capital), and business-cycle synchronization within the Optimum Currency Area framework."
+      - "Analysis of macroeconomic convergence and the feasibility of monetary integration."
+      - "Grade: 100%."
+  - title: "Climate Change and Coffee Trade: Implications on Vietnam's Exports and Dutch Import Prices"
+    year: "2024"
+    type: "Term Paper, KU Leuven"
+    details:
+      - "Empirical analysis of the effects of climate change on Vietnamese coffee exports and Dutch import prices."
+      - "Grade: 100%."
+technical_skills:
+  software:
+    - "Stata"
+    - "R"
+    - "MATLAB (Dynare)"
+    - "LaTeX"
+  other:
+    - "Data cleaning"
+    - "Data visualization"
+    - "Reproducible-workflow management"
+courses:
+  - name: "Empirical Macroeconomics Summer School"
+    year: "2026"
+    institution: "Ghent University, Belgium"
+    details: "State-of-the-art Bayesian methods in structural VAR models for empirical research and policy analysis. Lecturer: Prof. dr. Christiane Baumeister."
+  - name: "DSGE Modeling - Summer School and Conference"
+    year: "2026"
+    institution: "So.Fi.E., National Bank of Belgium"
+    details: "Intensive training in Bayesian Structural Macroeconometrics, covering DSGE to HANK estimation, policy analysis, and forecasting. Instructors: Marco Del Negro and Frank Schorfheide."
+languages:
+  - language: "Spanish"
+    level: "Native"
+  - language: "Valencian/Catalan"
+    level: "Native"
+  - language: "English"
+    level: "C2 (Cambridge CPE)"
+  - language: "Dutch"
+    level: "A1+ (CEFR)"
