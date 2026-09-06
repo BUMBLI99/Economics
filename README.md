@@ -1,6 +1,6 @@
 # Economics · Portafolio de economía aplicada
 
-Repositorio y sitio público de **Mauricio Andrés Ulloa Valdivia**. Reúne proyectos de seguimiento macroeconómico, política monetaria, actividad, tasas de interés y macrofinanzas para Chile y América Latina.
+Repositorio y sitio público de **Joaquín Zaragoza López**. Reúne proyectos de seguimiento macroeconómico, política monetaria, actividad, tasas de interés y macrofinanzas para Chile y América Latina.
 
 **Sitio público:** https://mulloav3007.github.io/Economics/
 
