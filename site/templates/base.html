@@ -8,7 +8,7 @@
   <meta name="author" content="Mauricio Andrés Ulloa Valdivia">
   <meta name="theme-color" content="#f4f1eb">
   <link rel="canonical" href="{{ canonical_url }}">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="{{ og_type|default('website') }}">
   <meta property="og:title" content="{{ title }} · Mauricio Ulloa">
   <meta property="og:description" content="{{ description }}">
   <meta property="og:url" content="{{ canonical_url }}">
@@ -30,6 +30,7 @@
       <nav class="site-nav" aria-label="Navegación principal">
         <a href="{{ base_path }}index.html" {% if active_nav == 'inicio' %}aria-current="page"{% endif %}>Inicio</a>
         <a href="{{ base_path }}proyectos.html" {% if active_nav == 'proyectos' %}aria-current="page"{% endif %}>Proyectos</a>
+        <a href="{{ base_path }}analisis.html" {% if active_nav == 'analisis' %}aria-current="page"{% endif %}>Análisis</a>
         <a href="{{ base_path }}cv.html" {% if active_nav == 'cv' %}aria-current="page"{% endif %}>CV</a>
         <a href="{{ base_path }}contacto.html" {% if active_nav == 'contacto' %}aria-current="page"{% endif %}>Contacto</a>
       </nav>

@@ -1,0 +1,55 @@
+- slug: quien-gana-mas-en-el-estado
+  title: ¿Quién gana más en el Estado?
+  date: '2026-09-05'
+  category: Instituciones y capital humano
+  deck: Remuneraciones públicas, capital humano y el caso del Banco Central.
+  description: "¿Debe la remuneración presidencial ser un techo salarial? Una mirada al costo de oportunidad, la selección de talento y la independencia técnica."
+  sources:
+    - label: 'Ley Orgánica Constitucional del Banco Central: artículos 1, 7, 10 y 14–17.'
+      url: https://www.bcn.cl/leychile/navegar?idNorma=30216
+    - label: 'Banco Central: gobierno corporativo y remuneraciones del Consejo.'
+      url: https://www.bcentral.cl/es/el-banco/gobierno-corporativo
+    - label: 'Banco Central: integrantes del Consejo y antecedentes profesionales.'
+      url: https://www.bcentral.cl/el-banco/gobierno-corporativo/personas
+- slug: hidrogeno-verde-competitividad
+  title: 'Del potencial a la competitividad: el desafío del hidrógeno verde en Chile'
+  date: '2026-05-25'
+  category: Energía y desarrollo productivo
+  deck: Una ventaja natural no es todavía una ventaja competitiva.
+  description: "Costos, demanda, infraestructura y valor local: las condiciones para transformar el potencial renovable de Chile en una industria competitiva."
+  sources:
+    - label: 'CAF: Reporte de Economía y Desarrollo, capítulo sobre la respuesta al cambio climático.'
+      url: https://scioteca.caf.com/bitstream/handle/123456789/2108/Cap%C3%ADtulo5.pdf?isAllowed=y&sequence=5
+    - label: 'IEA: Global Hydrogen Review 2025. Demanda, producción, acuerdos de compra y comercio.'
+      url: https://www.iea.org/reports/global-hydrogen-review-2025
+    - label: 'Ministerio de Energía: Estrategia Nacional de Hidrógeno Verde y Derivados, marzo de 2026.'
+      url: https://energia.gob.cl/sites/default/files/documentos/estrategia_nacional_de_hidrogeno_verde_y_derivados.pdf
+    - label: 'ACERA: boletín del primer trimestre de 2026, balance de vertimientos de 2025.'
+      url: https://cdn.acera.cl/wp-content/uploads/2026/03/2026_Q1_Newsletter.pdf
+    - label: 'Broker & Trader Energy Chile: vertimientos de enero–febrero de 2026, con datos del Coordinador.'
+      url: https://es.linkedin.com/posts/broker-trader-energy-chile_vertimientos-de-energ%C3%ADa-el%C3%A9ctrica-sen-2022-activity-7442202772835340288-Rjhp
+    - label: 'AES Andes: decisión de desistir del proyecto INNA, 23 de enero de 2026.'
+      url: https://www.aesandes.com/es/press-release/aes-andes-se-focaliza-en-renovables-y-desiste-continuar-desarrollando-hidrogeno-verde
+    - label: 'Ministerio de Hacienda: proyecto de incentivos tributarios al hidrógeno verde, agosto de 2025.'
+      url: https://cms.hacienda.cl/hacienda/assets/documento/descargar/d6e83f0194a86/1755615604
+- slug: cuantos-funcionarios-necesita-el-estado
+  title: ¿Cuántos funcionarios necesita el Estado?
+  date: '2026-01-31'
+  category: Gasto público y productividad
+  deck: Una discusión sobre ajuste fiscal, funciones públicas y eficiencia.
+  description: "Contar funcionarios no basta para medir la eficiencia. La pregunta es qué servicios queremos, con qué productividad y a qué costo."
+  sources:
+    - label: 'Dipres: empleo público al tercer trimestre de 2025, publicado el 28 de noviembre de 2025.'
+      url: https://www.dipres.gob.cl/598/w3-article-396910.html
+    - label: 'OCDE: Government at a Glance 2025, empleo en el gobierno general.'
+      url: https://www.oecd.org/en/publications/government-at-a-glance-2025_0efd0bcd-en/full-report/employment-in-general-government_dafcfac5.html
+    - label: 'Dipres: resultados del monitoreo de 706 programas públicos de 2024.'
+      url: https://www.dipres.gob.cl/598/w3-article-376787.html
+    - label: 'Dipres: incidencia de la evaluación en la Ley de Presupuestos 2026, diciembre de 2025.'
+      url: https://www.dipres.gob.cl/598/w3-article-397506.html
+    - label: 'Dipres: sistema permanente de revisiones del gasto, abril de 2025.'
+      url: https://www.dipres.gob.cl/598/w3-article-366423.html
+    - label: 'Clapes UC: prioridades anunciadas por Jorge Quiroz en enero de 2026.'
+      url: https://clapesuc.cl/en-los-medios/quiroz-fija-prioridades-en-hacienda-y-adelanta-que-la-reforma-tributaria-se-presentara-el-primero-de-abril
+    - label: 'El País: precisiones sobre el plazo del ajuste fiscal, 27 de enero de 2026.'
+      url: https://elpais.com/chile/2026-01-27/el-futuro-ministro-de-hacienda-de-kast-relativiza-el-controvertido-recorte-fiscal-de-6000-millones-de-dolares-en-un-ano-y-medio.html

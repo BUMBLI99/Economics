@@ -380,6 +380,26 @@ def build_pages(contexts: dict[str, Any]) -> None:
         "site_url": SITE_URL,
     }
 
+    articles = yaml.safe_load((SITE / "data/analisis.yml").read_text(encoding="utf-8"))
+    articles = sorted(articles, key=lambda a: a["date"], reverse=True)
+    for article in articles:
+        content, toc = render_markdown(SITE / f"content/analisis/{article['slug']}.md", {}, markdown)
+        article["content_html"] = content
+        article["toc"] = toc
+        article["date_label"] = fmt_date(article["date"])
+        article["reading_minutes"] = max(1, math.ceil(len(BeautifulSoup(content, "html.parser").get_text(" ").split()) / 220))
+    analysis_common = dict(active_nav="analisis", og_image_url=SITE_URL + "assets/img/og-cover.png")
+    write_text(DOCS / "analisis.html", env.get_template("analysis_index.html").render(
+        **analysis_common, title="Análisis", description="Columnas de Mauricio Ulloa sobre economía, instituciones, energía y política pública.",
+        canonical_url=SITE_URL + "analisis.html", base_path="", articles=articles,
+    ))
+    for article in articles:
+        write_text(DOCS / f"analisis/{article['slug']}.html", env.get_template("analysis_article.html").render(
+            **analysis_common, title=article["title"], description=article["description"],
+            canonical_url=SITE_URL + f"analisis/{article['slug']}.html", base_path="../", og_type="article",
+            article=article, related_articles=[a for a in articles if a["slug"] != article["slug"]],
+        ))
+
     # Home
     home = env.get_template("home.html").render(
         title="Inicio",
@@ -390,6 +410,7 @@ def build_pages(contexts: dict[str, Any]) -> None:
         active_nav="inicio",
         body_class="home",
         project_count=len(projects),
+        articles=articles,
         featured_projects=sorted([p for p in projects if p.get("featured")], key=lambda p: p.get("featured_order", p["order"])),
     )
     write_text(DOCS / "index.html", home)
@@ -498,6 +519,7 @@ def build_pages(contexts: dict[str, Any]) -> None:
     write_text(DOCS / "robots.txt", f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}sitemap.xml\n")
     urls = [SITE_URL, SITE_URL + "proyectos.html", SITE_URL + "cv.html", SITE_URL + "contacto.html"]
     urls += [SITE_URL + f"proyectos/{p['slug']}.html" for p in projects]
+    urls += [SITE_URL + "analisis.html"] + [SITE_URL + f"analisis/{a['slug']}.html" for a in articles]
     today = datetime.now().date().isoformat()
     xml = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for url in urls:

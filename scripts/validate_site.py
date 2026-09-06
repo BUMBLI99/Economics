@@ -12,6 +12,8 @@ from bs4 import BeautifulSoup
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 EXPECTED = {
+    "analisis.html", "analisis/quien-gana-mas-en-el-estado.html",
+    "analisis/hidrogeno-verde-competitividad.html", "analisis/cuantos-funcionarios-necesita-el-estado.html",
     "index.html", "proyectos.html", "cv.html", "contacto.html", "404.html",
     "proyectos/imacec.html", "proyectos/ipom-iris.html", "proyectos/transmision-tpm.html",
     "proyectos/exchange.html", "proyectos/sostenibilidad-deuda.html", "proyectos/curva-rendimiento.html",
@@ -67,6 +69,18 @@ def main() -> int:
         featured = [a.get('href') for a in home.select('.project-card .card-title a')]
         if featured != ['proyectos/imacec.html', 'proyectos/atlas-metropolitano.html', 'proyectos/sostenibilidad-deuda.html']:
             errors.append("La portada debe destacar IMACEC, Atlas y sostenibilidad en ese orden.")
+        analysis_index = DOCS / "analisis.html"
+        if analysis_index.exists():
+            index_soup = BeautifulSoup(analysis_index.read_text(encoding="utf-8"), "html.parser")
+            if len(index_soup.select(".analysis-card")) != 3:
+                errors.append("Análisis debe publicar las tres columnas.")
+        for article_path in sorted((DOCS / "analisis").glob("*.html")):
+            article = BeautifulSoup(article_path.read_text(encoding="utf-8"), "html.parser")
+            prose = article.select_one(".analysis-prose")
+            if not prose or len(prose.get_text(" ").split()) < 1000:
+                errors.append(f"{article_path.name}: columna incompleta.")
+            if not article.select_one(".analysis-byline time[datetime]") or not article.select(".analysis-sources a"):
+                errors.append(f"{article_path.name}: faltan fecha o referencias.")
         existing = {str(p.relative_to(DOCS)).replace("\\", "/") for p in DOCS.rglob("*") if p.is_file()}
         for rel in sorted(EXPECTED - existing):
             errors.append(f"Falta archivo esperado: {rel}")
