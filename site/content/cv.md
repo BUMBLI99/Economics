@@ -5,7 +5,7 @@
     <h2>Economics student focused on empirical macroeconomics</h2>
     <p>I am an M.Sc. student in Economics at KU Leuven with research interests in macroeconometrics, time-series econometrics, macroeconomic forecasting, and monetary economics. I am particularly interested in Inflation-at-Risk, Growth-at-Risk, Bayesian VARs, and DSGE models.</p>
     <p>My experience combines empirical research, microeconometric replication, data engineering, reproducible workflows, statistical visualization, and regional geospatial analysis. I work primarily with Stata, R, MATLAB/Dynare, and LaTeX.</p>
-    <div class="actions"><a class="button button-primary" href="assets/files/Curriculum_Vitae_Joaquin_Zaragoza_Lopez.pdf">Download CV</a></div>
+    <div class="actions"><a class="button button-primary" href="assets/files/Curriculum_Vitae__08_26_.pdf">Download CV</a></div>
   </div>
   <div class="panel">
     <p class="eyebrow">Education</p>
