@@ -12,10 +12,10 @@
       {% if project.actions %}<div class="actions">{{ project.actions|safe }}</div>{% endif %}
     </div>
     <dl class="project-meta">
-      <div><dt>Estado</dt><dd>{{ project.status }}</dd></div>
-      <div><dt>Última actualización</dt><dd>{{ project.updated }}</dd></div>
-      <div><dt>Frecuencia</dt><dd>{{ project.frequency }}</dd></div>
-      <div><dt>Herramientas</dt><dd>{{ project.tools }}</dd></div>
+      <div><dt>Status</dt><dd>{{ project.status }}</dd></div>
+      <div><dt>Last update</dt><dd>{{ project.updated }}</dd></div>
+      <div><dt>Frequency</dt><dd>{{ project.frequency }}</dd></div>
+      <div><dt>Tools</dt><dd>{{ project.tools }}</dd></div>
     </dl>
   </div>
 </section>
@@ -25,8 +25,8 @@
       {{ content_html|safe }}
     </article>
     {% if toc %}
-    <aside class="project-toc" aria-label="Contenido de la página">
-      <p class="project-toc-title">En esta página</p>
+    <aside class="project-toc" aria-label="Pages' content">
+      <p class="project-toc-title">In this page</p>
       {% for item in toc %}<a href="#{{ item.id }}">{{ item.text }}</a>{% endfor %}
     </aside>
     {% endif %}

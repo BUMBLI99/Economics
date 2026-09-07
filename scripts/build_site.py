@@ -294,7 +294,7 @@ def render_markdown(path: Path, context: dict[str, Any], markdown: mistune.Markd
 def make_brand_assets() -> None:
     img_dir = SITE / "assets/img"
     img_dir.mkdir(parents=True, exist_ok=True)
-    favicon = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#193044"/><stop offset="1" stop-color="#416c8a"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#g)"/><text x="32" y="39" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="700" fill="white">MU</text></svg>"""
+    favicon = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#193044"/><stop offset="1" stop-color="#416c8a"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#g)"/><text x="32" y="39" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="700" fill="white">JZL</text></svg>"""
     (img_dir / "favicon.svg").write_text(favicon, encoding="utf-8")
 
     w, h = 1200, 630
@@ -311,7 +311,7 @@ def make_brand_assets() -> None:
     mu_font = ImageFont.truetype(font_bold, 27)
     draw.text((110, 110), "MU", anchor="mm", font=mu_font, fill="white")
     draw.text((70, 220), "Portofolio in Macroeconomics", font=eyebrow_font, fill="#b4573d")
-    draw.multiline_text((70, 270), "Empirical Macroeconomics, Econometrics, Monetary & Fiscal Polic", font=title_font, fill="#162634", spacing=8)
+    draw.multiline_text((70, 270), "Macroeconomía, política\nmonetaria y datos", font=title_font, fill="#162634", spacing=8)
     draw.text((72, 505), "Joaquín Zaragoza · Europe & Latin America", font=sub_font, fill="#66727f")
     im.save(img_dir / "og-cover.png", quality=94)
 
@@ -411,7 +411,7 @@ def build_pages(contexts: dict[str, Any]) -> None:
         canonical_url=SITE_URL,
         og_image_url=SITE_URL + "assets/img/og-cover.png",
         base_path="",
-        active_nav="home",
+        active_nav="inicio",
         body_class="home",
         project_count=len(projects),
         articles=articles,
