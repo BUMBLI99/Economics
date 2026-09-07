@@ -20,6 +20,7 @@
       <h2>How projects will be presented</h2>
       <p>Each public project will provide a transparent account of its motivation, data sources, empirical strategy, main findings, and limitations. Where possible, I will include reproducible code, documentation, and links to research outputs.</p>
       <p>Published pages will use validated, pre-processed outputs rather than run models in real time. This makes the portfolio more reliable and preserves a clear separation between research pipelines and public presentation.</p>
+      <p>Projects related to other research fields will be also published here. The research agenda reflects my main interests.</p>
     </div>
     <div class="panel">
       <p class="eyebrow">Research agenda</p>
