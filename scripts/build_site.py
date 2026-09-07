@@ -310,9 +310,9 @@ def make_brand_assets() -> None:
     draw.rounded_rectangle((70, 70, 150, 150), radius=22, fill="#193044")
     mu_font = ImageFont.truetype(font_bold, 27)
     draw.text((110, 110), "MU", anchor="mm", font=mu_font, fill="white")
-    draw.text((70, 220), "PORTAFOLIO DE ECONOMÍA APLICADA", font=eyebrow_font, fill="#b4573d")
-    draw.multiline_text((70, 270), "Macroeconomía, política\nmonetaria y datos", font=title_font, fill="#162634", spacing=8)
-    draw.text((72, 505), "Mauricio Ulloa · Chile y América Latina", font=sub_font, fill="#66727f")
+    draw.text((70, 220), "Portofolio in Macroeconomics", font=eyebrow_font, fill="#b4573d")
+    draw.multiline_text((70, 270), "Empirical Macroeconomics, Econometrics, Monetary & Fiscal Polic", font=title_font, fill="#162634", spacing=8)
+    draw.text((72, 505), "Joaquín Zaragoza · Europe & Latin America", font=sub_font, fill="#66727f")
     im.save(img_dir / "og-cover.png", quality=94)
 
 
@@ -407,7 +407,7 @@ def build_pages(contexts: dict[str, Any]) -> None:
     # Home
     home = env.get_template("home.html").render(
         title="Home",
-        description="Economics Portafolio: Empirical Macroeconomics, Econometrics, Monetary & Fiscal Policy, and more of Latin America and Europe.",
+        description="Economics Portfolio: Empirical Macroeconomics, Econometrics, Monetary & Fiscal Policy, and more of Latin America and Europe.",
         canonical_url=SITE_URL,
         og_image_url=SITE_URL + "assets/img/og-cover.png",
         base_path="",
@@ -539,7 +539,7 @@ def main() -> int:
 
     if not args.skip_assets:
         run_script(ROOT / "scripts/generate_site_assets.py")
-        run_script(ROOT / "scripts/build_public_cv.py")
+        #run_script(ROOT / "scripts/build_public_cv.py")
     make_brand_assets()
     contexts = build_contexts()
     clean_docs()

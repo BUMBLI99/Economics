@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block extra_head %}
-<meta property="article:author" content="Mauricio Ulloa">
+<meta property="article:author" content="Joaquín Zaragoza">
 <meta property="article:section" content="{{ article.category }}">
 {% endblock %}
 {% block main %}
@@ -10,7 +10,7 @@
     <p class="eyebrow">{{ article.category }}</p>
     <h1>{{ article.title }}</h1>
     <p class="analysis-deck">{{ article.deck }}</p>
-    <div class="analysis-byline"><strong>Mauricio Ulloa</strong><span><time datetime="{{ article.date }}">{{ article.date_label }}</time> · {{ article.reading_minutes }} min de lectura</span></div>
+    <div class="analysis-byline"><strong>Joaquín Zaragoza</strong><span><time datetime="{{ article.date }}">{{ article.date_label }}</time> · {{ article.reading_minutes }} min de lectura</span></div>
   </header>
   {% if article.toc %}
   <details class="analysis-contents">

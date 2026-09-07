@@ -19,7 +19,7 @@
   {% block extra_head %}{% endblock %}
 </head>
 <body class="{{ body_class|default('') }}">
-  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <a class="skip-link" href="#contenido">Skip to the content</a>
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="{{ base_path }}index.html" aria-label="Home">
@@ -30,7 +30,9 @@
       <nav class="site-nav" aria-label="Navegación principal">
         <a href="{{ base_path }}index.html" {% if active_nav == 'inicio' %}aria-current="page"{% endif %}>Inicio</a>
         <a href="{{ base_path }}proyectos.html" {% if active_nav == 'proyectos' %}aria-current="page"{% endif %}>Proyectos</a>
-        <a href="{{ base_path }}analisis.html" {% if active_nav == 'analisis' %}aria-current="page"{% endif %}>Análisis</a>
+        
+        
+        <!-- <a href="{{ base_path }}analisis.html" {% if active_nav == 'analisis' %}aria-current="page"{% endif %}>Análisis</a> -->
         <a href="{{ base_path }}cv.html" {% if active_nav == 'cv' %}aria-current="page"{% endif %}>CV</a>
         <a href="{{ base_path }}contacto.html" {% if active_nav == 'contacto' %}aria-current="page"{% endif %}>Contacto</a>
       </nav>

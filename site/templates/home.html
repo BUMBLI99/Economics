@@ -1,15 +1,14 @@
 {% extends "base.html" %}
 {% block main %}
-<section class="home-hero">
-  <div class="container hero-grid">
+<section class="home-hero"> 
     <div class="hero-copy">
-      <p class="eyebrow">Portafolio de economía aplicada</p>
+      <p class="eyebrow">Personal portfolio in Macroeconomics</p>
       <h1 class="display-title">Macroeconomía aplicada, proyecciones y política pública.</h1>
       <p class="lead">Soy economista y Magíster en Análisis Económico por la Universidad de Chile. Analizo la actividad económica, los riesgos fiscales y las diferencias territoriales mediante datos, econometría y escenarios. Este portafolio reúne herramientas interactivas para explorar los resultados y entender sus implicancias.</p>
       <div class="actions">
-        <a class="button button-primary" href="proyectos.html">Explorar proyectos</a>
-        <a class="button button-secondary" href="assets/files/cv-mauricio-ulloa.pdf">Descargar CV</a>
-        <a class="button button-ghost" href="contacto.html">Contacto</a>
+        <a class="button button-primary" href="proyectos.html">Explore projects</a>
+        <a class="button button-secondary" href="assets/files/Curriculum_Vitae__08_26_.pdf> Download CV</a>
+        <a class="button button-ghost" href="contacto.html">Contact</a>
       </div>
       <div class="stats-grid">
         <div class="stat"><div class="stat-value">{{ project_count }}</div><div class="stat-label">proyectos aplicados</div></div>
@@ -54,7 +53,10 @@
   </div>
 </section>
 
-<section class="section analysis-home" aria-labelledby="analisis-heading">
+
+<!-- SE ELIMINA LA SECCIÓN DE ANÁLISIS. SE MANTIENE POR POSIBLE USO INTERESANTE EN EL FUTURO-->
+
+<!--<section class="section analysis-home" aria-labelledby="analisis-heading">
   <div class="container">
     <div class="section-heading">
       <div><p class="eyebrow">Ideas y debate</p><h2 id="analisis-heading">Análisis</h2><p>Columnas sobre economía, instituciones y política pública.</p></div>
@@ -62,7 +64,7 @@
     </div>
     {% include "analysis_cards.html" %}
   </div>
-</section>
+</section>-->
 
 <section class="section section-alt">
   <div class="container two-col">
