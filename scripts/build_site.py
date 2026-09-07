@@ -364,6 +364,7 @@ def asset_version(*paths: Path) -> str:
 
 
 def build_pages(contexts: dict[str, Any]) -> None:
+    # Aquí se definen los proyectos para generar el conteo
     projects = yaml.safe_load((SITE / "data/projects.yml").read_text(encoding="utf-8"))
     projects = sorted(projects, key=lambda p: p["order"])
     env = Environment(
