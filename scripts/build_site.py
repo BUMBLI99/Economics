@@ -420,14 +420,16 @@ def build_pages(contexts: dict[str, Any]) -> None:
     )
     write_text(DOCS / "index.html", home)
 
+
+# AQUÍ SE DEFINE LA PARTE INICIAL DE CADA UNA DE LAS PÁGINAS
     # Standard pages
     page_specs = {
         "proyectos": {
             "title": "Projects",
             "description": "Proyectos de nowcasting, política monetaria, tasas, tipo de cambio y condiciones financieras.",
-            "eyebrow": "Portafolio",
-            "page_title": "Proyectos",
-            "subtitle": "Una colección estandarizada de herramientas aplicadas, notas técnicas y monitores macroeconómicos.",
+            "eyebrow": "Portfolio",
+            "page_title": "Projects",
+            "subtitle": "A colection of doubts materialized into applications, technical notes, and models.",
             "active_nav": "proyectos",
         },
         "cv": {
