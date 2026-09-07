@@ -28,14 +28,14 @@
       </a>
       <button class="menu-toggle" type="button" aria-label="Abrir navegación" aria-expanded="false">☰</button>
       <nav class="site-nav" aria-label="Navegación principal">
-        <a href="{{ base_path }}index.html" {% if active_nav == 'inicio' %}aria-current="page"{% endif %}>Inicio</a>
-        <a href="{{ base_path }}proyectos.html" {% if active_nav == 'proyectos' %}aria-current="page"{% endif %}>Proyectos</a>
+        <a href="{{ base_path }}index.html" {% if active_nav == 'inicio' %}aria-current="page"{% endif %}>Home</a>
+        <a href="{{ base_path }}proyectos.html" {% if active_nav == 'proyectos' %}aria-current="page"{% endif %}>Project</a>
 
         <!-- Se comenta la sección de análisis, posible interés futuro.-->
 
         <!--<a href="{{ base_path }}analisis.html" {% if active_nav == 'analisis' %}aria-current="page"{% endif %}>Análisis</a>--> 
         <a href="{{ base_path }}cv.html" {% if active_nav == 'cv' %}aria-current="page"{% endif %}>CV</a>
-        <a href="{{ base_path }}contacto.html" {% if active_nav == 'contacto' %}aria-current="page"{% endif %}>Contacto</a>
+        <a href="{{ base_path }}contacto.html" {% if active_nav == 'contacto' %}aria-current="page"{% endif %}>Contact</a>
       </nav>
     </div>
   </header>
@@ -48,11 +48,11 @@
     <div class="container footer-inner">
       <div>© <span data-current-year>2026</span> Joaquín Zaragoza López · Personal Portfolio.</div>
       <div class="footer-links">
-        <a href="{{ base_path }}contacto.html">Contacto</a>
+        <a href="{{ base_path }}contacto.html">Contact</a>
       </div>
     </div>
   </footer>
-  <button class="back-to-top" type="button" aria-label="Back to top">↑</button>
+  <button class="back-to-top" type="button" aria-label="Back-to-top">↑</button>
   <script src="{{ base_path }}assets/js/site.js?v={{ asset_version }}" defer></script>
   {% block extra_scripts %}{% endblock %}
 </body>
