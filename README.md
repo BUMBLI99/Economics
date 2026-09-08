@@ -1,21 +1,17 @@
-# Economics · Portafolio de economía aplicada
+# Economics · Personal portfolio in Empirical Macroeconomics. [TO BE CHANGED]
+This repository was originally forked from Mulloav3007, style and structured of his portfolio has been used. **:** https://mulloav3007.github.io/Economics/
 
-Repositorio y sitio público de **Joaquín Zaragoza López**. Reúne proyectos de seguimiento macroeconómico, política monetaria, actividad, tasas de interés y macrofinanzas para Chile y América Latina.
 
-**Sitio público:** https://mulloav3007.github.io/Economics/
+Public site of **Joaquín Zaragoza López**. Reúne proyectos de seguimiento macroeconómico, política monetaria, actividad, tasas de interés y macrofinanzas para Chile y América Latina.
 
-> Este es un portafolio personal. Los análisis y opiniones no representan posiciones institucionales.
+> This is a personal portfolio, the opinions and analysis that can be found here do not represent the positions of any institutions that may be related to my persona.
 
-## Proyectos publicados
+## Published projects
 
-| Proyecto | Pregunta principal | Pipeline |
+| Project | Research Question | Pipeline |
 |---|---|---|
-| Nowcasting IMACEC | ¿Cómo evoluciona la señal para el IMACEC total y no minero desde la EEE hasta los cortes M4/M8P y el dato efectivo? | R |
-| Escenarios tipo IPoM | ¿Cómo cambian inflación, TPM y brecha bajo trayectorias condicionales? | Matlab · IRIS · R |
-| Transmisión de la TPM | ¿Con qué velocidad y heterogeneidad se transmite la TPM a tasas bancarias? | R |
-| FX, tasas 10Y y riesgo LatAm | ¿Qué parte de los movimientos financieros excede lo explicado por factores globales? | R |
-| Sostenibilidad fiscal | ¿Qué combinación de crecimiento, tasas, balance primario y ajustes stock-flujo mantiene la deuda bajo el nivel prudente? | R · JavaScript |
-| Curva soberana chilena | ¿Qué muestran nivel, pendiente y compensación inflacionaria de BCP y BCU? | R |
+| Soon To Be Added | --- | --- |
+
 
 ## Arquitectura
 
