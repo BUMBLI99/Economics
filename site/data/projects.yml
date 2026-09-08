@@ -1,4 +1,57 @@
-# Aquí es donde se indica los proyectos realizados.
+# Aquí es donde se indica los proyectos realizados. No es lo único para poder añadir un proyecto. 
+# Se ha modificar:
+# Economics/site/data/projects.yml
+# Economics/site/content/projects/ Aquí crear un Markdown file en html
+# build_site.py en línea 465 debo añadir los overrides
+# 
+
+# Ejemplo de la estructura a seguir para dejar un projecto
+#- slug: atlas-metropolitano [Nombre del proyecto en el site/content/projects/markdown file]
+#  title: Atlas Metropolitano de Santiago 
+#  short_title: Atlas Metropolitano [Cualquier cosa de qué es]
+#  category: Economía urbana y territorial
+#  status: Explorador interactivo
+#  status_class: active
+#  description: Panel comunal para comparar pobreza, finanzas municipales, seguridad, educación, vivienda y hogares en las 52 comunas de la Región Metropolitana.
+#  image: assets/img/projects/atlas.jpg
+#  tags: [R, Datos territoriales, Santiago, Visualización]
+#  featured: true
+#  featured_order: 2
+#  order: 7
+
+# Cosa del orden.
+# Si featured es true, puedes añadir featured_order:. Sin embargo, en caso de no habre featured_orden, sigue 
+# el ranking the order. Si tu proyecto featured está en order 7 y lo quieres en el featured_order: 1, pero hay otro
+# proyecto con featured: true sin featured_order, pero con order: <7, se prioriza el segundo proyecto.  
+
+# Estructura lista para copiar/pegar para un nuevo proyecto.
+#- slug: 
+#  title: 
+#  short_title: 
+#  category: 
+#  status: [Cualquier cosa de qué es]
+#  status_class: [Active/Completed]
+#  description: 
+#  image: assets/img/projects/[archivo]
+#  tags: [tags, tags, tags]
+#  featured: [true/false]
+#  featured_order: [nº]
+#  order: [nº]
+
+
+
+- slug: test 
+  title: This is a test 
+  short_title: A test
+  category: Test
+  status: Test to understand
+  status_class: active
+  description: This is only a test
+  image: assets/img/projects/exchange.jpg
+  tags: [Test, test, another test]
+  featured: true
+  featured_order: 1 
+  order: 1
 
 - slug: imacec
   title: Nowcasting de actividad económica en Chile

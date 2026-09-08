@@ -309,10 +309,10 @@ def make_brand_assets() -> None:
     eyebrow_font = ImageFont.truetype(font_bold, 23)
     draw.rounded_rectangle((70, 70, 150, 150), radius=22, fill="#193044")
     mu_font = ImageFont.truetype(font_bold, 27)
-    draw.text((110, 110), "MU", anchor="mm", font=mu_font, fill="white")
+    draw.text((110, 110), "JZL", anchor="mm", font=mu_font, fill="white")
     draw.text((70, 220), "Portofolio in Macroeconomics", font=eyebrow_font, fill="#b4573d")
-    draw.multiline_text((70, 270), "Macroeconomía, política\nmonetaria y datos", font=title_font, fill="#162634", spacing=8)
-    draw.text((72, 505), "Joaquín Zaragoza · Europe & Latin America", font=sub_font, fill="#66727f")
+    draw.multiline_text((70, 270), "Empirical Macroeconomics, Econometrics and Moentary & Fiscal policy", font=title_font, fill="#162634", spacing=8)
+    draw.text((72, 505), "Joaquín Zaragoza López · Europe & Latin America", font=sub_font, fill="#66727f")
     im.save(img_dir / "og-cover.png", quality=94)
 
 
@@ -413,7 +413,7 @@ def build_pages(contexts: dict[str, Any]) -> None:
         og_image_url=SITE_URL + "assets/img/og-cover.png",
         base_path="",
         active_nav="inicio",
-        body_class="home",
+        body_class="home",  
         project_count=len(projects),
         articles=articles,
         featured_projects=sorted([p for p in projects if p.get("featured")], key=lambda p: p.get("featured_order", p["order"])),
@@ -422,6 +422,7 @@ def build_pages(contexts: dict[str, Any]) -> None:
 
 
 # AQUÍ SE DEFINE LA PARTE INICIAL DE CADA UNA DE LAS PÁGINAS
+
     # Standard pages
     page_specs = {
         "proyectos": {
@@ -462,8 +463,9 @@ def build_pages(contexts: dict[str, Any]) -> None:
         )
         write_text(DOCS / f"{slug}.html", rendered)
 
-    # Project pages
+    # Project pages [AÑADIR OVERRIDES PARA NUEVOS PROYECTOS, tiene que está en el mismo orden que proyects.yml]
     project_meta_overrides = {
+        "test":("September 2026","Ahora","Nada, literalmente"),
         "imacec": ("Septiembre de 2026", "Mensual", "R"),
         "ipom-iris": ("2026", "Trimestral", "Matlab · IRIS · R"),
         "transmision-tpm": ("Mayo de 2026", "Mensual", "R"),
@@ -471,6 +473,7 @@ def build_pages(contexts: dict[str, Any]) -> None:
         "sostenibilidad-deuda": ("29 de julio de 2026", "Por IFP", "R · JavaScript"),
         "curva-rendimiento": ("Mayo de 2026", "Mensual", "R"),
         "atlas-metropolitano": ("Agosto de 2026", "2017 · 2022 · 2024", "R · JavaScript · Leaflet · Plotly"),
+        
     }
     for p in projects:
         content_html, toc = render_markdown(SITE / f"content/projects/{p['slug']}.md", common, markdown)
@@ -504,7 +507,7 @@ def build_pages(contexts: dict[str, Any]) -> None:
     write_text(DOCS / "proyectos/estres-externo.html", redirect)
 
     # 404 page.
-    not_found_content = """<div class="panel reading"><p class="eyebrow">Error 404</p><h2>La página no existe o cambió de dirección.</h2><p>Regresa al índice de proyectos para continuar navegando.</p><a class="button button-primary" href="/Economics/proyectos.html">Ver proyectos</a></div>"""
+    not_found_content = """<div class="panel reading"><p class="eyebrow">Error 404</p><h2>The site does not exist or changed URL.</h2><p>Come back to the Project index to continue exploring.</p><a class="button button-primary" href="/Economics/proyectos.html">See projects</a></div>"""
     not_found = env.get_template("page.html").render(
         title="",
         description="Page not found.",

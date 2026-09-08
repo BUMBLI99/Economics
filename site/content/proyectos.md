@@ -6,12 +6,34 @@
   </div>
 </div>
 
-<div class="panel" style="text-align:center; padding:3rem 2rem; margin-bottom:2rem;">
+
+<div class="panel" style="text-align:center; padding:3rem 2rem; margin-top:3rem; margin-bottom:2rem;">
   <p class="eyebrow">In preparation</p>
   <h2>Projects coming soon</h2>
   <p>I am currently developing research projects in empirical macroeconomics and macroeconometrics. Detailed project pages, replication materials, code, data documentation, and research outputs will be added here as they become available.</p>
   <div class="actions" style="justify-content:center;"><a class="button button-primary" href="https://github.com/BUMBLI99" target="_blank" rel="noopener">Visit my GitHub</a></div>
 </div>
+
+
+
+
+<!-- Aquí se añaden los proyectos. La información sale de proyectos.md, según slugs. -->
+
+<div class="card-grid">
+{% for p in projects %}
+<article class="project-card">
+  <a class="card-image" href="proyectos/{{ p.slug }}.html"><img src="{{ p.image }}" alt="Quick look of {{ p.short_title }}" loading="lazy"></a>
+  <div class="card-body">
+    <div class="card-kicker">{{ p.category }}</div>
+    <h3 class="card-title"><a href="proyectos/{{ p.slug }}.html">{{ p.title }}</a></h3>
+    <p class="card-description">{{ p.description }}</p>
+    <div class="tag-row">{% for tag in p.tags %}<span class="tag">{{ tag }}</span>{% endfor %}</div>
+    <div class="card-footer"><a class="card-link" href="proyectos/{{ p.slug }}.html">Open project →</a><span class="status {% if p.status_class == 'note' %}status-note{% endif %}">{{ p.status }}</span></div>
+  </div>
+</article>
+{% endfor %}
+</div>
+
 
 <div class="section" style="padding-bottom:0">
   <div class="two-col">
