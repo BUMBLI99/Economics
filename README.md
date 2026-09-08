@@ -8,7 +8,7 @@ Public site of **Joaquín Zaragoza López**. Reúne proyectos de seguimiento mac
 
 ## Published projects
 
-| Proyecto | Pregunta principal | Pipeline |
+| Project | Research Question | Pipeline |
 |---|---|---|
 | Soon To Be Added | --- | --- |
 
