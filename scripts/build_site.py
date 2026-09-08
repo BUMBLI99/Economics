@@ -444,7 +444,7 @@ def build_pages(contexts: dict[str, Any]) -> None:
             "title": "Contact",
             "description": "Contact information.",
             "eyebrow": "Contact",
-            "page_title": "",
+            "page_title": "Contact",
             "subtitle": "Inquiries about projects, research or collaboration.",
             "active_nav": "contacto",
         },
