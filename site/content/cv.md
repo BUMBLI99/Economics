@@ -28,7 +28,7 @@
 <div class="cv-timeline">
   <div class="cv-item"><div class="cv-date">2025–Present</div><div><h3>M.Sc. in Economics · KU Leuven</h3><p>Relevant coursework includes Advanced Macroeconomics I (DSGE and RBC Models), Advanced Macroeconomics II (VAR/SVAR Methods), and Advanced Microeconomics I.</p></div></div>
   <div class="cv-item"><div class="cv-date">2021–2025</div><div><h3>B.Sc. in Economics · Universitat de València</h3><p>GPA: 3.51/4.0 equivalent, with 13 Honorary Mentions, including Mathematics I and II, Statistics I and II, Econometrics I and II, Microeconomics I and II, and Macroeconomics II.</p><p>Academic excellence award for the best academic record: Premi Extraordinari de Grau 2024/2025.</p></div></div>
-  <div class="cv-item"><div class="cv-date">2024–2025</div><div><h3>Erasmus Exchange in Economics · KU Leuven</h3><p>One-year exchange with graduate-level coursework. GPA: 14.5/20.</p></div></div>
+  <div class="cv-item"><div class="cv-date">2024–2025</div><div><h3>Erasmus Exchange in Economics · KU Leuven</h3><p>One-year exchange with a variety of graduate-level and advanced coursework. GPA: 14.5/20.</div>
 </div>
 
 ## Research Papers

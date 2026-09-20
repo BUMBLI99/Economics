@@ -43,6 +43,7 @@
 
 
 - slug: test 
+  visible: false
   title: This is a test 
   short_title: A test
   category: Test
