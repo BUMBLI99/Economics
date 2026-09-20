@@ -365,8 +365,20 @@ def asset_version(*paths: Path) -> str:
 
 def build_pages(contexts: dict[str, Any]) -> None:
     # Aquí se definen los proyectos para generar el conteo
-    projects = yaml.safe_load((SITE / "data/projects.yml").read_text(encoding="utf-8"))
-    projects = sorted(projects, key=lambda p: p["order"])
+
+    all_projects = yaml.safe_load(
+    (SITE / "data/projects.yml").read_text(encoding="utf-8")
+) or []
+
+    all_projects = sorted(
+        all_projects,
+        key=lambda p: p.get("order", 9999)
+)
+# Esta variable es la lista de proyectos visibles. Primero se filtran en las líneas anteriores.
+    projects = [
+        p for p in all_projects
+        if p.get("visible", True)
+]
     env = Environment(
         loader=FileSystemLoader(SITE / "templates"),
         autoescape=select_autoescape(["html", "xml"]),
@@ -475,7 +487,7 @@ def build_pages(contexts: dict[str, Any]) -> None:
         "atlas-metropolitano": ("Agosto de 2026", "2017 · 2022 · 2024", "R · JavaScript · Leaflet · Plotly"),
         
     }
-    for p in projects:
+    for p in all_projects:
         content_html, toc = render_markdown(SITE / f"content/projects/{p['slug']}.md", common, markdown)
         updated, frequency, tools = project_meta_overrides[p["slug"]]
         project = {

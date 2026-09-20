@@ -7,6 +7,7 @@
 
 # Ejemplo de la estructura a seguir para dejar un projecto
 #- slug: atlas-metropolitano [Nombre del proyecto en el site/content/projects/markdown file]
+#  visible: true
 #  title: Atlas Metropolitano de Santiago 
 #  short_title: Atlas Metropolitano [Cualquier cosa de qué es]
 #  category: Economía urbana y territorial
@@ -26,6 +27,7 @@
 
 # Estructura lista para copiar/pegar para un nuevo proyecto.
 #- slug: 
+#  visible:
 #  title: 
 #  short_title: 
 #  category: 
@@ -54,6 +56,7 @@
   order: 1
 
 - slug: imacec
+  visible: false
   title: Nowcasting de actividad económica en Chile
   short_title: Nowcasting IMACEC
   category: Actividad económica
@@ -65,6 +68,7 @@
   featured: true
   order: 1
 - slug: ipom-iris
+  visible: false
   title: Escenarios macroeconómicos con Matlab e IRIS
   short_title: Escenarios tipo IPoM
   category: Simulación macroeconómica
@@ -76,6 +80,7 @@
   featured: false
   order: 2
 - slug: transmision-tpm
+  visible: false
   title: Transmisión de la TPM a tasas de mercado
   short_title: Pass-through de la TPM
   category: Política monetaria
@@ -87,6 +92,7 @@
   featured: false
   order: 3
 - slug: exchange
+  visible: false
   title: Tipo de cambio, tasas largas y riesgo soberano en LatAm
   short_title: Stress macrofinanciero LatAm
   category: Macrofinanzas regionales
@@ -98,6 +104,7 @@
   featured: false
   order: 4
 - slug: sostenibilidad-deuda
+  visible: false
   title: Sostenibilidad de la deuda pública de Chile
   short_title: Sostenibilidad fiscal
   category: Política fiscal
@@ -110,6 +117,7 @@
   featured_order: 3
   order: 5
 - slug: curva-rendimiento
+  visible: false
   title: Curva soberana chilena y compensación inflacionaria
   short_title: Curva de rendimiento
   category: Tasas de interés
@@ -121,6 +129,7 @@
   featured: false
   order: 6
 - slug: atlas-metropolitano
+  visible: false
   title: Atlas Metropolitano de Santiago
   short_title: Atlas Metropolitano
   category: Economía urbana y territorial
